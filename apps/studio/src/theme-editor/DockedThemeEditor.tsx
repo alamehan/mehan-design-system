@@ -140,13 +140,21 @@ export function DockedThemeEditor({
   const updateSeed = (
     patch: Partial<StudioSeedConfig>,
     clearTokens: string[] = [],
+    clearPrefixes: string[] = [],
   ) => {
     setThemeState(prev => {
       let nextTokens = prev.tokenOverrides;
-      if (clearTokens.length > 0) {
+      if (clearTokens.length > 0 || clearPrefixes.length > 0) {
         nextTokens = {...prev.tokenOverrides};
         for (const k of clearTokens) {
           delete nextTokens[k];
+        }
+        if (clearPrefixes.length > 0) {
+          for (const key of Object.keys(nextTokens)) {
+            if (clearPrefixes.some(prefix => key.startsWith(prefix))) {
+              delete nextTokens[key];
+            }
+          }
         }
       }
       return {
@@ -719,7 +727,11 @@ export function DockedThemeEditor({
                     stops={[50, 100, 150]}
                     unit="%"
                     onChange={val =>
-                      updateSeed({depth: Number((val / 100).toFixed(2))})
+                      updateSeed(
+                        {depth: Number((val / 100).toFixed(2))},
+                        [],
+                        ['--shadow-'],
+                      )
                     }
                   />
                 </Stack>
@@ -767,7 +779,14 @@ export function DockedThemeEditor({
                     value: String(r.value),
                     label: r.label,
                   }))}
-                  onChange={v => v && updateSeed({typeRatio: Number(v)})}
+                  onChange={v =>
+                    v &&
+                    updateSeed(
+                      {typeRatio: Number(v)},
+                      [],
+                      ['--text-', '--font-size-'],
+                    )
+                  }
                 />
 
                 <div className="te-scale-row">
@@ -784,7 +803,13 @@ export function DockedThemeEditor({
                           : 'custom'
                       }
                       onChange={v => {
-                        if (v !== 'custom') updateSeed({typeBase: Number(v)});
+                        if (v !== 'custom') {
+                          updateSeed(
+                            {typeBase: Number(v)},
+                            [],
+                            ['--text-', '--font-size-'],
+                          );
+                        }
                       }}
                     >
                       <SegmentedControlItem value="13" label="13" />
@@ -802,7 +827,12 @@ export function DockedThemeEditor({
                       step={0.5}
                       value={seed.typeBase}
                       onChange={v =>
-                        v != null && updateSeed({typeBase: Number(v)})
+                        v != null &&
+                        updateSeed(
+                          {typeBase: Number(v)},
+                          [],
+                          ['--text-', '--font-size-'],
+                        )
                       }
                     />
                   </div>
@@ -834,13 +864,23 @@ export function DockedThemeEditor({
                         type="button"
                         className={`te-unified-card ${activeUnifiedPreset === id ? 'is-active' : ''}`}
                         onClick={() =>
-                          updateSeed({
-                            typeBase: preset.typeBase,
-                            typeRatio: preset.typeRatio,
-                            spacingBase: preset.spacing,
-                            radiusBase: preset.radius,
-                            sizeBase: preset.sizeMd,
-                          })
+                          updateSeed(
+                            {
+                              typeBase: preset.typeBase,
+                              typeRatio: preset.typeRatio,
+                              spacingBase: preset.spacing,
+                              radiusBase: preset.radius,
+                              sizeBase: preset.sizeMd,
+                            },
+                            [],
+                            [
+                              '--text-',
+                              '--font-size-',
+                              '--radius-',
+                              '--spacing-',
+                              '--size-element-',
+                            ],
+                          )
                         }
                       >
                         <span className="te-unified-name">{preset.label}</span>
@@ -868,9 +908,17 @@ export function DockedThemeEditor({
                         }
                         onChange={v => {
                           if (v === 'mehan') {
-                            updateSeed({radiusBase: null, radiusScale: 1});
+                            updateSeed(
+                              {radiusBase: null, radiusScale: 1},
+                              [],
+                              ['--radius-'],
+                            );
                           } else if (v !== 'custom') {
-                            updateSeed({radiusBase: Number(v)});
+                            updateSeed(
+                              {radiusBase: Number(v)},
+                              [],
+                              ['--radius-'],
+                            );
                           }
                         }}
                       >
@@ -890,7 +938,12 @@ export function DockedThemeEditor({
                         step={1}
                         value={seed.radiusBase ?? 5}
                         onChange={v =>
-                          v != null && updateSeed({radiusBase: Number(v)})
+                          v != null &&
+                          updateSeed(
+                            {radiusBase: Number(v)},
+                            [],
+                            ['--radius-'],
+                          )
                         }
                       />
                     </div>
@@ -922,7 +975,13 @@ export function DockedThemeEditor({
                             : 'custom'
                         }
                         onChange={v => {
-                          if (v !== 'custom') updateSeed({spacingBase: Number(v)});
+                          if (v !== 'custom') {
+                            updateSeed(
+                              {spacingBase: Number(v)},
+                              [],
+                              ['--spacing-'],
+                            );
+                          }
                         }}
                       >
                         <SegmentedControlItem value="3" label="3px" />
@@ -940,7 +999,12 @@ export function DockedThemeEditor({
                         step={1}
                         value={seed.spacingBase}
                         onChange={v =>
-                          v != null && updateSeed({spacingBase: Number(v)})
+                          v != null &&
+                          updateSeed(
+                            {spacingBase: Number(v)},
+                            [],
+                            ['--spacing-'],
+                          )
                         }
                       />
                     </div>
@@ -960,7 +1024,13 @@ export function DockedThemeEditor({
                             : 'custom'
                         }
                         onChange={v => {
-                          if (v !== 'custom') updateSeed({sizeBase: Number(v)});
+                          if (v !== 'custom') {
+                            updateSeed(
+                              {sizeBase: Number(v)},
+                              [],
+                              ['--size-element-'],
+                            );
+                          }
                         }}
                       >
                         <SegmentedControlItem value="28" label="28" />
@@ -978,7 +1048,12 @@ export function DockedThemeEditor({
                         step={2}
                         value={seed.sizeBase}
                         onChange={v =>
-                          v != null && updateSeed({sizeBase: Number(v)})
+                          v != null &&
+                          updateSeed(
+                            {sizeBase: Number(v)},
+                            [],
+                            ['--size-element-'],
+                          )
                         }
                       />
                     </div>
@@ -1024,7 +1099,13 @@ export function DockedThemeEditor({
                     label="Motion character"
                     size="sm"
                     value={seed.motion}
-                    onChange={v => updateSeed({motion: v as MehanMotion})}
+                    onChange={v =>
+                      updateSeed(
+                        {motion: v as MehanMotion},
+                        [],
+                        ['--duration-', '--ease-'],
+                      )
+                    }
                   >
                     <SegmentedControlItem value="expressive" label="Expressive" />
                     <SegmentedControlItem value="standard" label="Standard" />
@@ -1036,7 +1117,13 @@ export function DockedThemeEditor({
                     label="Duration speed multiplier"
                     size="sm"
                     value={String(seed.durationStep)}
-                    onChange={v => updateSeed({durationStep: Number(v)})}
+                    onChange={v =>
+                      updateSeed(
+                        {durationStep: Number(v)},
+                        [],
+                        ['--duration-'],
+                      )
+                    }
                   >
                     <SegmentedControlItem value="0.5" label="0.5×" />
                     <SegmentedControlItem value="0.75" label="0.75×" />

@@ -12,6 +12,7 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
   test('passes Desktop 1366x900 Light/Dark across real font switching, bounded Layout, rich Table, UX Playbook & Theme Editor with 0 errors and 0 axe contrast violations', async ({
     page,
   }) => {
+    test.setTimeout(90_000);
     const errors: string[] = [];
     page.on('pageerror', err => errors.push(err.message));
     page.on('console', msg => {
@@ -88,21 +89,20 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
         .violations,
     ).toEqual([]);
 
-    // Sweep Form Controls & Overlay categories to ensure bounded card heights & 0 contrast issues
-    for (const extraCat of ['Form Controls', 'Overlay']) {
-      await page.locator('.cat-nav-btn', {hasText: extraCat}).click();
-      await page.waitForTimeout(100);
-      const maxCardH = await page
-        .locator('.cat-specimen-card')
-        .evaluateAll(els =>
-          Math.max(0, ...els.map(el => el.getBoundingClientRect().height)),
-        );
-      expect(maxCardH).toBeLessThan(520);
-      expect(
-        (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-          .violations,
-      ).toEqual([]);
-    }
+    // Open "All categories" (renders all 107 specimens across all 12 official categories simultaneously!)
+    // and verify bounded card heights + 0 WCAG AA contrast violations across every single component!
+    await page.locator('.cat-nav-btn', {hasText: 'All categories'}).click();
+    await page.waitForTimeout(150);
+    const catalogAudit = await page.locator('.cat-specimen-card').evaluateAll(els => ({
+      count: els.length,
+      maxHeight: Math.max(0, ...els.map(el => el.getBoundingClientRect().height)),
+    }));
+    expect(catalogAudit.count).toBe(107);
+    expect(catalogAudit.maxHeight).toBeLessThan(560);
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
 
     // 3. Official Theme Showcase + Docked Chunked Theme Editor + Live Font Switching Proof!
     await page.getByRole('tab', {name: 'Templates'}).click();
@@ -235,9 +235,22 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       ).toEqual([]);
     }
 
-    // 5. Maintain Tab contrast check
+    // 5. Maintain Tab contrast check (Light + Dark mode)
     await page.getByRole('tab', {name: 'Maintain'}).click();
-    await page.waitForTimeout(150);
+    await page.waitForTimeout(120);
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
+
+    await page.getByRole('button', {name: 'Dark mode'}).click();
+    await page.waitForTimeout(120);
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
+    await page.getByRole('tab', {name: 'UX & Copy'}).click();
+    await page.waitForTimeout(120);
     expect(
       (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
         .violations,

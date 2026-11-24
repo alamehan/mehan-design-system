@@ -904,14 +904,62 @@ export function exportPureAstryxDefineThemeTs(
           `  localTokens: ${JSON.stringify(theme.localTokens, null, 4).replace(/\n/g, '\n  ')},`,
         ]
       : []),
+    ...(theme.components && Object.keys(theme.components).length > 0
+      ? [
+          `  components: ${JSON.stringify(theme.components, null, 4).replace(/\n/g, '\n  ')},`,
+        ]
+      : []),
     `});`,
     '',
   ].join('\n');
 }
 
+function readTsStringProp(source: string, prop: string): string | undefined {
+  const re = new RegExp(`\\b${prop}\\s*:\\s*['"]([^'"]+)['"]`);
+  return re.exec(source)?.[1];
+}
+
+function readTsNumberProp(source: string, prop: string): number | undefined {
+  const re = new RegExp(`\\b${prop}\\s*:\\s*(-?\\d+(?:\\.\\d+)?)`);
+  const raw = re.exec(source)?.[1];
+  if (raw == null) return undefined;
+  const num = Number(raw);
+  return Number.isFinite(num) ? num : undefined;
+}
+
+function extractBalancedBraceBlock(
+  source: string,
+  anchorRegex: RegExp,
+): string | null {
+  const anchor = anchorRegex.exec(source);
+  if (!anchor) return null;
+  const openIdx = source.indexOf('{', anchor.index + anchor[0].length - 1);
+  if (openIdx === -1) return null;
+  let depth = 0;
+  let inStr: '"' | "'" | null = null;
+  for (let i = openIdx; i < source.length; i += 1) {
+    const ch = source[i];
+    const prev = i > 0 ? source[i - 1] : '';
+    if (inStr) {
+      if (ch === inStr && prev !== '\\') inStr = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      inStr = ch;
+      continue;
+    }
+    if (ch === '{') depth += 1;
+    else if (ch === '}') {
+      depth -= 1;
+      if (depth === 0) return source.slice(openIdx, i + 1);
+    }
+  }
+  return null;
+}
+
 /**
- * Imports EITHER a Mehan Studio JSON file OR a TypeScript theme file exported
- * from `astryx.atmeta.com/playground` (`defineTheme({ tokens: { ... } })`)!
+ * Imports a Mehan Studio `.json` file, a `createMehanTheme({...})` `.ts` module,
+ * OR a pure `defineTheme({...})` `.ts` module (e.g. from `astryx.atmeta.com/playground`).
  */
 export function parseImportedThemeText(
   rawText: string,
@@ -937,24 +985,179 @@ export function parseImportedThemeText(
     };
   }
 
-  // Case 2: TypeScript `defineTheme(...)` or `createMehanTheme(...)` file!
+  // Case 2A: Mehan `createMehanTheme({ ... })` TypeScript module
+  const isCreateMehan = /\bcreateMehanTheme\s*\(/.test(trimmed);
+  const isDefineTheme = /\bdefineTheme\s*\(/.test(trimmed);
+
+  const nextSeed: StudioSeedConfig = {...fallback.seed};
+  let foundSeedProp = false;
+
+  if (isCreateMehan) {
+    const atm = readTsStringProp(trimmed, 'atmosphere');
+    if (atm === 'confectionery' || atm === 'porcelain' || atm === 'stone') {
+      nextSeed.atmosphere = atm;
+      foundSeedProp = true;
+    }
+    const accent = readTsStringProp(trimmed, 'accent');
+    if (accent) {
+      nextSeed.accent = accent;
+      foundSeedProp = true;
+    }
+    const lip = readTsStringProp(trimmed, 'lipStyle');
+    if (lip === 'candy' || lip === 'subtle' || lip === 'flat') {
+      nextSeed.lipStyle = lip;
+      foundSeedProp = true;
+    }
+    const seg = readTsStringProp(trimmed, 'segmentedStyle');
+    if (seg === 'raised' || seg === 'espresso') {
+      nextSeed.segmentedStyle = seg;
+      foundSeedProp = true;
+    }
+    const well = readTsStringProp(trimmed, 'wellStyle');
+    if (well === 'recessed' || well === 'bordered') {
+      nextSeed.wellStyle = well;
+      foundSeedProp = true;
+    }
+    const motion = readTsStringProp(trimmed, 'motion');
+    if (
+      motion === 'expressive' ||
+      motion === 'standard' ||
+      motion === 'crisp' ||
+      motion === 'calm'
+    ) {
+      nextSeed.motion = motion;
+      foundSeedProp = true;
+    }
+    const hFont = readTsStringProp(trimmed, 'headingFont');
+    if (hFont) {
+      nextSeed.headingFont = hFont;
+      foundSeedProp = true;
+    }
+    const bFont = readTsStringProp(trimmed, 'bodyFont');
+    if (bFont) {
+      nextSeed.bodyFont = bFont;
+      foundSeedProp = true;
+    }
+    const cFont = readTsStringProp(trimmed, 'codeFont');
+    if (cFont) {
+      nextSeed.codeFont = cFont;
+      foundSeedProp = true;
+    }
+    const depth = readTsNumberProp(trimmed, 'depth');
+    if (depth != null) {
+      nextSeed.depth = depth;
+      foundSeedProp = true;
+    }
+    const typeBase = readTsNumberProp(trimmed, 'typeBase');
+    if (typeBase != null) {
+      nextSeed.typeBase = typeBase;
+      foundSeedProp = true;
+    }
+    const typeRatio = readTsNumberProp(trimmed, 'typeRatio');
+    if (typeRatio != null) {
+      nextSeed.typeRatio = typeRatio;
+      foundSeedProp = true;
+    }
+    const spacingBase = readTsNumberProp(trimmed, 'spacingBase');
+    if (spacingBase != null) {
+      nextSeed.spacingBase = spacingBase;
+      foundSeedProp = true;
+    }
+    const radiusBase = readTsNumberProp(trimmed, 'radiusBase');
+    const radiusScale = readTsNumberProp(trimmed, 'radiusScale');
+    if (radiusBase != null) {
+      nextSeed.radiusBase = radiusBase;
+      foundSeedProp = true;
+    } else if (radiusScale != null) {
+      nextSeed.radiusBase = null;
+      nextSeed.radiusScale = radiusScale;
+      foundSeedProp = true;
+    }
+    const sizeBase = readTsNumberProp(trimmed, 'sizeBase');
+    if (sizeBase != null) {
+      nextSeed.sizeBase = sizeBase;
+      foundSeedProp = true;
+    }
+    const durationStep = readTsNumberProp(trimmed, 'durationStep');
+    if (durationStep != null) {
+      nextSeed.durationStep = durationStep;
+      foundSeedProp = true;
+    }
+  } else if (isDefineTheme) {
+    const scaleBlock = extractBalancedBraceBlock(trimmed, /\bscale\s*:\s*\{/);
+    if (scaleBlock) {
+      const base = readTsNumberProp(scaleBlock, 'base');
+      const ratio = readTsNumberProp(scaleBlock, 'ratio');
+      if (base != null) nextSeed.typeBase = base;
+      if (ratio != null) nextSeed.typeRatio = ratio;
+    }
+  }
+
+  // Extract `tokens: { ... }` (avoiding `localTokens` or `components` collisions)
+  const tokensBlock =
+    extractBalancedBraceBlock(trimmed, /\btokens\s*:\s*\{/) ?? trimmed;
   const extractedTokens: Record<string, string> = {};
   const tokenPairRegex = /['"](--[a-zA-Z0-9_-]+)['"]\s*:\s*['"]([^'"]+)['"]/g;
   let match: RegExpExecArray | null;
-  while ((match = tokenPairRegex.exec(trimmed)) !== null) {
+  while ((match = tokenPairRegex.exec(tokensBlock)) !== null) {
     const [, key, val] = match;
     if (!key.startsWith('--_astryx-')) {
       extractedTokens[key] = val;
     }
   }
 
-  if (Object.keys(extractedTokens).length === 0) {
+  // Extract `components: { ... }` from `createMehanTheme` if present (JSON-formatted)
+  let nextCustomOverrides: CustomCssOverride[] = isCreateMehan
+    ? []
+    : [...fallback.customOverrides];
+  if (isCreateMehan) {
+    const compBlock = extractBalancedBraceBlock(trimmed, /\bcomponents\s*:\s*\{/);
+    if (compBlock) {
+      try {
+        const parsedComp = JSON.parse(compBlock) as Record<
+          string,
+          {base?: Record<string, string>}
+        >;
+        let idx = 0;
+        for (const [compName, slots] of Object.entries(parsedComp)) {
+          if (!slots?.base) continue;
+          for (const [prop, val] of Object.entries(slots.base)) {
+            if (typeof val === 'string') {
+              idx += 1;
+              nextCustomOverrides.push({
+                id: `imp-${idx}`,
+                component: compName,
+                property: prop,
+                value: val,
+              });
+            }
+          }
+        }
+      } catch {
+        // Ignore hand-edited non-JSON component expressions
+      }
+    }
+  } else if (isDefineTheme && Object.keys(extractedTokens).length > 0) {
+    // Only store tokens that actually differ from the base seed theme so seed sliders stay clean!
+    const {theme: baseSeedTheme} = composeStudioTheme({
+      seed: nextSeed,
+      tokenOverrides: {},
+      customOverrides: [],
+    });
+    for (const [k, v] of Object.entries(extractedTokens)) {
+      if (baseSeedTheme.tokens[k as TokenName] === v) {
+        delete extractedTokens[k];
+      }
+    }
+  }
+
+  if (!foundSeedProp && !isDefineTheme && Object.keys(extractedTokens).length === 0) {
     throw new Error('No valid Mehan JSON or Astryx --token entries found.');
   }
 
   return {
-    seed: {...fallback.seed},
+    seed: nextSeed,
     tokenOverrides: extractedTokens,
-    customOverrides: [...fallback.customOverrides],
+    customOverrides: nextCustomOverrides,
   };
 }

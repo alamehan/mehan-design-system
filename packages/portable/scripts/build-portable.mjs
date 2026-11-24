@@ -61,8 +61,12 @@ const astryxThemeCssPath = path.resolve(
   astryxDir,
   'dist/themes/mehan-confectionery.css',
 );
+const astryxStylesCssPath = path.resolve(astryxDir, 'dist/styles.css');
 const inlinedThemeCss = fs.existsSync(astryxThemeCssPath)
   ? fs.readFileSync(astryxThemeCssPath, 'utf8')
+  : '';
+const inlinedStylesCss = fs.existsSync(astryxStylesCssPath)
+  ? fs.readFileSync(astryxStylesCssPath, 'utf8')
   : '';
 
 const cdnHtml = `<!doctype html>
@@ -78,7 +82,8 @@ const cdnHtml = `<!doctype html>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@astryxdesign/core@0.7.17/dist/astryx.css" />
     <style>
 ${inlinedThemeCss}
-      body { font-family: var(--font-family-body); margin: 0; }
+${inlinedStylesCss}
+      [data-astryx-theme], body { background-color: var(--color-background-body); color: var(--color-text-primary); font-family: var(--font-family-body); margin: 0; }
     </style>
     <script type="importmap">
       {
@@ -100,7 +105,7 @@ ${inlinedThemeCss}
       import * as React from 'react';
       import {createRoot} from 'react-dom/client';
       import htm from 'htm';
-      import {Card, Stack, Heading, Text, Button, SegmentedControl, SegmentedControlItem, TextInput} from '@astryxdesign/core';
+      import {LayerProvider, Card, Stack, Heading, Text, Button, SegmentedControl, SegmentedControlItem, TextInput} from '@astryxdesign/core';
       import {Theme, defineTheme} from '@astryxdesign/core/theme';
 
       const h = htm.bind(React.createElement);
@@ -115,32 +120,34 @@ ${inlinedThemeCss}
         const [projectName, setProjectName] = React.useState('Confectionery Launchpad');
         return h\`
           <\${Theme} theme=\${mehanCdnTheme} mode=\${mode}>
-            <\${Stack} padding=\${6} gap=\${4} align="start">
-              <\${Card} maxWidth=\${540} elevation="low">
-                <\${Stack} gap=\${4} align="start">
-                  <\${Heading} level=\${1}>Mehan × Astryx CDN Starter</\${Heading}>
-                  <\${Text} color="secondary">Zero bundler, zero install — full Meta Astryx accessibility + Mehan tactile physics in a single HTML file.</\${Text}>
-                  <\${SegmentedControl}
-                    label="Workspace mode"
-                    value=\${view}
-                    onChange=\${setView}
-                  >
-                    <\${SegmentedControlItem} value="studio" label="Studio" />
-                    <\${SegmentedControlItem} value="metrics" label="Metrics" />
-                    <\${SegmentedControlItem} value="export" label="Export" />
-                  </\${SegmentedControl}>
-                  <\${TextInput} label="Project name" value=\${projectName} onChange=\${setProjectName} />
-                  <\${Stack} direction="horizontal" gap=\${2}>
-                    <\${Button} variant="primary" label="Save changes" />
-                    <\${Button}
-                      variant="secondary"
-                      label=\${mode === 'light' ? 'Switch to dark' : 'Switch to light'}
-                      onClick=\${() => setMode(mode === 'light' ? 'dark' : 'light')}
-                    />
+            <\${LayerProvider}>
+              <\${Stack} padding=\${6} gap=\${4} align="start">
+                <\${Card} maxWidth=\${540} elevation="low">
+                  <\${Stack} gap=\${4} align="start">
+                    <\${Heading} level=\${1}>Mehan × Astryx CDN starter</\${Heading}>
+                    <\${Text} color="secondary">Zero bundler, zero install — full Meta Astryx accessibility + Mehan tactile physics in a single HTML file.</\${Text}>
+                    <\${SegmentedControl}
+                      label="Workspace mode"
+                      value=\${view}
+                      onChange=\${setView}
+                    >
+                      <\${SegmentedControlItem} value="studio" label="Studio" />
+                      <\${SegmentedControlItem} value="metrics" label="Metrics" />
+                      <\${SegmentedControlItem} value="export" label="Export" />
+                    </\${SegmentedControl}>
+                    <\${TextInput} label="Project name" value=\${projectName} onChange=\${setProjectName} />
+                    <\${Stack} direction="horizontal" gap=\${2}>
+                      <\${Button} variant="primary" label="Save changes" />
+                      <\${Button}
+                        variant="secondary"
+                        label=\${mode === 'light' ? 'Switch to dark' : 'Switch to light'}
+                        onClick=\${() => setMode(mode === 'light' ? 'dark' : 'light')}
+                      />
+                    </\${Stack}>
                   </\${Stack}>
-                </\${Stack}>
-              </\${Card}>
-            </\${Stack}>
+                </\${Card}>
+              </\${Stack}>
+            </\${LayerProvider}>
           </\${Theme}>
         \`;
       }

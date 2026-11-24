@@ -13,6 +13,13 @@ import {
 import {createMehanTheme} from '@mehan/astryx/dna';
 import {MEHAN_THEME_INIT_SCRIPT} from '@mehan/astryx';
 import {generateAiPrototypeKit, generatePortableCss} from '@mehan/portable';
+import {
+  DEFAULT_SEED_CONFIG,
+  exportCreateMehanThemeTs,
+  exportPureAstryxDefineThemeTs,
+  parseImportedThemeText,
+  type FullThemeEditorState,
+} from '../apps/studio/src/theme-editor/themeEditorModel';
 
 describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws', () => {
   const atmospheres = Object.keys(MEHAN_ATMOSPHERES) as MehanAtmosphereId[];
@@ -222,5 +229,79 @@ describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws
     expect(aiKitEspresso).toContain('--mh-lip-pad:0px');
     expect(aiKitEspresso).toContain('--mh-seg-active-bg:#261b16');
     expect(MEHAN_THEME_INIT_SCRIPT).toContain('data-theme');
+  });
+
+  it('round-trips Studio JSON, createMehanTheme (.ts), and Astryx defineTheme (.ts) cleanly', () => {
+    const fallback: FullThemeEditorState = {
+      seed: {...DEFAULT_SEED_CONFIG},
+      tokenOverrides: {},
+      customOverrides: [],
+    };
+
+    // 1. Pure seed customization (0 raw token overrides!) exported as createMehanTheme (.ts)
+    const pureSeedState: FullThemeEditorState = {
+      seed: {
+        ...DEFAULT_SEED_CONFIG,
+        atmosphere: 'stone',
+        accent: '#7c3aed',
+        lipStyle: 'subtle',
+        segmentedStyle: 'espresso',
+        wellStyle: 'bordered',
+        headingFont: 'Fraunces',
+        bodyFont: 'Outfit',
+        codeFont: 'JetBrains Mono',
+        typeBase: 15,
+        typeRatio: 1.25,
+        spacingBase: 5,
+        radiusBase: 6,
+        sizeBase: 40,
+        motion: 'calm',
+        durationStep: 1.25,
+        depth: 0.85,
+      },
+      tokenOverrides: {},
+      customOverrides: [
+        {
+          id: 'ov-1',
+          component: 'button',
+          property: 'borderRadius',
+          value: '999px',
+        },
+      ],
+    };
+
+    const mehanTs = exportCreateMehanThemeTs(pureSeedState, 'editorialStone');
+    const reimportedMehan = parseImportedThemeText(mehanTs, fallback);
+    expect(reimportedMehan.seed.atmosphere).toBe('stone');
+    expect(reimportedMehan.seed.accent).toBe('#7c3aed');
+    expect(reimportedMehan.seed.lipStyle).toBe('subtle');
+    expect(reimportedMehan.seed.segmentedStyle).toBe('espresso');
+    expect(reimportedMehan.seed.wellStyle).toBe('bordered');
+    expect(reimportedMehan.seed.headingFont).toBe('Fraunces');
+    expect(reimportedMehan.seed.bodyFont).toBe('Outfit');
+    expect(reimportedMehan.seed.codeFont).toBe('JetBrains Mono');
+    expect(reimportedMehan.seed.typeBase).toBe(15);
+    expect(reimportedMehan.seed.radiusBase).toBe(6);
+    expect(reimportedMehan.customOverrides).toContainEqual(
+      expect.objectContaining({
+        component: 'button',
+        property: 'borderRadius',
+        value: '999px',
+      }),
+    );
+
+    // 2. Pure Astryx defineTheme (.ts) export includes `components` and imports cleanly
+    const astryxTs = exportPureAstryxDefineThemeTs(pureSeedState, 'astryxStone');
+    expect(astryxTs).toContain('components:');
+    const reimportedAstryx = parseImportedThemeText(astryxTs, fallback);
+    expect(reimportedAstryx.seed.typeBase).toBe(15);
+    expect(reimportedAstryx.seed.typeRatio).toBe(1.25);
+
+    // 3. Studio JSON roundtrip
+    const reimportedJson = parseImportedThemeText(
+      JSON.stringify(pureSeedState),
+      fallback,
+    );
+    expect(reimportedJson.seed).toEqual(pureSeedState.seed);
   });
 });
