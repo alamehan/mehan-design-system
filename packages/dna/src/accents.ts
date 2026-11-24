@@ -137,7 +137,7 @@ export function resolveMehanAccent(
     'lighter',
   );
 
-  // Sculptural OKLCH shade ladder modeled on Tools Factory SDK (500 -> 600 -> 700 -> 800 lip)
+  // Sculptural OKLCH shade ladder (500 -> 600 -> 700 -> 800 perceptual lip)
   const s600 = hexToOklch(accentLight);
   const shade500 = oklchToHex(
     Math.min(s600.l + 0.076, 0.65),

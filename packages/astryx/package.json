@@ -2,7 +2,7 @@
   "name": "@mehan/astryx",
   "version": "1.0.0",
   "displayName": "Mehan Design System for Astryx",
-  "description": "Tactile, parametric UI & UX system for Meta Astryx — 3 atmospheres, 6-knob OKLCH theming, 4 precision controls, and universal UX/copy standards.",
+  "description": "Tactile, parametric UI & UX system for Meta Astryx — 3 atmospheres, open OKLCH + Astryx token/component theming, 4 precision controls, and universal UX/copy standards.",
   "license": "MIT",
   "type": "module",
   "sideEffects": [

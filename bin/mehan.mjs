@@ -38,6 +38,9 @@ if (cmd === 'ai-kit') {
   const radiusScale = Number(readFlag('--radius', '1'));
   const density = readFlag('--density', 'standard');
   const motion = readFlag('--motion', 'expressive');
+  const lipStyle = readFlag('--lip', 'candy');
+  const segmentedStyle = readFlag('--segmented', 'raised');
+  const wellStyle = readFlag('--well', 'recessed');
   const out = readFlag('--out', null);
   const {generateAiPrototypeKit} = await import(
     new URL('../packages/portable/dist/index.js', import.meta.url).href
@@ -49,6 +52,9 @@ if (cmd === 'ai-kit') {
     radiusScale,
     density,
     motion,
+    lipStyle,
+    segmentedStyle,
+    wellStyle,
   });
   if (out) {
     const dest = path.resolve(process.cwd(), out);
@@ -67,6 +73,9 @@ if (cmd === 'tokens') {
   const radiusScale = Number(readFlag('--radius', '1'));
   const density = readFlag('--density', 'standard');
   const motion = readFlag('--motion', 'expressive');
+  const lipStyle = readFlag('--lip', 'candy');
+  const segmentedStyle = readFlag('--segmented', 'raised');
+  const wellStyle = readFlag('--well', 'recessed');
   const out = readFlag('--out', 'mehan-tokens.w3c.json');
   const {exportW3cDesignTokens} = await import(
     new URL('../packages/portable/dist/index.js', import.meta.url).href
@@ -80,6 +89,9 @@ if (cmd === 'tokens') {
       radiusScale,
       density,
       motion,
+      lipStyle,
+      segmentedStyle,
+      wellStyle,
     }),
     null,
     2,

@@ -11,6 +11,7 @@ import {
   type MehanPresetAccentId,
 } from '@mehan/dna';
 import {createMehanTheme} from '@mehan/astryx/dna';
+import {MEHAN_THEME_INIT_SCRIPT} from '@mehan/astryx';
 import {generateAiPrototypeKit, generatePortableCss} from '@mehan/portable';
 
 describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws', () => {
@@ -180,5 +181,32 @@ describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws
     expect(portableEspresso).toContain('--mh-font-base:13.5px');
     expect(portableEspresso).toContain('--mh-lip-pad:0px');
     expect(portableEspresso).toContain('--mh-seg-active-bg:#261b16');
+
+    const w3cCustom = exportW3cDesignTokens({
+      name: 'shotcandy-figma',
+      atmosphere: 'confectionery',
+      headingFont: 'Georgia',
+      bodyFont: 'Inter',
+      codeFont: 'JetBrains Mono',
+      typeBase: 13.5,
+      segmentedStyle: 'espresso',
+      lipStyle: 'subtle',
+    });
+    expect(w3cCustom.fontFamily.display.$value).toBe('Georgia');
+    expect(w3cCustom.fontFamily.body.$value).toBe('Inter');
+    expect(w3cCustom.fontFamily.mono.$value).toBe('JetBrains Mono');
+    expect(w3cCustom.dimension.typeBase.$value).toBe('13.5px');
+    expect(w3cCustom.$metadata.segmentedStyle).toBe('espresso');
+
+    const aiKitEspresso = generateAiPrototypeKit({
+      atmosphere: 'confectionery',
+      segmentedStyle: 'espresso',
+      typeBase: 13.5,
+      lipStyle: 'flat',
+    });
+    expect(aiKitEspresso).toContain('--mh-font-base:13.5px');
+    expect(aiKitEspresso).toContain('--mh-lip-pad:0px');
+    expect(aiKitEspresso).toContain('--mh-seg-active-bg:#261b16');
+    expect(MEHAN_THEME_INIT_SCRIPT).toContain('data-theme');
   });
 });

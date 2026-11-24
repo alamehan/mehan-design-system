@@ -739,6 +739,15 @@ export function buildComponentTokenOverrides(
   return components as ComponentStyleMap;
 }
 
+function fnvHash8(input: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < input.length; i += 1) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(36).padStart(6, '0').slice(0, 8);
+}
+
 /**
  * Composes the live `DefinedTheme` AND the resolved flat token lookup table
  * from `FullThemeEditorState` (Mehan DNA seed + Base/Advanced token overrides +
@@ -773,21 +782,7 @@ export function composeStudioTheme(
     customCompMap,
   );
 
-  const slug = [
-    'mh',
-    seed.atmosphere,
-    seed.accent.replace(/[^a-z0-9]/gi, '').slice(0, 8),
-    seed.segmentedStyle,
-    seed.lipStyle,
-    seed.wellStyle,
-    Math.round(seed.depth * 100),
-    Math.round(seed.typeBase * 10),
-    seed.sizeBase,
-    Object.keys(tokenOverrides).length,
-    customOverrides.length,
-  ]
-    .join('-')
-    .toLowerCase();
+  const slug = `mh-${seed.atmosphere}-${fnvHash8(JSON.stringify(state))}`;
 
   const theme = createMehanTheme({
     name: slug,

@@ -361,7 +361,7 @@ export function buildMehanThemeConfig(
         },
       },
 
-      // Silky-Smooth Tactile Push-Button Physics (modeled on Tools Factory SDK)
+      // Silky-Smooth Tactile Push-Button Physics (OKLCH gradient + perceptual lip)
       button: {
         base: {
           fontWeight: '600',

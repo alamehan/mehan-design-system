@@ -330,23 +330,17 @@ export const MEHAN_PORTABLE_RUNTIME_JS = `
  * Claude Artifacts, Gemini Canvas, ChatGPT Canvas, or single-file HTML prototypes.
  */
 export function generateAiPrototypeKit(options?: Partial<MehanThemeOptions>): string {
-  const dna = resolveMehanDna({
+  const fullOptions: MehanThemeOptions = {
+    ...options,
     name: options?.name ?? 'mehan-prototype',
     atmosphere: options?.atmosphere ?? 'confectionery',
-    accent: options?.accent,
-    depth: options?.depth,
-    radiusScale: options?.radiusScale,
-    density: options?.density,
-    motion: options?.motion,
-  });
+  };
+  const dna = resolveMehanDna(fullOptions);
   const compactCss = generatePortableCss({
+    ...fullOptions,
     name: dna.name,
     atmosphere: dna.atmosphere.id,
     accent: dna.accent.seed,
-    depth: dna.depth,
-    radiusScale: dna.radiusScale,
-    density: dna.density,
-    motion: dna.motion,
   });
 
   return `# Mehan Design System — Single-HTML Prototype Kit (${dna.atmosphere.name} · ${dna.accent.name})

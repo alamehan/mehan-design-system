@@ -7,8 +7,16 @@
     "accent": "#d42a5f",
     "depth": 1,
     "radiusScale": 1,
+    "spacingBase": 4,
+    "sizeBase": 36,
+    "typeBase": 14,
+    "typeRatio": 1.22,
     "density": "standard",
-    "motion": "expressive"
+    "motion": "expressive",
+    "durationStep": 1,
+    "lipStyle": "candy",
+    "segmentedStyle": "raised",
+    "wellStyle": "recessed"
   },
   "color": {
     "light": {
@@ -93,6 +101,36 @@
               "c": 0.0316,
               "h": 75.2
             }
+          }
+        }
+      },
+      "inverted": {
+        "$value": "#261b16",
+        "$type": "color",
+        "$description": "Inverted espresso/ink surface",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.234,
+              "c": 0.0199,
+              "h": 45.6
+            }
+          }
+        }
+      },
+      "onInverted": {
+        "$value": "#fbf5ec",
+        "$type": "color",
+        "$description": "Foreground on inverted surface",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.9723,
+              "c": 0.0136,
+              "h": 78.3
+            },
+            "contrastRatio": 15.49,
+            "wcagAA": true
           }
         }
       },
@@ -230,6 +268,20 @@
           }
         }
       },
+      "infoSolid": {
+        "$value": "#0076b3",
+        "$type": "color",
+        "$description": "Info solid badge fill",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.5422,
+              "c": 0.1288,
+              "h": 242
+            }
+          }
+        }
+      },
       "infoText": {
         "$value": "#1252b5",
         "$type": "color",
@@ -243,6 +295,20 @@
             },
             "contrastRatio": 7.08,
             "wcagAA": true
+          }
+        }
+      },
+      "successSolid": {
+        "$value": "#158058",
+        "$type": "color",
+        "$description": "Success solid badge fill",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.5328,
+              "c": 0.1112,
+              "h": 161.7
+            }
           }
         }
       },
@@ -262,6 +328,20 @@
           }
         }
       },
+      "warningSolid": {
+        "$value": "#b45309",
+        "$type": "color",
+        "$description": "Warning solid badge fill",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.5553,
+              "c": 0.1455,
+              "h": 49
+            }
+          }
+        }
+      },
       "warningText": {
         "$value": "#8b4800",
         "$type": "color",
@@ -275,6 +355,20 @@
             },
             "contrastRatio": 6.78,
             "wcagAA": true
+          }
+        }
+      },
+      "dangerSolid": {
+        "$value": "#dc2626",
+        "$type": "color",
+        "$description": "Danger solid badge fill",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.5771,
+              "c": 0.2152,
+              "h": 27.3
+            }
           }
         }
       },
@@ -380,6 +474,20 @@
           }
         }
       },
+      "inverted": {
+        "$value": "#fbf0e6",
+        "$type": "color",
+        "$description": "Dark inverted cream/alabaster surface",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.961,
+              "c": 0.0179,
+              "h": 64.9
+            }
+          }
+        }
+      },
       "line": {
         "$value": "#3d3029",
         "$type": "color",
@@ -472,6 +580,20 @@
           }
         }
       },
+      "infoSolid": {
+        "$value": "#38bdf8",
+        "$type": "color",
+        "$description": "Dark info solid badge fill",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.7535,
+              "c": 0.139,
+              "h": 232.7
+            }
+          }
+        }
+      },
       "infoText": {
         "$value": "#7cb3ff",
         "$type": "color",
@@ -485,6 +607,20 @@
             },
             "contrastRatio": 7.75,
             "wcagAA": true
+          }
+        }
+      },
+      "successSolid": {
+        "$value": "#4ade80",
+        "$type": "color",
+        "$description": "Dark success solid badge fill",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.8003,
+              "c": 0.1821,
+              "h": 151.7
+            }
           }
         }
       },
@@ -504,6 +640,20 @@
           }
         }
       },
+      "warningSolid": {
+        "$value": "#fbbf24",
+        "$type": "color",
+        "$description": "Dark warning solid badge fill",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.8369,
+              "c": 0.1644,
+              "h": 84.4
+            }
+          }
+        }
+      },
       "warningText": {
         "$value": "#ffb562",
         "$type": "color",
@@ -517,6 +667,20 @@
             },
             "contrastRatio": 9.57,
             "wcagAA": true
+          }
+        }
+      },
+      "dangerSolid": {
+        "$value": "#f87171",
+        "$type": "color",
+        "$description": "Dark danger solid badge fill",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.7106,
+              "c": 0.1661,
+              "h": 22.2
+            }
           }
         }
       },
@@ -539,6 +703,14 @@
     }
   },
   "dimension": {
+    "typeBase": {
+      "$value": "14px",
+      "$type": "dimension"
+    },
+    "spacingBase": {
+      "$value": "4px",
+      "$type": "dimension"
+    },
     "controlSm": {
       "$value": "32px",
       "$type": "dimension"
@@ -569,6 +741,14 @@
     },
     "radiusPage": {
       "$value": "24px",
+      "$type": "dimension"
+    },
+    "radiusChat": {
+      "$value": "24px",
+      "$type": "dimension"
+    },
+    "buttonLip": {
+      "$value": "3px",
       "$type": "dimension"
     }
   },

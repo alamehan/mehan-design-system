@@ -125,6 +125,30 @@ test.describe('STUDIO.html v1.0.0 — 12-Category Catalog, Official Theme Showca
         .violations,
     ).toEqual([]);
 
+    // 6b. Verify live component CSS mutation: add Custom CSS Override -> button radius 999px -> Reset!
+    await page
+      .getByRole('complementary', {name: 'Live Theme Editor'})
+      .getByRole('textbox', {name: 'CSS property (camelCase)'})
+      .fill('borderRadius');
+    await page
+      .getByRole('complementary', {name: 'Live Theme Editor'})
+      .getByRole('textbox', {name: 'CSS value'})
+      .fill('999px');
+    await page
+      .getByRole('complementary', {name: 'Live Theme Editor'})
+      .getByRole('button', {name: 'Add Component Override'})
+      .click();
+    await page.waitForTimeout(150);
+    const mutatedRadius = await page
+      .getByRole('button', {name: 'Publish release'})
+      .evaluate(el => getComputedStyle(el).borderRadius);
+    expect(mutatedRadius).toBe('999px');
+    await page
+      .getByRole('complementary', {name: 'Live Theme Editor'})
+      .getByRole('button', {name: 'Reset all to default'})
+      .click();
+    await page.waitForTimeout(150);
+
     // 7. Maintain Tab contrast check
     await page.getByRole('tab', {name: 'Maintain'}).click();
     await page.waitForTimeout(150);
