@@ -4,11 +4,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const pkgRoot = path.resolve(import.meta.dirname, '..');
+const repoRoot = path.resolve(pkgRoot, '../..');
+const astryxDir = path.resolve(pkgRoot, '../astryx');
 const distDir = path.join(pkgRoot, 'dist');
+const releaseDir = path.join(repoRoot, 'release');
+
 fs.rmSync(distDir, {recursive: true, force: true});
 fs.mkdirSync(distDir, {recursive: true});
 
 const pnpmCmd = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 execFileSync(
   pnpmCmd,
@@ -19,10 +24,25 @@ execFileSync(
 const {
   generatePortableCss,
   generateAiPrototypeKit,
+  exportW3cDesignTokens,
   MEHAN_PORTABLE_RUNTIME_JS,
 } = await import(new URL('../dist/index.js', import.meta.url).href);
 
 const fullCss = generatePortableCss();
+const aiKitMd = generateAiPrototypeKit({
+  atmosphere: 'confectionery',
+  accent: 'strawberry',
+});
+const w3cJson = `${JSON.stringify(
+  exportW3cDesignTokens({
+    name: 'mehan-confectionery',
+    atmosphere: 'confectionery',
+    accent: 'strawberry',
+  }),
+  null,
+  2,
+)}\n`;
+
 fs.writeFileSync(path.join(distDir, 'mehan-portable.css'), fullCss, 'utf8');
 fs.writeFileSync(
   path.join(distDir, 'mehan-portable.js'),
@@ -31,14 +51,15 @@ fs.writeFileSync(
 );
 fs.writeFileSync(
   path.join(distDir, 'MEHAN-AI-PROTOTYPE-KIT.md'),
-  generateAiPrototypeKit({atmosphere: 'confectionery', accent: 'strawberry'}),
+  aiKitMd,
   'utf8',
 );
+fs.writeFileSync(path.join(distDir, 'mehan-tokens.w3c.json'), w3cJson, 'utf8');
 
 // Emit a zero-bundler Astryx + Mehan CDN single-HTML starter (`mehan-astryx-cdn.html`)
 const astryxThemeCssPath = path.resolve(
-  pkgRoot,
-  '../astryx/dist/themes/mehan-confectionery.css',
+  astryxDir,
+  'dist/themes/mehan-confectionery.css',
 );
 const inlinedThemeCss = fs.existsSync(astryxThemeCssPath)
   ? fs.readFileSync(astryxThemeCssPath, 'utf8')
@@ -110,10 +131,10 @@ ${inlinedThemeCss}
                   </\${SegmentedControl}>
                   <\${TextInput} label="Project name" value=\${projectName} onChange=\${setProjectName} />
                   <\${Stack} direction="horizontal" gap=\${2}>
-                    <\${Button} variant="primary" label="Create Prototype" />
+                    <\${Button} variant="primary" label="Save changes" />
                     <\${Button}
                       variant="secondary"
-                      label=\${mode === 'light' ? 'Switch to Dark' : 'Switch to Light'}
+                      label=\${mode === 'light' ? 'Switch to dark' : 'Switch to light'}
                       onClick=\${() => setMode(mode === 'light' ? 'dark' : 'light')}
                     />
                   </\${Stack}>
@@ -131,4 +152,29 @@ ${inlinedThemeCss}
 `;
 
 fs.writeFileSync(path.join(distDir, 'mehan-astryx-cdn.html'), cdnHtml, 'utf8');
-console.log('✅ @mehan/portable built CSS, runtime JS, AI Prototype Kit, and Astryx CDN HTML.');
+
+// Populate root `release/` directory with ready-to-install local tarball + portable & Figma W3C artifacts
+fs.rmSync(releaseDir, {recursive: true, force: true});
+fs.mkdirSync(releaseDir, {recursive: true});
+
+for (const filename of [
+  'mehan-portable.css',
+  'mehan-portable.js',
+  'MEHAN-AI-PROTOTYPE-KIT.md',
+  'mehan-astryx-cdn.html',
+  'mehan-tokens.w3c.json',
+]) {
+  fs.copyFileSync(path.join(distDir, filename), path.join(releaseDir, filename));
+}
+
+if (fs.existsSync(path.join(astryxDir, 'dist/index.js'))) {
+  execFileSync(npmCmd, ['pack', '--pack-destination', releaseDir], {
+    cwd: astryxDir,
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+  });
+}
+
+console.log(
+  '✅ @mehan/portable built CSS, runtime JS, AI Kit, W3C tokens, CDN HTML, and release/ tarball.',
+);

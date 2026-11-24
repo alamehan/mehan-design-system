@@ -13,6 +13,15 @@ function varsBlock(dna: ResolvedMehanDna, mode: 'light' | 'dark'): string {
   const M = mode === 'light' ? dna.materials.light : dna.materials.dark;
   const A = dna.accent;
   const idx = mode === 'light' ? 0 : 1;
+  const ctrlMd = dna.density === 'compact' ? '32px' : '36px';
+  const ctrlSm = dna.density === 'compact' ? '28px' : '32px';
+  const ctrlLg = dna.density === 'compact' ? '40px' : '44px';
+  const easeOut =
+    dna.motion === 'calm'
+      ? 'cubic-bezier(0.22,1,0.36,1)'
+      : dna.motion === 'standard'
+        ? 'cubic-bezier(0.2,0.9,0.3,1)'
+        : 'cubic-bezier(0.34,1.56,0.64,1)';
 
   return [
     `--mh-paper:${S.paper}`,
@@ -26,6 +35,7 @@ function varsBlock(dna: ResolvedMehanDna, mode: 'light' | 'dark'): string {
     `--mh-on-inverted:${S.onInverted}`,
     `--mh-line:${S.line}`,
     `--mh-line-strong:${S.lineStrong}`,
+    `--mh-card-hairline:${M.cardHairline}`,
     `--mh-ink:${S.ink}`,
     `--mh-ink-2:${S.ink2}`,
     `--mh-ink-3:${S.ink3}`,
@@ -51,6 +61,8 @@ function varsBlock(dna: ResolvedMehanDna, mode: 'light' | 'dark'): string {
     `--mh-shadow-primary:${M.shadowPrimary}`,
     `--mh-shadow-primary-hover:${M.shadowPrimaryHover}`,
     `--mh-shadow-primary-pressed:${M.shadowPrimaryPressed}`,
+    `--mh-shadow-danger:${M.shadowDanger}`,
+    `--mh-shadow-danger-pressed:${M.shadowDangerPressed}`,
     `--mh-info:${dna.statuses.info.text[idx]}`,
     `--mh-info-soft:${dna.statuses.info.muted[idx]}`,
     `--mh-success:${dna.statuses.success.text[idx]}`,
@@ -60,15 +72,22 @@ function varsBlock(dna: ResolvedMehanDna, mode: 'light' | 'dark'): string {
     `--mh-danger:${dna.statuses.error.text[idx]}`,
     `--mh-danger-fill:${dna.statuses.error.solid[0]}`,
     `--mh-danger-soft:${dna.statuses.error.muted[idx]}`,
+    `--mh-danger-soft-solid:${dna.statuses.error.softSolid[idx]}`,
     `--mh-r-sm:${dna.radii.inner}`,
     `--mh-r-md:${dna.radii.element}`,
     `--mh-r-lg:${dna.radii.container}`,
     `--mh-r-xl:${dna.radii.page}`,
+    `--mh-ctrl-sm:${ctrlSm}`,
+    `--mh-ctrl-md:${ctrlMd}`,
+    `--mh-ctrl-lg:${ctrlLg}`,
+    `--mh-ease:${easeOut}`,
   ].join(';');
 }
 
 const CORE_PORTABLE_RULES = `
 *,*::before,*::after{box-sizing:border-box}
+:root[data-density="compact"]{--mh-ctrl-sm:28px;--mh-ctrl-md:32px;--mh-ctrl-lg:40px}
+:root[data-motion="calm"]{--mh-ease:cubic-bezier(0.22,1,0.36,1)}
 html,body{margin:0;min-height:100%;background:var(--mh-paper);color:var(--mh-ink);font:400 14px/1.5 "Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4,p{margin:0}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -79,7 +98,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .mh-h3{font-size:15px;line-height:1.35;font-weight:700}
 .mh-muted{color:var(--mh-ink-3);font-size:13px}
 .mh-mono{font-family:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;font-variant-numeric:tabular-nums;font-size:12px}
-.mh-kbd{display:inline-flex;align-items:center;padding:3px 6px;border-radius:6px;background:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);border:1px solid var(--mh-line);font:600 11px/1 "Geist Mono",monospace;color:var(--mh-ink-2)}
+.mh-kbd{display:inline-flex;align-items:center;padding:3px 7px;border-radius:6px;background:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);border:0;font:600 11px/1 "Geist Mono",monospace;color:var(--mh-ink-2)}
 
 /* Layout */
 .mh-container{max-width:1160px;margin:0 auto;padding:24px}
@@ -95,53 +114,54 @@ button,input,select,textarea{font:inherit;color:inherit}
 .mh-grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .mh-divider{height:1px;background:var(--mh-line);border:0;margin:8px 0}
 
-/* Surfaces */
-.mh-card{background:var(--mh-surface);border:1px solid var(--mh-line);border-radius:var(--mh-r-lg);box-shadow:var(--mh-shadow-card);padding:18px}
+/* Surfaces (6% feathered hairline + progressive 4-layer elevation) */
+.mh-card{background:var(--mh-surface);border:1px solid var(--mh-card-hairline);border-radius:var(--mh-r-lg);box-shadow:var(--mh-shadow-card);padding:18px}
 .mh-card .mh-card,.mh-tray{background:var(--mh-tray);border:1px solid var(--mh-line);border-radius:var(--mh-r-md);padding:12px;box-shadow:none}
 .mh-well{background:var(--mh-well);box-shadow:var(--mh-shadow-well);border-radius:var(--mh-r-md);padding:12px}
 
-/* Tactile Buttons (Fixed-Height Lip-Collapse + Distinct Focus Ring) */
-.mh-btn{height:36px;padding:0 14px;border:0;border-radius:var(--mh-r-md);display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none;transition:transform 120ms cubic-bezier(.34,1.56,.64,1),box-shadow 120ms ease,background 120ms ease}
-.mh-btn-sm{height:32px;padding:0 11px;font-size:12.5px}
-.mh-btn-lg{height:44px;padding:0 18px;font-size:14.5px;border-radius:calc(var(--mh-r-md) + 2px)}
-.mh-btn-primary{color:#fff;background:var(--mh-primary-grad);box-shadow:var(--mh-shadow-primary);padding-bottom:3px;text-shadow:0 1px 0 rgba(0,0,0,.2)}
-.mh-btn-primary:hover:not(:disabled){background:var(--mh-primary-grad-hover);box-shadow:var(--mh-shadow-primary-hover)}
-.mh-btn-primary:active:not(:disabled){transform:translateY(2px);padding-bottom:1px;box-shadow:var(--mh-shadow-primary-pressed);transition-duration:80ms}
-.mh-btn-secondary{color:var(--mh-ink);background:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);padding-bottom:2px}
+/* Silky-Smooth Tactile Push Buttons (Perceptual Lip + Optical Face Centering) */
+.mh-btn{height:var(--mh-ctrl-md,36px);padding:0 14px;border:0;border-radius:var(--mh-r-md);display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none;transition:transform 150ms var(--mh-ease),box-shadow 150ms ease,background-image 150ms ease,background-color 150ms ease}
+.mh-btn-sm{height:var(--mh-ctrl-sm,32px);padding:0 11px;font-size:12.5px}
+.mh-btn-lg{height:var(--mh-ctrl-lg,44px);padding:0 18px;font-size:14.5px;border-radius:calc(var(--mh-r-md) + 2px)}
+.mh-btn-primary{color:#fff;background-color:var(--mh-accent);background-image:var(--mh-primary-grad);box-shadow:var(--mh-shadow-primary);padding-bottom:3px}
+.mh-btn-primary:hover:not(:disabled){background-image:var(--mh-primary-grad-hover);box-shadow:var(--mh-shadow-primary-hover)}
+.mh-btn-primary:active:not(:disabled){transform:translateY(1.5px);padding-bottom:1px;box-shadow:var(--mh-shadow-primary-pressed);transition-duration:80ms}
+.mh-btn-secondary{color:var(--mh-ink);background-color:var(--mh-surface);background-image:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);padding-bottom:2px}
 .mh-btn-secondary:hover:not(:disabled){box-shadow:var(--mh-shadow-raised-hover)}
 .mh-btn-secondary:active:not(:disabled){transform:translateY(1px);padding-bottom:0;box-shadow:var(--mh-shadow-pressed);transition-duration:80ms}
 .mh-btn-ghost{background:transparent;color:var(--mh-ink-2)}
 .mh-btn-ghost:hover:not(:disabled){background:var(--mh-well);color:var(--mh-ink)}
-.mh-btn-danger{color:#fff;background:var(--mh-danger-fill);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -3px 0 #7f1d1d,0 4px 10px -4px rgba(185,28,28,.4);padding-bottom:3px}
-.mh-btn-danger:active:not(:disabled){transform:translateY(2px);padding-bottom:1px}
+.mh-btn-danger{color:var(--mh-danger);background:var(--mh-danger-soft-solid);box-shadow:var(--mh-shadow-danger);padding-bottom:2px}
+.mh-btn-danger:active:not(:disabled){transform:translateY(1px);padding-bottom:0;box-shadow:var(--mh-shadow-danger-pressed);transition-duration:80ms}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){.mh-btn-primary:hover:not(:disabled),.mh-btn-secondary:hover:not(:disabled),.mh-btn-danger:hover:not(:disabled){transform:translateY(-1px)}}
 .mh-btn:disabled{opacity:.48;cursor:default;transform:none}
-.mh-icon-btn{width:36px;height:36px;padding:0;border-radius:var(--mh-r-md);display:inline-grid;place-items:center;border:0;background:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);cursor:pointer}
+.mh-icon-btn{width:var(--mh-ctrl-md,36px);height:var(--mh-ctrl-md,36px);padding:0;padding-bottom:2px;border-radius:var(--mh-r-md);display:inline-grid;place-items:center;border:0;background:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);cursor:pointer}
 .mh-btn:focus-visible,.mh-icon-btn:focus-visible,.mh-seg button:focus-visible,.mh-switch:focus-visible,.mh-tab:focus-visible,.mh-swatch:focus-visible{outline:2px solid var(--mh-ink);outline-offset:2px}
 
-/* Recessed-Well Form Controls */
+/* Borderless Recessed-Well Form Controls */
 .mh-field{display:flex;flex-direction:column;gap:6px}
 .mh-label{font-size:12.5px;font-weight:600;color:var(--mh-ink-2);display:flex;justify-content:space-between}
-.mh-input,.mh-select,.mh-textarea{width:100%;border:1px solid transparent;outline:none;border-radius:var(--mh-r-md);background:var(--mh-well);box-shadow:var(--mh-shadow-well);color:var(--mh-ink);font-size:13.5px}
-.mh-input,.mh-select{height:36px;padding:0 12px}
+.mh-input,.mh-select,.mh-textarea{width:100%;border:0;outline:none;border-radius:var(--mh-r-md);background:var(--mh-well);box-shadow:var(--mh-shadow-well);color:var(--mh-ink);font-size:13.5px;transition:box-shadow 140ms ease}
+.mh-input,.mh-select{height:var(--mh-ctrl-md,36px);padding:0 12px}
 .mh-textarea{min-height:84px;padding:9px 12px;resize:vertical}
 .mh-input::placeholder,.mh-textarea::placeholder{color:var(--mh-ink-3)}
-.mh-input:focus,.mh-select:focus,.mh-textarea:focus{border-color:var(--mh-accent);box-shadow:var(--mh-shadow-well),0 0 0 2px var(--mh-accent-muted)}
+.mh-input:focus,.mh-select:focus,.mh-textarea:focus{box-shadow:var(--mh-shadow-well),0 0 0 2px var(--mh-accent)}
 
-/* Segmented Control, Switch, Slider & Boiled-Sweet Swatch */
+/* Segmented Control, Switch & Boiled-Sweet Swatch */
 .mh-seg{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:var(--mh-r-md);background:var(--mh-well);box-shadow:var(--mh-shadow-well)}
-.mh-seg button{height:30px;padding:0 12px;border:0;border-radius:var(--mh-r-sm);background:transparent;color:var(--mh-ink-2);font-size:12.5px;font-weight:600;cursor:pointer}
+.mh-seg button{height:calc(var(--mh-ctrl-md,36px) - 6px);padding:0 12px;border:0;border-radius:var(--mh-r-sm);background:transparent;color:var(--mh-ink-2);font-size:12.5px;font-weight:600;cursor:pointer}
 .mh-seg button[aria-selected="true"],.mh-seg button.is-active{background:var(--mh-raised-grad);color:var(--mh-ink);box-shadow:var(--mh-shadow-raised)}
 .mh-switch{width:38px;height:22px;padding:0;border:0;border-radius:999px;background:var(--mh-socket);box-shadow:var(--mh-shadow-socket);position:relative;cursor:pointer;transition:background 180ms ease}
-.mh-switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--mh-knob-grad);box-shadow:var(--mh-shadow-knob);transition:transform 180ms cubic-bezier(.34,1.56,.64,1)}
+.mh-switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--mh-knob-grad);box-shadow:var(--mh-shadow-knob);transition:transform 180ms var(--mh-ease)}
 .mh-switch[aria-checked="true"],.mh-switch.is-on{background:var(--mh-primary-grad)}
 .mh-switch[aria-checked="true"]::after,.mh-switch.is-on::after{transform:translateX(16px)}
-.mh-swatch{width:30px;height:30px;border:0;border-radius:50%;position:relative;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,.16),inset 0 0 0 1px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.15);transition:transform 140ms cubic-bezier(.34,1.56,.64,1)}
+.mh-swatch{width:30px;height:30px;border:0;border-radius:50%;position:relative;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,.16),inset 0 0 0 1px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.15);transition:transform 140ms var(--mh-ease)}
 .mh-swatch::after{content:"";position:absolute;left:21%;top:15%;width:34%;height:22%;border-radius:999px;background:rgba(255,255,255,.52);transform:rotate(-28deg)}
 .mh-swatch:hover{transform:scale(1.08)}
 .mh-swatch.is-selected,.mh-swatch[aria-pressed="true"]{box-shadow:0 0 0 2px var(--mh-surface),0 0 0 4px var(--mh-accent)}
 
-/* KPI Metric Card, Badges, Alerts, Tabs, Table & Modal */
-.mh-metric{background:var(--mh-surface);border:1px solid var(--mh-line);border-radius:var(--mh-r-lg);box-shadow:var(--mh-shadow-card);padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+/* KPI Metric Card, Badges, Alerts, Tabs, Table & Borderless Floating Modal */
+.mh-metric{background:var(--mh-surface);border:1px solid var(--mh-card-hairline);border-radius:var(--mh-r-lg);box-shadow:var(--mh-shadow-card);padding:16px 18px;display:flex;flex-direction:column;gap:6px}
 .mh-metric-value{font:800 28px/1.12 "Bricolage Grotesque",sans-serif;letter-spacing:-0.03em;font-variant-numeric:tabular-nums}
 .mh-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--mh-well);color:var(--mh-ink-2)}
 .mh-badge-accent{background:var(--mh-accent-soft);color:var(--mh-accent-text)}
@@ -151,21 +171,22 @@ button,input,select,textarea{font:inherit;color:inherit}
 .mh-badge-danger{background:var(--mh-danger-soft);color:var(--mh-danger)}
 .mh-alert{padding:11px 14px;border-radius:var(--mh-r-md);background:var(--mh-info-soft);color:var(--mh-ink);font-size:13px;display:flex;gap:10px;align-items:flex-start}
 .mh-tabs{display:flex;gap:18px;border-bottom:1px solid var(--mh-line)}
-.mh-tab{height:36px;padding:0 2px;border:0;background:transparent;color:var(--mh-ink-2);font-size:13px;font-weight:600;position:relative;cursor:pointer}
+.mh-tab{height:var(--mh-ctrl-md,36px);padding:0 2px;border:0;background:transparent;color:var(--mh-ink-2);font-size:13px;font-weight:600;position:relative;cursor:pointer}
 .mh-tab[aria-selected="true"],.mh-tab.is-active{color:var(--mh-ink)}
 .mh-tab[aria-selected="true"]::after,.mh-tab.is-active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:999px;background:var(--mh-accent)}
-.mh-table-wrap{overflow-x:auto;border-radius:var(--mh-r-lg);border:1px solid var(--mh-line);background:var(--mh-surface);box-shadow:var(--mh-shadow-card)}
+.mh-table-wrap{overflow-x:auto;border-radius:var(--mh-r-lg);border:1px solid var(--mh-card-hairline);background:var(--mh-surface);box-shadow:var(--mh-shadow-card)}
 .mh-table{width:100%;border-collapse:collapse;font-size:13px}
 .mh-table th,.mh-table td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--mh-line)}
 .mh-table th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--mh-ink-3);background:var(--mh-tray)}
 .mh-table tr:last-child td{border-bottom:0}
-.mh-nav-item{height:36px;padding:0 10px;border-radius:var(--mh-r-sm);display:flex;align-items:center;gap:9px;border:0;background:transparent;color:var(--mh-ink-2);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;width:100%;text-align:left}
+.mh-nav-item{height:var(--mh-ctrl-md,36px);padding:0 10px;border-radius:var(--mh-r-sm);display:flex;align-items:center;gap:9px;border:0;background:transparent;color:var(--mh-ink-2);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;width:100%;text-align:left}
 .mh-nav-item:hover{background:var(--mh-well);color:var(--mh-ink)}
 .mh-nav-item.is-active,.mh-nav-item[aria-current="page"]{background:var(--mh-accent-soft);color:var(--mh-accent-text)}
-dialog.mh-modal{border:1px solid var(--mh-line);border-radius:var(--mh-r-xl);background:var(--mh-float);color:var(--mh-ink);box-shadow:var(--mh-shadow-modal);padding:22px;max-width:460px;width:calc(100% - 32px)}
+dialog.mh-modal{border:0;border-radius:var(--mh-r-xl);background:var(--mh-float);color:var(--mh-ink);box-shadow:var(--mh-shadow-modal);padding:22px;max-width:460px;width:calc(100% - 32px)}
 dialog.mh-modal::backdrop{background:rgba(15,12,10,.46);backdrop-filter:blur(3px)}
 @media (max-width:860px){.mh-shell{grid-template-columns:1fr}.mh-sidebar{display:none}.mh-grid-2,.mh-grid-3,.mh-grid-4{grid-template-columns:1fr}}
 @media (pointer:coarse){.mh-btn,.mh-input,.mh-select,.mh-nav-item{min-height:44px}.mh-input,.mh-select,.mh-textarea{font-size:16px}}
+@media (prefers-contrast:more){.mh-card,.mh-metric,.mh-table-wrap,.mh-input,.mh-select,.mh-textarea,.mh-btn-secondary{outline:1px solid var(--mh-line-strong)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 `.trim();
 
@@ -177,7 +198,7 @@ export function generatePortableCss(customOptions?: MehanThemeOptions): string {
   if (customOptions) {
     const dna = resolveMehanDna(customOptions);
     return [
-      `/* Mehan Portable CSS (${dna.atmosphere.name} · ${dna.accent.name}) */`,
+      `/* Mehan Portable CSS (${dna.atmosphere.name} · ${dna.accent.name} · ${dna.density} · ${dna.motion}) */`,
       `:root{color-scheme:light;${varsBlock(dna, 'light')}}`,
       `:root[data-theme="dark"]{color-scheme:dark;${varsBlock(dna, 'dark')}}`,
       `@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;${varsBlock(dna, 'dark')}}}`,
@@ -189,7 +210,6 @@ export function generatePortableCss(customOptions?: MehanThemeOptions): string {
     '/* Mehan Portable CSS v1.0.0 — Universal Tactile Design System (All Atmospheres & Accents) */',
   ];
 
-  // Default: Confectionery + Strawberry
   const def = resolveMehanDna({
     name: 'mehan-default',
     atmosphere: 'confectionery',
@@ -201,7 +221,6 @@ export function generatePortableCss(customOptions?: MehanThemeOptions): string {
     `@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;${varsBlock(def, 'dark')}}}`,
   );
 
-  // All 3 Atmospheres × 6 Accents attribute selectors
   for (const atmId of Object.keys(MEHAN_ATMOSPHERES) as MehanAtmosphereId[]) {
     const atmDefault = resolveMehanDna({name: `mh-${atmId}`, atmosphere: atmId});
     lines.push(
@@ -276,7 +295,7 @@ export const MEHAN_PORTABLE_RUNTIME_JS = `
       if (parentDlg) parentDlg.close();
     }
 
-    var themeBtn = target.closest('[data-mh-theme-toggle]');
+    var themeBtn = target.closest('[data-mh-theme-toggle], .mh-theme-toggle');
     if (themeBtn) {
       var root = document.documentElement;
       var isDark = root.getAttribute('data-theme') === 'dark' ||
@@ -298,6 +317,8 @@ export function generateAiPrototypeKit(options?: Partial<MehanThemeOptions>): st
     accent: options?.accent,
     depth: options?.depth,
     radiusScale: options?.radiusScale,
+    density: options?.density,
+    motion: options?.motion,
   });
   const compactCss = generatePortableCss({
     name: dna.name,
@@ -305,28 +326,40 @@ export function generateAiPrototypeKit(options?: Partial<MehanThemeOptions>): st
     accent: dna.accent.seed,
     depth: dna.depth,
     radiusScale: dna.radiusScale,
+    density: dna.density,
+    motion: dna.motion,
   });
 
   return `# Mehan Design System — Single-HTML Prototype Kit (${dna.atmosphere.name} · ${dna.accent.name})
 
 Use the embedded **Mehan Portable CSS + Runtime** below to build a tactile, accessible, responsive single-file HTML prototype (zero external npm build required; works offline & in sandboxed AI previews).
 
-## Core Visual & Markup Rules
-1. **Surface Hierarchy:** Page canvas uses \`--mh-paper\`; primary panels use \`.mh-card\`; nested inner groupings inside a card MUST step down to \`.mh-tray\` or \`.mh-well\` (never stack bordered white cards on white cards).
-2. **Buttons:** One \`.mh-btn.mh-btn-primary\` per view/section for the main CTA (3px tactile bottom lip); secondary actions use \`.mh-btn.mh-btn-secondary\`; quiet actions use \`.mh-btn.mh-btn-ghost\`.
-3. **Typography:** Headings use \`.mh-display\`, \`.mh-h1\`, \`.mh-h2\`, \`.mh-h3\`; numbers/KPIs/codes use \`.mh-mono\` or \`.mh-metric-value\` (\`tabular-nums\`).
-4. **Interactive Controls (Auto-Wired by Inline Script):**
-   - Theme toggle button: \`<button class="mh-btn mh-btn-secondary mh-btn-sm" data-mh-theme-toggle>Toggle Theme</button>\`
-   - Segmented control: \`<div class="mh-seg"><button aria-selected="true">Day</button><button>Week</button></div>\`
-   - Switch: \`<button type="button" role="switch" aria-checked="true" class="mh-switch is-on" aria-label="Enable feature"></button>\`
-   - Tabs: \`<div class="mh-tabs"><button class="mh-tab is-active" data-tab="overview">Overview</button><button class="mh-tab" data-tab="activity">Activity</button></div>\` paired with \`<section data-tab-panel="overview">...</section>\`
-   - Modal: \`<button class="mh-btn mh-btn-secondary" data-mh-modal-open="demo-dlg">Open</button>\` + \`<dialog id="demo-dlg" class="mh-modal">...<button class="mh-btn mh-btn-secondary" data-mh-modal-close>Close</button></dialog>\`
-   - KPI Cards, Badges, Inputs & Tables: \`.mh-metric\`, \`.mh-badge.mh-badge-success|warning|danger|info|accent\`, \`.mh-field > .mh-label + .mh-input|.mh-select|.mh-textarea\`, \`.mh-table-wrap > .mh-table\`.
+## 1. Tactile Surface & Visual Rules
+1. **Surface Hierarchy:** Page canvas uses \`--mh-paper\`; primary panels use \`.mh-card\`; nested inner groupings inside a card MUST step down to \`.mh-tray\` or \`.mh-well\` (never stack white bordered cards inside white bordered cards).
+2. **Silky-Smooth Tactile Buttons:** One \`.mh-btn.mh-btn-primary\` per screen/dialog for the primary CTA; secondary actions use \`.mh-btn.mh-btn-secondary\`; quiet actions use \`.mh-btn.mh-btn-ghost\`; destructive actions use soft-tactile \`.mh-btn.mh-btn-danger\`.
+3. **Typography & Tabular Numbers:** Headings use \`.mh-display\`, \`.mh-h1\`, \`.mh-h2\`, \`.mh-h3\`; numbers/KPIs/timestamps use \`.mh-mono\` or \`.mh-metric-value\` (\`tabular-nums\`).
 
-## Starter Single-File HTML Template (Embed Directly)
+## 2. Universal UX, Semantic & Copywriting Standards
+1. **Simple First, Power on Demand:** Keep top-level forms/toolbars to \`<= 5\` primary controls; place expert flags inside a collapsible \`<details><summary>Advanced settings</summary>...</details>\`.
+2. **Row-First Data Discipline:** Use a maximum of \`4\` \`.mh-metric\` summary cards at the top; render homogeneous lists of \`5+\` records in \`.mh-table-wrap > .mh-table\` rather than walls of repeated cards.
+3. **Semantic Control Boundaries:** Use \`.mh-seg\` ONLY for \`2–5\` immediate view/mode switches; use \`.mh-tabs\` ONLY when switching distinct content panels; use \`.mh-select\` ONLY for form value selection.
+4. **Recovery States & Microcopy:**
+   - **Sentence case** on all buttons, labels, and headings (e.g., \`Save changes\`, \`Create project\`, \`Delete item\`). Never use vague \`OK\`, \`Yes\`, or \`Submit\`.
+   - **Blame-free errors:** State what happened + how to fix it (e.g., \`Enter a valid work email, like name@company.com.\`), preserving user input.
+   - **Actionable empty states:** Explain what belongs in the view in one sentence and provide one clear CTA button.
+   - **Destructive confirmation:** Confirm irreversible deletes in a \`<dialog class="mh-modal">\` naming the item, with \`Cancel\` + specific \`Delete <noun>\`.
+
+## 3. Auto-Wired Interactive Markup
+- **Theme toggle:** \`<button type="button" class="mh-btn mh-btn-secondary mh-btn-sm" data-mh-theme-toggle>Light / Dark</button>\`
+- **Segmented control:** \`<div class="mh-seg"><button aria-selected="true">Day</button><button>Week</button></div>\`
+- **Switch:** \`<button type="button" role="switch" aria-checked="true" class="mh-switch is-on" aria-label="Enable feature"></button>\`
+- **Tabs:** \`<div class="mh-tabs"><button class="mh-tab is-active" data-tab="overview">Overview</button><button class="mh-tab" data-tab="activity">Activity</button></div>\` paired with \`<section data-tab-panel="overview">...</section>\`
+- **Modal:** \`<button class="mh-btn mh-btn-secondary" data-mh-modal-open="confirm-dlg">Delete item</button>\` + \`<dialog id="confirm-dlg" class="mh-modal">...<button class="mh-btn mh-btn-secondary" data-mh-modal-close>Cancel</button></dialog>\`
+
+## 4. Starter Single-File HTML Template (Embed Directly)
 \`\`\`html
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-density="${dna.density}" data-motion="${dna.motion}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -344,7 +377,7 @@ ${compactCss}
     <button type="button" class="mh-btn mh-btn-secondary mh-btn-sm" data-mh-theme-toggle>Light / Dark</button>
   </header>
   <main class="mh-container mh-stack">
-    <!-- Build the requested UI here using .mh-* classes -->
+    <!-- Build the requested UI here using .mh-* classes and Mehan UX rules -->
   </main>
   <script>
 ${MEHAN_PORTABLE_RUNTIME_JS}

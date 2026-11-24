@@ -3,6 +3,8 @@ import {
   MEHAN_ACCENT_PRESETS,
   MEHAN_ATMOSPHERES,
   contrastRatio,
+  exportW3cDesignTokens,
+  hexToOklch,
   relativeLuminance,
   resolveMehanDna,
   type MehanAtmosphereId,
@@ -11,7 +13,7 @@ import {
 import {createMehanTheme} from '@mehan/astryx/dna';
 import {generateAiPrototypeKit, generatePortableCss} from '@mehan/portable';
 
-describe('@mehan/dna optical depth & WCAG AA contrast laws', () => {
+describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws', () => {
   const atmospheres = Object.keys(MEHAN_ATMOSPHERES) as MehanAtmosphereId[];
   const accents = Object.keys(MEHAN_ACCENT_PRESETS) as MehanPresetAccentId[];
 
@@ -20,7 +22,6 @@ describe('@mehan/dna optical depth & WCAG AA contrast laws', () => {
       const D = MEHAN_ATMOSPHERES[atmId].dark;
       const lum = (hex: string) => relativeLuminance(hex);
 
-      // Deeper layers MUST be darker; raised layers MUST be lighter!
       expect(lum(D.socket)).toBeLessThan(lum(D.well));
       expect(lum(D.well)).toBeLessThan(lum(D.paper));
       expect(lum(D.paper)).toBeLessThan(lum(D.tray));
@@ -39,10 +40,22 @@ describe('@mehan/dna optical depth & WCAG AA contrast laws', () => {
       expect(contrastRatio(dark.ink2, dark.surface)).toBeGreaterThanOrEqual(4.5);
       expect(contrastRatio(dark.ink3, dark.surface)).toBeGreaterThanOrEqual(4.5);
     });
+
+    it(`enforces WCAG 1.4.11 >= 3:1 non-text contrast on all 10 categorical borders in "${atmId}"`, () => {
+      const dna = resolveMehanDna({name: `cat-${atmId}`, atmosphere: atmId});
+      for (const ramp of Object.values(dna.categorical)) {
+        expect(
+          contrastRatio(ramp.borderLight, dna.atmosphere.light.surface),
+        ).toBeGreaterThanOrEqual(3);
+        expect(
+          contrastRatio(ramp.borderDark, dna.atmosphere.dark.surface),
+        ).toBeGreaterThanOrEqual(3);
+      }
+    });
   }
 
   for (const accId of accents) {
-    it(`solves WCAG AA (>= 4.5:1) button & link contrast for preset accent "${accId}"`, () => {
+    it(`solves WCAG AA (>= 4.5:1) contrast and smooth perceptual button lip for "${accId}"`, () => {
       const dna = resolveMehanDna({
         name: `test-${accId}`,
         atmosphere: 'confectionery',
@@ -60,6 +73,12 @@ describe('@mehan/dna optical depth & WCAG AA contrast laws', () => {
       expect(
         contrastRatio(dna.accent.textDark, dna.atmosphere.dark.surface),
       ).toBeGreaterThanOrEqual(4.5);
+
+      // Button lip MUST stay perceptually close to the face (no harsh dark cliff)
+      const faceL = hexToOklch(dna.accent.accentLight).l;
+      const lipL = hexToOklch(dna.accent.buttonLip).l;
+      expect(faceL - lipL).toBeGreaterThan(0.03);
+      expect(faceL - lipL).toBeLessThan(0.14);
     });
   }
 
@@ -82,24 +101,37 @@ describe('@mehan/dna optical depth & WCAG AA contrast laws', () => {
     }
   });
 
-  it('creates valid Astryx DefinedTheme objects and Portable AI kits from the same DNA', () => {
+  it('supports compact density, calm motion, W3C DTCG export, and Portable UX kits', () => {
     const theme = createMehanTheme({
-      name: 'mehan-unit-test',
+      name: 'mehan-compact-calm',
       atmosphere: 'stone',
       accent: '#7c3aed',
+      density: 'compact',
+      motion: 'calm',
     });
-    expect(theme.name).toBe('mehan-unit-test');
+    expect(theme.name).toBe('mehan-compact-calm');
+    expect(theme.tokens['--size-element-md']).toBe('32px');
     expect(theme.tokens['--color-background-inverted']).toMatch(/light-dark\(#/);
+
+    const w3c = exportW3cDesignTokens({
+      name: 'mehan-figma',
+      atmosphere: 'confectionery',
+      accent: 'strawberry',
+    });
+    expect(w3c.$metadata.density).toBe('standard');
+    expect(w3c.color.light.accentSolid.$type).toBe('color');
 
     const css = generatePortableCss();
     expect(css).toContain('data-atmosphere="confectionery"');
-    expect(css).toContain('.mh-btn-primary');
+    expect(css).toContain('.mh-btn-danger');
 
     const kit = generateAiPrototypeKit({
       atmosphere: 'confectionery',
       accent: 'blueberry',
+      density: 'compact',
+      motion: 'calm',
     });
-    expect(kit).toContain('<!doctype html>');
-    expect(kit).toContain('Mehan Portable Progressive Runtime');
+    expect(kit).toContain('Universal UX, Semantic & Copywriting Standards');
+    expect(kit).toContain('data-density="compact"');
   });
 });

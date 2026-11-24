@@ -7,10 +7,11 @@ const studioFileUrl = pathToFileURL(
   path.resolve(import.meta.dirname, '../STUDIO.html'),
 ).href;
 
-const shotDir = process.env.MEHAN_SHOT_DIR ?? path.resolve(import.meta.dirname, '../test-results');
+const shotDir =
+  process.env.MEHAN_SHOT_DIR ?? path.resolve(import.meta.dirname, '../test-results');
 
-test.describe('STUDIO.html offline file:// visual & WCAG AA contrast gate', () => {
-  test('renders cleanly over file:// in Light & Dark (Desktop 1366x900) with zero console errors and zero axe contrast violations', async ({
+test.describe('STUDIO.html 1-Door Hub offline file:// visual & WCAG AA contrast gate', () => {
+  test('passes Desktop 1366x900 Light/Dark across all 5 tabs, ID/EN switcher, and Customize drawer with 0 errors and 0 axe contrast violations', async ({
     page,
   }) => {
     const errors: string[] = [];
@@ -23,50 +24,92 @@ test.describe('STUDIO.html offline file:// visual & WCAG AA contrast gate', () =
     await page.goto(studioFileUrl, {waitUntil: 'load'});
     await expect(page.getByText('mehan', {exact: true})).toBeVisible();
 
-    // Light Confectionery Desktop screenshot + axe color-contrast gate
+    // 1. Overview (Indonesian default, Confectionery Light)
     await page.screenshot({
-      path: path.join(shotDir, 'studio-confectionery-light-1366.png'),
+      path: path.join(shotDir, 'studio-overview-id-light-1366.png'),
       fullPage: false,
     });
-    const lightAxe = await new AxeBuilder({page})
-      .withRules(['color-contrast'])
-      .analyze();
-    expect(lightAxe.violations).toEqual([]);
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
 
-    // Switch to Dark Mode
-    await page.getByRole('button', {name: /Dark/i}).first().click();
+    // 2. Switch to English + Components Gallery (Light) -> inspect silky button lips & soft Delete item!
+    await page.getByRole('radio', {name: 'EN', exact: true}).click();
+    await page.getByRole('tab', {name: 'Components'}).click();
+    await page.waitForTimeout(200);
+    await page.screenshot({
+      path: path.join(shotDir, 'studio-components-light-1366.png'),
+      fullPage: false,
+    });
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
+
+    // 3. Switch to Dark Mode on Components Gallery
+    await page.getByRole('button', {name: /Dark mode/i}).click();
     await page.waitForTimeout(250);
     await page.screenshot({
-      path: path.join(shotDir, 'studio-confectionery-dark-1366.png'),
+      path: path.join(shotDir, 'studio-components-dark-1366.png'),
       fullPage: false,
     });
-    const darkAxe = await new AxeBuilder({page})
-      .withRules(['color-contrast'])
-      .analyze();
-    expect(darkAxe.violations).toEqual([]);
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
 
-    // Switch Atmosphere to Porcelain + Canvas Editor tab
-    await page.getByRole('radio', {name: /Porcelain/i}).click();
-    await page.getByRole('tab', {name: /Canvas Studio/i}).click();
+    // 4. Switch back to Light + UX & Copy Do vs. Don't Tab
+    await page.getByRole('button', {name: /Light mode/i}).click();
+    await page.getByRole('tab', {name: 'UX & Copy'}).click();
+    await page.waitForTimeout(200);
+    await page.screenshot({
+      path: path.join(shotDir, 'studio-ux-copy-light-1366.png'),
+      fullPage: false,
+    });
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
+
+    // 5. Patterns Tab (3D Canvas Studio in Dark Mode)
+    await page.getByRole('tab', {name: 'Patterns'}).click();
+    await page.getByRole('radio', {name: '3D Canvas Studio'}).click();
+    await page.getByRole('button', {name: /Dark mode/i}).click();
     await page.waitForTimeout(250);
     await page.screenshot({
-      path: path.join(shotDir, 'studio-porcelain-canvas-dark-1366.png'),
+      path: path.join(shotDir, 'studio-patterns-canvas-dark-1366.png'),
       fullPage: false,
     });
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
 
-    // Switch back to Light + Portable AI Kit tab
-    await page.getByRole('button', {name: /Light/i}).first().click();
-    await page.getByRole('tab', {name: /Install & Portable AI Kit/i}).click();
-    await page.waitForTimeout(250);
+    // 6. Maintain Tab + Open 6-Knob Customize Drawer (Light Mode)
+    await page.getByRole('button', {name: /Light mode/i}).click();
+    await page.getByRole('tab', {name: 'Maintain'}).click();
+    await page.waitForTimeout(200);
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
+
+    await page.getByRole('button', {name: 'Customize'}).click();
+    await page.waitForTimeout(300);
     await page.screenshot({
-      path: path.join(shotDir, 'studio-portable-kit-light-1366.png'),
+      path: path.join(shotDir, 'studio-maintain-drawer-light-1366.png'),
       fullPage: false,
     });
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
 
     expect(errors).toEqual([]);
   });
 
-  test('renders cleanly on Mobile 375x812 over file:// without horizontal overflow', async ({
+  test('renders cleanly on Mobile 375x812 over file:// without horizontal overflow and 0 contrast violations', async ({
     page,
   }) => {
     await page.setViewportSize({width: 375, height: 812});
@@ -79,7 +122,7 @@ test.describe('STUDIO.html offline file:// visual & WCAG AA contrast gate', () =
     expect(overflow).toBeLessThanOrEqual(1);
 
     await page.screenshot({
-      path: path.join(shotDir, 'studio-mobile-light-375.png'),
+      path: path.join(shotDir, 'studio-mobile-id-light-375.png'),
       fullPage: false,
     });
 

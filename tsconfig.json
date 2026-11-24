@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@mehan/dna": ["./packages/dna/src/index.ts"],
+      "@mehan/astryx": ["./packages/astryx/src/index.ts"],
+      "@mehan/astryx/dna": ["./packages/astryx/src/dna.ts"],
+      "@mehan/portable": ["./packages/portable/src/index.ts"]
+    }
+  },
+  "include": [
+    "tests/**/*.ts",
+    "vitest.config.ts",
+    "playwright.config.ts"
+  ]
+}

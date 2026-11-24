@@ -2,7 +2,7 @@
   "name": "@mehan/astryx",
   "version": "1.0.0",
   "displayName": "Mehan Design System for Astryx",
-  "description": "Tactile, parametric design system for Meta Astryx — 3 atmospheres (Confectionery, Porcelain, Stone), custom OKLCH brand accents, and signature precision controls.",
+  "description": "Tactile, parametric UI & UX system for Meta Astryx — 3 atmospheres, 6-knob OKLCH theming, 4 precision controls, and universal UX/copy standards.",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -106,8 +106,9 @@
     "lucide-react": "^1.66.0"
   },
   "peerDependencies": {
-    "@astryxdesign/core": "^0.7.17",
-    "@astryxdesign/cli": "^0.7.17",
+    "@astryxdesign/core": "~0.7.17",
+    "@astryxdesign/cli": "~0.7.17",
+    "@stylexjs/stylex": "^0.19.0",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0"
   },

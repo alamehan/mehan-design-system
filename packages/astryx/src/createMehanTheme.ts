@@ -7,6 +7,7 @@ import {
   type DefinedTheme,
 } from '@astryxdesign/core/theme';
 import {
+  mixHex,
   resolveMehanDna,
   withHexAlpha,
   type MehanThemeOptions,
@@ -19,9 +20,9 @@ const lightDark = (light: string, dark: string): string =>
 const STRIPED_ROW = ':nth-child(even of :not([data-expansion-panel]))';
 
 /**
- * All 46 Astryx surface-painting rules (from official Meta themes) so nested
- * inputs, popovers, menus, and cards inside pastel coloured cards reset text
- * tokens cleanly in both Light and Dark mode.
+ * All surface-painting targets (from official Meta themes + Mehan extensions)
+ * so nested inputs, popovers, menus, and cards inside pastel coloured cards
+ * restore theme surface text tokens cleanly in both Light and Dark mode.
  */
 const OWN_FILL_RULES: ReadonlyArray<readonly [string, string, string?]> = [
   ['card', 'variant:default'],
@@ -61,14 +62,18 @@ const OWN_FILL_RULES: ReadonlyArray<readonly [string, string, string?]> = [
   ['multi-selector', 'variant:input'],
   ['selector-popup', 'base'],
   ['multi-selector-popup', 'base'],
+  ['complex-selector-popup', 'base'],
   ['dropdown-menu', 'base'],
   ['dropdown-menu-radio', 'base'],
   ['context-menu', 'base'],
+  ['more-menu', 'base'],
   ['popover', 'base'],
   ['hover-card', 'base'],
   ['dialog', 'base'],
+  ['alert-dialog', 'base'],
   ['drawer', 'base'],
   ['bottom-sheet', 'base'],
+  ['chat-composer', 'base'],
   ['chat-composer-drawer', 'base'],
 ];
 
@@ -90,20 +95,18 @@ function ruleSelector(part: string, key: string): string {
 }
 
 const COLOURED_CARD = `:is(${COLOURED_CARDS.map(
-  v => `.astryx-card[data-variant="${v}"]`,
+  v => `.astryx-card[data-variant="${v}"], .astryx-clickable-card[data-variant="${v}"]`,
 ).join(', ')})`;
 const OWN_FILL = `:is(${OWN_FILL_RULES.filter(([, , s]) => !s)
   .map(([part, key]) => ruleSelector(part, key))
   .join(', ')})`;
 const IN_COLOURED_CARD = `:where(${COLOURED_CARD} *):not(:where(${COLOURED_CARD} ${OWN_FILL} *))`;
 
-const POPUP_CLOSED = ':not([aria-expanded="true"][aria-haspopup])';
+const POPUP_CLOSED = ':not([aria-expanded="true"][aria-haspopup]:not([aria-haspopup="false"]))';
+const ENABLED = ':not(:disabled, [aria-disabled="true"])';
 
 /**
- * Builds the complete 6-axis `DefineThemeInput` for a Mehan theme.
- * Exported separately so source theme files in `themes/<slug>/` can pass an
- * explicit named `icons: mehanIconRegistry` import to `defineTheme()` for
- * `astryx theme build` static import preservation.
+ * Builds the complete 6-knob `DefineThemeInput` for a Mehan theme.
  */
 export function buildMehanThemeConfig(
   options: MehanThemeOptions,
@@ -117,6 +120,9 @@ export function buildMehanThemeConfig(
   const sRgb = L.shadowRgb;
   const depth = dna.depth;
   const px = (val: number): string => `${Number(val.toFixed(2))}px`;
+
+  const lightPanelLip = mixHex(L.surface, L.line, 0.52);
+  const lightKnobRim = mixHex(L.line, L.socket, 0.45);
 
   const surfaceText = {
     '--color-text-primary': lightDark(L.ink, D.ink),
@@ -165,16 +171,14 @@ export function buildMehanThemeConfig(
     },
   });
 
-  // Recessed well styling shared across all 12 Astryx input targets
+  // Zero-border recessed well shared across all form & search inputs (eliminates 1px border-box corner seam!)
   const RECESSED_INPUT_BASE = {
     backgroundColor: 'var(--mehan-well)',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'var(--mehan-edge-control)',
+    borderWidth: '0px',
+    borderStyle: 'none',
     boxShadow: 'var(--mehan-shadow-well)',
     ':focus-within': {
-      borderColor: 'var(--color-accent)',
-      boxShadow: 'var(--mehan-shadow-well), 0 0 0 2px var(--color-accent-muted)',
+      boxShadow: 'var(--mehan-shadow-well), 0 0 0 2px var(--color-accent)',
     },
   } as const;
 
@@ -193,16 +197,17 @@ export function buildMehanThemeConfig(
     },
   } as const;
 
-  // Tactile raised secondary surface shared across Button & Selector triggers (AST-079 FR2 & FR6)
+  // Borderless tactile raised secondary surface (shared by Button & Selector triggers per AST-079 FR2)
   const SECONDARY_RAISED = {
     backgroundColor: lightDark(L.surface, D.raisedBottom),
     backgroundImage: 'var(--mehan-raised-grad)',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'var(--mehan-edge-control)',
+    borderWidth: '0px',
+    borderStyle: 'none',
     color: 'var(--color-text-primary)',
     boxShadow: 'var(--mehan-shadow-raised)',
-    ':hover': {
+    paddingBlockStart: 'calc(var(--spacing-2) - 1px)',
+    paddingBlockEnd: 'calc(var(--spacing-2) + 1px)',
+    [`:hover${ENABLED}`]: {
       boxShadow: 'var(--mehan-shadow-raised-hover)',
     },
   } as const;
@@ -211,15 +216,20 @@ export function buildMehanThemeConfig(
     ':not(.astryx-input-group *)': {
       backgroundColor: SECONDARY_RAISED.backgroundColor,
       backgroundImage: SECONDARY_RAISED.backgroundImage,
-      borderWidth: SECONDARY_RAISED.borderWidth,
-      borderStyle: SECONDARY_RAISED.borderStyle,
-      borderColor: SECONDARY_RAISED.borderColor,
+      borderWidth: '0px',
+      borderStyle: 'none',
       color: SECONDARY_RAISED.color,
       boxShadow: SECONDARY_RAISED.boxShadow,
     },
     ':hover:not([data-disabled], [data-readonly], .astryx-input-group *)': {
       boxShadow: 'var(--mehan-shadow-raised-hover)',
     },
+  } as const;
+
+  const FLOATING_OVERLAY_BASE = {
+    borderRadius: 'var(--radius-container)',
+    borderWidth: '0px',
+    borderStyle: 'none',
   } as const;
 
   const colouredCardRules = Object.fromEntries(
@@ -232,6 +242,13 @@ export function buildMehanThemeConfig(
       },
     ]),
   );
+
+  const motionConfig =
+    dna.motion === 'calm'
+      ? {tempo: 1.35, character: 'standard' as const}
+      : dna.motion === 'standard'
+        ? {tempo: 1, character: 'standard' as const}
+        : {tempo: 1, character: 'expressive' as const};
 
   return {
     name: dna.name,
@@ -255,17 +272,13 @@ export function buildMehanThemeConfig(
       },
     },
 
-    motion: {
-      tempo: 1,
-      character: 'expressive',
-    },
+    motion: motionConfig,
 
     syntax,
 
     // Official theme-local tokens (`defineTheme.ts:444`).
     // Composite gradients and box-shadows put `light-dark(lightColor, darkColor)`
-    // inside each `<color>` slot (never `light-dark(<image>, <image>)` or
-    // `light-dark(<shadow>, <shadow>)`, which CSS Color 5 drops as IACVT).
+    // inside each `<color>` slot so CSS Color 5 parses every shadow & gradient cleanly.
     localTokens: {
       '--mehan-paper': [L.paper, D.paper],
       '--mehan-tray': [L.tray, D.tray],
@@ -275,25 +288,28 @@ export function buildMehanThemeConfig(
       '--mehan-well-hover': [L.wellHover, D.wellHover],
       '--mehan-socket': [L.socket, D.socket],
       '--mehan-edge-control': 'transparent',
+      '--mehan-card-hairline': [withHexAlpha(L.ink, 0.06), '#ffffff11'],
       '--mehan-raised-grad': `linear-gradient(180deg, ${lightDark(L.raisedTop, D.raisedTop)} 0%, ${lightDark(L.raisedBottom, D.raisedBottom)} 100%)`,
-      '--mehan-knob-grad': `radial-gradient(circle at 36% 28%, ${lightDark('#ffffff', '#fffaf4')} 0%, ${lightDark('#ffffff', '#f5ede4')} 40%, ${lightDark(L.paper, '#ded2c5')} 74%, ${lightDark(L.line, '#c4b5a6')} 100%)`,
+      '--mehan-knob-grad': `radial-gradient(circle at 36% 28%, #ffffff 0%, ${lightDark('#ffffff', '#f1f5f9')} 38%, ${lightDark(L.paper, '#cbd5e1')} 70%, ${lightDark(lightKnobRim, '#94a3b8')} 100%)`,
       '--mehan-primary-grad': A.buttonGradient,
       '--mehan-primary-grad-hover': A.buttonGradientHover,
       '--mehan-primary-lip': A.buttonLip,
-      '--mehan-shadow-well': `inset 0 1.5px 2.5px ${lightDark(`rgba(${sRgb}, 0.10)`, 'rgba(0, 0, 0, 0.55)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.04)')}, inset 0 -1px 0 ${lightDark('rgba(255, 255, 255, 0.82)', 'rgba(255, 255, 255, 0.06)')}`,
-      '--mehan-shadow-socket': `inset 0 1.5px 3px ${lightDark(`rgba(${sRgb}, 0.22)`, 'rgba(0, 0, 0, 0.72)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.07)`, 'rgba(255, 255, 255, 0.05)')}, inset 0 -1px 0 ${lightDark('rgba(255, 255, 255, 0.85)', 'rgba(255, 255, 255, 0.09)')}`,
-      '--mehan-shadow-raised': `inset 0 1px 0 ${lightDark(L.topHighlight, D.topHighlight)}, inset 0 -2px 0 ${lightDark(`rgba(${sRgb}, 0.09)`, 'rgba(0, 0, 0, 0.42)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.07)`, 'rgba(255, 255, 255, 0.07)')}, 0 ${px(1.5 * depth)} ${px(3 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.07 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.38 * depth).toFixed(3)})`)}, 0 ${px(4 * depth)} ${px(8 * depth)} -3px ${lightDark(`rgba(${sRgb}, ${(0.10 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.32 * depth).toFixed(3)})`)}`,
-      '--mehan-shadow-raised-hover': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.13)')}, inset 0 -2px 0 ${lightDark(`rgba(${sRgb}, 0.10)`, 'rgba(0, 0, 0, 0.42)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.09)`, 'rgba(255, 255, 255, 0.10)')}, 0 ${px(4 * depth)} ${px(10 * depth)} -2px ${lightDark(`rgba(${sRgb}, ${(0.15 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.52 * depth).toFixed(3)})`)}`,
-      '--mehan-shadow-pressed': `inset 0 1.5px 3px ${lightDark(`rgba(${sRgb}, 0.16)`, 'rgba(0, 0, 0, 0.62)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.08)`, 'rgba(255, 255, 255, 0.06)')}`,
-      '--mehan-shadow-knob': `inset 0 -2px 0 ${lightDark(`rgba(${sRgb}, 0.09)`, 'rgba(74, 45, 20, 0.15)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.08)`, 'rgba(0, 0, 0, 0.35)')}, 0 2px 5px ${lightDark(`rgba(${sRgb}, 0.22)`, 'rgba(0, 0, 0, 0.55)')}`,
-      '--mehan-shadow-primary': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.42)', 'rgba(255, 255, 255, 0.36)')}, inset 0 -3px 0 ${A.buttonLip}, 0 ${px(1.5 * depth)} ${px(3 * depth)} ${lightDark(`rgba(${sRgb}, 0.18)`, 'rgba(0, 0, 0, 0.45)')}, 0 ${px(7 * depth)} ${px(15 * depth)} -5px ${A.buttonGlow}`,
-      '--mehan-shadow-primary-hover': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.52)', 'rgba(255, 255, 255, 0.46)')}, inset 0 -3px 0 ${A.buttonLip}, 0 ${px(3.5 * depth)} ${px(7 * depth)} ${lightDark(`rgba(${sRgb}, 0.20)`, 'rgba(0, 0, 0, 0.50)')}, 0 ${px(9 * depth)} ${px(19 * depth)} -5px ${A.buttonGlow}`,
-      '--mehan-shadow-primary-pressed': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.18)', 'rgba(255, 255, 255, 0.16)')}, inset 0 -1px 0 ${A.buttonLip}, inset 0 2px 4px ${lightDark(A.buttonPressedInner, 'rgba(0, 0, 0, 0.48)')}, 0 1px 2px ${lightDark(`rgba(${sRgb}, 0.22)`, 'rgba(0, 0, 0, 0.45)')}`,
+      '--mehan-shadow-well': `inset 0 1px 2px ${lightDark(`rgba(${sRgb}, 0.11)`, 'rgba(0, 0, 0, 0.60)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.04)`, 'rgba(0, 0, 0, 0.25)')}, inset 0 -1px 0 ${lightDark('rgba(255, 255, 255, 0.90)', 'rgba(255, 255, 255, 0.08)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
+      '--mehan-shadow-socket': `inset 0 1px 2px ${lightDark(`rgba(${sRgb}, 0.22)`, 'rgba(0, 0, 0, 0.72)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.06)`, 'rgba(255, 255, 255, 0.05)')}, inset 0 -1px 0 ${lightDark('rgba(255, 255, 255, 0.90)', 'rgba(255, 255, 255, 0.14)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
+      '--mehan-shadow-raised': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.10)')}, inset 0 -2px 0 ${lightDark(L.line, 'rgba(0, 0, 0, 0.34)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.05)')}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.04 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.32 * depth).toFixed(3)})`)}, 0 ${px(2 * depth)} ${px(3.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.05 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.28 * depth).toFixed(3)})`)}, 0 ${px(6 * depth)} ${px(9 * depth)} -4px ${lightDark(`rgba(${sRgb}, ${(0.10 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.40 * depth).toFixed(3)})`)}, inset 0 0 0 1px var(--mehan-edge-control)`,
+      '--mehan-shadow-raised-hover': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.14)')}, inset 0 -2px 0 ${lightDark(L.line, 'rgba(0, 0, 0, 0.34)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.06)`, 'rgba(255, 255, 255, 0.08)')}, 0 ${px(2 * depth)} ${px(3 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.05 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.36 * depth).toFixed(3)})`)}, 0 ${px(5 * depth)} ${px(8 * depth)} -2px ${lightDark(`rgba(${sRgb}, ${(0.08 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.36 * depth).toFixed(3)})`)}, 0 ${px(11 * depth)} ${px(15 * depth)} -5px ${lightDark(`rgba(${sRgb}, ${(0.14 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, inset 0 0 0 1px var(--mehan-edge-control)`,
+      '--mehan-shadow-pressed': `inset 0 1px 2.5px ${lightDark(`rgba(${sRgb}, 0.18)`, 'rgba(0, 0, 0, 0.56)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.06)`, 'rgba(255, 255, 255, 0.05)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
+      '--mehan-shadow-knob': `0 0 0 0.5px ${lightDark(`rgba(${sRgb}, 0.08)`, 'rgba(0, 0, 0, 0.35)')}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.10 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, 0 ${px(2 * depth)} ${px(4 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.14 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.42 * depth).toFixed(3)})`)}, 0 ${px(5 * depth)} ${px(8 * depth)} -3px ${lightDark(`rgba(${sRgb}, ${(0.16 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.45 * depth).toFixed(3)})`)}`,
+      '--mehan-shadow-primary': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.36)', 'rgba(255, 255, 255, 0.32)')}, inset 0 -3px 0 ${A.buttonLip}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(A.buttonContactShadow, 'rgba(0, 0, 0, 0.45)')}, 0 ${px(3 * depth)} ${px(5.5 * depth)} -1px ${A.buttonMidShadow}, 0 ${px(9 * depth)} ${px(15 * depth)} -6px ${A.buttonGlow}`,
+      '--mehan-shadow-primary-hover': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.44)', 'rgba(255, 255, 255, 0.40)')}, inset 0 -3px 0 ${A.buttonLip}, 0 ${px(2 * depth)} ${px(3.5 * depth)} ${lightDark(A.buttonContactShadow, 'rgba(0, 0, 0, 0.48)')}, 0 ${px(5 * depth)} ${px(8.5 * depth)} -1px ${A.buttonMidShadow}, 0 ${px(11 * depth)} ${px(19 * depth)} -5px ${A.buttonGlow}`,
+      '--mehan-shadow-primary-pressed': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.18)', 'rgba(255, 255, 255, 0.16)')}, inset 0 -1px 0 ${A.buttonLip}, inset 0 2px 4px ${lightDark(A.buttonPressedInner, 'rgba(0, 0, 0, 0.45)')}, 0 ${px(1 * depth)} ${px(2 * depth)} ${lightDark(A.buttonContactShadow, 'rgba(0, 0, 0, 0.45)')}`,
+      '--mehan-shadow-danger': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.08)')}, inset 0 -2px 0 ${lightDark('rgba(185, 28, 28, 0.18)', 'rgba(0, 0, 0, 0.38)')}, 0 0 0 1px ${lightDark('rgba(185, 28, 28, 0.08)', 'rgba(248, 113, 113, 0.18)')}, 0 1px 1.5px ${lightDark('rgba(185, 28, 28, 0.08)', 'rgba(0, 0, 0, 0.35)')}, 0 ${px(5 * depth)} ${px(9 * depth)} -4px ${lightDark('rgba(185, 28, 28, 0.24)', 'rgba(0, 0, 0, 0.45)')}`,
+      '--mehan-shadow-danger-pressed': `inset 0 1px 2.5px ${lightDark('rgba(185, 28, 28, 0.22)', 'rgba(0, 0, 0, 0.55)')}, inset 0 0 0 1px ${lightDark('rgba(185, 28, 28, 0.12)', 'rgba(248, 113, 113, 0.18)')}`,
     },
 
     adaptations: {
       rules: [
-        // Prevent iOS Safari input auto-zoom (<16px) & expand touch targets to 44px
+        // Coarse touch pointers ALWAYS override desktop Compact/Standard to 44px+ targets & 16px input floor
         {
           when: {pointer: 'coarse', width: {below: 'lg'}},
           value: {
@@ -305,12 +321,38 @@ export function buildMehanThemeConfig(
             },
           },
         },
-        // OS High-Contrast accessibility: promote control edge to crisp visible stroke
+        // Fine desktop pointers with motion enabled: subtle -1px tactile hover lift
+        {
+          when: {pointer: 'fine', motion: 'no-preference'},
+          value: {
+            components: {
+              button: {
+                'variant:primary': {
+                  [`:hover${ENABLED}${POPUP_CLOSED}`]: {
+                    transform: 'translateY(-1px)',
+                  },
+                },
+                'variant:secondary': {
+                  [`:hover${ENABLED}${POPUP_CLOSED}`]: {
+                    transform: 'translateY(-1px)',
+                  },
+                },
+                'variant:destructive': {
+                  [`:hover${ENABLED}${POPUP_CLOSED}`]: {
+                    transform: 'translateY(-1px)',
+                  },
+                },
+              },
+            },
+          },
+        },
+        // OS High-Contrast accessibility: promote control edge inside box-shadow to >= 3:1
         {
           when: {contrast: 'more'},
           value: {
             localTokens: {
               '--mehan-edge-control': [L.lineStrong, D.lineStrong],
+              '--mehan-card-hairline': [L.lineStrong, D.lineStrong],
             },
           },
         },
@@ -318,7 +360,6 @@ export function buildMehanThemeConfig(
     },
 
     tokens: {
-      // Core semantic surfaces & inks (all resolved #rrggbb / #rrggbbaa sRGB hex!)
       '--color-accent': [A.accentLight, A.accentDark],
       '--color-accent-muted': [A.mutedLight, A.mutedDark],
       '--color-on-accent': [A.onAccentLight, A.onAccentDark],
@@ -330,19 +371,19 @@ export function buildMehanThemeConfig(
       '--color-background-card': [L.surface, D.surface],
       '--color-background-popover': [L.float, D.float],
       '--color-background-muted': [L.tray, D.tray],
-      // Opaque hex required by Toast SSR contrast detector (CHANGELOG 0.7.17 line 124)
+      // Opaque hex required by Toast SSR contrast detector (CHANGELOG 0.7.17)
       '--color-background-inverted': [L.inverted, D.inverted],
       '--color-on-dark': L.onInverted,
       '--color-on-light': L.ink,
 
-      '--color-neutral': [withHexAlpha(L.ink, 0.07), withHexAlpha(D.ink, 0.10)],
+      '--color-neutral': [withHexAlpha(L.ink, 0.065), withHexAlpha(D.ink, 0.10)],
       '--color-overlay': [withHexAlpha(L.ink, 0.42), '#080605ab'],
       '--color-overlay-hover': [
-        withHexAlpha(L.ink, 0.05),
+        withHexAlpha(L.ink, 0.045),
         withHexAlpha(D.ink, 0.07),
       ],
       '--color-overlay-pressed': [
-        withHexAlpha(L.ink, 0.10),
+        withHexAlpha(L.ink, 0.09),
         withHexAlpha(D.ink, 0.13),
       ],
 
@@ -378,15 +419,15 @@ export function buildMehanThemeConfig(
       '--color-on-error': S.error.onSolid,
       '--color-on-error-muted': S.error.onMuted,
 
-      // Borders & Focus ≠ Selection separation
+      // Borders & Focus != Selection separation
       '--color-border': [L.line, D.line],
       '--color-border-emphasized': [L.lineStrong, D.lineStrong],
       '--focus-outline-color': [L.ink, D.ink],
 
-      // Normalized Mehan desktop heights (32 / 36 / 44)
-      '--size-element-sm': '32px',
-      '--size-element-md': '36px',
-      '--size-element-lg': '44px',
+      // Density-aware desktop heights (Standard 32/36/44 vs Compact 28/32/40)
+      '--size-element-sm': dna.sizing.controlSm,
+      '--size-element-md': dna.sizing.controlMd,
+      '--size-element-lg': dna.sizing.controlLg,
 
       // Radii (--radius-none & --radius-full fixed per Astryx contract)
       '--radius-none': '0px',
@@ -397,16 +438,16 @@ export function buildMehanThemeConfig(
       '--radius-chat': dna.radii.chat,
       '--radius-full': '9999px',
 
-      // Tactile warm/tinted shadows (single strings with color-level light-dark() so CSS Color 5 parses cleanly!)
+      // 4-Layer Feathered Tactile Elevation Scale (modeled on Tools Factory SDK)
       '--color-skeleton': [L.socket, D.wellHover],
       '--color-shadow': [withHexAlpha(L.ink, 0.14), '#00000080'],
-      '--shadow-low': `inset 0 1px 0 ${lightDark(L.topHighlight, D.topHighlight)}, 0 ${px(1.5 * depth)} ${px(3 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.05 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.35 * depth).toFixed(3)})`)}, 0 ${px(12 * depth)} ${px(28 * depth)} -10px ${lightDark(`rgba(${sRgb}, ${(0.14 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.58 * depth).toFixed(3)})`)}`,
-      '--shadow-med': `inset 0 1px 0 ${lightDark(L.topHighlight, 'rgba(255, 255, 255, 0.09)')}, 0 ${px(2.5 * depth)} ${px(7 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.08 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.45 * depth).toFixed(3)})`)}, 0 ${px(18 * depth)} ${px(42 * depth)} -12px ${lightDark(`rgba(${sRgb}, ${(0.24 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.70 * depth).toFixed(3)})`)}`,
-      '--shadow-high': `inset 0 1px 0 ${lightDark(L.topHighlight, 'rgba(255, 255, 255, 0.10)')}, 0 ${px(7 * depth)} ${px(18 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.12 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.52 * depth).toFixed(3)})`)}, 0 ${px(38 * depth)} ${px(88 * depth)} -20px ${lightDark(`rgba(${sRgb}, ${(0.36 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.80 * depth).toFixed(3)})`)}`,
+      '--shadow-low': `inset 0 -2px 0 ${lightDark(lightPanelLip, 'rgba(255, 255, 255, 0.03)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.04)`, 'rgba(255, 255, 255, 0.05)')}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.03 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.30 * depth).toFixed(3)})`)}, 0 ${px(3 * depth)} ${px(5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.04 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.35 * depth).toFixed(3)})`)}, 0 ${px(10 * depth)} ${px(18 * depth)} -8px ${lightDark(`rgba(${sRgb}, ${(0.08 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, 0 ${px(26 * depth)} ${px(40 * depth)} -22px ${lightDark(`rgba(${sRgb}, ${(0.16 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.60 * depth).toFixed(3)})`)}`,
+      '--shadow-med': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.09)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.06)')}, 0 ${px(2 * depth)} ${px(5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.06 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.36 * depth).toFixed(3)})`)}, 0 ${px(8 * depth)} ${px(16 * depth)} -4px ${lightDark(`rgba(${sRgb}, ${(0.12 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.48 * depth).toFixed(3)})`)}, 0 ${px(24 * depth)} ${px(44 * depth)} -16px ${lightDark(`rgba(${sRgb}, ${(0.24 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.68 * depth).toFixed(3)})`)}`,
+      '--shadow-high': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.08)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.06)')}, 0 ${px(8 * depth)} ${px(20 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.12 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, 0 ${px(44 * depth)} ${px(100 * depth)} -24px ${lightDark(`rgba(${sRgb}, ${(0.38 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.72 * depth).toFixed(3)})`)}`,
       '--shadow-inset-hover': `inset 0 0 0 1.5px ${lightDark(withHexAlpha(L.ink, 0.16), withHexAlpha(D.ink, 0.22))}`,
       '--shadow-inset-selected': `inset 0 0 0 2px ${lightDark(A.accentLight, A.accentDark)}`,
 
-      // Categorical families
+      // Categorical families (pastel surfaces + >= 3.05:1 graphical/chart strokes)
       '--color-background-blue': [C.blue.bgLight, C.blue.bgDark],
       '--color-border-blue': [C.blue.borderLight, C.blue.borderDark],
       '--color-icon-blue': [C.blue.textLight, C.blue.textDark],
@@ -477,11 +518,23 @@ export function buildMehanThemeConfig(
         },
       },
 
-      // Tactile Push-Button Physics (Fixed-Height Lip-Collapse + Popup Anchor Guard INV22)
+      'empty-state-title': {
+        base: {
+          fontFamily: 'var(--font-family-heading)',
+          fontWeight: '800',
+          letterSpacing: '-0.028em',
+        },
+      },
+
+      // Silky-Smooth Tactile Push-Button Physics (modeled on Tools Factory SDK)
       button: {
         base: {
           fontWeight: '600',
+          borderWidth: '0px',
+          borderStyle: 'none',
           '--button-focus-offset': '2px',
+          transitionProperty:
+            'background-image, background-color, box-shadow, color, opacity, transform',
         },
         'variant:primary': {
           backgroundColor: A.accentLight,
@@ -489,32 +542,52 @@ export function buildMehanThemeConfig(
           color: '#ffffff',
           borderWidth: '0px',
           boxShadow: 'var(--mehan-shadow-primary)',
-          textShadow: '0 1px 0 rgba(0, 0, 0, 0.20)',
-          ':hover': {
+          paddingBlockStart: 'calc(var(--spacing-2) - 1.5px)',
+          paddingBlockEnd: 'calc(var(--spacing-2) + 1.5px)',
+          [`:hover${ENABLED}`]: {
             backgroundImage: 'var(--mehan-primary-grad-hover)',
             boxShadow: 'var(--mehan-shadow-primary-hover)',
           },
-          [`:active${POPUP_CLOSED}`]: {
+          [`:active${ENABLED}${POPUP_CLOSED}`]: {
             transform: 'translateY(1.5px)',
             boxShadow: 'var(--mehan-shadow-primary-pressed)',
+            paddingBlockStart: 'calc(var(--spacing-2) - 0.5px)',
+            paddingBlockEnd: 'calc(var(--spacing-2) + 0.5px)',
+            backgroundImage:
+              'var(--_press-paint-image, linear-gradient(transparent, transparent)), var(--mehan-primary-grad)',
           },
         },
         'variant:secondary': {
           ...SECONDARY_RAISED,
-          [`:active${POPUP_CLOSED}`]: {
+          [`:active${ENABLED}${POPUP_CLOSED}`]: {
             transform: 'translateY(1px)',
             boxShadow: 'var(--mehan-shadow-pressed)',
+            paddingBlockStart: 'var(--spacing-2)',
+            paddingBlockEnd: 'var(--spacing-2)',
+            backgroundImage:
+              'var(--_press-paint-image, linear-gradient(transparent, transparent)), var(--mehan-raised-grad)',
           },
         },
         'variant:destructive': {
-          backgroundColor: lightDark(S.error.solid[0], '#b91c1c'),
-          color: '#ffffff',
+          backgroundColor: lightDark(S.error.softSolid[0], S.error.softSolid[1]),
+          color: lightDark(S.error.text[0], S.error.text[1]),
           borderWidth: '0px',
-          boxShadow:
-            'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -3px 0 #7f1d1d, 0 4px 10px -4px rgba(185,28,28,0.45)',
-          [`:active${POPUP_CLOSED}`]: {
-            transform: 'translateY(1.5px)',
-            boxShadow: 'inset 0 2px 3px rgba(0,0,0,0.35), inset 0 -1px 0 #7f1d1d',
+          borderStyle: 'none',
+          boxShadow: 'var(--mehan-shadow-danger)',
+          paddingBlockStart: 'calc(var(--spacing-2) - 1px)',
+          paddingBlockEnd: 'calc(var(--spacing-2) + 1px)',
+          [`:active${ENABLED}${POPUP_CLOSED}`]: {
+            transform: 'translateY(1px)',
+            boxShadow: 'var(--mehan-shadow-danger-pressed)',
+            paddingBlockStart: 'var(--spacing-2)',
+            paddingBlockEnd: 'var(--spacing-2)',
+          },
+        },
+        'variant:ghost': {
+          color: 'var(--color-text-secondary)',
+          [`:hover${ENABLED}`]: {
+            color: 'var(--color-text-primary)',
+            backgroundColor: 'var(--color-overlay-hover)',
           },
         },
       },
@@ -528,7 +601,7 @@ export function buildMehanThemeConfig(
         },
       },
 
-      // SegmentedControl — recessed well + raised moulded pill (Astryx auto-copies to sliding ::before!)
+      // SegmentedControl — recessed well + raised moulded pill
       'segmented-control': {
         base: {
           backgroundColor: 'var(--mehan-well)',
@@ -545,7 +618,7 @@ export function buildMehanThemeConfig(
         },
       },
 
-      // Complete 12-Target Recessed-Well Input Family
+      // Complete Borderless Recessed-Well Input & Search Family (15 targets!)
       'text-input': {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
       'text-area': {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
       'number-input': {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
@@ -573,6 +646,9 @@ export function buildMehanThemeConfig(
       typeahead: {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
       tokenizer: {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
       'power-search': {base: RECESSED_INPUT_BASE},
+      'command-palette-input': {base: RECESSED_INPUT_BASE},
+      'selector-search': {base: RECESSED_INPUT_BASE},
+      'multi-selector-search': {base: RECESSED_INPUT_BASE},
       selector: {
         'variant:input': RECESSED_INPUT_BASE,
         'variant:secondary': SECONDARY_SELECTOR,
@@ -587,9 +663,8 @@ export function buildMehanThemeConfig(
         'variant:secondary': {
           backgroundColor: SECONDARY_RAISED.backgroundColor,
           backgroundImage: SECONDARY_RAISED.backgroundImage,
-          borderWidth: SECONDARY_RAISED.borderWidth,
-          borderStyle: SECONDARY_RAISED.borderStyle,
-          borderColor: SECONDARY_RAISED.borderColor,
+          borderWidth: '0px',
+          borderStyle: 'none',
           color: SECONDARY_RAISED.color,
           boxShadow: SECONDARY_RAISED.boxShadow,
         },
@@ -601,7 +676,32 @@ export function buildMehanThemeConfig(
         },
       },
 
-      // Socket & Spherical 3D Dome Knob Controls (Switch, Slider, Checkbox, Radio, ProgressBar)
+      // AI Chat Composer & Toolbar
+      'chat-composer': {
+        base: {
+          backgroundColor: 'var(--mehan-surface)',
+          borderWidth: '0px',
+          borderStyle: 'none',
+        },
+      },
+      'chat-send-button': {
+        base: {
+          backgroundColor: A.accentLight,
+          backgroundImage: 'var(--mehan-primary-grad)',
+          color: '#ffffff',
+          boxShadow: 'var(--mehan-shadow-primary)',
+        },
+      },
+      toolbar: {
+        base: {
+          backgroundColor: 'var(--mehan-float)',
+          borderRadius: 'var(--radius-container)',
+          boxShadow: 'var(--shadow-low)',
+          borderWidth: '0px',
+        },
+      },
+
+      // Socket & Spherical 3D Dome Knob Controls
       switch: {
         base: {
           backgroundColor: 'var(--mehan-socket)',
@@ -610,7 +710,8 @@ export function buildMehanThemeConfig(
         checked: {
           backgroundColor: A.accentLight,
           backgroundImage: 'var(--mehan-primary-grad)',
-          boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.25)',
+          boxShadow:
+            'inset 0 1px 2px rgba(0, 0, 0, 0.28), inset 0 -1px 0 rgba(255, 255, 255, 0.22)',
         },
       },
       'switch-thumb': {
@@ -633,7 +734,7 @@ export function buildMehanThemeConfig(
           borderWidth: '0px',
           boxShadow: 'var(--mehan-shadow-knob)',
           ':hover': {
-            transform: 'scale(1.08)',
+            transform: 'scale(1.07)',
           },
         },
       },
@@ -646,7 +747,7 @@ export function buildMehanThemeConfig(
         checked: {
           backgroundColor: A.accentLight,
           backgroundImage: 'var(--mehan-primary-grad)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1.5px 0 rgba(0,0,0,0.22)',
+          boxShadow: `inset 0 1px 0 rgba(255, 255, 255, 0.36), inset 0 -2px 0 ${A.buttonLip}`,
         },
       },
       'radio-indicator': {
@@ -658,7 +759,7 @@ export function buildMehanThemeConfig(
         checked: {
           backgroundColor: A.accentLight,
           backgroundImage: 'var(--mehan-primary-grad)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1.5px 0 rgba(0,0,0,0.22)',
+          boxShadow: `inset 0 1px 0 rgba(255, 255, 255, 0.36), inset 0 -2px 0 ${A.buttonLip}`,
         },
       },
       'progress-bar-track': {
@@ -667,83 +768,130 @@ export function buildMehanThemeConfig(
           boxShadow: 'var(--mehan-shadow-socket)',
         },
       },
+      'progress-bar-fill': {
+        base: {
+          backgroundImage: 'var(--mehan-primary-grad)',
+        },
+        'variant:success': {
+          backgroundImage: 'none',
+          backgroundColor: 'var(--color-success)',
+        },
+        'variant:warning': {
+          backgroundImage: 'none',
+          backgroundColor: 'var(--color-warning)',
+        },
+        'variant:error': {
+          backgroundImage: 'none',
+          backgroundColor: 'var(--color-error)',
+        },
+      },
+      'progress-bar-mark': {
+        'placement:fill+variant:success': {
+          backgroundColor: 'var(--color-on-success)',
+        },
+        'placement:fill+variant:warning': {
+          backgroundColor: 'var(--color-on-warning)',
+        },
+        'placement:fill+variant:error': {
+          backgroundColor: 'var(--color-on-error)',
+        },
+      },
 
-      // Cards (No boxShadow override on card.base so SelectableCard --_card-ring stays intact!)
+      // Sculptural Cards & Clickable/Selectable Cards (6% hairline for flat SaaS safety + zero --_card-ring clobber!)
       card: {
         base: {
           borderRadius: 'var(--radius-container)',
           borderWidth: '1px',
           borderStyle: 'solid',
-          borderColor: 'var(--color-border)',
-          padding: 'var(--spacing-4)',
+          borderColor: 'var(--mehan-card-hairline)',
+          padding: dna.density === 'compact' ? 'var(--spacing-3)' : 'var(--spacing-4)',
         },
         'variant:default': {
-          // Nested default card flattening: steps down to subtle tray without touching coloured cards!
           ':where(.astryx-card *)': {
             backgroundColor: 'var(--mehan-tray)',
           },
         },
         ...colouredCardRules,
       },
+      'clickable-card': {
+        base: {
+          borderRadius: 'var(--radius-container)',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'var(--mehan-card-hairline)',
+          padding: dna.density === 'compact' ? 'var(--spacing-3)' : 'var(--spacing-4)',
+        },
+        ...colouredCardRules,
+      },
       'selectable-card': {
+        base: {
+          borderRadius: 'var(--radius-container)',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'var(--mehan-card-hairline)',
+        },
         'selected:true': {
           '--selectable-card-ring-color': 'var(--color-accent)',
           backgroundColor: lightDark(A.softSolidLight, A.softSolidDark),
         },
       },
+      section: {
+        base: {
+          borderRadius: 'var(--radius-container)',
+          padding: dna.density === 'compact' ? 'var(--spacing-3)' : 'var(--spacing-4)',
+        },
+      },
 
-      // Floating Overlays (Dialog, Drawer, BottomSheet, Popover, Menus)
+      // Borderless Floating Overlays (shadow-med / shadow-high own the 1px rim + highlight!)
       dialog: {
         base: {
           borderRadius: 'var(--radius-page)',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: 'var(--color-border)',
+          borderWidth: '0px',
+          borderStyle: 'none',
         },
       },
-      popover: {
+      'alert-dialog': {
         base: {
-          borderRadius: 'var(--radius-container)',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: 'var(--color-border)',
+          borderRadius: 'var(--radius-page)',
+          borderWidth: '0px',
+          borderStyle: 'none',
         },
       },
-      'dropdown-menu': {
+      drawer: {
         base: {
-          borderRadius: 'var(--radius-container)',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: 'var(--color-border)',
+          borderWidth: '0px',
+          borderStyle: 'none',
         },
       },
-      'context-menu': {
+      'bottom-sheet': {
         base: {
-          borderRadius: 'var(--radius-container)',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: 'var(--color-border)',
+          borderRadius: 'var(--radius-page) var(--radius-page) 0 0',
+          borderWidth: '0px',
+          borderStyle: 'none',
         },
       },
-      'selector-popup': {
-        base: {
-          borderRadius: 'var(--radius-container)',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: 'var(--color-border)',
-        },
-      },
+      popover: {base: FLOATING_OVERLAY_BASE},
+      'hover-card': {base: FLOATING_OVERLAY_BASE},
+      'dropdown-menu': {base: FLOATING_OVERLAY_BASE},
+      'context-menu': {base: FLOATING_OVERLAY_BASE},
+      'more-menu': {base: FLOATING_OVERLAY_BASE},
+      'selector-popup': {base: FLOATING_OVERLAY_BASE},
+      'multi-selector-popup': {base: FLOATING_OVERLAY_BASE},
+      'complex-selector-popup': {base: FLOATING_OVERLAY_BASE},
 
-      // 3D Moulded Keycaps (<Kbd>) & Tactile Badges / Tokens
+      // 3D Moulded Keycaps (<Kbd>), Tabular Table Cells, & Tactile Badges
       'kbd-key': {
         base: {
           backgroundColor: lightDark(L.surface, D.raisedTop),
           backgroundImage: 'var(--mehan-raised-grad)',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: 'var(--color-border)',
+          borderWidth: '0px',
           boxShadow: 'var(--mehan-shadow-raised)',
           fontWeight: '600',
+        },
+      },
+      'table-cell': {
+        base: {
+          fontVariantNumeric: 'tabular-nums',
         },
       },
       badge: {
@@ -776,11 +924,6 @@ export function buildMehanThemeConfig(
   };
 }
 
-/**
- * Base theme builder (without React element icon nodes) used as `extends:`
- * by prebuilt source theme modules so `astryx theme build` sees a flat
- * top-level `icons: mehanIconRegistry` property.
- */
 export function createMehanBaseTheme(options: MehanThemeOptions): DefinedTheme {
   return defineTheme(buildMehanThemeConfig(options));
 }
@@ -805,7 +948,7 @@ export const mehanStoneBaseTheme: DefinedTheme = createMehanBaseTheme({
 
 /**
  * Runtime theme factory for custom brand themes in any Astryx app:
- * `const appTheme = createMehanTheme({ name: 'acme', atmosphere: 'confectionery', accent: 'blueberry' })`
+ * `const appTheme = createMehanTheme({ name: 'acme', atmosphere: 'porcelain', accent: '#4f46e5', density: 'compact' })`
  */
 export function createMehanTheme(options: MehanThemeOptions): DefinedTheme {
   return defineTheme({

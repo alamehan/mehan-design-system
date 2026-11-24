@@ -1,8 +1,9 @@
 /**
  * Parametric Brand Accent Engine.
  * Supports 6 curated Mehan brand accents AND any custom #rrggbb hex seed,
- * automatically computing 3-stop convex button gradients, dark bottom lips,
- * muted washes, and WCAG AA (>= 4.5:1) foreground/link stops in Light & Dark.
+ * computing smooth 3-stop sculptural button gradients (500 -> 600@40% -> 700),
+ * 1-shade-darker harmonious bottom lips (800, deltaL ~ -0.063), 3-layer colored
+ * ambient shadows, and WCAG AA (>= 4.5:1) foreground/link stops in Light & Dark.
  */
 
 import type {MehanAtmosphere} from './atmospheres';
@@ -30,7 +31,10 @@ export interface MehanAccentPreset {
   seed: string;
 }
 
-export const MEHAN_ACCENT_PRESETS: Record<MehanPresetAccentId, MehanAccentPreset> = {
+export const MEHAN_ACCENT_PRESETS: Record<
+  MehanPresetAccentId,
+  MehanAccentPreset
+> = {
   strawberry: {id: 'strawberry', name: 'Strawberry', seed: '#d42a5f'},
   blueberry: {id: 'blueberry', name: 'Blueberry', seed: '#2563eb'},
   mint: {id: 'mint', name: 'Mint', seed: '#059669'},
@@ -43,17 +47,21 @@ export interface ResolvedMehanAccent {
   id: string;
   name: string;
   seed: string;
-  /** Solid accent token in light mode (>= 4.5:1 against white on-accent) */
+  /** Lighter top stop (shade 500 equivalent) */
+  shade500: string;
+  /** Solid accent token in light mode — shade 600 (>= 4.55:1 against white) */
   accentLight: string;
+  /** Deeper bottom gradient stop (shade 700 equivalent) */
+  shade700: string;
   /** Solid accent token in dark mode */
   accentDark: string;
   /** Foreground on accentLight */
   onAccentLight: string;
   /** Foreground on accentDark */
   onAccentDark: string;
-  /** Readable accent text/icon on light surface & well (>= 4.6:1) */
+  /** Readable accent text/icon on light surface & well (>= 4.7:1) */
   textLight: string;
-  /** Readable accent text/icon on dark surface & well (>= 4.6:1) */
+  /** Readable accent text/icon on dark surface & well (>= 4.8:1) */
   textDark: string;
   /** Soft translucent wash in light mode */
   mutedLight: string;
@@ -63,15 +71,19 @@ export interface ResolvedMehanAccent {
   softSolidLight: string;
   /** Solid soft background for selected chips/rows in dark mode */
   softSolidDark: string;
-  /** 3-stop convex glossy gradient for primary buttons */
+  /** Smooth 3-stop sculptural gradient (500 -> 600 @ 40% -> 700 @ 100%) */
   buttonGradient: string;
-  /** Brightened hover 3-stop gradient for primary buttons */
+  /** Hover gradient (500+ -> 600 @ 55% -> 700 @ 100%) */
   buttonGradientHover: string;
-  /** Solid darker bottom lip for primary tactile buttons */
+  /** Harmonious 1-shade-darker bottom lip (shade 800, smooth curve from 700) */
   buttonLip: string;
-  /** Colored ambient drop glow rgba() */
+  /** Tight 1px contact shadow rgba() (shade 900 @ 22%) */
+  buttonContactShadow: string;
+  /** Mid colored shadow rgba() (shade 700 @ 28%) */
+  buttonMidShadow: string;
+  /** Diffused colored ambient glow rgba() (shade 700 @ 42%) */
   buttonGlow: string;
-  /** Pressed inner shadow rgba() */
+  /** Pressed inner shadow rgba() (shade 950 @ 32%) */
   buttonPressedInner: string;
 }
 
@@ -90,16 +102,19 @@ export function resolveMehanAccent(
   const {l: seedL, c: seedC, h} = hexToOklch(rawSeed);
   const chroma = Math.max(0.12, Math.min(0.24, seedC || 0.16));
 
-  // Primary solid fill must read >= 4.55:1 with crisp white text (#ffffff)
-  // so primary buttons carry vibrant saturated candy/jewel fills in both modes.
+  // Shade 600: solid fill carrying crisp white text (#ffffff) at >= 4.55:1
   const baseSolidCandidate = preset
     ? rawSeed
-    : oklchToHex(Math.min(seedL, 0.54), chroma, h);
-  const accentLight = ensureContrast(baseSolidCandidate, '#ffffff', 4.55, 'darker');
+    : oklchToHex(Math.min(seedL, 0.545), chroma, h);
+  const accentLight = ensureContrast(
+    baseSolidCandidate,
+    '#ffffff',
+    4.55,
+    'darker',
+  );
   const onAccentLight = '#ffffff';
 
-  // Dark mode semantic accent: vivid luminous stop with dark ink OR deep jewel with white ink.
-  // Using luminous pastel-vivid stop (~0.74 L) with dark ink gives crisp 7:1+ contrast on dark tracks/links/focus!
+  // Dark mode semantic accent: luminous vivid stop (~0.75 L) with dark ink
   const rawDarkAccent = oklchToHex(0.75, Math.min(chroma * 0.92, 0.19), h);
   const accentDark =
     contrastRatio(rawDarkAccent, atmosphere.dark.ink) >= 4.5
@@ -108,7 +123,7 @@ export function resolveMehanAccent(
   const onAccentDark =
     contrastRatio('#14110f', accentDark) >= 4.5 ? '#14110f' : '#ffffff';
 
-  // Text/icon accent stops guaranteed >= 4.7:1 against both surface and well!
+  // Text/icon accent stops guaranteed >= 4.75:1 against both surface and well
   const textLight = ensureContrast(
     accentLight,
     atmosphere.light.well,
@@ -122,68 +137,69 @@ export function resolveMehanAccent(
     'lighter',
   );
 
-  // 3-stop convex glossy candy/jewel primary button gradient + moulded bottom lip
-  const solidOklch = hexToOklch(accentLight);
-  const gradTop = oklchToHex(
-    Math.min(solidOklch.l + 0.11, 0.68),
-    Math.min(solidOklch.c * 1.04, 0.25),
+  // Sculptural OKLCH shade ladder modeled on Tools Factory SDK (500 -> 600 -> 700 -> 800 lip)
+  const s600 = hexToOklch(accentLight);
+  const shade500 = oklchToHex(
+    Math.min(s600.l + 0.076, 0.65),
+    Math.min(s600.c * 0.95, 0.24),
     h,
   );
-  const gradMid = oklchToHex(
-    Math.min(solidOklch.l + 0.04, 0.6),
-    solidOklch.c,
+  const shade700 = oklchToHex(
+    Math.max(s600.l - 0.056, 0.41),
+    Math.min(s600.c * 0.99, 0.24),
     h,
   );
-  const gradBot = accentLight;
+  const s700 = hexToOklch(shade700);
+
+  // Shade 800 lip sits smoothly ~0.062 below shade 700 while keeping rich chroma
+  // so the bottom bevel reads as one continuous curved keycap, never a dark band.
+  const buttonLip = oklchToHex(
+    Math.max(s700.l - 0.062, 0.34),
+    Math.min(s600.c * 0.84, 0.21),
+    h,
+  );
+  const shade900 = oklchToHex(
+    Math.max(s700.l - 0.11, 0.28),
+    Math.min(s600.c * 0.65, 0.16),
+    h,
+  );
+  const shade950 = oklchToHex(
+    Math.max(s700.l - 0.18, 0.2),
+    Math.min(s600.c * 0.5, 0.12),
+    h,
+  );
 
   const hoverTop = oklchToHex(
-    Math.min(solidOklch.l + 0.14, 0.72),
-    Math.min(solidOklch.c * 1.05, 0.25),
-    h,
-  );
-  const hoverMid = oklchToHex(
-    Math.min(solidOklch.l + 0.06, 0.63),
-    solidOklch.c,
-    h,
-  );
-  const hoverBot = oklchToHex(
-    Math.min(solidOklch.l + 0.02, 0.56),
-    solidOklch.c,
+    Math.min(s600.l + 0.095, 0.67),
+    Math.min(s600.c * 0.97, 0.24),
     h,
   );
 
-  const buttonLip = oklchToHex(
-    Math.max(solidOklch.l - 0.15, 0.24),
-    Math.min(solidOklch.c * 0.92, 0.2),
-    h,
-  );
-  const deepInner = oklchToHex(
-    Math.max(solidOklch.l - 0.24, 0.16),
-    Math.min(solidOklch.c * 0.85, 0.18),
-    h,
-  );
-
-  const softSolidLight = oklchToHex(0.955, Math.min(chroma * 0.2, 0.035), h);
-  const softSolidDark = oklchToHex(0.24, Math.min(chroma * 0.35, 0.06), h);
+  const softSolidLight = oklchToHex(0.96, Math.min(chroma * 0.18, 0.032), h);
+  const softSolidDark = oklchToHex(0.24, Math.min(chroma * 0.34, 0.058), h);
 
   return {
     id: preset ? preset.id : `custom-${rawSeed.slice(1)}`,
     name: preset ? preset.name : `Custom (${rawSeed})`,
     seed: rawSeed,
+    shade500,
     accentLight,
+    shade700,
     accentDark,
     onAccentLight,
     onAccentDark,
     textLight,
     textDark,
-    mutedLight: withHexAlpha(accentLight, 0.14),
+    mutedLight: withHexAlpha(accentLight, 0.13),
     mutedDark: withHexAlpha(accentDark, 0.2),
     softSolidLight,
     softSolidDark,
-    buttonGradient: `linear-gradient(180deg, ${gradTop} 0%, ${gradMid} 46%, ${gradBot} 100%)`,
-    buttonGradientHover: `linear-gradient(180deg, ${hoverTop} 0%, ${hoverMid} 48%, ${hoverBot} 100%)`,
+    buttonGradient: `linear-gradient(180deg, ${shade500} 0%, ${accentLight} 40%, ${shade700} 100%)`,
+    buttonGradientHover: `linear-gradient(180deg, ${hoverTop} 0%, ${accentLight} 55%, ${shade700} 100%)`,
     buttonLip,
-    buttonGlow: hexToRgbaCss(accentLight, 0.42),
-    buttonPressedInner: hexToRgbaCss(deepInner, 0.38),
+    buttonContactShadow: hexToRgbaCss(shade900, 0.22),
+    buttonMidShadow: hexToRgbaCss(shade700, 0.28),
+    buttonGlow: hexToRgbaCss(shade700, 0.42),
+    buttonPressedInner: hexToRgbaCss(shade950, 0.32),
   };
 }

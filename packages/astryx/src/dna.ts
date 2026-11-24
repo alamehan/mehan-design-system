@@ -3,6 +3,7 @@ export {
   MEHAN_ATMOSPHERES,
   contrastRatio,
   ensureContrast,
+  exportW3cDesignTokens,
   hexToOklch,
   hexToRgb,
   hexToRgbaCss,
@@ -20,12 +21,16 @@ export {
   type MehanAccentPreset,
   type MehanAtmosphere,
   type MehanAtmosphereId,
+  type MehanDensity,
+  type MehanMotion,
   type MehanPresetAccentId,
   type MehanThemeOptions,
   type OklchColor,
   type ResolvedMehanAccent,
   type ResolvedMehanDna,
   type RgbColor,
+  type W3cTokenDocument,
+  type W3cTokenLeaf,
 } from '@mehan/dna';
 
 export {

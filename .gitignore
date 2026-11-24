@@ -5,6 +5,7 @@ dist-single/
 .vite/
 *.tsbuildinfo
 *.tgz
+!release/*.tgz
 test-results/
 playwright-report/
 .DS_Store

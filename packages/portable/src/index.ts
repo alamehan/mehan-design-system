@@ -3,3 +3,4 @@ export {
   generateAiPrototypeKit,
   generatePortableCss,
 } from './generator';
+export {exportW3cDesignTokens} from '@mehan/dna';

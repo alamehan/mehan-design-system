@@ -11,8 +11,8 @@ export default {
   },
   agentDocs: {
     append: [
-      'Mehan (@mehan/astryx) ships 3 tactile themes (`mehan-confectionery`, `mehan-porcelain`, `mehan-stone`) and `createMehanTheme()` from `@mehan/astryx/dna`.',
-      'Signature controls: `ColorSwatch`, `ColorPicker`, `PrecisionSlider`, and `MetricCard`. Run `astryx docs mehan-design-rules` for hierarchy rules.',
+      'Mehan (@mehan/astryx) provides 3 tactile themes (`mehan-confectionery`, `mehan-porcelain`, `mehan-stone`) and 6-knob `createMehanTheme()` in `@mehan/astryx/dna`.',
+      'Read Mehan UX, copy, and layout rules before building screens: `astryx docs mehan-design-rules`, `mehan-ux-complexity`, `mehan-copy-and-states`, `mehan-page-archetypes`.',
     ],
   },
 };

@@ -33,6 +33,14 @@ export {
 export {
   resolveMehanDna,
   type CategoricalFamilyStops,
+  type MehanDensity,
+  type MehanMotion,
   type MehanThemeOptions,
   type ResolvedMehanDna,
 } from './materials';
+
+export {
+  exportW3cDesignTokens,
+  type W3cTokenDocument,
+  type W3cTokenLeaf,
+} from './w3c';

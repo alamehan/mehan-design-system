@@ -12,7 +12,7 @@
     "build": "pnpm --filter @mehan/dna build && pnpm --filter @mehan/astryx build && pnpm --filter @mehan/portable build && pnpm --filter @mehan/studio build",
     "dev": "pnpm --filter @mehan/studio dev",
     "studio": "pnpm --filter @mehan/studio build:singlefile",
-    "typecheck": "pnpm -r typecheck",
+    "typecheck": "pnpm -r typecheck && tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "verify:astryx": "pnpm --filter @mehan/astryx verify",
     "verify:visual": "playwright test",
