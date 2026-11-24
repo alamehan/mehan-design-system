@@ -19,6 +19,7 @@ import {
   SegmentedControlItem,
   Selector,
   Skeleton,
+  Spinner,
   Stack,
   Switch,
   Table,
@@ -27,7 +28,23 @@ import {
   VStack,
   pixel,
   proportional,
+  useToast,
 } from '@astryxdesign/core';
+import {
+  ErrorSummary,
+  InlineConfirm,
+  InlineMessage,
+  MiddleTruncate,
+  PrecisionSlider,
+  formatShortcutKeys,
+} from '@mehan/astryx';
+import {
+  formatBytes,
+  formatCurrency,
+  formatNumber,
+  formatPercent,
+  formatRelativeTime,
+} from '@mehan/astryx/dna';
 import {
   CheckCircle2,
   Inbox,
@@ -51,6 +68,12 @@ type UxChapterId =
   | 'hierarchy'
   | 'states'
   | 'microcopy'
+  | 'keyboard'
+  | 'ergonomics'
+  | 'forms'
+  | 'linebudget'
+  | 'motion'
+  | 'i18n'
   | 'all';
 
 const UX_CHAPTERS: ReadonlyArray<{
@@ -95,10 +118,47 @@ const UX_CHAPTERS: ReadonlyArray<{
     en: 'Microcopy & Glossary',
     idLabel: 'Microcopy & Kamus',
   },
+  {
+    id: 'keyboard',
+    num: '07',
+    en: 'Keyboard & Focus Laws',
+    idLabel: 'Keyboard & Fokus',
+  },
+  {
+    id: 'ergonomics',
+    num: '08',
+    en: 'Touch, Zoom & Contrast',
+    idLabel: 'Sentuh, Zoom & Kontras',
+  },
+  {
+    id: 'forms',
+    num: '09',
+    en: 'Form Timing & Confirm',
+    idLabel: 'Form, Draf & Konfirmasi',
+  },
+  {
+    id: 'linebudget',
+    num: '10',
+    en: 'Line Budget & Scroll',
+    idLabel: 'Batas Baris & Scroll',
+  },
+  {
+    id: 'motion',
+    num: '11',
+    en: 'Motion Choreography',
+    idLabel: 'Koreografi Gerak',
+  },
+  {
+    id: 'i18n',
+    num: '12',
+    en: 'Bilingual & Intl Rules',
+    idLabel: 'Ekspansi Bahasa & Intl',
+  },
 ];
 
 export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
   const isId = lang === 'id';
+  const showToast = useToast();
   const [chapter, setChapter] = useState<UxChapterId>('chunking');
 
   // Chapter 1 state
@@ -125,6 +185,21 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
   // Chapter 5 state
   const [simState, setSimState] = useState<string>('invalid');
   const [badEmail, setBadEmail] = useState('raihan@acme');
+
+  // Chapters 07-12 (U1-U6) interactive sandbox states
+  const [shortcutPlatform, setShortcutPlatform] = useState<string>('win');
+  const [u1Slug, setU1Slug] = useState('acme prod');
+  const [pointerSim, setPointerSim] = useState<string>('coarse');
+  const [u3Email, setU3Email] = useState('');
+  const [u3Touched, setU3Touched] = useState(false);
+  const [u3RowRemoved, setU3RowRemoved] = useState(false);
+  const [u4Width, setU4Width] = useState(240);
+  const [u5Reduced, setU5Reduced] = useState<string>('standard');
+  const [u6Locale, setU6Locale] = useState<string>('id-ID');
+  const [u6AmountIdx, setU6AmountIdx] = useState(0);
+
+  const u3IsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(u3Email.trim());
+  const u3ShowError = u3Touched && u3Email.trim().length > 0 && !u3IsValid;
 
   const show = (id: Exclude<UxChapterId, 'all'>) =>
     chapter === 'all' || chapter === id;
@@ -273,7 +348,10 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
       <Stack gap={1}>
         <HStack gap={2} vAlign="center" wrap="wrap">
           <Heading level={2}>{copy.ux.title}</Heading>
-          <Badge variant="info" label="6 Chapters · AI-Indexed" />
+          <Badge
+            variant="info"
+            label={isId ? '12 Bab · Terindeks AI' : '12 Chapters · AI-Indexed'}
+          />
         </HStack>
         <Text color="secondary">{copy.ux.subtitle}</Text>
       </Stack>
@@ -301,7 +379,7 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
             onClick={() => setChapter('all')}
           >
             <span>{isId ? 'Semua Bab' : 'All Chapters'}</span>
-            <span className="cat-nav-count">6</span>
+            <span className="cat-nav-count">12</span>
           </button>
         </nav>
 
@@ -1059,6 +1137,719 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
                   dividers="rows"
                   hasHover
                 />
+              </Stack>
+            </Card>
+          )}
+
+          {/* ================================================================
+              CHAPTER 7 (U1): KEYBOARD, SHORTCUT GRAMMAR & FOCUS PLACEMENT
+             ================================================================ */}
+          {show('keyboard') && (
+            <Card padding={4} elevation="low">
+              <Stack gap={4}>
+                <Stack gap={1}>
+                  <Badge
+                    variant="info"
+                    label={
+                      isId
+                        ? 'Bab 07 (U1) · Pintasan Keyboard, Urutan Esc & Penempatan Fokus'
+                        : 'Chapter 07 (U1) · Keyboard Grammar, Layered Esc & Focus Placement'
+                    }
+                  />
+                  <Heading level={3}>
+                    {isId
+                      ? 'Lindungi ketikan form & IME, urutkan prioritas tombol Esc, dan arahkan fokus langsung ke solusi'
+                      : 'Guard IME & input typing, layer Escape dismissal cleanly, and land focus where recovery happens'}
+                  </Heading>
+                  <Text color="secondary">
+                    {isId
+                      ? 'Pintasan satu tombol (/, ?) wajib memeriksa !isComposing && keyCode !== 229 && !isTypingTarget(target). Sementara Mod+Enter tetap mengirimkan aksi utama di dalam form, dan Esc menutup lapisan teratas satu per satu.'
+                      : 'Single-key shortcuts (/, ?) must check !isComposing && keyCode !== 229 && !isTypingTarget(target). Mod+Enter submits inside focused inputs, while Escape dismisses strictly one topmost layer at a time.'}
+                  </Text>
+                </Stack>
+
+                <Grid columns={{minWidth: 300, max: 2, repeat: 'fit'}} gap={3} align="start">
+                  <div className="studio-ux-box studio-ux-do">
+                    <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                      <Text weight="semibold">
+                        {isId ? 'Notasi pintasan adaptif OS' : 'Platform-aware shortcut badges'}
+                      </Text>
+                      <SegmentedControl
+                        label="Shortcut OS platform"
+                        size="sm"
+                        value={shortcutPlatform}
+                        onChange={setShortcutPlatform}
+                      >
+                        <SegmentedControlItem value="win" label="Win / Linux" />
+                        <SegmentedControlItem value="mac" label="macOS" />
+                      </SegmentedControl>
+                    </HStack>
+
+                    <List density="compact" hasDividers>
+                      {[
+                        {
+                          job: isId ? 'Kirim form utama' : 'Submit primary form',
+                          combo: 'mod+enter',
+                        },
+                        {
+                          job: isId ? 'Urungkan langkah (Undo)' : 'Undo last change',
+                          combo: 'mod+z',
+                        },
+                        {
+                          job: isId ? 'Ulangi langkah (Redo)' : 'Redo change',
+                          combo: 'mod+shift+z',
+                        },
+                      ].map(row => (
+                        <ListItem
+                          key={row.combo}
+                          label={row.job}
+                          endContent={
+                            <HStack gap={1}>
+                              {formatShortcutKeys(
+                                row.combo,
+                                shortcutPlatform === 'mac',
+                              ).map(k => (
+                                <kbd key={k} className="studio-mono-pill">
+                                  {k}
+                                </kbd>
+                              ))}
+                            </HStack>
+                          }
+                        />
+                      ))}
+                    </List>
+
+                    <Text type="supporting" color="secondary">
+                      {isId
+                        ? 'Urutan Esc berlapis: Menu/Popover teratas -> Hapus isi pencarian -> Tutup Drawer samping -> Tutup Tour -> Pantang menghapus draf form tanpa konfirmasi.'
+                        : 'Layered Esc order: Topmost menu/popover -> Clear search query -> Close side Drawer -> Dismiss Tour -> Never wipe dirty form edits.'}
+                    </Text>
+                  </div>
+
+                  <div className="studio-ux-box">
+                    <Text weight="semibold">
+                      {isId
+                        ? 'Lompatan fokus ErrorSummary (#fieldId + scroll-padding-top)'
+                        : 'ErrorSummary focus jump (#fieldId + scroll-padding-top)'}
+                    </Text>
+                    {/\s/.test(u1Slug) ? (
+                      <ErrorSummary
+                        title={
+                          isId
+                            ? 'Perbaiki kolom berikut sebelum menyimpan'
+                            : 'Fix the following issue before saving'
+                        }
+                        errors={[
+                          {
+                            fieldId: 'ux-u1-slug-wrap',
+                            fieldLabel: 'Workspace slug',
+                            message: isId
+                              ? 'Gunakan huruf kecil dan tanda hubung tanpa spasi (mis. acme-prod).'
+                              : 'Use lowercase letters and hyphens without spaces (e.g. acme-prod).',
+                          },
+                        ]}
+                      />
+                    ) : (
+                      <InlineMessage
+                        status="success"
+                        message={
+                          isId
+                            ? 'Format slug valid dan siap disimpan.'
+                            : 'Workspace slug is valid and ready to save.'
+                        }
+                      />
+                    )}
+
+                    <div id="ux-u1-slug-wrap">
+                      <TextInput
+                        label="Workspace slug"
+                        size="sm"
+                        value={u1Slug}
+                        onChange={setU1Slug}
+                      />
+                    </div>
+                  </div>
+                </Grid>
+              </Stack>
+            </Card>
+          )}
+
+          {/* ================================================================
+              CHAPTER 8 (U2): TOUCH, MOBILE, 200% ZOOM & HIGH-CONTRAST
+             ================================================================ */}
+          {show('ergonomics') && (
+            <Card padding={4} elevation="low">
+              <Stack gap={4}>
+                <Stack gap={1}>
+                  <Badge
+                    variant="info"
+                    label={
+                      isId
+                        ? 'Bab 08 (U2) · Ergonomi Sentuh, Zoom 200% & Kontras Tinggi'
+                        : 'Chapter 08 (U2) · Touch Targets, 200% Zoom & Borderless High-Contrast'
+                    }
+                  />
+                  <Heading level={3}>
+                    {isId
+                      ? 'Target sentuh >= 44px pada layar sentuh, font input >= 16px, dan garis tegas otomatis di mode kontras tinggi'
+                      : '44px coarse-pointer targets, 16px mobile input floor, and automatic high-contrast borders'}
+                  </Heading>
+                </Stack>
+
+                <Grid columns={{minWidth: 300, max: 2, repeat: 'fit'}} gap={3} align="start">
+                  <div className="studio-ux-box studio-ux-do">
+                    <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                      <Text weight="semibold">
+                        {isId ? 'Adaptasi kepadatan penunjuk' : 'Pointer density adaptation'}
+                      </Text>
+                      <SegmentedControl
+                        label="Simulate pointer precision"
+                        size="sm"
+                        value={pointerSim}
+                        onChange={setPointerSim}
+                      >
+                        <SegmentedControlItem value="fine" label="Fine (32–36px)" />
+                        <SegmentedControlItem value="coarse" label="Coarse (44px)" />
+                      </SegmentedControl>
+                    </HStack>
+
+                    <div
+                      style={{
+                        padding: 12,
+                        borderRadius: 10,
+                        backgroundColor: 'var(--mehan-tray)',
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: pointerSim === 'coarse' ? 10 : 6,
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Button
+                        variant="primary"
+                        size={pointerSim === 'coarse' ? 'lg' : 'sm'}
+                        label={isId ? 'Simpan perubahan' : 'Save changes'}
+                      />
+                      <Button
+                        variant="secondary"
+                        size={pointerSim === 'coarse' ? 'lg' : 'sm'}
+                        label={isId ? 'Pratinjau' : 'Preview'}
+                      />
+                    </div>
+
+                    <Text type="supporting" color="secondary">
+                      {isId
+                        ? 'Pada @media (pointer: coarse), tinggi tombol naik ke >= 44px dengan jarak minimal 8px, dan font input >= 16px agar Safari iOS tidak melakukan zoom paksa.'
+                        : 'Under @media (pointer: coarse), controls expand to >= 44px height with >= 8px gap and >= 16px input font size to prevent iOS Safari forced page zoom.'}
+                    </Text>
+                  </div>
+
+                  <div className="studio-ux-box">
+                    <Text weight="semibold">
+                      {isId
+                        ? '4 jaminan media CSS otomatis Mehan'
+                        : 'Four built-in CSS media guarantees'}
+                    </Text>
+                    <List density="compact" hasDividers>
+                      <ListItem
+                        label="@media (prefers-contrast: more)"
+                        description={
+                          isId
+                            ? 'Sumur input, soket, dan kartu tanpa garis otomatis mendapat tepi kontras >= 3:1.'
+                            : 'Borderless wells, sockets, and cards gain crisp >= 3:1 structural borders.'
+                        }
+                      />
+                      <ListItem
+                        label="@media (forced-colors: active)"
+                        description={
+                          isId
+                            ? 'Memetakan tepi kontrol ke CanvasText & Highlight pada Windows High Contrast.'
+                            : 'Maps control outlines cleanly to CanvasText and Highlight system colors.'
+                        }
+                      />
+                      <ListItem
+                        label="200% Browser Zoom & <= 559px Height"
+                        description={
+                          isId
+                            ? 'Melepas kunci tinggi 100dvh agar konten tetap dapat digulir saat zoom 200% atau papan ketik virtual terbuka.'
+                            : 'Releases 100dvh viewport locks so zoomed or virtual-keyboard viewports scroll naturally.'
+                        }
+                      />
+                      <ListItem
+                        label="@media print"
+                        description={
+                          isId
+                            ? 'Menyembunyikan bilah navigasi/editor dan membuka area gulir agar dokumen tercetak utuh.'
+                            : 'Hides studio chrome and unlocks scroll containers for clean document printing.'
+                        }
+                      />
+                    </List>
+                  </div>
+                </Grid>
+              </Stack>
+            </Card>
+          )}
+
+          {/* ================================================================
+              CHAPTER 9 (U3): FORM VALIDATION TIMING & PROPORTIONAL CONFIRM
+             ================================================================ */}
+          {show('forms') && (
+            <Card padding={4} elevation="low">
+              <Stack gap={4}>
+                <Stack gap={1}>
+                  <Badge
+                    variant="info"
+                    label={
+                      isId
+                        ? 'Bab 09 (U3) · Ritme Validasi Form & 3 Tingkat Konfirmasi'
+                        : 'Chapter 09 (U3) · Form Validation Timing & Proportional Confirmation'
+                    }
+                  />
+                  <Heading level={3}>
+                    {isId
+                      ? 'Puji cepat, tegur belakangan (onBlur lalu pulih seketika onChange) & sesuaikan gesekan konfirmasi'
+                      : 'Reward early, punish late (validate onBlur, clear live onChange) & match confirmation friction to risk'}
+                  </Heading>
+                </Stack>
+
+                <Grid columns={{minWidth: 300, max: 2, repeat: 'fit'}} gap={3} align="start">
+                  <div className="studio-ux-box studio-ux-do">
+                    <Text weight="semibold">
+                      {isId
+                        ? 'Uji langsung: ketik sebagian email lalu tekan Tab'
+                        : 'Try live: type a partial email, then press Tab'}
+                    </Text>
+                    <Text type="supporting" color="secondary">
+                      {isId
+                        ? 'Tidak ada pesan merah yang menyela saat mengetik pertama kali. Pesan muncul setelah keluar kolom (onBlur), dan langsung hilang pada ketikan saat format menjadi valid.'
+                        : 'Zero red interruption while typing your first entry. Error appears only after blur, then clears on the exact keystroke the address becomes valid.'}
+                    </Text>
+
+                    <div onBlur={() => setU3Touched(true)}>
+                      <TextInput
+                        label={isId ? 'Email notifikasi rilis' : 'Release notification email'}
+                        placeholder="dev@acme.com"
+                        size="sm"
+                        value={u3Email}
+                        onChange={setU3Email}
+                        status={
+                          u3ShowError
+                            ? {
+                                type: 'error',
+                                message: isId
+                                  ? 'Sertakan domain lengkap, misalnya dev@acme.com.'
+                                  : 'Include a complete domain, like dev@acme.com.',
+                              }
+                            : undefined
+                        }
+                      />
+                    </div>
+
+                    {u3IsValid && (
+                      <InlineMessage
+                        status="success"
+                        message={
+                          isId
+                            ? 'Alamat email valid — error langsung bersih tanpa perlu blur ulang.'
+                            : 'Valid email — error cleared immediately without waiting for blur.'
+                        }
+                      />
+                    )}
+                  </div>
+
+                  <div className="studio-ux-box">
+                    <Text weight="semibold">
+                      {isId
+                        ? '3 tingkat konfirmasi sesuai dampak aksi'
+                        : 'Three proportional confirmation tiers'}
+                    </Text>
+
+                    <VStack gap={3}>
+                      <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                        <Text type="supporting">
+                          {isId
+                            ? '1. Bisa dibatalkan -> langsung jalan + Toast Undo:'
+                            : '1. Reversible -> immediate + Undo Toast:'}
+                        </Text>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          label={isId ? 'Arsipkan item' : 'Archive item'}
+                          onClick={() =>
+                            showToast({
+                              type: 'info',
+                              body: isId
+                                ? 'Item diarsipkan. Gunakan Undo dalam 8 detik bila tidak sengaja.'
+                                : 'Item archived. Reversible actions use Undo instead of modals.',
+                            })
+                          }
+                        />
+                      </HStack>
+
+                      <Divider />
+
+                      <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                        <Text type="supporting">
+                          {isId
+                            ? '2. Hapus baris lokal -> InlineConfirm tanpa modal:'
+                            : '2. Local row removal -> non-modal InlineConfirm:'}
+                        </Text>
+                        {u3RowRemoved ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            label={isId ? 'Pulihkan baris contoh' : 'Restore sample row'}
+                            onClick={() => setU3RowRemoved(false)}
+                          />
+                        ) : (
+                          <InlineConfirm
+                            triggerLabel={isId ? 'Hapus webhook' : 'Remove webhook'}
+                            confirmLabel={isId ? 'Ya, hapus' : 'Confirm remove'}
+                            cancelLabel={isId ? 'Batal' : 'Cancel'}
+                            prompt={isId ? 'Hapus baris ini?' : 'Remove this row?'}
+                            onConfirm={() => setU3RowRemoved(true)}
+                          />
+                        )}
+                      </HStack>
+
+                      <Divider />
+
+                      <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                        <Text type="supporting">
+                          {isId
+                            ? '3. Permanen & berdampak luas -> AlertDialog bernama:'
+                            : '3. Irreversible destruction -> named AlertDialog:'}
+                        </Text>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          label={isId ? 'Hapus kunci API' : 'Delete API key'}
+                          onClick={onOpenConfirmDemo}
+                        />
+                      </HStack>
+                    </VStack>
+                  </div>
+                </Grid>
+              </Stack>
+            </Card>
+          )}
+
+          {/* ================================================================
+              CHAPTER 10 (U4): 9-TIER LINE BUDGET, MIDDLETRUNCATE & SCROLL SPLIT
+             ================================================================ */}
+          {show('linebudget') && (
+            <Card padding={4} elevation="low">
+              <Stack gap={4}>
+                <Stack gap={1}>
+                  <Badge
+                    variant="info"
+                    label={
+                      isId
+                        ? 'Bab 10 (U4) · Matriks 9 Batas Baris, MiddleTruncate & Pemisahan Scroll'
+                        : 'Chapter 10 (U4) · 9-Tier Line Budget, MiddleTruncate & Scroll-Chaining Split'
+                    }
+                  />
+                  <Heading level={3}>
+                    {isId
+                      ? 'Jaga ekstensi file dengan MiddleTruncate & jangan pernah menjebak gulir vertikal halaman'
+                      : 'Preserve file tails with MiddleTruncate & never trap vertical page scrolling inside inline blocks'}
+                  </Heading>
+                </Stack>
+
+                <Grid columns={{minWidth: 300, max: 2, repeat: 'fit'}} gap={3} align="start">
+                  <div className="studio-ux-box studio-ux-do">
+                    <Text weight="semibold">
+                      {isId
+                        ? 'Uji langsung lebar wadah MiddleTruncate'
+                        : 'Drag container width to test MiddleTruncate'}
+                    </Text>
+                    <PrecisionSlider
+                      label={isId ? 'Lebar slot' : 'Slot width'}
+                      value={u4Width}
+                      min={150}
+                      max={340}
+                      step={10}
+                      unit="px"
+                      onChange={setU4Width}
+                    />
+                    <div
+                      style={{
+                        width: u4Width,
+                        maxWidth: '100%',
+                        padding: '8px 12px',
+                        borderRadius: 8,
+                        backgroundColor: 'var(--mehan-well)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 6,
+                      }}
+                    >
+                      <MiddleTruncate
+                        text="quarterly-revenue-audit-2026-signed.pdf"
+                        endChars={11}
+                        monospace
+                      />
+                      <MiddleTruncate
+                        text="mh_key_example_98f4c2a1b7e044829d4e"
+                        endChars={6}
+                        monospace
+                      />
+                    </div>
+                    <Text type="supporting" color="secondary">
+                      {isId
+                        ? 'Ekstensi .pdf dan 6 karakter akhir kunci API tetap terlihat, sementara pembaca layar membaca teks utuh.'
+                        : 'Both .pdf and the 6-char key suffix stay scannable while screen readers announce the full string.'}
+                    </Text>
+                  </div>
+
+                  <div className="studio-ux-box">
+                    <Text weight="semibold">
+                      {isId
+                        ? 'Aturan pemisahan overscroll-behavior'
+                        : 'Scroll-chaining split law'}
+                    </Text>
+                    <List density="compact" hasDividers>
+                      <ListItem
+                        label="Overlay melayang (Dialog, Drawer, Popover)"
+                        description={
+                          isId
+                            ? 'Gunakan overscroll-behavior: contain agar latar belakang halaman terkunci tenang.'
+                            : 'Use overscroll-behavior: contain so background content never rubber-bands.'
+                        }
+                      />
+                      <ListItem
+                        label="Blok sebaris (Table horizontal, CodeEditor)"
+                        description={
+                          isId
+                            ? 'Wajib overscroll-behavior-inline: contain; overscroll-behavior-block: auto agar roda mouse tidak terjebak saat menggulir halaman ke bawah.'
+                            : 'Must use overscroll-behavior-inline: contain; overscroll-behavior-block: auto so wheel scrolling never gets trapped mid-page.'
+                        }
+                      />
+                    </List>
+                  </div>
+                </Grid>
+              </Stack>
+            </Card>
+          )}
+
+          {/* ================================================================
+              CHAPTER 11 (U5): MOTION CHOREOGRAPHY & REDUCED-MOTION NUANCE
+             ================================================================ */}
+          {show('motion') && (
+            <Card padding={4} elevation="low">
+              <Stack gap={4}>
+                <Stack gap={1}>
+                  <Badge
+                    variant="info"
+                    label={
+                      isId
+                        ? 'Bab 11 (U5) · Koreografi Gerak 4 Tingkat & Nuansa Reduced-Motion'
+                        : 'Chapter 11 (U5) · 4-Tier Motion Physics & Reduced-Motion Nuance'
+                    }
+                  />
+                  <Heading level={3}>
+                    {isId
+                      ? 'Tekanan tombol 80ms terserap ke dalam bibir 3D; hentikan loncatan spasial saat reduced-motion tanpa membekukan indikator muat'
+                      : '80ms press absorbed inside the 3D lip; stop spatial bounce under reduced-motion without freezing async spinners'}
+                  </Heading>
+                </Stack>
+
+                <Grid columns={{minWidth: 300, max: 2, repeat: 'fit'}} gap={3} align="start">
+                  <div className="studio-ux-box studio-ux-do">
+                    <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                      <Text weight="semibold">
+                        {isId ? 'Simulasi preferensi gerak' : 'Motion preference behavior'}
+                      </Text>
+                      <SegmentedControl
+                        label="Motion preference preview"
+                        size="sm"
+                        value={u5Reduced}
+                        onChange={setU5Reduced}
+                      >
+                        <SegmentedControlItem value="standard" label="Standard" />
+                        <SegmentedControlItem value="reduce" label="Reduced motion" />
+                      </SegmentedControl>
+                    </HStack>
+
+                    <HStack gap={3} vAlign="center" wrap="wrap">
+                      <Spinner size="sm" label="Syncing deployment" />
+                      <Text type="supporting">
+                        {u5Reduced === 'reduce'
+                          ? isId
+                            ? 'Reduced motion aktif: pergeseran Y/skala dimatikan (0px), namun Spinner tetap memberi sinyal hidup yang tenang.'
+                            : 'Reduced motion active: spatial slide/bounce collapses to 0px while Spinner stays gently discernible.'
+                          : isId
+                            ? 'Mode standar: pegas mikro untuk kontrol kecil (Switch, CopyButton); keluar overlay 25% lebih cepat daripada masuk.'
+                            : 'Standard mode: spring overshoot reserved for small tactile controls; overlay exits run ~25% faster than entrances.'}
+                      </Text>
+                    </HStack>
+                  </div>
+
+                  <div className="studio-ux-box">
+                    <Text weight="semibold">
+                      {isId ? 'Skala durasi & masa tampil Toast' : 'Duration tiers & Toast persistence'}
+                    </Text>
+                    <List density="compact" hasDividers>
+                      <ListItem
+                        label="80ms · Tekan taktil (Press)"
+                        description={
+                          isId
+                            ? 'Diserap oleh bibir bawah 3D internal — tinggi luar tombol 100% stabil (0px layout shift).'
+                            : 'Absorbed into the internal bottom lip with 0px outer layout shift.'
+                        }
+                      />
+                      <ListItem
+                        label="140ms Hover · 220ms Popover · 320ms Drawer"
+                        description={
+                          isId
+                            ? 'Efek hover wajib dibatasi @media (hover: hover) agar tidak lengket di layar sentuh.'
+                            : 'Gate hover transitions behind @media (hover: hover) to avoid sticky touch states.'
+                        }
+                      />
+                      <ListItem
+                        label="Toast: 4–5 dtk Info · 8+ dtk Error / Undo"
+                        description={
+                          isId
+                            ? 'Jeda penghitung waktu saat diarahkan kursor atau fokus keyboard; maksimal 3 toast tampil.'
+                            : 'Pause auto-dismiss on pointer hover or keyboard focus; cap stack at 3 visible toasts.'
+                        }
+                      />
+                    </List>
+                  </div>
+                </Grid>
+              </Stack>
+            </Card>
+          )}
+
+          {/* ================================================================
+              CHAPTER 12 (U6): BILINGUAL +30-40% EXPANSION & INTL FORMATTING
+             ================================================================ */}
+          {show('i18n') && (
+            <Card padding={4} elevation="low">
+              <Stack gap={4}>
+                <Stack gap={1}>
+                  <Badge
+                    variant="info"
+                    label={
+                      isId
+                        ? 'Bab 12 (U6) · Ketahanan Ekspansi Teks +30–40% & Format Lokal Intl'
+                        : 'Chapter 12 (U6) · +30–40% Text-Expansion Resilience & Intl Formatting'
+                    }
+                  />
+                  <Heading level={3}>
+                    {isId
+                      ? 'Biarkan lebar tombol tumbuh alami & gunakan pemformat Intl bermemoisasi sesuai bahasa aktif'
+                      : 'Let controls grow intrinsically for +30–40% longer translations & format metrics via locale-bound Intl'}
+                  </Heading>
+                </Stack>
+
+                <Grid columns={{minWidth: 300, max: 2, repeat: 'fit'}} gap={3} align="start">
+                  <div className="studio-ux-box studio-ux-do">
+                    <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                      <Text weight="semibold">
+                        {isId ? 'Pemformat langsung @mehan/dna' : 'Live @mehan/dna Intl formatters'}
+                      </Text>
+                      <HStack gap={2} vAlign="center">
+                        <SegmentedControl
+                          label="Formatting locale"
+                          size="sm"
+                          value={u6Locale}
+                          onChange={setU6Locale}
+                        >
+                          <SegmentedControlItem value="id-ID" label="id-ID" />
+                          <SegmentedControlItem value="en-US" label="en-US" />
+                        </SegmentedControl>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          icon={<RefreshCw size={12} />}
+                          label={isId ? 'Sampel' : 'Sample'}
+                          onClick={() => setU6AmountIdx(i => (i + 1) % 3)}
+                        />
+                      </HStack>
+                    </HStack>
+
+                    {(() => {
+                      const samples = [
+                        {num: 12480.5, cur: -1500, bytes: 1572864, pct: 0.994, mins: 3},
+                        {num: 984120.75, cur: 48200, bytes: 268435456, pct: 0.682, mins: 42},
+                        {num: 305.2, cur: -290, bytes: 921600, pct: 1, mins: 120},
+                      ] as const;
+                      const s = samples[u6AmountIdx];
+                      return (
+                        <List density="compact" hasDividers>
+                          <ListItem
+                            label="formatNumber"
+                            endContent={
+                              <Text weight="semibold" hasTabularNumbers>
+                                {formatNumber(s.num, u6Locale)}
+                              </Text>
+                            }
+                          />
+                          <ListItem
+                            label="formatCurrency (compact)"
+                            endContent={
+                              <Text weight="semibold" hasTabularNumbers>
+                                {formatCurrency(
+                                  s.cur,
+                                  u6Locale === 'id-ID' ? 'IDR' : 'USD',
+                                  u6Locale,
+                                  {compact: true},
+                                )}
+                              </Text>
+                            }
+                          />
+                          <ListItem
+                            label="formatBytes · formatPercent"
+                            endContent={
+                              <Text weight="semibold" hasTabularNumbers>
+                                {formatBytes(s.bytes, u6Locale)} ·{' '}
+                                {formatPercent(s.pct, u6Locale, 1)}
+                              </Text>
+                            }
+                          />
+                          <ListItem
+                            label="formatRelativeTime"
+                            endContent={
+                              <Text weight="semibold" hasTabularNumbers>
+                                {formatRelativeTime(
+                                  Date.now() - s.mins * 60_000,
+                                  u6Locale,
+                                )}
+                              </Text>
+                            }
+                          />
+                        </List>
+                      );
+                    })()}
+                  </div>
+
+                  <div className="studio-ux-box">
+                    <Text weight="semibold">
+                      {isId
+                        ? 'Perbandingan ekspansi lebar tombol (+35%)'
+                        : 'Button text-expansion resilience (+35%)'}
+                    </Text>
+                    <Text type="supporting" color="secondary">
+                      {isId
+                        ? 'Jangan pernah mengunci width: 80px pada tombol atau tab. Gunakan kalimat perintah ringkas yang lugas dan alami.'
+                        : 'Never hardcode narrow pixel widths (like width: 80px) on buttons or tabs. Let padding + flex-wrap absorb +30–40% translation growth.'}
+                    </Text>
+                    <VStack gap={2}>
+                      <HStack gap={2} wrap="wrap" vAlign="center">
+                        <Badge variant="neutral" label="EN" />
+                        <Button variant="primary" size="sm" label="Save" />
+                        <Button variant="secondary" size="sm" label="Retry" />
+                        <Button variant="ghost" size="sm" label="Clear" />
+                      </HStack>
+                      <HStack gap={2} wrap="wrap" vAlign="center">
+                        <Badge variant="pink" label="ID" />
+                        <Button variant="primary" size="sm" label="Simpan perubahan" />
+                        <Button variant="secondary" size="sm" label="Coba lagi" />
+                        <Button variant="ghost" size="sm" label="Bersihkan filter" />
+                      </HStack>
+                    </VStack>
+                  </div>
+                </Grid>
               </Stack>
             </Card>
           )}

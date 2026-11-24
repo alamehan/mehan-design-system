@@ -5,7 +5,7 @@ export default {
   displayName: 'Color Picker',
   import: '@mehan/astryx',
   category: 'Form Controls',
-  keywords: ['color picker', 'hsv', 'hex input', 'eyedropper', 'palette'],
+  keywords: ['color picker', 'hsv', 'alpha', 'opacity', 'hex input', 'eyedropper', 'palette'],
   props: [
     {
       name: 'value',
@@ -30,10 +30,26 @@ export default {
       description: 'Accessible group label for the color picker surface.',
       default: "'Color picker'",
     },
+    {
+      name: 'hasAlpha',
+      type: 'boolean',
+      description: 'Render a checkerboard-backed opacity rail (0%–100%) below the hue slider.',
+      default: 'false',
+    },
+    {
+      name: 'alpha',
+      type: 'number',
+      description: 'Controlled alpha opacity value in the range 0..1 when `hasAlpha` is enabled.',
+    },
+    {
+      name: 'onAlphaChange',
+      type: '(alpha: number) => void',
+      description: 'Called with normalized 0..1 opacity whenever the alpha rail changes.',
+    },
   ],
   usage: {
     description:
-      'Tactile HSV saturation-value canvas, hue rail, hex field, progressive browser EyeDropper button, and preset ColorSwatch strip. Place inline in an inspector or inside Core Popover.',
+      'Tactile HSV saturation-value canvas, hue rail, optional checkerboard alpha slider, hex field, progressive browser EyeDropper button, and preset ColorSwatch strip.',
     bestPractices: [
       {
         guidance: true,

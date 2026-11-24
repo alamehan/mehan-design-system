@@ -151,20 +151,36 @@ export function SpecimenCard({
           )}
         </div>
         <div className="cat-specimen-actions">
-          <Tooltip content={showCode ? 'Hide JSX' : 'Inspect JSX'}>
+          <Tooltip
+            content={
+              showCode
+                ? isId
+                  ? 'Tutup JSX'
+                  : 'Hide JSX'
+                : isId
+                  ? 'Lihat JSX'
+                  : 'Inspect JSX'
+            }
+          >
             <IconButton
               variant={showCode ? 'secondary' : 'ghost'}
               size="sm"
-              label={`Inspect ${item.name} JSX`}
+              label={
+                isId
+                  ? `Lihat JSX ${item.name}`
+                  : `Inspect ${item.name} JSX`
+              }
               icon={<Code2 size={13} />}
               onClick={() => setShowCode(prev => !prev)}
             />
           </Tooltip>
-          <Tooltip content={`Copy ${item.name} JSX`}>
+          <Tooltip
+            content={isId ? `Salin JSX ${item.name}` : `Copy ${item.name} JSX`}
+          >
             <IconButton
               variant="ghost"
               size="sm"
-              label={`Copy ${item.name} JSX`}
+              label={isId ? `Salin JSX ${item.name}` : `Copy ${item.name} JSX`}
               icon={<Copy size={13} />}
               onClick={() => void handleCopy()}
             />

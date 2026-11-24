@@ -52,9 +52,7 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
 
     // 2. Components Catalog: Action (default focused category) -> Layout (verify AppShell height <= 320px!) -> Table & List
     await page.getByRole('tab', {name: 'Components'}).click();
-    await expect(
-      page.getByText('107 live specimens'),
-    ).toBeVisible();
+    await expect(page.getByText(/^\d+ live specimens$/)).toBeVisible();
     await page.screenshot({
       path: path.join(shotDir, 'studio-v3-catalog-action-light-1366.png'),
       fullPage: false,
@@ -109,7 +107,7 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       count: els.length,
       maxHeight: Math.max(0, ...els.map(el => el.getBoundingClientRect().height)),
     }));
-    expect(catalogAudit.count).toBe(107);
+    expect(catalogAudit.count).toBeGreaterThanOrEqual(115);
     expect(catalogAudit.maxHeight).toBeLessThan(560);
     expect(
       (

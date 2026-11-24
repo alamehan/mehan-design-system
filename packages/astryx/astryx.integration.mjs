@@ -11,8 +11,8 @@ export default {
   },
   agentDocs: {
     append: [
-      'Mehan (@mehan/astryx) provides 3 tactile themes (`mehan-confectionery`, `mehan-porcelain`, `mehan-stone`) and `createMehanTheme()` (OKLCH tactile seed + open `tokens` and `components` overrides).',
-      'Read Mehan UX, copy, and layout rules before building screens: `astryx docs mehan-design-rules`, `mehan-ux-complexity`, `mehan-copy-and-states`, `mehan-page-archetypes`.',
+      'Mehan (@mehan/astryx) provides 3 tactile themes (`mehan-confectionery`, `mehan-porcelain`, `mehan-stone`), 28 universal components, and `createMehanTheme()` (OKLCH tactile seed + open `tokens` and `components` overrides).',
+      'Read Mehan UX, copy, ergonomics, and layout rules before building screens: `astryx docs mehan-design-rules`, `mehan-ux-complexity`, `mehan-copy-and-states`, `mehan-ergonomics-and-motion`, `mehan-forms-and-i18n`, `mehan-page-archetypes`.',
     ],
   },
 };

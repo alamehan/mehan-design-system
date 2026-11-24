@@ -72,5 +72,22 @@
       root.style.colorScheme = nextMode;
       try { localStorage.setItem('mehan-mode', nextMode); } catch (err) {}
     }
+
+    var copyBtn = target.closest('[data-mh-copy]');
+    if (copyBtn) {
+      var payload = copyBtn.getAttribute('data-mh-copy') || '';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).catch(function () {});
+      }
+      copyBtn.setAttribute('data-copied', 'true');
+      setTimeout(function () { copyBtn.removeAttribute('data-copied'); }, 1800);
+    }
+
+    var anchorCell = target.closest('.mh-anchor-grid button');
+    if (anchorCell && anchorCell.parentElement) {
+      anchorCell.parentElement.querySelectorAll('button').forEach(function (b) {
+        b.setAttribute('aria-checked', b === anchorCell ? 'true' : 'false');
+      });
+    }
   });
 })();

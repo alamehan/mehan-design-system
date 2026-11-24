@@ -2,7 +2,7 @@
   "name": "@mehan/astryx",
   "version": "1.0.0",
   "displayName": "Mehan Design System for Astryx",
-  "description": "Tactile, parametric UI & UX system for Meta Astryx — 3 atmospheres, open OKLCH + Astryx token/component theming, 4 precision controls, and universal UX/copy standards.",
+  "description": "Tactile, parametric UI & UX system for Meta Astryx — 3 atmospheres, open OKLCH + Astryx token/component theming, 28 universal components, and 6 UX/copy guides.",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -79,6 +79,102 @@
     "./blocks/MetricCardShowcase": {
       "types": "./dist/blocks/MetricCardShowcase.d.ts",
       "default": "./dist/blocks/MetricCardShowcase.js"
+    },
+    "./blocks/SplitButtonShowcase": {
+      "types": "./dist/blocks/SplitButtonShowcase.d.ts",
+      "default": "./dist/blocks/SplitButtonShowcase.js"
+    },
+    "./blocks/CopyButtonShowcase": {
+      "types": "./dist/blocks/CopyButtonShowcase.d.ts",
+      "default": "./dist/blocks/CopyButtonShowcase.js"
+    },
+    "./blocks/ColorWellShowcase": {
+      "types": "./dist/blocks/ColorWellShowcase.d.ts",
+      "default": "./dist/blocks/ColorWellShowcase.js"
+    },
+    "./blocks/ThemeSwitchShowcase": {
+      "types": "./dist/blocks/ThemeSwitchShowcase.d.ts",
+      "default": "./dist/blocks/ThemeSwitchShowcase.js"
+    },
+    "./blocks/MiddleTruncateShowcase": {
+      "types": "./dist/blocks/MiddleTruncateShowcase.d.ts",
+      "default": "./dist/blocks/MiddleTruncateShowcase.js"
+    },
+    "./blocks/AngleDialShowcase": {
+      "types": "./dist/blocks/AngleDialShowcase.d.ts",
+      "default": "./dist/blocks/AngleDialShowcase.js"
+    },
+    "./blocks/GradientPickerShowcase": {
+      "types": "./dist/blocks/GradientPickerShowcase.d.ts",
+      "default": "./dist/blocks/GradientPickerShowcase.js"
+    },
+    "./blocks/AnchorMatrixShowcase": {
+      "types": "./dist/blocks/AnchorMatrixShowcase.d.ts",
+      "default": "./dist/blocks/AnchorMatrixShowcase.js"
+    },
+    "./blocks/DigitEntryShowcase": {
+      "types": "./dist/blocks/DigitEntryShowcase.d.ts",
+      "default": "./dist/blocks/DigitEntryShowcase.js"
+    },
+    "./blocks/RatingShowcase": {
+      "types": "./dist/blocks/RatingShowcase.d.ts",
+      "default": "./dist/blocks/RatingShowcase.js"
+    },
+    "./blocks/ImageWellShowcase": {
+      "types": "./dist/blocks/ImageWellShowcase.d.ts",
+      "default": "./dist/blocks/ImageWellShowcase.js"
+    },
+    "./blocks/ErrorSummaryShowcase": {
+      "types": "./dist/blocks/ErrorSummaryShowcase.d.ts",
+      "default": "./dist/blocks/ErrorSummaryShowcase.js"
+    },
+    "./blocks/InlineConfirmShowcase": {
+      "types": "./dist/blocks/InlineConfirmShowcase.d.ts",
+      "default": "./dist/blocks/InlineConfirmShowcase.js"
+    },
+    "./blocks/InlineMessageShowcase": {
+      "types": "./dist/blocks/InlineMessageShowcase.d.ts",
+      "default": "./dist/blocks/InlineMessageShowcase.js"
+    },
+    "./blocks/SparklineShowcase": {
+      "types": "./dist/blocks/SparklineShowcase.d.ts",
+      "default": "./dist/blocks/SparklineShowcase.js"
+    },
+    "./blocks/GaugeShowcase": {
+      "types": "./dist/blocks/GaugeShowcase.d.ts",
+      "default": "./dist/blocks/GaugeShowcase.js"
+    },
+    "./blocks/ActivityRingShowcase": {
+      "types": "./dist/blocks/ActivityRingShowcase.d.ts",
+      "default": "./dist/blocks/ActivityRingShowcase.js"
+    },
+    "./blocks/TimelineShowcase": {
+      "types": "./dist/blocks/TimelineShowcase.d.ts",
+      "default": "./dist/blocks/TimelineShowcase.js"
+    },
+    "./blocks/TimelineScrubberShowcase": {
+      "types": "./dist/blocks/TimelineScrubberShowcase.d.ts",
+      "default": "./dist/blocks/TimelineScrubberShowcase.js"
+    },
+    "./blocks/CanvasZoomBarShowcase": {
+      "types": "./dist/blocks/CanvasZoomBarShowcase.d.ts",
+      "default": "./dist/blocks/CanvasZoomBarShowcase.js"
+    },
+    "./blocks/CodeEditorShowcase": {
+      "types": "./dist/blocks/CodeEditorShowcase.d.ts",
+      "default": "./dist/blocks/CodeEditorShowcase.js"
+    },
+    "./blocks/MarkdownEditorShowcase": {
+      "types": "./dist/blocks/MarkdownEditorShowcase.d.ts",
+      "default": "./dist/blocks/MarkdownEditorShowcase.js"
+    },
+    "./blocks/NotificationCenterShowcase": {
+      "types": "./dist/blocks/NotificationCenterShowcase.d.ts",
+      "default": "./dist/blocks/NotificationCenterShowcase.js"
+    },
+    "./blocks/TourShowcase": {
+      "types": "./dist/blocks/TourShowcase.d.ts",
+      "default": "./dist/blocks/TourShowcase.js"
     }
   },
   "files": [

@@ -1,3 +1,7 @@
+html {
+  scroll-padding-top: 72px;
+}
+
 html,
 body,
 #root {
@@ -618,7 +622,7 @@ body,
   flex-direction: column;
   justify-content: center;
   min-width: 0;
-  overflow-x: auto;
+  overflow: visible;
 }
 
 .cat-specimen-stage > .astryx-button,

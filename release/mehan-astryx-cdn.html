@@ -1893,12 +1893,15 @@
 @layer astryx-base {
   .mehan-sr-only {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 1px;
     height: 1px;
     padding: 0;
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
   }
@@ -2045,17 +2048,73 @@
     border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.28);
   }
+  .mehan-cp-alpha-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mehan-cp-alpha-track {
+    position: relative;
+    flex: 1;
+    height: 12px;
+    border-radius: 9999px;
+    background: repeating-conic-gradient(#d4d4d8 0% 25%, #ffffff 0% 50%) 50% / 8px 8px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.22);
+  }
+  .mehan-cp-alpha-gradient {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    pointer-events: none;
+  }
+  .mehan-cp-alpha {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 12px;
+    margin: 0;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  .mehan-cp-alpha::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.24);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.28);
+  }
+  .mehan-cp-alpha-readout {
+    width: 38px;
+    text-align: right;
+    font-family: var(--font-family-code, monospace);
+    font-size: 11.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+  }
   .mehan-cp-hex-row {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .mehan-cp-preview {
+  .mehan-cp-preview,
+  .mehan-cp-preview-checker {
+    position: relative;
     width: 30px;
     height: 30px;
     flex: none;
     border-radius: var(--radius-inner, 7px);
+    overflow: hidden;
+    background: repeating-conic-gradient(#d4d4d8 0% 25%, #ffffff 0% 50%) 50% / 8px 8px;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  }
+  .mehan-cp-preview-fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
   }
   .mehan-cp-hex-input {
     flex: 1;
@@ -2283,9 +2342,1994 @@
     color: var(--color-text-secondary);
   }
 
-  /* 5. Universal Media Hygiene (Coarse Pointer, High Contrast, Forced Colors, Reduced Motion & Print) */
+  /* ==========================================================================
+     STAGE 2A — TIER 1 UNIVERSAL & CREATIVE STUDIO PRIMITIVES
+     ========================================================================== */
+
+  /* 5. SplitButton (Compound Tactile Action + Roving Menu) */
+  .mehan-split-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: stretch;
+    width: fit-content;
+    align-self: flex-start;
+    border-radius: var(--radius-element, 10px);
+    vertical-align: middle;
+  }
+  .mehan-split-btn[data-disabled="true"] {
+    opacity: 0.5;
+  }
+  .mehan-split-main,
+  .mehan-split-trigger {
+    border: 0;
+    font-family: var(--font-family-body, sans-serif);
+    font-weight: 600;
+    font-size: var(--text-label-size, 13.5px);
+    height: var(--size-element-md, 36px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: box-shadow 140ms ease, transform 100ms ease, background-color 140ms ease;
+  }
+  .mehan-split-btn[data-size="sm"] .mehan-split-main,
+  .mehan-split-btn[data-size="sm"] .mehan-split-trigger {
+    height: var(--size-element-sm, 30px);
+    font-size: var(--text-supporting-size, 12.5px);
+  }
+  .mehan-split-btn[data-size="lg"] .mehan-split-main,
+  .mehan-split-btn[data-size="lg"] .mehan-split-trigger {
+    height: var(--size-element-lg, 42px);
+  }
+  .mehan-split-main {
+    padding: 0 14px 2px;
+    border-start-start-radius: var(--radius-element, 10px);
+    border-end-start-radius: var(--radius-element, 10px);
+  }
+  .mehan-split-trigger {
+    width: 34px;
+    padding: 0 0 2px;
+    border-start-end-radius: var(--radius-element, 10px);
+    border-end-end-radius: var(--radius-element, 10px);
+  }
+  .mehan-split-btn[data-size="sm"] .mehan-split-trigger {
+    width: 28px;
+  }
+  .mehan-split-btn[data-variant="primary"] .mehan-split-main,
+  .mehan-split-btn[data-variant="primary"] .mehan-split-trigger {
+    background-color: var(--color-accent);
+    background-image: var(--mehan-primary-grad);
+    color: #ffffff;
+    box-shadow: var(--mehan-shadow-primary);
+  }
+  .mehan-split-btn[data-variant="primary"] .mehan-split-trigger {
+    border-inline-start: 1px solid rgba(255, 255, 255, 0.24);
+  }
+  .mehan-split-btn[data-variant="secondary"] .mehan-split-main,
+  .mehan-split-btn[data-variant="secondary"] .mehan-split-trigger {
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    color: var(--color-text-primary);
+    box-shadow: var(--mehan-shadow-raised);
+  }
+  .mehan-split-btn[data-variant="secondary"] .mehan-split-trigger {
+    border-inline-start: 1px solid var(--color-border);
+  }
+  .mehan-split-main:focus-visible,
+  .mehan-split-trigger:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+    z-index: 2;
+  }
+  .mehan-split-main:disabled,
+  .mehan-split-trigger:disabled {
+    cursor: default;
+  }
+  .mehan-split-chevron {
+    transition: transform 140ms ease;
+  }
+  .mehan-split-chevron[data-open="true"] {
+    transform: rotate(180deg);
+  }
+  .mehan-split-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    inset-inline-start: 0;
+    min-width: 224px;
+    z-index: 65;
+    padding: 5px;
+    border-radius: var(--radius-container, 14px);
+    background-color: var(--color-background-popover, var(--color-background-card));
+    border: 1px solid var(--mehan-card-hairline, var(--color-border));
+    box-shadow: var(--shadow-med);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .mehan-split-item {
+    width: 100%;
+    border: 0;
+    border-radius: var(--radius-inner, 8px);
+    background: transparent;
+    padding: 7px 10px;
+    text-align: start;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body, sans-serif);
+  }
+  .mehan-split-item:hover:not([aria-disabled="true"]),
+  .mehan-split-item:focus-visible {
+    background-color: var(--mehan-well, var(--color-background-muted));
+    outline: none;
+  }
+  .mehan-split-item[data-destructive="true"] {
+    color: var(--color-text-error);
+  }
+  .mehan-split-item[aria-disabled="true"] {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .mehan-split-item-label {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .mehan-split-item-desc {
+    font-size: 11.5px;
+    color: var(--color-text-secondary);
+  }
+
+  /* 6. CopyButton (Zero-Jitter Width Sizer + Icon Morph) */
+  .mehan-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    align-self: flex-start;
+    gap: 6px;
+    height: var(--size-element-sm, 30px);
+    padding: 0 11px 1px;
+    border: 0;
+    border-radius: var(--radius-element, 9px);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .mehan-copy-btn[data-size="md"] {
+    height: var(--size-element-md, 36px);
+    padding: 0 13px 1px;
+    font-size: 13.5px;
+  }
+  .mehan-copy-btn[data-variant="ghost"] {
+    background: transparent;
+    box-shadow: none;
+    color: var(--color-text-secondary);
+  }
+  .mehan-copy-btn[data-variant="ghost"]:hover:not(:disabled) {
+    background-color: var(--color-overlay-hover);
+    color: var(--color-text-primary);
+  }
+  .mehan-copy-btn[data-variant="icon"] {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--color-text-secondary);
+  }
+  .mehan-copy-btn[data-variant="icon"]:hover:not(:disabled) {
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+  }
+  .mehan-copy-btn[data-copied="true"] {
+    color: var(--color-text-success);
+  }
+  .mehan-copy-btn:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+  }
+  .mehan-copy-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .mehan-copy-icon {
+    display: inline-flex;
+    flex: none;
+  }
+  .mehan-copy-label-stack {
+    display: inline-grid;
+    align-items: center;
+    justify-items: center;
+  }
+  .mehan-copy-sizer,
+  .mehan-copy-visible-label {
+    grid-area: 1 / 1;
+  }
+  .mehan-copy-sizer {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* 7. ColorWell (Checkerboard Chip + Popover ColorPicker) */
+  .mehan-color-well {
+    position: relative;
+    display: inline-flex;
+    width: fit-content;
+    align-self: flex-start;
+    vertical-align: middle;
+  }
+  .mehan-color-well-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: var(--size-element-sm, 32px);
+    padding: 0 10px 0 6px;
+    border: 0;
+    border-radius: var(--radius-element, 9px);
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+    cursor: pointer;
+  }
+  .mehan-color-well-trigger:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+  }
+  .mehan-color-well-trigger:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .mehan-cw-chip {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    flex: none;
+    border-radius: 5px;
+    overflow: hidden;
+    background: repeating-conic-gradient(#d4d4d8 0% 25%, #ffffff 0% 50%) 50% / 6px 6px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.16);
+  }
+  .mehan-cw-chip-fill {
+    position: absolute;
+    inset: 0;
+  }
+  .mehan-cw-readout {
+    font-family: var(--font-family-code, monospace);
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .mehan-color-well-popover {
+    position: absolute;
+    top: calc(100% + 6px);
+    inset-inline-start: 0;
+    z-index: 70;
+  }
+
+  /* 8. ThemeSwitch (3-Way Light / Dark / System Recessed Switcher) */
+  .mehan-theme-switch {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    align-self: flex-start;
+    gap: 2px;
+    padding: 3px;
+    border-radius: var(--radius-element, 10px);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-well);
+  }
+  .mehan-ts-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: calc(var(--size-element-sm, 30px) - 4px);
+    padding: 0 9px;
+    border: 0;
+    border-radius: calc(var(--radius-element, 10px) - 3px);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .mehan-theme-switch[data-size="md"] .mehan-ts-option {
+    height: calc(var(--size-element-md, 36px) - 6px);
+    padding: 0 11px;
+    font-size: 13px;
+  }
+  .mehan-ts-option[data-selected="true"] {
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+  }
+  .mehan-ts-option:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 1px;
+  }
+
+  /* 9. MiddleTruncate (Pure-CSS Prefix + Ellipsis + Preserved Suffix) */
+  .mehan-mid-truncate-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .mehan-mid-truncate-wrap[data-mono="true"] .mehan-mid-truncate {
+    font-family: var(--font-family-code, monospace);
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .mehan-mid-truncate {
+    display: inline-flex;
+    align-items: baseline;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--color-text-primary);
+  }
+  .mehan-mid-head {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mehan-mid-tail {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  /* 10. AngleDial (3D Ceramic Rotary Knob + Click-to-Type Readout) */
+  .mehan-angle-dial {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mehan-angle-dial[data-disabled="true"] {
+    opacity: 0.45;
+  }
+  .mehan-ad-socket {
+    width: 42px;
+    height: 42px;
+    flex: none;
+    border-radius: 9999px;
+    background-color: var(--mehan-socket, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-socket);
+    display: grid;
+    place-items: center;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  .mehan-angle-dial[data-size="sm"] .mehan-ad-socket {
+    width: 34px;
+    height: 34px;
+  }
+  .mehan-ad-socket:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+  }
+  .mehan-ad-rotor {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    background-image: var(--mehan-knob-grad);
+    box-shadow: var(--mehan-shadow-knob, 0 2px 5px rgba(0, 0, 0, 0.25));
+  }
+  .mehan-angle-dial[data-size="sm"] .mehan-ad-rotor {
+    width: 24px;
+    height: 24px;
+  }
+  .mehan-ad-needle {
+    position: absolute;
+    left: 50%;
+    top: 3px;
+    width: 2.5px;
+    height: 8px;
+    margin-left: -1.25px;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+  }
+  .mehan-angle-dial[data-size="sm"] .mehan-ad-needle {
+    height: 6px;
+    top: 2.5px;
+  }
+  .mehan-ad-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+  }
+  .mehan-ad-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+  .mehan-ad-readout,
+  .mehan-ad-input {
+    height: 24px;
+    min-width: 44px;
+    padding: 0 6px;
+    border-radius: 6px;
+    font-family: var(--font-family-code, monospace);
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
+  }
+  .mehan-ad-readout {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    text-align: start;
+    padding: 0 4px;
+  }
+  .mehan-ad-readout:hover:not(:disabled) {
+    background-color: var(--mehan-well, var(--color-background-muted));
+  }
+  .mehan-ad-input {
+    width: 52px;
+    border: 1px solid var(--color-accent);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    outline: none;
+  }
+
+  /* 11. GradientPicker (Multi-Stop OKLab Rail + Stop Inspector) */
+  .mehan-gradient-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 380px;
+    padding: 12px;
+    border-radius: var(--radius-container, 14px);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--mehan-card-hairline, var(--color-border));
+    box-shadow: var(--shadow-low);
+  }
+  .mehan-gp-preview {
+    height: 40px;
+    border-radius: var(--radius-element, 9px);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  }
+  .mehan-gp-bar-hit {
+    position: relative;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    cursor: copy;
+    touch-action: none;
+  }
+  .mehan-gp-bar-track {
+    width: 100%;
+    height: 10px;
+    border-radius: 9999px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  }
+  .mehan-gp-handle {
+    position: absolute;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    margin-left: -9px;
+    margin-top: -9px;
+    padding: 0;
+    border-radius: 9999px;
+    border: 2.5px solid #ffffff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.3);
+    cursor: grab;
+  }
+  .mehan-gp-handle[data-selected="true"] {
+    box-shadow:
+      0 0 0 2px var(--color-background-card, #ffffff),
+      0 0 0 4px var(--color-accent),
+      0 2px 5px rgba(0, 0, 0, 0.35);
+    z-index: 2;
+  }
+  .mehan-gp-handle:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 3px;
+  }
+  .mehan-gp-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .mehan-gp-stop-editor {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mehan-gp-pos-field {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 32px;
+    padding: 0 7px;
+    border-radius: var(--radius-inner, 7px);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-well);
+  }
+  .mehan-gp-pos-input {
+    width: 36px;
+    border: 0;
+    background: transparent;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-code, monospace);
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    outline: none;
+  }
+  .mehan-gp-pos-unit {
+    font-family: var(--font-family-code, monospace);
+    font-size: 11px;
+    color: var(--color-text-secondary);
+  }
+  .mehan-gp-delete-btn {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: var(--radius-inner, 7px);
+    background: transparent;
+    color: var(--color-text-secondary);
+    display: inline-grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .mehan-gp-delete-btn:hover:not(:disabled) {
+    background-color: var(--color-error-muted);
+    color: var(--color-text-error);
+  }
+  .mehan-gp-delete-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .mehan-gp-geometry {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mehan-gp-kind-switch {
+    display: inline-flex;
+    padding: 2px;
+    border-radius: var(--radius-inner, 8px);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-well);
+  }
+  .mehan-gp-kind-btn {
+    height: 26px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .mehan-gp-kind-btn[data-selected="true"] {
+    background-color: var(--color-background-surface);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+  }
+
+  /* 12. AnchorMatrix (3×3 9-Point Spatial Origin Picker) */
+  .mehan-anchor-matrix {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mehan-anchor-matrix[data-disabled="true"] {
+    opacity: 0.45;
+  }
+  .mehan-am-grid {
+    display: inline-grid;
+    grid-template-columns: repeat(3, 22px);
+    grid-template-rows: repeat(3, 22px);
+    gap: 3px;
+    padding: 4px;
+    border-radius: var(--radius-element, 10px);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-well);
+  }
+  .mehan-am-cell {
+    border: 0;
+    border-radius: 5px;
+    padding: 0;
+    background: transparent;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .mehan-am-cell:hover:not(:disabled):not([data-selected="true"]) {
+    background-color: var(--color-overlay-hover);
+  }
+  .mehan-am-cell[data-selected="true"] {
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+  }
+  .mehan-am-cell:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 1px;
+  }
+  .mehan-am-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 9999px;
+    background-color: var(--color-text-disabled);
+  }
+  .mehan-am-cell[data-selected="true"] .mehan-am-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-accent);
+  }
+  .mehan-am-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .mehan-am-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+  .mehan-am-value {
+    font-family: var(--font-family-code, monospace);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  /* ==========================================================================
+     STAGE 2B — TIER 2 APPLICATION & FORM FEEDBACK PRIMITIVES
+     ========================================================================== */
+
+  /* 13. DigitEntry / OtpInput (Paste-Ready Recessed Verification Cells) */
+  .mehan-digit-entry {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    align-self: flex-start;
+    gap: 6px;
+  }
+  .mehan-digit-entry[data-disabled="true"] {
+    opacity: 0.45;
+  }
+  .mehan-de-cell {
+    width: 38px;
+    height: 42px;
+    padding: 0;
+    border-radius: var(--radius-element, 10px);
+    border: 1.5px solid var(--mehan-edge-control, transparent);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-well);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-code, monospace);
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    outline: none;
+  }
+  .mehan-de-cell:focus {
+    border-color: var(--color-accent);
+    box-shadow: var(--mehan-shadow-well), 0 0 0 2px var(--color-accent-muted);
+  }
+  .mehan-digit-entry[data-invalid="true"] .mehan-de-cell {
+    border-color: var(--color-error);
+  }
+  .mehan-de-sep {
+    font-family: var(--font-family-code, monospace);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    padding: 0 2px;
+    user-select: none;
+  }
+
+  /* 14. Rating (Half-Star SVG Gradient + Slider / Img Semantics) */
+  .mehan-rating {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    align-self: flex-start;
+    gap: 8px;
+    --mehan-rating-active: #eab308;
+    --mehan-rating-stroke: #ca8a04;
+  }
+  .mehan-rating-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    border-radius: 6px;
+  }
+  .mehan-rating-row:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 3px;
+  }
+  .mehan-rating-star {
+    display: inline-flex;
+    line-height: 0;
+  }
+  .mehan-rating-star[data-interactive="true"] {
+    cursor: pointer;
+    transition: transform 110ms ease;
+  }
+  .mehan-rating-star[data-interactive="true"]:hover {
+    transform: scale(1.12);
+  }
+  .mehan-rating-readout {
+    font-family: var(--font-family-code, monospace);
+    font-size: 12.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+  }
+
+  /* 15. ImageWell (Drop, Browse & Clipboard Paste Media Well) */
+  .mehan-image-well-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 320px;
+  }
+  .mehan-image-well {
+    position: relative;
+    min-height: 112px;
+    padding: 14px;
+    border-radius: var(--radius-container, 14px);
+    border: 1.5px dashed var(--color-border-emphasized);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .mehan-image-well[data-aspect="square"] {
+    aspect-ratio: 1 / 1;
+    max-width: 160px;
+  }
+  .mehan-image-well[data-aspect="wide"] {
+    min-height: 92px;
+  }
+  .mehan-image-well[data-dragover="true"] {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+  }
+  .mehan-image-well:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+  }
+  .mehan-image-well.has-image {
+    padding: 0;
+    border-style: solid;
+    border-color: var(--color-border);
+    background: repeating-conic-gradient(#d4d4d8 0% 25%, #ffffff 0% 50%) 50% / 12px 12px;
+    cursor: default;
+  }
+  .mehan-iw-img {
+    width: 100%;
+    max-height: 156px;
+    object-fit: contain;
+    display: block;
+  }
+  .mehan-iw-actions {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    display: inline-flex;
+    gap: 5px;
+  }
+  .mehan-iw-btn {
+    height: 28px;
+    padding: 0 9px;
+    border: 0;
+    border-radius: 7px;
+    background-color: var(--color-background-surface);
+    box-shadow: var(--shadow-low);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .mehan-iw-btn.is-danger {
+    color: var(--color-text-error);
+  }
+  .mehan-iw-icon {
+    color: var(--color-text-secondary);
+    display: inline-flex;
+  }
+  .mehan-iw-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  .mehan-iw-hint {
+    font-size: 11.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.35;
+  }
+  .mehan-iw-error {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-error);
+  }
+
+  /* 16. ErrorSummary (WCAG 3.3.1 Focus-Jumping Validation Block) */
+  .mehan-error-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: var(--radius-container, 12px);
+    background-color: var(--color-error-muted);
+    border: 1px solid color-mix(in srgb, var(--color-error) 36%, transparent);
+    outline: none;
+  }
+  .mehan-error-summary:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+  }
+  .mehan-es-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--color-text-error);
+  }
+  .mehan-es-icon {
+    flex: none;
+  }
+  .mehan-es-title {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .mehan-es-list {
+    margin: 0;
+    padding-inline-start: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .mehan-es-link {
+    color: var(--color-text-primary);
+    font-size: 12.5px;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .mehan-es-link:hover {
+    color: var(--color-text-error);
+  }
+  .mehan-es-link:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  /* 17. InlineConfirm (Two-Step Non-Modal Row Guard) */
+  .mehan-inline-confirm {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    align-self: flex-start;
+    gap: 6px;
+  }
+  .mehan-ic-trigger,
+  .mehan-ic-confirm,
+  .mehan-ic-cancel {
+    height: var(--size-element-sm, 30px);
+    padding: 0 11px;
+    border: 0;
+    border-radius: var(--radius-element, 8px);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .mehan-inline-confirm[data-size="md"] .mehan-ic-trigger,
+  .mehan-inline-confirm[data-size="md"] .mehan-ic-confirm,
+  .mehan-inline-confirm[data-size="md"] .mehan-ic-cancel {
+    height: var(--size-element-md, 36px);
+    font-size: 13.5px;
+  }
+  .mehan-ic-trigger {
+    background-color: var(--color-error-muted);
+    color: var(--color-text-error);
+    box-shadow: var(--mehan-shadow-danger);
+  }
+  .mehan-ic-trigger:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .mehan-inline-confirm.is-armed {
+    padding: 3px 3px 3px 10px;
+    border-radius: var(--radius-element, 10px);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-well);
+  }
+  .mehan-ic-prompt {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+  }
+  .mehan-ic-confirm {
+    height: calc(var(--size-element-sm, 30px) - 4px);
+    background-color: var(--color-error-muted);
+    color: var(--color-text-error);
+    box-shadow: var(--mehan-shadow-danger);
+  }
+  .mehan-ic-cancel {
+    height: calc(var(--size-element-sm, 30px) - 4px);
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+  }
+  .mehan-ic-trigger:focus-visible,
+  .mehan-ic-confirm:focus-visible,
+  .mehan-ic-cancel:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+  }
+
+  /* 18. InlineMessage (Compact Semantic Field Status Line) */
+  .mehan-inline-message {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-text-info);
+  }
+  .mehan-inline-message[data-status="success"] {
+    color: var(--color-text-success);
+  }
+  .mehan-inline-message[data-status="warning"] {
+    color: var(--color-text-warning);
+  }
+  .mehan-inline-message[data-status="error"] {
+    color: var(--color-text-error);
+  }
+  .mehan-im-icon {
+    flex: none;
+    margin-top: 2px;
+  }
+
+  /* ==========================================================================
+     STAGE 2C — TIER 3 DATA VIZ, EDITORS & ADVANCED SURFACE PRIMITIVES
+     ========================================================================== */
+
+  /* 19. Sparkline (Inline Trend + Hover Scrub + Companion SR Table) */
+  .mehan-sparkline {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    align-self: flex-start;
+  }
+  .mehan-sparkline-svg {
+    display: block;
+    overflow: visible;
+  }
+  .mehan-sparkline-readout {
+    padding: 2px 7px;
+    border-radius: 9999px;
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+    font-family: var(--font-family-code, monospace);
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* 20. Gauge (240° Radial Utilization Meter) */
+  .mehan-gauge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    align-self: flex-start;
+  }
+  .mehan-gauge-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+  .mehan-gauge-center {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+  .mehan-gauge-value {
+    font-family: var(--font-family-heading, sans-serif);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
+  }
+  .mehan-gauge[data-size="sm"] .mehan-gauge-value {
+    font-size: 16px;
+  }
+  .mehan-gauge[data-size="lg"] .mehan-gauge-value {
+    font-size: 24px;
+  }
+  .mehan-gauge-value small {
+    font-size: 0.65em;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-left: 1px;
+  }
+  .mehan-gauge-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-align: center;
+  }
+
+  /* 21. ActivityRing (Concentric Multi-Metric Rings + Tabular Legend) */
+  .mehan-activity-ring {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    width: fit-content;
+    align-self: flex-start;
+  }
+  .mehan-ar-svg {
+    flex: none;
+    display: block;
+  }
+  .mehan-ar-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .mehan-ar-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+  }
+  .mehan-ar-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    flex: none;
+  }
+  .mehan-ar-legend-label {
+    color: var(--color-text-secondary);
+    min-width: 84px;
+  }
+  .mehan-ar-legend-pct {
+    font-family: var(--font-family-code, monospace);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
+    margin-left: auto;
+  }
+
+  /* 22. Timeline (Semantic Chronological Rail) */
+  .mehan-timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 460px;
+  }
+  .mehan-tl-item {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 10px;
+  }
+  .mehan-tl-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .mehan-tl-pin {
+    width: 11px;
+    height: 11px;
+    margin-top: 4px;
+    border-radius: 9999px;
+    background-color: var(--color-border-emphasized);
+    box-shadow: 0 0 0 3px var(--color-background-card, #ffffff);
+    flex: none;
+  }
+  .mehan-tl-item[data-status="accent"] .mehan-tl-pin {
+    background-color: var(--color-accent);
+  }
+  .mehan-tl-item[data-status="success"] .mehan-tl-pin {
+    background-color: var(--color-success);
+  }
+  .mehan-tl-item[data-status="warning"] .mehan-tl-pin {
+    background-color: var(--color-warning);
+  }
+  .mehan-tl-item[data-status="error"] .mehan-tl-pin {
+    background-color: var(--color-error);
+  }
+  .mehan-tl-line {
+    flex: 1;
+    width: 1.5px;
+    min-height: 18px;
+    background-color: var(--color-border);
+    margin: 3px 0;
+  }
+  .mehan-tl-body {
+    padding-bottom: 14px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .mehan-timeline[data-density="compact"] .mehan-tl-body {
+    padding-bottom: 8px;
+  }
+  .mehan-tl-item:last-child .mehan-tl-body {
+    padding-bottom: 0;
+  }
+  .mehan-tl-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .mehan-tl-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  .mehan-tl-time {
+    font-family: var(--font-family-code, monospace);
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+    flex: none;
+  }
+  .mehan-tl-sub {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+  .mehan-tl-actor {
+    font-family: var(--font-family-code, monospace);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 9999px;
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+  }
+
+  /* 23. TimelineScrubber (Frame-Accurate Playhead + Keyframe Pins) */
+  .mehan-timeline-scrubber {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .mehan-ts-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .mehan-ts-play-btn {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 9999px;
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+    display: inline-grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .mehan-ts-play-btn:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+  }
+  .mehan-ts-timecode {
+    font-family: var(--font-family-code, monospace);
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+  }
+  .mehan-ts-ruler {
+    position: relative;
+    width: 100%;
+    height: 28px;
+  }
+  .mehan-ts-rail-hit {
+    position: relative;
+    width: 100%;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+  }
+  .mehan-ts-rail-hit:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  .mehan-ts-track {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    border-radius: 9999px;
+    background-color: var(--mehan-socket, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-socket);
+    overflow: hidden;
+  }
+  .mehan-ts-fill {
+    height: 100%;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+    background-image: var(--mehan-primary-grad);
+  }
+  /* 24x24 WCAG 2.5.8 hit area around an 8px tactile diamond keyframe pin */
+  .mehan-ts-marker {
+    position: absolute;
+    top: 50%;
+    width: 24px;
+    height: 24px;
+    margin-left: -12px;
+    margin-top: -12px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .mehan-ts-marker::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    transform: rotate(45deg);
+    background-color: var(--color-warning);
+    border: 1.5px solid var(--color-background-card, #ffffff);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+  }
+  .mehan-ts-marker:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    border-radius: 9999px;
+  }
+  .mehan-ts-playhead {
+    position: absolute;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    margin-left: -9px;
+    margin-top: -9px;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    background-image: var(--mehan-knob-grad);
+    box-shadow: var(--mehan-shadow-knob, 0 2px 5px rgba(0, 0, 0, 0.28));
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* 24. CanvasZoomBar (Floating Infinite-Canvas HUD) */
+  .mehan-canvas-zoom-bar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    align-self: flex-start;
+    gap: 3px;
+    padding: 4px;
+    border-radius: 9999px;
+    background-color: var(--mehan-float, var(--color-background-popover));
+    border: 1px solid var(--mehan-card-hairline, var(--color-border));
+    box-shadow: var(--shadow-med);
+  }
+  .mehan-czb-btn {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--color-text-primary);
+    display: inline-grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .mehan-czb-btn:hover:not(:disabled) {
+    background-color: var(--mehan-well, var(--color-background-muted));
+  }
+  .mehan-czb-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .mehan-czb-readout {
+    height: 28px;
+    min-width: 54px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-code, monospace);
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  .mehan-czb-readout:hover {
+    background-color: var(--mehan-well, var(--color-background-muted));
+  }
+  .mehan-czb-btn:focus-visible,
+  .mehan-czb-readout:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 1px;
+  }
+  .mehan-czb-divider {
+    width: 1px;
+    height: 16px;
+    background-color: var(--color-border);
+    margin: 0 2px;
+  }
+  .mehan-czb-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 136px;
+    padding: 4px;
+    border-radius: var(--radius-container, 12px);
+    background-color: var(--color-background-popover, var(--color-background-card));
+    border: 1px solid var(--mehan-card-hairline, var(--color-border));
+    box-shadow: var(--shadow-med);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 65;
+  }
+  .mehan-czb-menu[data-placement="top"] {
+    top: auto;
+    bottom: calc(100% + 6px);
+  }
+  .mehan-czb-preset {
+    height: 28px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-code, monospace);
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .mehan-czb-preset:hover,
+  .mehan-czb-preset[data-active="true"] {
+    background-color: var(--mehan-well, var(--color-background-muted));
+  }
+  .mehan-czb-tag {
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 10.5px;
+    color: var(--color-text-secondary);
+  }
+
+  /* 25. CodeEditor (WCAG 2.1.2 Esc->Tab Workbench + Gutter + Diagnostics) */
+  .mehan-code-editor {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: var(--radius-container, 12px);
+    border: 1px solid var(--color-border);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    overflow: hidden;
+  }
+  .mehan-ce-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 10px;
+    background-color: var(--mehan-tray, var(--color-background-surface));
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mehan-ce-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .mehan-ce-lang {
+    padding: 2px 7px;
+    border-radius: 9999px;
+    background-color: var(--mehan-well, var(--color-background-muted));
+    font-family: var(--font-family-code, monospace);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    text-transform: lowercase;
+  }
+  .mehan-ce-hint {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mehan-ce-body {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    max-height: 196px;
+    overflow: hidden;
+  }
+  .mehan-ce-gutter {
+    padding: 10px 6px 10px 0;
+    background-color: color-mix(in srgb, var(--mehan-tray, transparent) 55%, transparent);
+    border-inline-end: 1px solid var(--color-border);
+    font-family: var(--font-family-code, monospace);
+    font-size: 12.5px;
+    line-height: 1.55;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: var(--color-text-secondary);
+    user-select: none;
+    overflow: hidden;
+  }
+  .mehan-ce-line-num[data-severity="error"] {
+    color: var(--color-text-error);
+    font-weight: 700;
+  }
+  .mehan-ce-line-num[data-severity="warning"] {
+    color: var(--color-text-warning);
+    font-weight: 700;
+  }
+  .mehan-ce-textarea {
+    width: 100%;
+    margin: 0;
+    padding: 10px 12px;
+    border: 0;
+    resize: vertical;
+    background: transparent;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-code, monospace);
+    font-size: 12.5px;
+    line-height: 1.55;
+    tab-size: 2;
+    outline: none;
+    box-sizing: border-box;
+  }
+  .mehan-code-editor:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--color-accent-muted);
+  }
+  .mehan-ce-diagnostics {
+    padding: 6px 10px;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-background-surface);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 11.5px;
+  }
+  .mehan-ce-diag-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    color: var(--color-text-error);
+  }
+  .mehan-ce-diag-row[data-severity="warning"] {
+    color: var(--color-text-warning);
+  }
+  .mehan-ce-diag-line {
+    font-family: var(--font-family-code, monospace);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    flex: none;
+  }
+
+  /* 26. MarkdownEditor (Toolbar + Safe Write/Preview + Word Counter) */
+  .mehan-markdown-editor {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: var(--radius-container, 12px);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background-card);
+    overflow: hidden;
+  }
+  .mehan-markdown-editor[data-disabled="true"] {
+    opacity: 0.5;
+  }
+  .mehan-markdown-editor:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--color-accent-muted);
+  }
+  .mehan-mde-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 8px;
+    background-color: var(--mehan-tray, var(--color-background-muted));
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mehan-mde-tabs {
+    display: inline-flex;
+    padding: 2px;
+    border-radius: 8px;
+    background-color: var(--mehan-well, var(--color-background-muted));
+  }
+  .mehan-mde-tab {
+    height: 26px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .mehan-mde-tab[data-active="true"] {
+    background-color: var(--color-background-surface);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+  }
+  .mehan-mde-tools {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .mehan-mde-tool {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    display: inline-grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .mehan-mde-tool:hover:not(:disabled) {
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+  }
+  .mehan-mde-textarea {
+    width: 100%;
+    margin: 0;
+    padding: 10px 12px;
+    border: 0;
+    resize: vertical;
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 13px;
+    line-height: 1.5;
+    outline: none;
+    box-sizing: border-box;
+  }
+  .mehan-mde-preview {
+    padding: 10px 14px;
+    min-height: 92px;
+    max-height: 180px;
+    overflow-y: auto;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-text-primary);
+  }
+  .mehan-mde-preview h2,
+  .mehan-mde-preview h3,
+  .mehan-mde-preview h4 {
+    margin: 0 0 6px;
+    font-family: var(--font-family-heading, sans-serif);
+  }
+  .mehan-mde-preview p,
+  .mehan-mde-preview ul,
+  .mehan-mde-preview blockquote {
+    margin: 0 0 6px;
+  }
+  .mehan-mde-preview code {
+    padding: 1px 5px;
+    border-radius: 4px;
+    background-color: var(--mehan-well, var(--color-background-muted));
+    font-family: var(--font-family-code, monospace);
+    font-size: 0.9em;
+  }
+  .mehan-mde-empty {
+    margin: 0;
+    padding: 12px;
+    color: var(--color-text-secondary);
+    font-size: 12.5px;
+  }
+  .mehan-mde-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-background-surface);
+    font-size: 11px;
+    color: var(--color-text-secondary);
+  }
+  .mehan-mde-counts {
+    font-family: var(--font-family-code, monospace);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 27. NotificationCenter (Bell Trigger + Tabular Unread Inbox Popover) */
+  .mehan-notification-center {
+    position: relative;
+    display: inline-flex;
+    width: fit-content;
+    align-self: flex-start;
+  }
+  .mehan-nc-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: var(--size-element-sm, 32px);
+    padding: 0 11px;
+    border: 0;
+    border-radius: var(--radius-element, 9px);
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .mehan-nc-trigger:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+  }
+  .mehan-nc-badge {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+    color: #ffffff;
+    font-family: var(--font-family-code, monospace);
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    display: inline-grid;
+    place-items: center;
+  }
+  .mehan-nc-popover {
+    position: absolute;
+    top: calc(100% + 6px);
+    inset-inline-start: 0;
+    width: 310px;
+    max-width: calc(100vw - 32px);
+    z-index: 70;
+    border-radius: var(--radius-container, 14px);
+    background-color: var(--color-background-popover, var(--color-background-card));
+    border: 1px solid var(--mehan-card-hairline, var(--color-border));
+    box-shadow: var(--shadow-med);
+    overflow: hidden;
+  }
+  .mehan-nc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mehan-nc-tabs {
+    display: inline-flex;
+    gap: 4px;
+  }
+  .mehan-nc-tab {
+    height: 26px;
+    padding: 0 9px;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 11.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  .mehan-nc-tab[data-active="true"] {
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+  }
+  .mehan-nc-mark-all {
+    height: 26px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text-accent);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 11.5px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .mehan-nc-list {
+    max-height: 220px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-direction: column;
+  }
+  .mehan-nc-item {
+    width: 100%;
+    padding: 9px 11px;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+    text-align: start;
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    cursor: pointer;
+    font-family: var(--font-family-body, sans-serif);
+  }
+  .mehan-nc-item:last-child {
+    border-bottom: 0;
+  }
+  .mehan-nc-item:hover {
+    background-color: var(--mehan-tray, var(--color-overlay-hover));
+  }
+  .mehan-nc-dot {
+    width: 7px;
+    height: 7px;
+    margin-top: 5px;
+    border-radius: 9999px;
+    background-color: transparent;
+    flex: none;
+  }
+  .mehan-nc-dot[data-unread="true"] {
+    background-color: var(--color-accent);
+  }
+  .mehan-nc-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .mehan-nc-row-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .mehan-nc-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  .mehan-nc-time {
+    font-family: var(--font-family-code, monospace);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+    flex: none;
+  }
+  .mehan-nc-body {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.35;
+  }
+  .mehan-nc-empty {
+    padding: 20px 14px;
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+  }
+  .mehan-nc-footer {
+    padding: 6px 10px;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    justify-content: flex-end;
+  }
+  .mehan-nc-clear {
+    height: 26px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* 28. Tour (Non-Coercive Guided Walkthrough Coachmark) */
+  [data-mehan-tour-target="true"] {
+    outline: 2px solid var(--color-accent) !important;
+    outline-offset: 4px !important;
+  }
+  .mehan-tour-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 332px;
+    padding: 14px 16px;
+    border-radius: var(--radius-container, 14px);
+    background-color: var(--mehan-float, var(--color-background-popover));
+    border: 1px solid var(--mehan-card-hairline, var(--color-border));
+    box-shadow: var(--shadow-med);
+  }
+  .mehan-tour-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .mehan-tour-counter {
+    font-family: var(--font-family-code, monospace);
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-accent);
+  }
+  .mehan-tour-close {
+    width: 26px;
+    height: 26px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    display: inline-grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .mehan-tour-close:hover {
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+  }
+  .mehan-tour-title {
+    margin: 0;
+    font-family: var(--font-family-heading, sans-serif);
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--color-text-primary);
+  }
+  .mehan-tour-desc {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--color-text-secondary);
+  }
+  .mehan-tour-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 4px;
+  }
+  .mehan-tour-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .mehan-tour-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background-color: var(--color-border-emphasized);
+  }
+  .mehan-tour-dot[data-active="true"] {
+    width: 14px;
+    background-color: var(--color-accent);
+  }
+  .mehan-tour-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mehan-tour-skip,
+  .mehan-tour-prev,
+  .mehan-tour-next {
+    height: 28px;
+    padding: 0 11px;
+    border: 0;
+    border-radius: 8px;
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .mehan-tour-skip {
+    background: transparent;
+    color: var(--color-text-secondary);
+  }
+  .mehan-tour-prev {
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+  }
+  .mehan-tour-next {
+    background-color: var(--color-accent);
+    background-image: var(--mehan-primary-grad);
+    box-shadow: var(--mehan-shadow-primary);
+    color: #ffffff;
+  }
+
+  /* Universal Media Hygiene (Coarse Pointer, High Contrast, Forced Colors, Reduced Motion & Print) */
   @media (pointer: coarse) {
-    .mehan-ps-rail-hit {
+    .mehan-ps-rail-hit,
+    .mehan-split-main,
+    .mehan-split-trigger,
+    .mehan-copy-btn,
+    .mehan-color-well-trigger {
       min-height: 44px;
     }
     .mehan-cp-eyedropper {
@@ -2293,7 +4337,9 @@
       height: 44px;
     }
     .mehan-cp-hex-input,
-    .mehan-ps-value-input {
+    .mehan-ps-value-input,
+    .mehan-ad-input,
+    .mehan-gp-pos-input {
       font-size: 16px;
       min-height: 36px;
     }
@@ -2306,29 +4352,50 @@
     .mehan-cp-eyedropper,
     .mehan-ps-track,
     .mehan-ps-knob,
-    .mehan-metric-card {
+    .mehan-metric-card,
+    .mehan-split-btn,
+    .mehan-copy-btn,
+    .mehan-color-well-trigger,
+    .mehan-theme-switch,
+    .mehan-ad-socket,
+    .mehan-gradient-picker,
+    .mehan-am-grid {
       outline: 1px solid var(--color-border-emphasized);
     }
   }
 
   @media (forced-colors: active) {
-    .mehan-swatch {
+    .mehan-swatch,
+    .mehan-gp-handle,
+    .mehan-cw-chip {
       forced-color-adjust: none;
       border: 1px solid CanvasText;
     }
-    .mehan-swatch[data-selected="true"] {
+    .mehan-swatch[data-selected="true"],
+    .mehan-gp-handle[data-selected="true"],
+    .mehan-ts-option[data-selected="true"],
+    .mehan-am-cell[data-selected="true"] {
       outline: 2px solid Highlight;
       outline-offset: 2px;
     }
     .mehan-ps-track,
     .mehan-color-picker,
-    .mehan-metric-card {
+    .mehan-metric-card,
+    .mehan-split-btn,
+    .mehan-split-menu,
+    .mehan-copy-btn,
+    .mehan-color-well-trigger,
+    .mehan-theme-switch,
+    .mehan-ad-socket,
+    .mehan-gradient-picker,
+    .mehan-am-grid {
       border: 1px solid CanvasText;
     }
     .mehan-ps-fill {
       background: Highlight;
     }
-    .mehan-ps-knob {
+    .mehan-ps-knob,
+    .mehan-ad-rotor {
       background: Canvas;
       border: 2px solid Highlight;
     }
@@ -2336,7 +4403,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     .mehan-swatch,
-    .mehan-ps-knob {
+    .mehan-ps-knob,
+    .mehan-split-main,
+    .mehan-split-trigger,
+    .mehan-split-chevron {
       transition: none !important;
     }
     .mehan-swatch:hover:not(:disabled),
@@ -2348,7 +4418,8 @@
 
   @media print {
     .mehan-metric-card,
-    .mehan-color-picker {
+    .mehan-color-picker,
+    .mehan-gradient-picker {
       break-inside: avoid;
       box-shadow: none;
       border: 1px solid #d4d4d8;

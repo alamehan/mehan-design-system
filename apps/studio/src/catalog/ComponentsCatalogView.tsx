@@ -17,6 +17,9 @@ import type {StudioLang} from '../studioState';
 import {useCatalogGroupA} from './CatalogGroupA';
 import {useCatalogGroupB} from './CatalogGroupB';
 import {useCatalogGroupC} from './CatalogGroupC';
+import {useCatalogMehanTier1} from './CatalogMehanTier1';
+import {useCatalogMehanTier2} from './CatalogMehanTier2';
+import {useCatalogMehanTier3} from './CatalogMehanTier3';
 import {
   CATEGORY_DESC,
   CATEGORY_LABELS_ID,
@@ -42,11 +45,27 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
   const groupA = useCatalogGroupA();
   const groupB = useCatalogGroupB();
   const groupC = useCatalogGroupC();
+  const mehanTier1 = useCatalogMehanTier1();
+  const mehanTier2 = useCatalogMehanTier2();
+  const mehanTier3 = useCatalogMehanTier3();
 
   const allSpecimens = useMemo(
-    () => [...groupA, ...groupB, ...groupC],
-    [groupA, groupB, groupC],
+    () => [
+      ...groupA,
+      ...groupB,
+      ...groupC,
+      ...mehanTier1,
+      ...mehanTier2,
+      ...mehanTier3,
+    ],
+    [groupA, groupB, groupC, mehanTier1, mehanTier2, mehanTier3],
   );
+
+  const coreCount = useMemo(
+    () => allSpecimens.filter(s => s.pkg === 'core').length,
+    [allSpecimens],
+  );
+  const mehanCount = allSpecimens.length - coreCount;
 
   const countsByCategory = useMemo(() => {
     const map: Record<string, number> = {};
@@ -99,7 +118,11 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
           <Heading level={2}>{copy.components.title}</Heading>
           <Badge
             variant="info"
-            label={`${allSpecimens.length} live specimens`}
+            label={
+              isId
+                ? `${allSpecimens.length} spesimen aktif`
+                : `${allSpecimens.length} live specimens`
+            }
           />
         </HStack>
         <Text color="secondary">{copy.components.subtitle}</Text>
@@ -131,9 +154,16 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
           />
           <SegmentedControlItem
             value="core"
-            label={`Core (${allSpecimens.length - 4})`}
+            label={`Core (${coreCount})`}
           />
-          <SegmentedControlItem value="mehan" label="Mehan extensions (4)" />
+          <SegmentedControlItem
+            value="mehan"
+            label={
+              isId
+                ? `Ekstensi Mehan (${mehanCount})`
+                : `Mehan extensions (${mehanCount})`
+            }
+          />
         </SegmentedControl>
       </HStack>
 
@@ -220,7 +250,9 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
                         label={
                           isId
                             ? `${items.length} komponen`
-                            : `${items.length} specimens`
+                            : items.length === 1
+                              ? '1 specimen'
+                              : `${items.length} specimens`
                         }
                       />
                     </HStack>

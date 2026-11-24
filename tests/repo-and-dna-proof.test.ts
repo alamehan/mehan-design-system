@@ -20,7 +20,12 @@ import {
   type MehanAtmosphereId,
   type MehanPresetAccentId,
 } from '@mehan/dna';
-import {MEHAN_THEME_INIT_SCRIPT, formatShortcutKeys} from '@mehan/astryx';
+import {
+  MEHAN_THEME_INIT_SCRIPT,
+  formatGradientCss,
+  formatShortcutKeys,
+} from '@mehan/astryx';
+import {generatePortableCss} from '@mehan/portable';
 
 const repoRoot = path.resolve(import.meta.dirname, '..');
 
@@ -113,6 +118,41 @@ describe('Stage 1 Proof — Exhaustive 30-Theme Contrast Matrix, Utilities & Rep
 
     expect(formatShortcutKeys('mod+shift+z', true)).toEqual(['⌘', '⇧', 'Z']);
     expect(formatShortcutKeys('mod+shift+z', false)).toEqual(['Ctrl', 'Shift', 'Z']);
+
+    expect(
+      formatGradientCss(
+        [
+          {id: 'a', color: '#ff7597', position: 0},
+          {id: 'b', color: '#d42a5f', position: 100},
+        ],
+        'linear',
+        135,
+      ),
+    ).toBe('linear-gradient(135deg, #ff7597 0%, #d42a5f 100%)');
+
+    const portableCss = generatePortableCss({
+      name: 'proof',
+      atmosphere: 'confectionery',
+      accent: 'strawberry',
+    });
+    for (const cls of [
+      '.mh-split',
+      '.mh-copy-btn',
+      '.mh-mid-trunc',
+      '.mh-anchor-grid',
+      '.mh-otp',
+      '.mh-error-summary',
+      '.mh-inline-msg',
+      '.mh-timeline',
+      '.mh-zoom-bar',
+      '@media (prefers-contrast:more)',
+      '@media (forced-colors:active)',
+      '@media (pointer:coarse)',
+      '@media (prefers-reduced-motion:reduce)',
+      '@media print',
+    ]) {
+      expect(portableCss).toContain(cls);
+    }
   });
 
   it('locks package versions, built exports, bundled WOFF2 fonts, and MEHAN_THEME_INIT_SCRIPT parity', () => {

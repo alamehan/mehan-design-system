@@ -13,6 +13,12 @@ export interface ColorPickerProps {
   presets?: readonly string[];
   /** Optional accessible group label */
   label?: string;
+  /** Show tactile checkerboard alpha opacity rail (0%–100%) */
+  hasAlpha?: boolean;
+  /** Controlled alpha opacity in range 0..1 when hasAlpha is true */
+  alpha?: number;
+  /** Called whenever alpha opacity changes (0..1) */
+  onAlphaChange?: (alpha: number) => void;
 }
 
 const DEFAULT_PRESETS = [
@@ -66,16 +72,43 @@ function hsvToHex(h: number, s: number, v: number): string {
   return `#${byte(r)}${byte(g)}${byte(b)}`;
 }
 
+function hexWithOpacityCss(hex: string, alpha: number): string {
+  const clean = /^#?[0-9a-fA-F]{6}$/.test(hex.trim())
+    ? hex.trim().replace(/^#/, '')
+    : 'd42a5f';
+  const r = parseInt(clean.slice(0, 2), 16);
+  const g = parseInt(clean.slice(2, 4), 16);
+  const b = parseInt(clean.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${Number(alpha.toFixed(3))})`;
+}
+
 export function ColorPicker({
   value,
   onChange,
   presets = DEFAULT_PRESETS,
   label = 'Color picker',
+  hasAlpha = false,
+  alpha: controlledAlpha,
+  onAlphaChange,
 }: ColorPickerProps) {
   const [hsv, setHsv] = useState<[number, number, number]>(() => hexToHsv(value));
   const [hexDraft, setHexDraft] = useState(value.toUpperCase());
+  const [uncontrolledAlpha, setUncontrolledAlpha] = useState<number>(1);
   const [canEyeDropper, setCanEyeDropper] = useState(false);
   const svRef = useRef<HTMLDivElement | null>(null);
+
+  const effectiveAlpha =
+    controlledAlpha !== undefined
+      ? Math.min(1, Math.max(0, controlledAlpha))
+      : uncontrolledAlpha;
+
+  const commitAlpha = (nextAlpha: number) => {
+    const clamped = Math.round(Math.min(1, Math.max(0, nextAlpha)) * 100) / 100;
+    if (controlledAlpha === undefined) {
+      setUncontrolledAlpha(clamped);
+    }
+    onAlphaChange?.(clamped);
+  };
 
   useEffect(() => {
     setCanEyeDropper(typeof window !== 'undefined' && 'EyeDropper' in window);
@@ -143,6 +176,10 @@ export function ColorPicker({
   };
 
   const pureHueHex = hsvToHex(hsv[0], 1, 1);
+  const currentHex = hsvToHex(hsv[0], hsv[1], hsv[2]);
+  const previewCss = hasAlpha
+    ? hexWithOpacityCss(currentHex, effectiveAlpha)
+    : value;
 
   return (
     <div className="mehan-color-picker" role="group" aria-label={label}>
@@ -196,12 +233,40 @@ export function ColorPicker({
         />
       </label>
 
+      {hasAlpha && (
+        <div className="mehan-cp-alpha-row">
+          <div className="mehan-cp-alpha-track">
+            <span
+              className="mehan-cp-alpha-gradient"
+              style={{
+                background: `linear-gradient(90deg, ${hexWithOpacityCss(currentHex, 0)} 0%, ${currentHex} 100%)`,
+              }}
+              aria-hidden="true"
+            />
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={Math.round(effectiveAlpha * 100)}
+              aria-label="Opacity percentage"
+              className="mehan-cp-alpha"
+              onChange={e => commitAlpha(Number(e.target.value) / 100)}
+            />
+          </div>
+          <span className="mehan-cp-alpha-readout" aria-live="off">
+            {Math.round(effectiveAlpha * 100)}%
+          </span>
+        </div>
+      )}
+
       <div className="mehan-cp-hex-row">
-        <span
-          className="mehan-cp-preview"
-          style={{backgroundColor: value}}
-          aria-hidden="true"
-        />
+        <span className="mehan-cp-preview-checker" aria-hidden="true">
+          <span
+            className="mehan-cp-preview-fill"
+            style={{backgroundColor: previewCss}}
+          />
+        </span>
         <input
           type="text"
           className="mehan-cp-hex-input"

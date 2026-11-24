@@ -208,6 +208,28 @@ button>svg,a>svg{flex-shrink:0}
 .mh-nav-item.is-active,.mh-nav-item[aria-current="page"]{background:var(--mh-accent-soft);color:var(--mh-accent-text)}
 dialog.mh-modal{border:0;overscroll-behavior:contain;border-radius:var(--mh-r-xl);background:var(--mh-float);color:var(--mh-ink);box-shadow:var(--mh-shadow-modal);padding:22px;max-width:460px;width:calc(100% - 32px)}
 dialog.mh-modal::backdrop{background:rgba(15,12,10,.46);backdrop-filter:blur(3px)}
+.mh-split{display:inline-flex;align-items:stretch;position:relative}
+.mh-split>.mh-btn:first-child{border-top-right-radius:0;border-bottom-right-radius:0}
+.mh-split>.mh-btn:nth-child(2){border-top-left-radius:0;border-bottom-left-radius:0;padding-inline:9px;border-left:1px solid rgba(255,255,255,.24)}
+.mh-copy-btn[data-copied="true"]{color:var(--mh-success)}
+.mh-mid-trunc{display:inline-flex;align-items:baseline;max-width:100%;min-width:0;overflow:hidden}
+.mh-mid-head{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mh-mid-tail{flex:0 0 auto;white-space:nowrap}
+.mh-anchor-grid{display:inline-grid;grid-template-columns:repeat(3,22px);grid-template-rows:repeat(3,22px);gap:3px;padding:4px;border-radius:var(--mh-r-sm);background:var(--mh-well);box-shadow:var(--mh-shadow-well)}
+.mh-anchor-grid button{border:0;border-radius:5px;background:transparent;display:grid;place-items:center;cursor:pointer;padding:0}
+.mh-anchor-grid button::after{content:"";width:5px;height:5px;border-radius:999px;background:var(--mh-ink-3)}
+.mh-anchor-grid button[aria-checked="true"]{background:var(--mh-surface);box-shadow:var(--mh-shadow-raised)}
+.mh-anchor-grid button[aria-checked="true"]::after{width:8px;height:8px;background:var(--mh-accent)}
+.mh-otp{display:inline-flex;gap:6px;align-items:center}
+.mh-otp input{width:38px;height:42px;border:1.5px solid transparent;border-radius:var(--mh-r-sm);background:var(--mh-well);box-shadow:var(--mh-shadow-well);text-align:center;font:700 16px/1 var(--mh-font-mono,"Geist Mono"),monospace;color:var(--mh-ink)}
+.mh-error-summary{padding:12px 14px;border-radius:var(--mh-r-md);background:var(--mh-danger-soft);color:var(--mh-ink);display:flex;flex-direction:column;gap:6px}
+.mh-inline-msg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;color:var(--mh-info)}
+.mh-inline-msg.is-error{color:var(--mh-danger)}
+.mh-inline-msg.is-success{color:var(--mh-success)}
+.mh-timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.mh-timeline li{position:relative;padding-left:20px;font-size:13px}
+.mh-timeline li::before{content:"";position:absolute;left:0;top:5px;width:9px;height:9px;border-radius:999px;background:var(--mh-accent)}
+.mh-zoom-bar{display:inline-flex;align-items:center;gap:4px;padding:4px;border-radius:999px;background:var(--mh-float);box-shadow:var(--mh-shadow-card)}
 @media (max-width:860px){.mh-shell{grid-template-columns:1fr}.mh-sidebar{display:none}.mh-grid-2,.mh-grid-3,.mh-grid-4{grid-template-columns:1fr}}
 @media (pointer:coarse){.mh-btn,.mh-input,.mh-select,.mh-nav-item{min-height:44px}.mh-input,.mh-select,.mh-textarea{font-size:16px}}
 @media (prefers-contrast:more){.mh-card,.mh-metric,.mh-table-wrap,.mh-input,.mh-select,.mh-textarea,.mh-btn-secondary{outline:1px solid var(--mh-line-strong)}}
@@ -346,6 +368,23 @@ export const MEHAN_PORTABLE_RUNTIME_JS = `
       root.setAttribute('data-theme', nextMode);
       root.style.colorScheme = nextMode;
       try { localStorage.setItem('mehan-mode', nextMode); } catch (err) {}
+    }
+
+    var copyBtn = target.closest('[data-mh-copy]');
+    if (copyBtn) {
+      var payload = copyBtn.getAttribute('data-mh-copy') || '';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).catch(function () {});
+      }
+      copyBtn.setAttribute('data-copied', 'true');
+      setTimeout(function () { copyBtn.removeAttribute('data-copied'); }, 1800);
+    }
+
+    var anchorCell = target.closest('.mh-anchor-grid button');
+    if (anchorCell && anchorCell.parentElement) {
+      anchorCell.parentElement.querySelectorAll('button').forEach(function (b) {
+        b.setAttribute('aria-checked', b === anchorCell ? 'true' : 'false');
+      });
     }
   });
 })();

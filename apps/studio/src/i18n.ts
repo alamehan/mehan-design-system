@@ -16,10 +16,10 @@ export const STUDIO_COPY = {
       eyebrow: 'Mehan Design System v1.0',
       heroTitle: 'Permukaan taktil yang tenang, kustomisasi penuh di atas Meta Astryx.',
       heroDesc:
-        'Memadukan 107 komponen aksesibel lintas 12 kategori resmi Meta Astryx dengan fisika material OKLCH, 10 font bundel offline, Theme Editor 3-tingkat, dan kitab standar UX & microcopy.',
+        'Memadukan 131 spesimen aksesibel lintas 12 kategori resmi Meta Astryx dengan fisika material OKLCH, 10 font bundel offline, Theme Editor 3-tingkat, dan 12 bab standar UX & microcopy.',
       ctaCustomize: 'Buka Theme Editor',
       ctaCopyAiKit: 'Salin kit AI',
-      ctaExploreComponents: 'Jelajahi 107 komponen',
+      ctaExploreComponents: 'Jelajahi katalog komponen',
       mapTitle: 'Arsitektur 3 lapis bebas fork',
       mapSub:
         'Perilaku WAI-ARIA tetap murni milik Meta Astryx, sementara jiwa visual, ergonomi UX, dan portabilitas dikelola satu sumber DNA.',
@@ -30,7 +30,7 @@ export const STUDIO_COPY = {
       layer2Tag: 'Lapis 2 · Jiwa taktil & UX',
       layer2Title: 'Mehan DNA + @mehan/astryx',
       layer2Desc:
-        'Menyuntikkan bibir tombol 3D OKLCH, pil Espresso Shotcandy, sumur input cekung, 4 kontrol presisi, 10 font WOFF2, dan 8 dokumen AI Astryx.',
+        'Menyuntikkan bibir tombol 3D OKLCH, pil Espresso Shotcandy, sumur input cekung, 28 komponen universal Mehan, 10 font WOFF2, dan 65 dokumen AI Astryx.',
       layer3Tag: 'Lapis 3 · Portabilitas instan',
       layer3Title: 'Mehan Portable + Token W3C',
       layer3Desc:
@@ -65,12 +65,12 @@ export const STUDIO_COPY = {
       title: 'Katalog komponen interaktif',
       subtitle:
         'Pilih kategori di samping untuk fokus memindai spesimen secara proporsional, uji interaksinya langsung, atau buka kode JSX sesuai kebutuhan.',
-      searchPlaceholder: 'Cari dari 107 komponen (Button, Table, AppShell, Calendar, PrecisionSlider)...',
+      searchPlaceholder: 'Cari komponen (Button, Table, SplitButton, GradientPicker, DigitEntry)...',
     },
     ux: {
       title: 'Panduan standar UX & microcopy',
       subtitle:
-        'Enam bab interaktif yang mengatur pengelompokan informasi (chunking), pengungkapan bertahap (progressive disclosure), pemotongan teks (truncation), kondisi pemulihan, dan tata bahasa produk.',
+        'Dua belas bab interaktif yang mengatur chunking, progressive disclosure, batas baris & MiddleTruncate, ergonomi keyboard/sentuh, ritme validasi form, koreografi gerak, serta format lokal Intl.',
       doLabel: 'Standar Mehan (lakukan)',
       dontLabel: 'Anti-pola (hindari)',
     },
@@ -104,10 +104,10 @@ export const STUDIO_COPY = {
       eyebrow: 'Mehan Design System v1.0',
       heroTitle: 'Calm tactile surfaces, unrestricted theming on Meta Astryx.',
       heroDesc:
-        'Pairs 107 accessible primitives across all 12 official Meta Astryx categories with perceptual OKLCH materials, 10 offline-bundled typefaces, a chunked 3-tier Theme Editor, and a complete UX & microcopy playbook.',
+        'Pairs 131 accessible specimens across all 12 official Meta Astryx categories with perceptual OKLCH materials, 10 offline-bundled typefaces, a chunked 3-tier Theme Editor, and a 12-chapter UX & microcopy playbook.',
       ctaCustomize: 'Open Theme Editor',
       ctaCopyAiKit: 'Copy AI kit',
-      ctaExploreComponents: 'Explore 107 components',
+      ctaExploreComponents: 'Explore component catalog',
       mapTitle: 'Zero-fork three-layer architecture',
       mapSub:
         'Core WAI-ARIA behavior stays untouched in Meta Astryx while tactile materials, UX laws, and portable outputs share a single DNA source.',
@@ -118,7 +118,7 @@ export const STUDIO_COPY = {
       layer2Tag: 'Layer 2 · Tactile soul & UX',
       layer2Title: 'Mehan DNA + @mehan/astryx',
       layer2Desc:
-        'Adds OKLCH 3D button lips, Shotcandy Espresso pills, recessed wells, 4 precision controls, 10 bundled WOFF2 fonts, and 8 agent UX/component docs.',
+        'Adds OKLCH 3D button lips, Shotcandy Espresso pills, recessed wells, 28 universal Mehan components, 10 bundled WOFF2 fonts, and 65 agent UX & component docs.',
       layer3Tag: 'Layer 3 · Zero-setup bridge',
       layer3Title: 'Mehan Portable + W3C tokens',
       layer3Desc:
@@ -153,12 +153,12 @@ export const STUDIO_COPY = {
       title: 'Interactive component catalog',
       subtitle:
         'Browse one category at a time for calm scanning, test real keyboard and pointer interactions on clean stages, or inspect JSX on demand.',
-      searchPlaceholder: 'Search all 107 components (Button, Table, AppShell, Calendar, PrecisionSlider)...',
+      searchPlaceholder: 'Search components (Button, Table, SplitButton, GradientPicker, DigitEntry)...',
     },
     ux: {
       title: 'UX architecture & microcopy playbook',
       subtitle:
-        'Six interactive chapters governing information grouping & chunking, progressive disclosure, truncation & numerals, recovery states, and bilingual product copy.',
+        'Twelve interactive chapters governing chunking, progressive disclosure, 9-tier line budgets, keyboard & coarse-pointer ergonomics, form validation timing, motion choreography, and Intl formatting.',
       doLabel: 'Mehan standard (do)',
       dontLabel: "Anti-pattern (don't)",
     },
