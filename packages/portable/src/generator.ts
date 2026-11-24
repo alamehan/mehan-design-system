@@ -17,11 +17,23 @@ function varsBlock(dna: ResolvedMehanDna, mode: 'light' | 'dark'): string {
   const ctrlSm = dna.density === 'compact' ? '28px' : '32px';
   const ctrlLg = dna.density === 'compact' ? '40px' : '44px';
   const easeOut =
-    dna.motion === 'calm'
+    dna.motion === 'calm' || dna.motion === 'crisp'
       ? 'cubic-bezier(0.22,1,0.36,1)'
       : dna.motion === 'standard'
         ? 'cubic-bezier(0.2,0.9,0.3,1)'
         : 'cubic-bezier(0.34,1.56,0.64,1)';
+  const segSelectedBg =
+    dna.segmentedStyle === 'espresso'
+      ? mode === 'light'
+        ? S.inverted
+        : S.inverted
+      : 'var(--mh-raised-grad)';
+  const segSelectedInk =
+    dna.segmentedStyle === 'espresso'
+      ? mode === 'light'
+        ? S.onInverted
+        : dna.atmosphere.light.ink
+      : S.ink;
 
   return [
     `--mh-paper:${S.paper}`,
@@ -47,6 +59,13 @@ function varsBlock(dna: ResolvedMehanDna, mode: 'light' | 'dark'): string {
     `--mh-primary-grad:${A.buttonGradient}`,
     `--mh-primary-grad-hover:${A.buttonGradientHover}`,
     `--mh-primary-lip:${A.buttonLip}`,
+    `--mh-lip-pad:${dna.lipPx}px`,
+    `--mh-seg-active-bg:${segSelectedBg}`,
+    `--mh-seg-active-ink:${segSelectedInk}`,
+    `--mh-font-display:${dna.typography.displayFamily}`,
+    `--mh-font-body:${dna.typography.bodyFamily}`,
+    `--mh-font-mono:${dna.typography.monoFamily}`,
+    `--mh-font-base:${dna.typeBase}px`,
     `--mh-raised-grad:${M.raisedGradient}`,
     `--mh-knob-grad:${M.knobGradient}`,
     `--mh-shadow-well:${M.shadowWell}`,
@@ -88,10 +107,10 @@ const CORE_PORTABLE_RULES = `
 *,*::before,*::after{box-sizing:border-box}
 :root[data-density="compact"]{--mh-ctrl-sm:28px;--mh-ctrl-md:32px;--mh-ctrl-lg:40px}
 :root[data-motion="calm"]{--mh-ease:cubic-bezier(0.22,1,0.36,1)}
-html,body{margin:0;min-height:100%;background:var(--mh-paper);color:var(--mh-ink);font:400 14px/1.5 "Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+html,body{margin:0;min-height:100%;background:var(--mh-paper);color:var(--mh-ink);font:400 var(--mh-font-base,14px)/1.5 var(--mh-font-body,"Figtree"),ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4,p{margin:0}
 button,input,select,textarea{font:inherit;color:inherit}
-.mh-display,.mh-h1,.mh-h2,.mh-h3{font-family:"Bricolage Grotesque","Figtree",ui-sans-serif,system-ui,sans-serif;letter-spacing:-0.028em;text-wrap:balance}
+.mh-display,.mh-h1,.mh-h2,.mh-h3{font-family:var(--mh-font-display,"Bricolage Grotesque"),var(--mh-font-body,"Figtree"),ui-sans-serif,system-ui,sans-serif;letter-spacing:-0.028em;text-wrap:balance}
 .mh-display{font-size:clamp(28px,4vw,42px);line-height:1.08;font-weight:800;letter-spacing:-0.035em}
 .mh-h1{font-size:26px;line-height:1.18;font-weight:800}
 .mh-h2{font-size:19px;line-height:1.25;font-weight:700}
@@ -150,7 +169,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* Segmented Control, Switch & Boiled-Sweet Swatch */
 .mh-seg{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:var(--mh-r-md);background:var(--mh-well);box-shadow:var(--mh-shadow-well)}
 .mh-seg button{height:calc(var(--mh-ctrl-md,36px) - 6px);padding:0 12px;border:0;border-radius:var(--mh-r-sm);background:transparent;color:var(--mh-ink-2);font-size:12.5px;font-weight:600;cursor:pointer}
-.mh-seg button[aria-selected="true"],.mh-seg button.is-active{background:var(--mh-raised-grad);color:var(--mh-ink);box-shadow:var(--mh-shadow-raised)}
+.mh-seg button[aria-selected="true"],.mh-seg button.is-active{background:var(--mh-seg-active-bg,var(--mh-raised-grad));color:var(--mh-seg-active-ink,var(--mh-ink));box-shadow:var(--mh-shadow-raised)}
 .mh-switch{width:38px;height:22px;padding:0;border:0;border-radius:999px;background:var(--mh-socket);box-shadow:var(--mh-shadow-socket);position:relative;cursor:pointer;transition:background 180ms ease}
 .mh-switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--mh-knob-grad);box-shadow:var(--mh-shadow-knob);transition:transform 180ms var(--mh-ease)}
 .mh-switch[aria-checked="true"],.mh-switch.is-on{background:var(--mh-primary-grad)}

@@ -1,0 +1,1488 @@
+import React, {useMemo, useRef, useState} from 'react';
+import {
+  AspectRatio,
+  Badge,
+  Banner,
+  Button,
+  Card,
+  Center,
+  CheckboxInput,
+  ChatComposer,
+  ChatMessage,
+  ChatMessageBubble,
+  ChatMessageList,
+  ChatSystemMessage,
+  ChatToolCalls,
+  Collapsible,
+  Dialog,
+  DialogHeader,
+  Divider,
+  Grid,
+  HStack,
+  Heading,
+  Item,
+  Layout,
+  LayoutContent,
+  LayoutFooter,
+  LayoutHeader,
+  Link,
+  MoreMenu,
+  NumberInput,
+  RadioList,
+  RadioListItem,
+  ScrollableArea,
+  Section,
+  SegmentedControl,
+  SegmentedControlItem,
+  SelectableCard,
+  Selector,
+  Stack,
+  StackItem,
+  Switch,
+  Table,
+  Text,
+  TextInput,
+  TopNav,
+  TopNavHeading,
+  TopNavItem,
+  VStack,
+  VisuallyHidden,
+  pixel,
+  proportional,
+  useToast,
+} from '@astryxdesign/core';
+import {ColorSwatch, MetricCard, PrecisionSlider} from '@mehan/astryx';
+import {
+  CreditCard,
+  DollarSign,
+  Download,
+  Folder,
+  LayoutGrid,
+  List as ListIcon,
+  Lock,
+  MapPin,
+  Mic,
+  Plus,
+  Search,
+  ShoppingBag,
+  Smartphone,
+  Sparkles,
+  Tag,
+  User,
+  Wallet,
+  X,
+} from 'lucide-react';
+import type {StudioCopy} from '../i18n';
+import type {StudioLang} from '../studioState';
+
+const BACKDROP_PRESETS = [
+  {
+    id: 'berry-cream',
+    label: 'Strawberry Cream',
+    swatch: '#e0366b',
+    gradient: 'linear-gradient(135deg, #ff7597 0%, #d42a5f 52%, #7a1236 100%)',
+  },
+  {
+    id: 'cobalt-sky',
+    label: 'Porcelain Cobalt',
+    swatch: '#2563eb',
+    gradient: 'linear-gradient(135deg, #60a5fa 0%, #2563eb 52%, #1e3a8a 100%)',
+  },
+  {
+    id: 'mint-jade',
+    label: 'Mint Glaze',
+    swatch: '#0d9468',
+    gradient: 'linear-gradient(135deg, #6ee7b7 0%, #0d9468 55%, #064e3b 100%)',
+  },
+  {
+    id: 'amber-honey',
+    label: 'Tangerine Zest',
+    swatch: '#ea580c',
+    gradient: 'linear-gradient(135deg, #fdba74 0%, #ea580c 54%, #7c2d12 100%)',
+  },
+  {
+    id: 'plum-velvet',
+    label: 'Grape Velvet',
+    swatch: '#7c3aed',
+    gradient: 'linear-gradient(135deg, #c4b5fd 0%, #7c3aed 54%, #3b0764 100%)',
+  },
+] as const;
+
+type ShowcaseBadgeVariant =
+  | 'blue'
+  | 'cyan'
+  | 'green'
+  | 'orange'
+  | 'pink'
+  | 'purple'
+  | 'red'
+  | 'teal'
+  | 'yellow';
+
+interface InventoryRow extends Record<string, unknown> {
+  id: string;
+  name: string;
+  meta: string;
+  available: number;
+  location: string;
+  category: string;
+  tags: Array<{label: string; variant: ShowcaseBadgeVariant}>;
+  artKind: 'watch' | 'headphones' | 'backpack' | 'wallet' | 'tumbler' | 'throw';
+  selected: boolean;
+}
+
+const DEFAULT_INVENTORY: InventoryRow[] = [
+  {
+    id: 'a',
+    name: 'Minimalist Watch',
+    meta: 'Stainless steel, sapphire crystal',
+    available: 42,
+    location: 'Aisle 3',
+    category: 'Wearables',
+    tags: [{label: 'New', variant: 'blue'}],
+    artKind: 'watch',
+    selected: false,
+  },
+  {
+    id: 'b',
+    name: 'Wireless Headphones',
+    meta: 'ANC, 30hr battery',
+    available: 128,
+    location: 'Aisle 1',
+    category: 'Audio',
+    tags: [{label: 'Popular', variant: 'green'}],
+    artKind: 'headphones',
+    selected: true,
+  },
+  {
+    id: 'c',
+    name: 'Canvas Backpack',
+    meta: 'Water-resistant, 25L',
+    available: 63,
+    location: 'Aisle 2',
+    category: 'Bags',
+    tags: [{label: 'Limited', variant: 'yellow'}],
+    artKind: 'backpack',
+    selected: false,
+  },
+  {
+    id: 'd',
+    name: 'Leather Wallet',
+    meta: 'Full-grain, RFID blocking',
+    available: 15,
+    location: 'Aisle 4',
+    category: 'Wearables',
+    tags: [{label: 'Leather', variant: 'yellow'}],
+    artKind: 'wallet',
+    selected: true,
+  },
+  {
+    id: 'e',
+    name: 'Travel Tumbler',
+    meta: 'Vacuum insulated, 16oz',
+    available: 87,
+    location: 'Aisle 5',
+    category: 'Drinkware',
+    tags: [{label: 'Drinkware', variant: 'teal'}],
+    artKind: 'tumbler',
+    selected: false,
+  },
+  {
+    id: 'f',
+    name: 'Linen Throw',
+    meta: 'Heavyweight, oat weave',
+    available: 21,
+    location: 'Aisle 6',
+    category: 'Home',
+    tags: [{label: 'Home', variant: 'orange'}],
+    artKind: 'throw',
+    selected: true,
+  },
+];
+
+/** Self-contained crisp SVG product studio illustrations (100% offline file:// safe). */
+function ProductIllustration({
+  kind,
+  compact = false,
+}: {
+  kind: InventoryRow['artKind'];
+  compact?: boolean;
+}) {
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'grid',
+        placeItems: 'center',
+        background:
+          'radial-gradient(circle at 35% 28%, var(--color-background-surface) 0%, var(--mehan-well) 100%)',
+      }}
+      aria-hidden="true"
+    >
+      <svg
+        viewBox="0 0 120 120"
+        width={compact ? 28 : '72%'}
+        height={compact ? 28 : '72%'}
+        fill="none"
+      >
+        {kind === 'watch' && (
+          <>
+            <rect
+              x="48"
+              y="14"
+              width="24"
+              height="92"
+              rx="8"
+              fill="var(--color-border-emphasized)"
+            />
+            <circle
+              cx="60"
+              cy="60"
+              r="28"
+              fill="var(--color-background-card)"
+              stroke="var(--color-text-primary)"
+              strokeWidth="4"
+            />
+            <line
+              x1="60"
+              y1="60"
+              x2="60"
+              y2="42"
+              stroke="var(--color-accent)"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+            />
+            <line
+              x1="60"
+              y1="60"
+              x2="74"
+              y2="66"
+              stroke="var(--color-text-primary)"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+          </>
+        )}
+        {kind === 'headphones' && (
+          <>
+            <path
+              d="M30 66V54C30 37.43 43.43 24 60 24C76.57 24 90 37.43 90 54V66"
+              stroke="var(--color-text-primary)"
+              strokeWidth="6"
+              strokeLinecap="round"
+            />
+            <rect
+              x="22"
+              y="58"
+              width="16"
+              height="32"
+              rx="8"
+              fill="var(--color-accent)"
+            />
+            <rect
+              x="82"
+              y="58"
+              width="16"
+              height="32"
+              rx="8"
+              fill="var(--color-accent)"
+            />
+          </>
+        )}
+        {kind === 'backpack' && (
+          <>
+            <path
+              d="M46 28C46 21 52 16 60 16C68 16 74 21 74 28"
+              stroke="var(--color-text-primary)"
+              strokeWidth="4.5"
+              strokeLinecap="round"
+            />
+            <rect
+              x="32"
+              y="28"
+              width="56"
+              height="68"
+              rx="18"
+              fill="var(--color-background-card)"
+              stroke="var(--color-text-primary)"
+              strokeWidth="4"
+            />
+            <rect
+              x="42"
+              y="58"
+              width="36"
+              height="26"
+              rx="9"
+              fill="var(--color-accent)"
+            />
+          </>
+        )}
+        {(kind === 'wallet' || kind === 'tumbler' || kind === 'throw') && (
+          <>
+            <rect
+              x="28"
+              y="32"
+              width="64"
+              height="56"
+              rx="14"
+              fill="var(--color-background-card)"
+              stroke="var(--color-text-primary)"
+              strokeWidth="4"
+            />
+            <circle cx="74" cy="60" r="7" fill="var(--color-accent)" />
+          </>
+        )}
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Official Meta Astryx Theme Showcase Benchmark (`theme-showcase/page.tsx`)
+ * Exercises TopNav, Hero Display Typography, Storefront Product Cards, Checkout
+ * Form + Nested SelectableCards, Studio AI Chat + Nested Order Card, Inventory
+ * Filterable Table, Revenue Activity Feed, and Sign-in Modal Dialog.
+ */
+function OfficialThemeShowcase() {
+  const showToast = useToast();
+  const [signInOpen, setSignInOpen] = useState(false);
+  const [signInEmail, setSignInEmail] = useState('');
+  const [signInPass, setSignInPass] = useState('');
+
+  // Storefront product card quantities
+  const [qtyWatch, setQtyWatch] = useState<number | null>(1);
+  const [qtyAudio, setQtyAudio] = useState<number | null>(1);
+  const [qtyBag, setQtyBag] = useState<number | null>(1);
+  const [addedKey, setAddedKey] = useState<string | null>(null);
+
+  // Checkout state
+  const [email, setEmail] = useState('');
+  const [shipping, setShipping] = useState('economy');
+  const [payment, setPayment] = useState('card');
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiry, setExpiry] = useState('');
+  const [cvc, setCvc] = useState('');
+  const [country, setCountry] = useState<string>('us');
+  const [saveInfo, setSaveInfo] = useState(true);
+  const [showPaymentPreview, setShowPaymentPreview] = useState(false);
+
+  // Studio AI Chat state
+  const [draft, setDraft] = useState('');
+  const [messages, setMessages] = useState<Array<{id: number; text: string}>>([]);
+
+  // Inventory Table state
+  const [invQuery, setInvQuery] = useState('');
+  const [invCategory, setInvCategory] = useState<string | null>(null);
+  const [invLocation, setInvLocation] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(
+    () => new Set(['b', 'd', 'f']),
+  );
+
+  const products = [
+    {
+      key: 'watch' as const,
+      name: 'Minimalist Watch',
+      desc: 'Clean design meets everyday durability.',
+      badge: 'New',
+      variant: 'blue' as const,
+      qty: qtyWatch,
+      setQty: setQtyWatch,
+    },
+    {
+      key: 'headphones' as const,
+      name: 'Wireless Headphones',
+      desc: 'Immersive sound, all-day comfort.',
+      badge: 'Popular',
+      variant: 'green' as const,
+      qty: qtyAudio,
+      setQty: setQtyAudio,
+    },
+    {
+      key: 'backpack' as const,
+      name: 'Canvas Backpack',
+      desc: 'Water-resistant canvas with a quiet profile.',
+      badge: 'Limited',
+      variant: 'yellow' as const,
+      qty: qtyBag,
+      setQty: setQtyBag,
+    },
+  ];
+
+  const filteredInventory = useMemo(
+    () =>
+      DEFAULT_INVENTORY.filter(
+        row =>
+          (!invQuery ||
+            `${row.name} ${row.meta}`
+              .toLowerCase()
+              .includes(invQuery.toLowerCase())) &&
+          (!invCategory || row.category === invCategory) &&
+          (!invLocation || row.location === invLocation),
+      ),
+    [invQuery, invCategory, invLocation],
+  );
+
+  const toggleRow = (id: string, checked: boolean) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  };
+
+  const submitChat = () => {
+    const trimmed = draft.trim();
+    if (!trimmed) return;
+    setMessages(prev => [...prev, {id: Date.now(), text: trimmed}]);
+    setDraft('');
+  };
+
+  return (
+    <div className="showcase-frame" data-theme-preview="true">
+      <TopNav
+        label="Theme showcase navigation"
+        heading={<TopNavHeading heading="Studio" />}
+        centerContent={
+          <>
+            <TopNavItem label="Shop" href="#shop" isSelected />
+            <TopNavItem label="New In" href="#new" />
+            <TopNavItem label="Stories" href="#stories" />
+            <TopNavItem label="Help" href="#help" />
+          </>
+        }
+        endContent={
+          <HStack gap={2} vAlign="center">
+            <Button
+              label="Search"
+              variant="ghost"
+              isIconOnly
+              icon={<Search size={16} />}
+              onClick={() => showToast({body: 'Search opened', type: 'info'})}
+            />
+            <Button
+              label="Account"
+              variant="ghost"
+              isIconOnly
+              icon={<User size={16} />}
+              onClick={() => setSignInOpen(true)}
+            />
+            <Button
+              label="Cart"
+              variant="ghost"
+              isIconOnly
+              icon={<ShoppingBag size={16} />}
+              onClick={() => showToast({body: 'Cart has 2 items', type: 'info'})}
+            />
+            <Button
+              label="Sign in"
+              variant="primary"
+              size="sm"
+              onClick={() => setSignInOpen(true)}
+            />
+          </HStack>
+        }
+      />
+
+      <Section padding={5} variant="transparent">
+        <VStack gap={8}>
+          {/* Hero Storefront */}
+          <Center>
+            <VStack gap={6} width="100%" maxWidth={900}>
+              <Center>
+                <VStack gap={3} hAlign="center" maxWidth={560}>
+                  <Heading level={2} type="display-2" color="accent" justify="center">
+                    Little joys, everywhere you go
+                  </Heading>
+                  <Text type="body" color="secondary" justify="center">
+                    Official Meta Astryx Theme Showcase — testing typography, nested
+                    card contrast, recessed inputs, chat bubbles, and data tables in
+                    one responsive benchmark.
+                  </Text>
+                </VStack>
+              </Center>
+
+              <Grid columns={{minWidth: 210, max: 3, repeat: 'fit'}} gap={4}>
+                {products.map(p => (
+                  <Card key={p.key} padding={0} height="100%">
+                    <VStack gap={0} height="100%">
+                      <AspectRatio ratio={1.25}>
+                        <ProductIllustration kind={p.key} />
+                      </AspectRatio>
+                      <StackItem size="fill">
+                        <VStack padding={4} gap={2} hAlign="center" height="100%">
+                          <Badge label={p.badge} variant={p.variant} />
+                          <Heading level={3} justify="center">
+                            {p.name}
+                          </Heading>
+                          <StackItem size="fill">
+                            <Text
+                              type="supporting"
+                              color="secondary"
+                              justify="center"
+                              display="block"
+                            >
+                              {p.desc}
+                            </Text>
+                          </StackItem>
+                          <HStack
+                            gap={2}
+                            vAlign="center"
+                            hAlign="center"
+                            wrap="wrap"
+                            width="100%"
+                          >
+                            <NumberInput
+                              label={`${p.name} quantity`}
+                              isLabelHidden
+                              value={p.qty}
+                              onChange={v => {
+                                p.setQty(v);
+                                setAddedKey(null);
+                              }}
+                              min={1}
+                              max={99}
+                              size="sm"
+                              width={76}
+                            />
+                            <Button
+                              label={addedKey === p.key ? 'Added to cart' : 'Add to cart'}
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => setAddedKey(p.key)}
+                            />
+                          </HStack>
+                        </VStack>
+                      </StackItem>
+                    </VStack>
+                  </Card>
+                ))}
+              </Grid>
+            </VStack>
+          </Center>
+
+          {/* Row 2: Checkout Card + Studio AI Chat */}
+          <Grid columns={{minWidth: 310, max: 2, repeat: 'fit'}} gap={4} align="stretch">
+            <Card padding={4}>
+              <VStack gap={4}>
+                <Heading level={3}>Checkout</Heading>
+                <VStack gap={3}>
+                  <TextInput
+                    label="Email"
+                    placeholder="you@studio.com"
+                    value={email}
+                    onChange={setEmail}
+                  />
+                  <RadioList
+                    label="Shipping method"
+                    description="Delivery time depends on warehouse availability."
+                    value={shipping}
+                    onChange={setShipping}
+                  >
+                    <RadioListItem
+                      value="economy"
+                      label="Economy shipping"
+                      description="5–7 business days"
+                      endContent={<Text weight="bold">$12.00</Text>}
+                    />
+                    <RadioListItem
+                      value="standard"
+                      label="Standard shipping"
+                      description="3–5 business days"
+                      endContent={<Text weight="bold">$16.00</Text>}
+                    />
+                    <RadioListItem
+                      value="express"
+                      label="Express shipping"
+                      description="1–2 business days"
+                      endContent={<Text weight="bold">$24.00</Text>}
+                    />
+                  </RadioList>
+
+                  <VStack gap={2}>
+                    <Text type="supporting" weight="bold">
+                      Payment method
+                    </Text>
+                    <Grid columns={{minWidth: 85, max: 3, repeat: 'fit'}} gap={2}>
+                      <SelectableCard
+                        label="Pay with card"
+                        isSelected={payment === 'card'}
+                        onChange={() => setPayment('card')}
+                        padding={3}
+                      >
+                        <VStack gap={1} hAlign="center">
+                          <CreditCard size={18} />
+                          <Text type="supporting" weight="bold">
+                            Card
+                          </Text>
+                        </VStack>
+                      </SelectableCard>
+                      <SelectableCard
+                        label="Pay with Apple Pay"
+                        isSelected={payment === 'apple'}
+                        onChange={() => setPayment('apple')}
+                        padding={3}
+                      >
+                        <VStack gap={1} hAlign="center">
+                          <Smartphone size={18} />
+                          <Text type="supporting" weight="bold">
+                            Apple Pay
+                          </Text>
+                        </VStack>
+                      </SelectableCard>
+                      <SelectableCard
+                        label="Pay with Google Pay"
+                        isSelected={payment === 'google'}
+                        onChange={() => setPayment('google')}
+                        padding={3}
+                      >
+                        <VStack gap={1} hAlign="center">
+                          <Wallet size={18} />
+                          <Text type="supporting" weight="bold">
+                            Wallet
+                          </Text>
+                        </VStack>
+                      </SelectableCard>
+                    </Grid>
+                  </VStack>
+
+                  <TextInput
+                    label="Card number"
+                    placeholder="1234 1234 1234 1234"
+                    value={cardNumber}
+                    onChange={setCardNumber}
+                    startIcon={<CreditCard size={15} />}
+                  />
+                  <Grid columns={{minWidth: 100, max: 2, repeat: 'fit'}} gap={2}>
+                    <TextInput
+                      label="Expiry"
+                      placeholder="MM / YY"
+                      value={expiry}
+                      onChange={setExpiry}
+                    />
+                    <TextInput
+                      label="CVC"
+                      placeholder="123"
+                      value={cvc}
+                      onChange={setCvc}
+                    />
+                  </Grid>
+                  <Selector
+                    label="Country"
+                    value={country}
+                    onChange={setCountry}
+                    options={[
+                      {value: 'us', label: 'United States'},
+                      {value: 'id', label: 'Indonesia'},
+                      {value: 'sg', label: 'Singapore'},
+                      {value: 'jp', label: 'Japan'},
+                      {value: 'gb', label: 'United Kingdom'},
+                    ]}
+                  />
+                </VStack>
+
+                <CheckboxInput
+                  label="Save my details for 1-click checkout"
+                  value={saveInfo}
+                  onChange={setSaveInfo}
+                />
+
+                {showPaymentPreview && (
+                  <Banner
+                    status="info"
+                    title="Payment preview only"
+                    description="No payment is submitted in Theme Showcase mode."
+                  />
+                )}
+
+                <Button
+                  variant="primary"
+                  label="Pay now"
+                  icon={<Lock size={14} />}
+                  onClick={() => setShowPaymentPreview(true)}
+                />
+              </VStack>
+            </Card>
+
+            {/* Studio AI Chat Card */}
+            <Card padding={0} height="100%">
+              <Layout
+                height="fill"
+                padding={4}
+                header={
+                  <LayoutHeader hasDivider>
+                    <HStack hAlign="between" vAlign="center" gap={2}>
+                      <Heading level={3}>Studio AI</Heading>
+                      <HStack gap={1}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          isIconOnly
+                          label="Export conversation"
+                          icon={<Download size={15} />}
+                          onClick={() =>
+                            showToast({body: 'Conversation exported', type: 'info'})
+                          }
+                        />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          isIconOnly
+                          label="Close chat"
+                          icon={<X size={15} />}
+                          onClick={() => showToast({body: 'Demo chat panel', type: 'info'})}
+                        />
+                      </HStack>
+                    </HStack>
+                  </LayoutHeader>
+                }
+                footer={
+                  <LayoutFooter>
+                    <VStack gap={2}>
+                      <HStack gap={1.5} wrap="wrap">
+                        {[
+                          'Reschedule delivery',
+                          'Update shipping address',
+                          'Start a return',
+                        ].map(q => (
+                          <Button
+                            key={q}
+                            variant="secondary"
+                            size="sm"
+                            label={q}
+                            onClick={() => setDraft(q)}
+                          />
+                        ))}
+                      </HStack>
+                      <ChatComposer
+                        value={draft}
+                        onChange={setDraft}
+                        onSubmit={submitChat}
+                        placeholder="Ask Studio AI…"
+                        footerActions={
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            isIconOnly
+                            label="Attach file"
+                            icon={<Plus size={15} />}
+                          />
+                        }
+                        sendActions={
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            isIconOnly
+                            label="Voice input"
+                            icon={<Mic size={15} />}
+                          />
+                        }
+                      />
+                    </VStack>
+                  </LayoutFooter>
+                }
+              >
+                <LayoutContent
+                  style={{maxHeight: 540}}
+                  padding={0}
+                  label="Studio AI conversation"
+                >
+                  <ChatMessageList>
+                    <ChatSystemMessage>Today</ChatSystemMessage>
+                    <ChatMessage sender="user">
+                      <ChatMessageBubble variant="filled">
+                        Where’s my order #1043?
+                      </ChatMessageBubble>
+                    </ChatMessage>
+                    <ChatMessage sender="assistant">
+                      <VStack gap={3}>
+                        <ChatToolCalls
+                          calls={[
+                            {
+                              name: 'lookupShipment',
+                              target: 'order #1043',
+                              status: 'complete',
+                              duration: '140ms',
+                            },
+                          ]}
+                        />
+                        <Text>
+                          Your order #1043 shipped this morning from Aisle 3 and is
+                          on track to arrive tomorrow by 8:00 PM.
+                        </Text>
+                        <Card padding={3}>
+                          <VStack gap={1}>
+                            <Item
+                              label="Items"
+                              description="Minimalist Watch · Linen Throw"
+                              endContent={<Text weight="bold">$248</Text>}
+                            />
+                            <Item
+                              label="Estimated arrival"
+                              description="Tomorrow by 8pm"
+                              endContent={<Badge variant="green" label="On time" />}
+                            />
+                            <Item
+                              label="Tracking"
+                              description="UPS 1Z 999 AA1 0123"
+                              endContent={<Link href="#track">Track</Link>}
+                            />
+                          </VStack>
+                        </Card>
+                      </VStack>
+                    </ChatMessage>
+                    {messages.map(m => (
+                      <ChatMessage key={m.id} sender="user">
+                        <ChatMessageBubble variant="filled">
+                          {m.text}
+                        </ChatMessageBubble>
+                      </ChatMessage>
+                    ))}
+                  </ChatMessageList>
+                </LayoutContent>
+              </Layout>
+            </Card>
+          </Grid>
+
+          {/* Row 3: Inventory Table + Revenue Activity */}
+          <Grid columns={{minWidth: 320, max: 2, repeat: 'fit'}} gap={4} align="start">
+            <Card padding={4}>
+              <VStack gap={3}>
+                <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                  <Heading level={3}>Inventory</Heading>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    label="Add item"
+                    icon={<Plus size={14} />}
+                    onClick={() =>
+                      showToast({body: 'New inventory item drawer', type: 'info'})
+                    }
+                  />
+                </HStack>
+
+                <HStack gap={2} wrap="wrap" vAlign="center">
+                  <TextInput
+                    label="Search inventory"
+                    isLabelHidden
+                    size="sm"
+                    hasClear
+                    placeholder="Filter items…"
+                    startIcon={<Search size={14} />}
+                    value={invQuery}
+                    onChange={setInvQuery}
+                    width={190}
+                  />
+                  <Selector
+                    label="Category"
+                    isLabelHidden
+                    placeholder="Category"
+                    size="sm"
+                    hasClear
+                    startIcon={<Folder size={14} />}
+                    value={invCategory}
+                    onChange={setInvCategory}
+                    options={['Wearables', 'Audio', 'Bags', 'Drinkware', 'Home']}
+                  />
+                  <Selector
+                    label="Location"
+                    isLabelHidden
+                    placeholder="Location"
+                    size="sm"
+                    hasClear
+                    startIcon={<MapPin size={14} />}
+                    value={invLocation}
+                    onChange={setInvLocation}
+                    options={[
+                      'Aisle 1',
+                      'Aisle 2',
+                      'Aisle 3',
+                      'Aisle 4',
+                      'Aisle 5',
+                      'Aisle 6',
+                    ]}
+                  />
+                </HStack>
+
+                <Banner
+                  status="warning"
+                  title="2 items are running low in stock (< 25 available)"
+                />
+
+                <Table<InventoryRow>
+                  aria-label="Store inventory"
+                  data={filteredInventory}
+                  columns={[
+                    {
+                      key: 'select',
+                      header: <VisuallyHidden>Select</VisuallyHidden>,
+                      width: pixel(44),
+                      renderCell: row => (
+                        <CheckboxInput
+                          label={`Select ${row.name}`}
+                          isLabelHidden
+                          value={selectedIds.has(row.id)}
+                          onChange={checked => toggleRow(row.id, checked)}
+                        />
+                      ),
+                    },
+                    {
+                      key: 'item',
+                      header: 'Item',
+                      width: proportional(2.2, {minWidth: 150}),
+                      renderCell: row => (
+                        <HStack gap={2} vAlign="center">
+                          <div
+                            style={{
+                              width: 34,
+                              height: 34,
+                              borderRadius: 8,
+                              overflow: 'hidden',
+                              flex: 'none',
+                            }}
+                          >
+                            <ProductIllustration kind={row.artKind} compact />
+                          </div>
+                          <VStack gap={0}>
+                            <Text weight="semibold">{row.name}</Text>
+                            <Text type="supporting" color="secondary">
+                              {row.meta}
+                            </Text>
+                          </VStack>
+                        </HStack>
+                      ),
+                    },
+                    {
+                      key: 'available',
+                      header: 'Stock',
+                      width: pixel(74),
+                      renderCell: row => <Text hasTabularNumbers>{row.available}</Text>,
+                    },
+                    {
+                      key: 'tags',
+                      header: 'Tag',
+                      width: proportional(1, {minWidth: 80}),
+                      align: 'end',
+                      renderCell: row => (
+                        <HStack gap={1} hAlign="end">
+                          {row.tags.map(t => (
+                            <Badge key={t.label} label={t.label} variant={t.variant} />
+                          ))}
+                        </HStack>
+                      ),
+                    },
+                    {
+                      key: 'actions',
+                      header: <VisuallyHidden>Actions</VisuallyHidden>,
+                      width: pixel(48),
+                      align: 'end',
+                      renderCell: row => (
+                        <MoreMenu
+                          label={`Actions for ${row.name}`}
+                          size="sm"
+                          items={[
+                            {label: 'Edit item'},
+                            {label: 'Duplicate'},
+                            {type: 'divider'},
+                            {label: 'Delete', variant: 'destructive'},
+                          ]}
+                        />
+                      ),
+                    },
+                  ]}
+                  density="balanced"
+                  dividers="rows"
+                  hasHover
+                />
+              </VStack>
+            </Card>
+
+            {/* Revenue & Activity Card */}
+            <Card padding={4}>
+              <VStack gap={4}>
+                <Heading level={3}>Revenue & Activity</Heading>
+                <Grid columns={{minWidth: 130, max: 2, repeat: 'fit'}} gap={3}>
+                  <MetricCard
+                    label="Monthly revenue"
+                    value="$18,420"
+                    delta={{value: '+12.4%', direction: 'up'}}
+                    caption="30-day rolling store sales"
+                  />
+                  <MetricCard
+                    label="Fulfillment SLA"
+                    value="99.4%"
+                    delta={{value: '+0.6%', direction: 'up'}}
+                    caption="Same-day warehouse dispatch"
+                  />
+                </Grid>
+                <Divider variant="subtle" />
+                <HStack hAlign="between" vAlign="center">
+                  <Heading level={4}>Recent orders</Heading>
+                  <Link href="#orders">See all</Link>
+                </HStack>
+                <ScrollableArea label="Recent order activity" style={{maxHeight: 250}}>
+                  <VStack gap={1}>
+                    {[
+                      {id: '1043', detail: 'Placed · 1:59 pm', amt: '+$248', refund: false},
+                      {id: '1041', detail: 'Refunded · 12:40 pm', amt: '−$89', refund: true},
+                      {id: '1040', detail: 'Placed · 10:30 am', amt: '+$156', refund: false},
+                      {id: '1038', detail: 'Placed · 9:11 am', amt: '+$412', refund: false},
+                    ].map(act => (
+                      <Item
+                        key={act.id}
+                        startContent={
+                          <Center width={30} height={30}>
+                            {act.refund ? (
+                              <DollarSign size={15} />
+                            ) : (
+                              <ShoppingBag size={15} />
+                            )}
+                          </Center>
+                        }
+                        label={`Order #${act.id}`}
+                        description={act.detail}
+                        endContent={
+                          <Text
+                            weight="bold"
+                            color={act.refund ? 'secondary' : 'primary'}
+                          >
+                            {act.amt}
+                          </Text>
+                        }
+                      />
+                    ))}
+                  </VStack>
+                </ScrollableArea>
+              </VStack>
+            </Card>
+          </Grid>
+        </VStack>
+      </Section>
+
+      {/* Sign In Modal Dialog */}
+      <Dialog
+        isOpen={signInOpen}
+        onOpenChange={setSignInOpen}
+        purpose="form"
+        width={400}
+        aria-label="Sign in"
+      >
+        <Stack gap={4}>
+          <DialogHeader title="Sign in" onOpenChange={setSignInOpen} />
+          <TextInput
+            label="Email"
+            placeholder="you@studio.com"
+            value={signInEmail}
+            onChange={setSignInEmail}
+          />
+          <TextInput
+            label="Password"
+            type="password"
+            value={signInPass}
+            onChange={setSignInPass}
+          />
+          <HStack gap={2} hAlign="end">
+            <Button
+              variant="secondary"
+              label="Cancel"
+              onClick={() => setSignInOpen(false)}
+            />
+            <Button
+              variant="primary"
+              label="Sign in"
+              onClick={() => setSignInOpen(false)}
+            />
+          </HStack>
+        </Stack>
+      </Dialog>
+    </div>
+  );
+}
+
+interface TemplatesViewProps {
+  lang: StudioLang;
+  copy: StudioCopy;
+}
+
+export function TemplatesView({lang, copy}: TemplatesViewProps) {
+  const isId = lang === 'id';
+  const showToast = useToast();
+  const [templateTab, setTemplateTab] = useState<string>('showcase');
+
+  // SaaS Dashboard states
+  const [deployFilter, setDeployFilter] = useState<string>('all');
+  const [deployQuery, setDeployQuery] = useState<string>('');
+
+  // Settings states
+  const [orgName, setOrgName] = useState('Mehan Labs');
+  const [billingEmail, setBillingEmail] = useState('ops@mehan.design');
+  const [webhookSecret, setWebhookSecret] = useState('whsec_94fa82c10e');
+  const [ssoEnforced, setSsoEnforced] = useState(true);
+
+  // Shotcandy 3D Canvas states
+  const [shotPadding, setShotPadding] = useState(36);
+  const [shotRadius, setShotRadius] = useState(18);
+  const [shotTilt, setShotTilt] = useState(-4);
+  const [backdropId, setBackdropId] = useState<string>('berry-cream');
+  const activeBackdrop =
+    BACKDROP_PRESETS.find(b => b.id === backdropId) ?? BACKDROP_PRESETS[0];
+
+  const deploymentRows = useMemo(() => {
+    const all = [
+      {
+        id: 'dep-1',
+        service: 'Design Token API',
+        env: 'Production',
+        latency: '18 ms',
+        status: 'Healthy',
+        variant: 'success' as const,
+      },
+      {
+        id: 'dep-2',
+        service: 'Billing Checkout UI',
+        env: 'Production',
+        latency: '24 ms',
+        status: 'Healthy',
+        variant: 'success' as const,
+      },
+      {
+        id: 'dep-3',
+        service: 'Preview Sandbox',
+        env: 'Staging',
+        latency: '41 ms',
+        status: 'Syncing',
+        variant: 'info' as const,
+      },
+      {
+        id: 'dep-4',
+        service: 'Webhook Dispatcher',
+        env: 'Production',
+        latency: '112 ms',
+        status: 'Review',
+        variant: 'warning' as const,
+      },
+    ];
+    return all.filter(item => {
+      if (deployFilter === 'prod' && item.env !== 'Production') return false;
+      if (deployFilter === 'staging' && item.env !== 'Staging') return false;
+      if (
+        deployQuery.trim() &&
+        !item.service.toLowerCase().includes(deployQuery.trim().toLowerCase())
+      ) {
+        return false;
+      }
+      return true;
+    });
+  }, [deployFilter, deployQuery]);
+
+  return (
+    <Stack gap={4}>
+      <Stack
+        direction="horizontal"
+        justify="between"
+        align="center"
+        wrap="wrap"
+        gap={3}
+      >
+        <Stack gap={1}>
+          <Heading level={2}>{copy.templates.title}</Heading>
+          <Text color="secondary">{copy.templates.subtitle}</Text>
+        </Stack>
+
+        <SegmentedControl
+          label="Template archetype"
+          size="sm"
+          value={templateTab}
+          onChange={setTemplateTab}
+        >
+          <SegmentedControlItem
+            value="showcase"
+            label={copy.templates.tabShowcase}
+          />
+          <SegmentedControlItem
+            value="dashboard"
+            label={copy.templates.tabDashboard}
+          />
+          <SegmentedControlItem
+            value="settings"
+            label={copy.templates.tabSettings}
+          />
+          <SegmentedControlItem value="canvas" label={copy.templates.tabCanvas} />
+        </SegmentedControl>
+      </Stack>
+
+      {templateTab === 'showcase' && <OfficialThemeShowcase />}
+
+      {templateTab === 'dashboard' && (
+        <Stack gap={4}>
+          <Grid columns={{minWidth: 210, max: 4, repeat: 'fit'}} gap={3}>
+            <MetricCard
+              label="Active workspaces"
+              value="2,840"
+              delta={{value: '+14.2%', direction: 'up'}}
+              caption="Last 30 days"
+            />
+            <MetricCard
+              label="Median latency"
+              value="21 ms"
+              delta={{value: '-4 ms', direction: 'up', sentiment: 'positive'}}
+              caption="Global edge p50"
+            />
+            <MetricCard
+              label="Error rate"
+              value="0.02%"
+              delta={{value: '0.00%', direction: 'flat'}}
+              caption="Within SLO budget"
+            />
+            <MetricCard
+              label="WCAG AA pass"
+              value="100%"
+              delta={{value: 'Locked', direction: 'up'}}
+              caption="Light & Dark modes"
+            />
+          </Grid>
+
+          <Card elevation="low">
+            <Stack gap={3}>
+              <Stack
+                direction="horizontal"
+                justify="between"
+                align="center"
+                wrap="wrap"
+                gap={2}
+              >
+                <Heading level={3}>
+                  {isId ? 'Layanan Produksi' : 'Service Deployments'}
+                </Heading>
+                <Stack direction="horizontal" gap={2} wrap="wrap">
+                  <SegmentedControl
+                    label="Filter environment"
+                    size="sm"
+                    value={deployFilter}
+                    onChange={setDeployFilter}
+                  >
+                    <SegmentedControlItem value="all" label="All" />
+                    <SegmentedControlItem value="prod" label="Production" />
+                    <SegmentedControlItem value="staging" label="Staging" />
+                  </SegmentedControl>
+                  <TextInput
+                    label="Filter service"
+                    isLabelHidden
+                    size="sm"
+                    hasClear
+                    placeholder={isId ? 'Cari layanan…' : 'Filter service…'}
+                    value={deployQuery}
+                    onChange={setDeployQuery}
+                  />
+                </Stack>
+              </Stack>
+
+              <Table
+                aria-label="Service deployments"
+                data={deploymentRows}
+                columns={[
+                  {
+                    key: 'service',
+                    header: 'Service',
+                    width: proportional(1.6),
+                  },
+                  {
+                    key: 'env',
+                    header: 'Environment',
+                    width: proportional(1),
+                  },
+                  {
+                    key: 'latency',
+                    header: 'p50 Latency',
+                    width: proportional(0.9),
+                  },
+                  {
+                    key: 'status',
+                    header: 'Status',
+                    width: proportional(0.9),
+                    renderCell: row => (
+                      <Badge
+                        variant={row.variant}
+                        label={String(row.status)}
+                      />
+                    ),
+                  },
+                ]}
+                density="balanced"
+                hasHover
+              />
+            </Stack>
+          </Card>
+        </Stack>
+      )}
+
+      {templateTab === 'settings' && (
+        <Card elevation="low" maxWidth={680}>
+          <Stack gap={4}>
+            <Stack gap={1}>
+              <Badge variant="info" label="Progressive Disclosure" />
+              <Heading level={3}>
+                {isId ? 'Pengaturan Organisasi' : 'Organization Settings'}
+              </Heading>
+              <Text color="secondary">
+                {isId
+                  ? 'Hanya menampilkan kontrol inti di awal; parameter teknis disimpan rapi di bagian lanjutan.'
+                  : 'Surfaces essential controls upfront while keeping webhook secrets inside an expandable section.'}
+              </Text>
+            </Stack>
+
+            <TextInput
+              label={isId ? 'Nama organisasi' : 'Organization name'}
+              value={orgName}
+              onChange={setOrgName}
+            />
+            <TextInput
+              label={isId ? 'Email tagihan' : 'Billing email'}
+              value={billingEmail}
+              onChange={setBillingEmail}
+            />
+            <Switch
+              label={
+                isId
+                  ? 'Wajibkan Single Sign-On (SAML SSO)'
+                  : 'Enforce Single Sign-On (SAML SSO)'
+              }
+              value={ssoEnforced}
+              onChange={setSsoEnforced}
+            />
+
+            <Collapsible
+              trigger={
+                isId
+                  ? 'Pengaturan Developer & Webhook (Lanjutan)'
+                  : 'Developer & Webhook Options (Advanced)'
+              }
+            >
+              <Stack gap={3}>
+                <TextInput
+                  label="Signing secret"
+                  value={webhookSecret}
+                  onChange={setWebhookSecret}
+                />
+              </Stack>
+            </Collapsible>
+
+            <HStack gap={2} hAlign="end">
+              <Button variant="ghost" label={isId ? 'Batal' : 'Cancel'} />
+              <Button
+                variant="primary"
+                label={isId ? 'Simpan perubahan' : 'Save changes'}
+                onClick={() =>
+                  showToast({
+                    type: 'info',
+                    body: isId ? 'Pengaturan disimpan.' : 'Settings saved.',
+                  })
+                }
+              />
+            </HStack>
+          </Stack>
+        </Card>
+      )}
+
+      {templateTab === 'canvas' && (
+        <Grid columns={{minWidth: 300, max: 2, repeat: 'fit'}} gap={4} align="start">
+          <Card elevation="low">
+            <Stack gap={3}>
+              <Stack gap={1}>
+                <Badge variant="pink" label="Shotcandy DNA Archetype" />
+                <Heading level={3}>
+                  {isId ? 'Inspektur Kanvas 3D' : '3D Canvas Inspector'}
+                </Heading>
+                <Text color="secondary">
+                  {isId
+                    ? 'Geser slider presisi atau klik 2x angka untuk mereset ke nilai bawaan.'
+                    : 'Drag precision sliders or double-click readouts to reset to default.'}
+                </Text>
+              </Stack>
+
+              <Stack direction="horizontal" gap={1.5} wrap="wrap">
+                {BACKDROP_PRESETS.map(b => (
+                  <ColorSwatch
+                    key={b.id}
+                    color={b.swatch}
+                    label={b.label}
+                    isSelected={backdropId === b.id}
+                    onSelect={() => setBackdropId(b.id)}
+                  />
+                ))}
+              </Stack>
+
+              <PrecisionSlider
+                label="Backdrop Padding"
+                value={shotPadding}
+                min={16}
+                max={72}
+                stops={[24, 36, 48]}
+                unit="px"
+                onChange={setShotPadding}
+              />
+              <PrecisionSlider
+                label="Window Corner Radius"
+                value={shotRadius}
+                min={0}
+                max={32}
+                stops={[12, 18, 24]}
+                unit="px"
+                onChange={setShotRadius}
+              />
+              <PrecisionSlider
+                label="Perspective Tilt"
+                value={shotTilt}
+                min={-16}
+                max={16}
+                stops={[-8, 0, 8]}
+                isCentered
+                unit="°"
+                onChange={setShotTilt}
+              />
+            </Stack>
+          </Card>
+
+          <div className="studio-canvas-stage">
+            <div
+              className="studio-shot-frame"
+              style={{
+                padding: shotPadding,
+                borderRadius: shotRadius + 10,
+                backgroundImage: activeBackdrop.gradient,
+                transform: `perspective(900px) rotateY(${shotTilt}deg) rotateX(${Math.abs(shotTilt) * 0.35}deg)`,
+                boxShadow: 'var(--shadow-high)',
+              }}
+            >
+              <div
+                className="studio-shot-window"
+                style={{borderRadius: shotRadius}}
+              >
+                <div className="studio-window-dots" aria-hidden="true">
+                  <span style={{background: '#f43f5e'}} />
+                  <span style={{background: '#f59e0b'}} />
+                  <span style={{background: '#10b981'}} />
+                </div>
+                <Stack gap={2}>
+                  <Badge variant="info" label="Shotcandy × Astryx" />
+                  <Heading level={4}>Tactile Surface Render</Heading>
+                  <Text type="supporting" color="secondary">
+                    Warm confectionery paper, recessed wells, and boiled-sweet CTA
+                    lips rendered at 60fps.
+                  </Text>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    label="Export 4K PNG"
+                    icon={<Sparkles size={14} />}
+                  />
+                </Stack>
+              </div>
+            </div>
+          </div>
+        </Grid>
+      )}
+    </Stack>
+  );
+}

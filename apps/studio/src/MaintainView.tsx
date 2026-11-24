@@ -27,23 +27,34 @@ import {
   buildThemeCommitPrompt,
   copyText,
   downloadTextFile,
-  type StudioConfig,
   type StudioLang,
 } from './studioState';
+import {
+  exportCreateMehanThemeTs,
+  type FullThemeEditorState,
+} from './theme-editor/themeEditorModel';
 
 interface MaintainViewProps {
   lang: StudioLang;
   copy: StudioCopy;
-  config: StudioConfig;
+  themeState: FullThemeEditorState;
   dna: ResolvedMehanDna;
 }
 
-export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
+export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
   const isId = lang === 'id';
   const showToast = useToast();
   const [targetScope, setTargetScope] = useState('@alamehan');
 
-  const themeCommitPrompt = useMemo(() => buildThemeCommitPrompt(config), [config]);
+  const exportedThemeTs = useMemo(
+    () => exportCreateMehanThemeTs(themeState, 'customMehan'),
+    [themeState],
+  );
+
+  const themeCommitPrompt = useMemo(
+    () => buildThemeCommitPrompt(exportedThemeTs),
+    [exportedThemeTs],
+  );
   const upgradePrompt = useMemo(() => buildAstryxUpgradePrompt(), []);
   const scopePrompt = useMemo(
     () => buildScopeSwitchPrompt(targetScope),
@@ -53,15 +64,11 @@ export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
   const w3cDocument = useMemo(
     () =>
       exportW3cDesignTokens({
-        name: `mehan-${config.atmosphere}`,
-        atmosphere: config.atmosphere,
-        accent: config.accent,
-        depth: config.depth,
-        radiusScale: config.radiusScale,
-        density: config.density,
-        motion: config.motion,
+        name: `mehan-${themeState.seed.atmosphere}`,
+        ...themeState.seed,
+        radiusBase: themeState.seed.radiusBase ?? undefined,
       }),
-    [config],
+    [themeState.seed],
   );
 
   const tokenRows = useMemo(() => {
@@ -107,7 +114,7 @@ export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
         role: isId ? 'Bibir 3D bawah tombol (Shade 800)' : 'Smooth 3D button lip (Shade 800)',
         light: A.buttonLip,
         dark: A.buttonLip,
-        contrast: 'OKLCH ΔL -0.062',
+        contrast: `${dna.lipStyle} (${dna.lipPx}px)`,
       },
       {
         id: 't6',
@@ -127,7 +134,7 @@ export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
 
   const handleDownloadW3c = () => {
     downloadTextFile(
-      `mehan-${config.atmosphere}-tokens.w3c.json`,
+      `mehan-${themeState.seed.atmosphere}-tokens.w3c.json`,
       `${JSON.stringify(w3cDocument, null, 2)}\n`,
       'application/json',
     );
@@ -151,8 +158,8 @@ export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
         container="card"
         title={
           isId
-            ? 'Cara kerja tanpa terminal: Ubah di Studio -> Salin Handoff -> Tempel ke AI Agent (atau klik 2x file pengecek)'
-            : 'Zero-terminal workflow: Tune in Studio -> Copy Handoff -> Paste to your AI Agent (or double-click the verifier script)'
+            ? 'Cara kerja tanpa terminal: Racik di Theme Editor -> Salin Handoff -> Tempel ke AI Agent (atau klik 2x file pengecek)'
+            : 'Zero-terminal workflow: Tune in Theme Editor -> Copy Handoff -> Paste to your AI Agent (or double-click the verifier script)'
         }
         description={
           isId
@@ -162,7 +169,6 @@ export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
       />
 
       <Grid columns={{minWidth: 320, max: 2, repeat: 'fit'}} gap={4} align="start">
-        {/* Card 1: Commit Theme Changes */}
         <Card elevation="low">
           <Stack gap={3}>
             <Stack direction="horizontal" gap={2} align="center">
@@ -175,8 +181,8 @@ export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
             </Stack>
             <Text color="secondary">
               {isId
-                ? 'Sudah cocok dengan racikan warna & ketebalan di laci Sesuaikan? Salin instruksi ini ke AI coding agent agar disimpan permanen ke source code, tarball release/, dan STUDIO.html.'
-                : 'Happy with your current 6-knob setup in the Customize drawer? Copy this handoff prompt so your AI coding agent commits it and rebuilds release/ + STUDIO.html.'}
+                ? 'Sudah cocok dengan racikan benih taktil, token lanjutan, dan override komponen di Theme Editor? Salin instruksi ini ke AI coding agent agar disimpan permanen ke source code, tarball release/, dan STUDIO.html.'
+                : 'Happy with your tactile seed, raw tokens, and component overrides in the Theme Editor? Copy this handoff prompt so your AI coding agent commits it and rebuilds release/ + STUDIO.html.'}
             </Text>
             <CodeBlock
               code={themeCommitPrompt}
@@ -200,7 +206,6 @@ export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
           </Stack>
         </Card>
 
-        {/* Card 2: Safe Astryx Upgrade Policy */}
         <Card elevation="low">
           <Stack gap={3}>
             <Stack direction="horizontal" gap={2} align="center">
@@ -240,7 +245,6 @@ export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
       </Grid>
 
       <Grid columns={{minWidth: 320, max: 2, repeat: 'fit'}} gap={4} align="start">
-        {/* Card 3: NPM Scope Switcher */}
         <Card elevation="low">
           <Stack gap={3}>
             <Stack direction="horizontal" gap={2} align="center">
@@ -277,7 +281,6 @@ export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
           </Stack>
         </Card>
 
-        {/* Card 4: W3C Figma Design Tokens */}
         <Card elevation="low">
           <Stack gap={3}>
             <Stack direction="horizontal" gap={2} align="center">
@@ -320,7 +323,6 @@ export function MaintainView({lang, copy, config, dna}: MaintainViewProps) {
         </Card>
       </Grid>
 
-      {/* Live Token & Contrast Inspector */}
       <Card elevation="low">
         <Stack gap={3}>
           <Stack gap={1}>

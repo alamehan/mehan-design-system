@@ -5,6 +5,9 @@ import {
   type ComponentStyleMap,
   type DefineThemeInput,
   type DefinedTheme,
+  type StyleOverrides,
+  type TokenName,
+  type TokenValue,
 } from '@astryxdesign/core/theme';
 import {
   mixHex,
@@ -13,6 +16,49 @@ import {
   type MehanThemeOptions,
 } from '@mehan/dna';
 import {mehanIconRegistry} from './icons';
+
+export interface MehanAstryxThemeOptions extends MehanThemeOptions {
+  /** Raw or semantic Astryx token overrides merged on top of the Mehan DNA seed. */
+  tokens?: Partial<Record<TokenName, TokenValue>>;
+  /** Theme-local CSS custom property overrides. */
+  localTokens?: Record<string, TokenValue>;
+  /** Deep-merged Astryx component style overrides (wins at the leaf level). */
+  components?: ComponentStyleMap;
+}
+
+/**
+ * Recursively merges any number of Astryx component style maps so leaf overrides
+ * layer cleanly on top of Mehan's base tactile rules without wiping sibling keys.
+ */
+export function mergeMehanComponentStyles(
+  ...maps: Array<Record<string, unknown> | undefined>
+): ComponentStyleMap {
+  const result: Record<string, unknown> = {};
+  for (const map of maps) {
+    if (!map) continue;
+    for (const [key, value] of Object.entries(map)) {
+      const existing = result[key];
+      if (
+        value &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        existing &&
+        typeof existing === 'object' &&
+        !Array.isArray(existing)
+      ) {
+        result[key] = mergeMehanComponentStyles(
+          existing as Record<string, unknown>,
+          value as Record<string, unknown>,
+        );
+      } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+        result[key] = mergeMehanComponentStyles(value as Record<string, unknown>);
+      } else {
+        result[key] = value;
+      }
+    }
+  }
+  return result as ComponentStyleMap;
+}
 
 const lightDark = (light: string, dark: string): string =>
   `light-dark(${light}, ${dark})`;
@@ -106,10 +152,12 @@ const POPUP_CLOSED = ':not([aria-expanded="true"][aria-haspopup]:not([aria-haspo
 const ENABLED = ':not(:disabled, [aria-disabled="true"])';
 
 /**
- * Builds the complete 6-knob `DefineThemeInput` for a Mehan theme.
+ * Builds the complete `DefineThemeInput` for a Mehan theme, combining the
+ * parametric Mehan DNA seed with optional unrestricted Astryx `tokens` and
+ * `components` overrides.
  */
 export function buildMehanThemeConfig(
-  options: MehanThemeOptions,
+  options: MehanAstryxThemeOptions,
 ): Omit<DefineThemeInput, 'icons'> {
   const dna = resolveMehanDna(options);
   const L = dna.atmosphere.light;
@@ -119,6 +167,7 @@ export function buildMehanThemeConfig(
   const C = dna.categorical;
   const sRgb = L.shadowRgb;
   const depth = dna.depth;
+  const lipPx = dna.lipPx;
   const px = (val: number): string => `${Number(val.toFixed(2))}px`;
 
   const lightPanelLip = mixHex(L.surface, L.line, 0.52);
@@ -171,16 +220,29 @@ export function buildMehanThemeConfig(
     },
   });
 
-  // Zero-border recessed well shared across all form & search inputs (eliminates 1px border-box corner seam!)
-  const RECESSED_INPUT_BASE = {
-    backgroundColor: 'var(--mehan-well)',
-    borderWidth: '0px',
-    borderStyle: 'none',
-    boxShadow: 'var(--mehan-shadow-well)',
-    ':focus-within': {
-      boxShadow: 'var(--mehan-shadow-well), 0 0 0 2px var(--color-accent)',
-    },
-  } as const;
+  // Input field surface ('recessed' carved well vs 'bordered' crisp 1px edge)
+  const RECESSED_INPUT_BASE: StyleOverrides =
+    dna.wellStyle === 'bordered'
+      ? {
+          backgroundColor: 'var(--color-background-surface)',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'var(--color-border-emphasized)',
+          boxShadow: 'none',
+          ':focus-within': {
+            borderColor: 'var(--color-accent)',
+            boxShadow: '0 0 0 2px var(--color-accent-muted)',
+          },
+        }
+      : {
+          backgroundColor: 'var(--mehan-well)',
+          borderWidth: '0px',
+          borderStyle: 'none',
+          boxShadow: 'var(--mehan-shadow-well)',
+          ':focus-within': {
+            boxShadow: 'var(--mehan-shadow-well), 0 0 0 2px var(--color-accent)',
+          },
+        };
 
   const INPUT_STATUS_VARS = {
     'status:success': {
@@ -243,263 +305,36 @@ export function buildMehanThemeConfig(
     ]),
   );
 
+  const tempoFromStep = Math.min(
+    1.5,
+    Math.max(0.75, Number((1 / dna.durationStep).toFixed(2))),
+  );
   const motionConfig =
     dna.motion === 'calm'
-      ? {tempo: 1.35, character: 'standard' as const}
-      : dna.motion === 'standard'
-        ? {tempo: 1, character: 'standard' as const}
-        : {tempo: 1, character: 'expressive' as const};
+      ? {tempo: Math.max(tempoFromStep, 1.35), character: 'standard' as const}
+      : dna.motion === 'crisp'
+        ? {tempo: tempoFromStep, character: 'crisp' as const}
+        : dna.motion === 'standard'
+          ? {tempo: tempoFromStep, character: 'standard' as const}
+          : {tempo: tempoFromStep, character: 'expressive' as const};
 
-  return {
-    name: dna.name,
+  const spacingTokens: Partial<Record<TokenName, TokenValue>> = {};
+  if (options.spacingBase !== undefined && options.spacingBase !== 4) {
+    const steps = [0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    for (const step of steps) {
+      const k = `--spacing-${String(step).replace('.', '-')}` as TokenName;
+      spacingTokens[k] = `${Math.round(dna.spacingBase * step) / 16}rem`;
+    }
+  }
 
-    typography: {
-      scale: {base: 14, ratio: 1.22},
-      body: {
-        family: 'Figtree',
-        fallbacks:
-          'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      },
-      heading: {
-        family: 'Bricolage Grotesque',
-        fallbacks: '"Figtree", ui-sans-serif, system-ui, sans-serif',
-        weight: 'bold',
-        weights: {1: 'bold', 2: 'bold', 3: 'bold', 4: 'semibold'},
-      },
-      code: {
-        family: 'Geist Mono',
-        fallbacks: 'ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace',
-      },
-    },
+  const lipInset = lipPx > 0 ? `inset 0 -${lipPx}px 0 ${A.buttonLip}, ` : '';
+  const lipPressedInset = lipPx > 0 ? `inset 0 -1px 0 ${A.buttonLip}, ` : '';
+  const secLip =
+    lipPx > 0
+      ? `inset 0 -${Math.min(2, lipPx)}px 0 ${lightDark(L.line, 'rgba(0, 0, 0, 0.34)')}, `
+      : '';
 
-    motion: motionConfig,
-
-    syntax,
-
-    // Official theme-local tokens (`defineTheme.ts:444`).
-    // Composite gradients and box-shadows put `light-dark(lightColor, darkColor)`
-    // inside each `<color>` slot so CSS Color 5 parses every shadow & gradient cleanly.
-    localTokens: {
-      '--mehan-paper': [L.paper, D.paper],
-      '--mehan-tray': [L.tray, D.tray],
-      '--mehan-surface': [L.surface, D.surface],
-      '--mehan-float': [L.float, D.float],
-      '--mehan-well': [L.well, D.well],
-      '--mehan-well-hover': [L.wellHover, D.wellHover],
-      '--mehan-socket': [L.socket, D.socket],
-      '--mehan-edge-control': 'transparent',
-      '--mehan-card-hairline': [withHexAlpha(L.ink, 0.06), '#ffffff11'],
-      '--mehan-raised-grad': `linear-gradient(180deg, ${lightDark(L.raisedTop, D.raisedTop)} 0%, ${lightDark(L.raisedBottom, D.raisedBottom)} 100%)`,
-      '--mehan-knob-grad': `radial-gradient(circle at 36% 28%, #ffffff 0%, ${lightDark('#ffffff', '#f1f5f9')} 38%, ${lightDark(L.paper, '#cbd5e1')} 70%, ${lightDark(lightKnobRim, '#94a3b8')} 100%)`,
-      '--mehan-primary-grad': A.buttonGradient,
-      '--mehan-primary-grad-hover': A.buttonGradientHover,
-      '--mehan-primary-lip': A.buttonLip,
-      '--mehan-shadow-well': `inset 0 1px 2px ${lightDark(`rgba(${sRgb}, 0.11)`, 'rgba(0, 0, 0, 0.60)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.04)`, 'rgba(0, 0, 0, 0.25)')}, inset 0 -1px 0 ${lightDark('rgba(255, 255, 255, 0.90)', 'rgba(255, 255, 255, 0.08)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
-      '--mehan-shadow-socket': `inset 0 1px 2px ${lightDark(`rgba(${sRgb}, 0.22)`, 'rgba(0, 0, 0, 0.72)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.06)`, 'rgba(255, 255, 255, 0.05)')}, inset 0 -1px 0 ${lightDark('rgba(255, 255, 255, 0.90)', 'rgba(255, 255, 255, 0.14)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
-      '--mehan-shadow-raised': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.10)')}, inset 0 -2px 0 ${lightDark(L.line, 'rgba(0, 0, 0, 0.34)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.05)')}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.04 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.32 * depth).toFixed(3)})`)}, 0 ${px(2 * depth)} ${px(3.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.05 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.28 * depth).toFixed(3)})`)}, 0 ${px(6 * depth)} ${px(9 * depth)} -4px ${lightDark(`rgba(${sRgb}, ${(0.10 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.40 * depth).toFixed(3)})`)}, inset 0 0 0 1px var(--mehan-edge-control)`,
-      '--mehan-shadow-raised-hover': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.14)')}, inset 0 -2px 0 ${lightDark(L.line, 'rgba(0, 0, 0, 0.34)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.06)`, 'rgba(255, 255, 255, 0.08)')}, 0 ${px(2 * depth)} ${px(3 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.05 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.36 * depth).toFixed(3)})`)}, 0 ${px(5 * depth)} ${px(8 * depth)} -2px ${lightDark(`rgba(${sRgb}, ${(0.08 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.36 * depth).toFixed(3)})`)}, 0 ${px(11 * depth)} ${px(15 * depth)} -5px ${lightDark(`rgba(${sRgb}, ${(0.14 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, inset 0 0 0 1px var(--mehan-edge-control)`,
-      '--mehan-shadow-pressed': `inset 0 1px 2.5px ${lightDark(`rgba(${sRgb}, 0.18)`, 'rgba(0, 0, 0, 0.56)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.06)`, 'rgba(255, 255, 255, 0.05)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
-      '--mehan-shadow-knob': `0 0 0 0.5px ${lightDark(`rgba(${sRgb}, 0.08)`, 'rgba(0, 0, 0, 0.35)')}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.10 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, 0 ${px(2 * depth)} ${px(4 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.14 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.42 * depth).toFixed(3)})`)}, 0 ${px(5 * depth)} ${px(8 * depth)} -3px ${lightDark(`rgba(${sRgb}, ${(0.16 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.45 * depth).toFixed(3)})`)}`,
-      '--mehan-shadow-primary': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.36)', 'rgba(255, 255, 255, 0.32)')}, inset 0 -3px 0 ${A.buttonLip}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(A.buttonContactShadow, 'rgba(0, 0, 0, 0.45)')}, 0 ${px(3 * depth)} ${px(5.5 * depth)} -1px ${A.buttonMidShadow}, 0 ${px(9 * depth)} ${px(15 * depth)} -6px ${A.buttonGlow}`,
-      '--mehan-shadow-primary-hover': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.44)', 'rgba(255, 255, 255, 0.40)')}, inset 0 -3px 0 ${A.buttonLip}, 0 ${px(2 * depth)} ${px(3.5 * depth)} ${lightDark(A.buttonContactShadow, 'rgba(0, 0, 0, 0.48)')}, 0 ${px(5 * depth)} ${px(8.5 * depth)} -1px ${A.buttonMidShadow}, 0 ${px(11 * depth)} ${px(19 * depth)} -5px ${A.buttonGlow}`,
-      '--mehan-shadow-primary-pressed': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.18)', 'rgba(255, 255, 255, 0.16)')}, inset 0 -1px 0 ${A.buttonLip}, inset 0 2px 4px ${lightDark(A.buttonPressedInner, 'rgba(0, 0, 0, 0.45)')}, 0 ${px(1 * depth)} ${px(2 * depth)} ${lightDark(A.buttonContactShadow, 'rgba(0, 0, 0, 0.45)')}`,
-      '--mehan-shadow-danger': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.08)')}, inset 0 -2px 0 ${lightDark('rgba(185, 28, 28, 0.18)', 'rgba(0, 0, 0, 0.38)')}, 0 0 0 1px ${lightDark('rgba(185, 28, 28, 0.08)', 'rgba(248, 113, 113, 0.18)')}, 0 1px 1.5px ${lightDark('rgba(185, 28, 28, 0.08)', 'rgba(0, 0, 0, 0.35)')}, 0 ${px(5 * depth)} ${px(9 * depth)} -4px ${lightDark('rgba(185, 28, 28, 0.24)', 'rgba(0, 0, 0, 0.45)')}`,
-      '--mehan-shadow-danger-pressed': `inset 0 1px 2.5px ${lightDark('rgba(185, 28, 28, 0.22)', 'rgba(0, 0, 0, 0.55)')}, inset 0 0 0 1px ${lightDark('rgba(185, 28, 28, 0.12)', 'rgba(248, 113, 113, 0.18)')}`,
-    },
-
-    adaptations: {
-      rules: [
-        // Coarse touch pointers ALWAYS override desktop Compact/Standard to 44px+ targets & 16px input floor
-        {
-          when: {pointer: 'coarse', width: {below: 'lg'}},
-          value: {
-            typography: {scale: {base: 16, ratio: 1.195}},
-            tokens: {
-              '--size-element-sm': '36px',
-              '--size-element-md': '44px',
-              '--size-element-lg': '48px',
-            },
-          },
-        },
-        // Fine desktop pointers with motion enabled: subtle -1px tactile hover lift
-        {
-          when: {pointer: 'fine', motion: 'no-preference'},
-          value: {
-            components: {
-              button: {
-                'variant:primary': {
-                  [`:hover${ENABLED}${POPUP_CLOSED}`]: {
-                    transform: 'translateY(-1px)',
-                  },
-                },
-                'variant:secondary': {
-                  [`:hover${ENABLED}${POPUP_CLOSED}`]: {
-                    transform: 'translateY(-1px)',
-                  },
-                },
-                'variant:destructive': {
-                  [`:hover${ENABLED}${POPUP_CLOSED}`]: {
-                    transform: 'translateY(-1px)',
-                  },
-                },
-              },
-            },
-          },
-        },
-        // OS High-Contrast accessibility: promote control edge inside box-shadow to >= 3:1
-        {
-          when: {contrast: 'more'},
-          value: {
-            localTokens: {
-              '--mehan-edge-control': [L.lineStrong, D.lineStrong],
-              '--mehan-card-hairline': [L.lineStrong, D.lineStrong],
-            },
-          },
-        },
-      ],
-    },
-
-    tokens: {
-      '--color-accent': [A.accentLight, A.accentDark],
-      '--color-accent-muted': [A.mutedLight, A.mutedDark],
-      '--color-on-accent': [A.onAccentLight, A.onAccentDark],
-      '--color-text-accent': [A.textLight, A.textDark],
-      '--color-icon-accent': [A.textLight, A.textDark],
-
-      '--color-background-body': [L.paper, D.paper],
-      '--color-background-surface': [L.surface, D.surface],
-      '--color-background-card': [L.surface, D.surface],
-      '--color-background-popover': [L.float, D.float],
-      '--color-background-muted': [L.tray, D.tray],
-      // Opaque hex required by Toast SSR contrast detector (CHANGELOG 0.7.17)
-      '--color-background-inverted': [L.inverted, D.inverted],
-      '--color-on-dark': L.onInverted,
-      '--color-on-light': L.ink,
-
-      '--color-neutral': [withHexAlpha(L.ink, 0.065), withHexAlpha(D.ink, 0.10)],
-      '--color-overlay': [withHexAlpha(L.ink, 0.42), '#080605ab'],
-      '--color-overlay-hover': [
-        withHexAlpha(L.ink, 0.045),
-        withHexAlpha(D.ink, 0.07),
-      ],
-      '--color-overlay-pressed': [
-        withHexAlpha(L.ink, 0.09),
-        withHexAlpha(D.ink, 0.13),
-      ],
-
-      '--color-text-primary': [L.ink, D.ink],
-      '--color-text-secondary': [L.ink2, D.ink2],
-      '--color-text-disabled': [L.inkDisabled, D.inkDisabled],
-
-      '--color-icon-primary': [L.ink, D.ink],
-      '--color-icon-secondary': [L.ink3, D.ink3],
-      '--color-icon-disabled': [L.inkDisabled, D.inkDisabled],
-
-      // Semantic statuses
-      '--color-info': S.info.solid,
-      '--color-info-muted': S.info.muted,
-      '--color-text-info': S.info.text,
-      '--color-on-info-muted': S.info.onMuted,
-
-      '--color-success': S.success.solid,
-      '--color-success-muted': S.success.muted,
-      '--color-text-success': S.success.text,
-      '--color-on-success': S.success.onSolid,
-      '--color-on-success-muted': S.success.onMuted,
-
-      '--color-warning': S.warning.solid,
-      '--color-warning-muted': S.warning.muted,
-      '--color-text-warning': S.warning.text,
-      '--color-on-warning': S.warning.onSolid,
-      '--color-on-warning-muted': S.warning.onMuted,
-
-      '--color-error': S.error.solid,
-      '--color-error-muted': S.error.muted,
-      '--color-text-error': S.error.text,
-      '--color-on-error': S.error.onSolid,
-      '--color-on-error-muted': S.error.onMuted,
-
-      // Borders & Focus != Selection separation
-      '--color-border': [L.line, D.line],
-      '--color-border-emphasized': [L.lineStrong, D.lineStrong],
-      '--focus-outline-color': [L.ink, D.ink],
-
-      // Density-aware desktop heights (Standard 32/36/44 vs Compact 28/32/40)
-      '--size-element-sm': dna.sizing.controlSm,
-      '--size-element-md': dna.sizing.controlMd,
-      '--size-element-lg': dna.sizing.controlLg,
-
-      // Radii (--radius-none & --radius-full fixed per Astryx contract)
-      '--radius-none': '0px',
-      '--radius-inner': dna.radii.inner,
-      '--radius-element': dna.radii.element,
-      '--radius-container': dna.radii.container,
-      '--radius-page': dna.radii.page,
-      '--radius-chat': dna.radii.chat,
-      '--radius-full': '9999px',
-
-      // 4-Layer Feathered Tactile Elevation Scale (modeled on Tools Factory SDK)
-      '--color-skeleton': [L.socket, D.wellHover],
-      '--color-shadow': [withHexAlpha(L.ink, 0.14), '#00000080'],
-      '--shadow-low': `inset 0 -2px 0 ${lightDark(lightPanelLip, 'rgba(255, 255, 255, 0.03)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.04)`, 'rgba(255, 255, 255, 0.05)')}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.03 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.30 * depth).toFixed(3)})`)}, 0 ${px(3 * depth)} ${px(5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.04 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.35 * depth).toFixed(3)})`)}, 0 ${px(10 * depth)} ${px(18 * depth)} -8px ${lightDark(`rgba(${sRgb}, ${(0.08 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, 0 ${px(26 * depth)} ${px(40 * depth)} -22px ${lightDark(`rgba(${sRgb}, ${(0.16 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.60 * depth).toFixed(3)})`)}`,
-      '--shadow-med': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.09)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.06)')}, 0 ${px(2 * depth)} ${px(5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.06 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.36 * depth).toFixed(3)})`)}, 0 ${px(8 * depth)} ${px(16 * depth)} -4px ${lightDark(`rgba(${sRgb}, ${(0.12 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.48 * depth).toFixed(3)})`)}, 0 ${px(24 * depth)} ${px(44 * depth)} -16px ${lightDark(`rgba(${sRgb}, ${(0.24 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.68 * depth).toFixed(3)})`)}`,
-      '--shadow-high': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.08)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.06)')}, 0 ${px(8 * depth)} ${px(20 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.12 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, 0 ${px(44 * depth)} ${px(100 * depth)} -24px ${lightDark(`rgba(${sRgb}, ${(0.38 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.72 * depth).toFixed(3)})`)}`,
-      '--shadow-inset-hover': `inset 0 0 0 1.5px ${lightDark(withHexAlpha(L.ink, 0.16), withHexAlpha(D.ink, 0.22))}`,
-      '--shadow-inset-selected': `inset 0 0 0 2px ${lightDark(A.accentLight, A.accentDark)}`,
-
-      // Categorical families (pastel surfaces + >= 3.05:1 graphical/chart strokes)
-      '--color-background-blue': [C.blue.bgLight, C.blue.bgDark],
-      '--color-border-blue': [C.blue.borderLight, C.blue.borderDark],
-      '--color-icon-blue': [C.blue.textLight, C.blue.textDark],
-      '--color-text-blue': [C.blue.textLight, C.blue.textDark],
-
-      '--color-background-cyan': [C.cyan.bgLight, C.cyan.bgDark],
-      '--color-border-cyan': [C.cyan.borderLight, C.cyan.borderDark],
-      '--color-icon-cyan': [C.cyan.textLight, C.cyan.textDark],
-      '--color-text-cyan': [C.cyan.textLight, C.cyan.textDark],
-
-      '--color-background-gray': [C.gray.bgLight, C.gray.bgDark],
-      '--color-border-gray': [C.gray.borderLight, C.gray.borderDark],
-      '--color-icon-gray': [C.gray.textLight, C.gray.textDark],
-      '--color-text-gray': [C.gray.textLight, C.gray.textDark],
-
-      '--color-background-green': [C.green.bgLight, C.green.bgDark],
-      '--color-border-green': [C.green.borderLight, C.green.borderDark],
-      '--color-icon-green': [C.green.textLight, C.green.textDark],
-      '--color-text-green': [C.green.textLight, C.green.textDark],
-
-      '--color-background-orange': [C.orange.bgLight, C.orange.bgDark],
-      '--color-border-orange': [C.orange.borderLight, C.orange.borderDark],
-      '--color-icon-orange': [C.orange.textLight, C.orange.textDark],
-      '--color-text-orange': [C.orange.textLight, C.orange.textDark],
-
-      '--color-background-pink': [C.pink.bgLight, C.pink.bgDark],
-      '--color-border-pink': [C.pink.borderLight, C.pink.borderDark],
-      '--color-icon-pink': [C.pink.textLight, C.pink.textDark],
-      '--color-text-pink': [C.pink.textLight, C.pink.textDark],
-
-      '--color-background-purple': [C.purple.bgLight, C.purple.bgDark],
-      '--color-border-purple': [C.purple.borderLight, C.purple.borderDark],
-      '--color-icon-purple': [C.purple.textLight, C.purple.textDark],
-      '--color-text-purple': [C.purple.textLight, C.purple.textDark],
-
-      '--color-background-red': [C.red.bgLight, C.red.bgDark],
-      '--color-border-red': [C.red.borderLight, C.red.borderDark],
-      '--color-icon-red': [C.red.textLight, C.red.textDark],
-      '--color-text-red': [C.red.textLight, C.red.textDark],
-
-      '--color-background-teal': [C.teal.bgLight, C.teal.bgDark],
-      '--color-border-teal': [C.teal.borderLight, C.teal.borderDark],
-      '--color-icon-teal': [C.teal.textLight, C.teal.textDark],
-      '--color-text-teal': [C.teal.textLight, C.teal.textDark],
-
-      '--color-background-yellow': [C.yellow.bgLight, C.yellow.bgDark],
-      '--color-border-yellow': [C.yellow.borderLight, C.yellow.borderDark],
-      '--color-icon-yellow': [C.yellow.textLight, C.yellow.textDark],
-      '--color-text-yellow': [C.yellow.textLight, C.yellow.textDark],
-    },
-
-    components: withOwnFillText({
+  const baseComponents = withOwnFillText({
       heading: {
         base: {
           letterSpacing: '-0.025em',
@@ -601,7 +436,7 @@ export function buildMehanThemeConfig(
         },
       },
 
-      // SegmentedControl — recessed well + raised moulded pill
+      // SegmentedControl — recessed well + ('raised' ceramic pill OR 'espresso' Shotcandy inverted ink)
       'segmented-control': {
         base: {
           backgroundColor: 'var(--mehan-well)',
@@ -610,12 +445,24 @@ export function buildMehanThemeConfig(
         },
       },
       'segmented-control-item': {
-        selected: {
-          backgroundColor: lightDark(L.surface, D.raisedTop),
-          backgroundImage: 'var(--mehan-raised-grad)',
-          boxShadow: 'var(--mehan-shadow-raised)',
-          fontWeight: '600',
-        },
+        selected:
+          dna.segmentedStyle === 'espresso'
+            ? {
+                backgroundColor: lightDark(L.inverted, D.inverted),
+                backgroundImage: 'none',
+                color: lightDark(L.onInverted, L.ink),
+                '--color-text-primary': lightDark(L.onInverted, L.ink),
+                '--color-text-secondary': lightDark(L.onInverted, L.ink2),
+                '--color-icon-primary': lightDark(L.onInverted, L.ink),
+                boxShadow: `0 1px 2px ${lightDark('rgba(35, 24, 20, 0.24)', 'rgba(0, 0, 0, 0.45)')}, inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.14)', 'rgba(255, 255, 255, 0.55)')}`,
+                fontWeight: '600',
+              }
+            : {
+                backgroundColor: lightDark(L.surface, D.raisedTop),
+                backgroundImage: 'var(--mehan-raised-grad)',
+                boxShadow: 'var(--mehan-shadow-raised)',
+                fontWeight: '600',
+              },
       },
 
       // Complete Borderless Recessed-Well Input & Search Family (15 targets!)
@@ -920,11 +767,275 @@ export function buildMehanThemeConfig(
           },
         },
       },
-    }),
+    });
+
+  return {
+    name: dna.name,
+
+    typography: {
+      scale: {base: dna.typeBase, ratio: dna.typeRatio},
+      body: {
+        family: dna.typography.bodyFamily.replace(/^"|"$/g, ''),
+        fallbacks:
+          'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      },
+      heading: {
+        family: dna.typography.displayFamily.replace(/^"|"$/g, ''),
+        fallbacks: '"Figtree", ui-sans-serif, system-ui, sans-serif',
+        weight: 'bold',
+        weights: {1: 'bold', 2: 'bold', 3: 'bold', 4: 'semibold'},
+      },
+      code: {
+        family: dna.typography.monoFamily.replace(/^"|"$/g, ''),
+        fallbacks: 'ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace',
+      },
+    },
+
+    motion: motionConfig,
+
+    syntax,
+
+    localTokens: {
+      '--mehan-paper': [L.paper, D.paper],
+      '--mehan-tray': [L.tray, D.tray],
+      '--mehan-surface': [L.surface, D.surface],
+      '--mehan-float': [L.float, D.float],
+      '--mehan-well': [L.well, D.well],
+      '--mehan-well-hover': [L.wellHover, D.wellHover],
+      '--mehan-socket': [L.socket, D.socket],
+      '--mehan-edge-control': 'transparent',
+      '--mehan-card-hairline': [withHexAlpha(L.ink, 0.06), '#ffffff11'],
+      '--mehan-raised-grad': `linear-gradient(180deg, ${lightDark(L.raisedTop, D.raisedTop)} 0%, ${lightDark(L.raisedBottom, D.raisedBottom)} 100%)`,
+      '--mehan-knob-grad': `radial-gradient(circle at 36% 28%, #ffffff 0%, ${lightDark('#ffffff', '#f1f5f9')} 38%, ${lightDark(L.paper, '#cbd5e1')} 70%, ${lightDark(lightKnobRim, '#94a3b8')} 100%)`,
+      '--mehan-primary-grad': A.buttonGradient,
+      '--mehan-primary-grad-hover': A.buttonGradientHover,
+      '--mehan-primary-lip': A.buttonLip,
+      '--mehan-shadow-well': `inset 0 1px 2px ${lightDark(`rgba(${sRgb}, 0.11)`, 'rgba(0, 0, 0, 0.60)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.04)`, 'rgba(0, 0, 0, 0.25)')}, inset 0 -1px 0 ${lightDark('rgba(255, 255, 255, 0.90)', 'rgba(255, 255, 255, 0.08)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
+      '--mehan-shadow-socket': `inset 0 1px 2px ${lightDark(`rgba(${sRgb}, 0.22)`, 'rgba(0, 0, 0, 0.72)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.06)`, 'rgba(255, 255, 255, 0.05)')}, inset 0 -1px 0 ${lightDark('rgba(255, 255, 255, 0.90)', 'rgba(255, 255, 255, 0.14)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
+      '--mehan-shadow-raised': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.10)')}, ${secLip}0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.05)')}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.04 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.32 * depth).toFixed(3)})`)}, 0 ${px(2 * depth)} ${px(3.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.05 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.28 * depth).toFixed(3)})`)}, 0 ${px(6 * depth)} ${px(9 * depth)} -4px ${lightDark(`rgba(${sRgb}, ${(0.10 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.40 * depth).toFixed(3)})`)}, inset 0 0 0 1px var(--mehan-edge-control)`,
+      '--mehan-shadow-raised-hover': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.14)')}, ${secLip}0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.06)`, 'rgba(255, 255, 255, 0.08)')}, 0 ${px(2 * depth)} ${px(3 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.05 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.36 * depth).toFixed(3)})`)}, 0 ${px(5 * depth)} ${px(8 * depth)} -2px ${lightDark(`rgba(${sRgb}, ${(0.08 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.36 * depth).toFixed(3)})`)}, 0 ${px(11 * depth)} ${px(15 * depth)} -5px ${lightDark(`rgba(${sRgb}, ${(0.14 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, inset 0 0 0 1px var(--mehan-edge-control)`,
+      '--mehan-shadow-pressed': `inset 0 1px 2.5px ${lightDark(`rgba(${sRgb}, 0.18)`, 'rgba(0, 0, 0, 0.56)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.06)`, 'rgba(255, 255, 255, 0.05)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
+      '--mehan-shadow-knob': `0 0 0 0.5px ${lightDark(`rgba(${sRgb}, 0.08)`, 'rgba(0, 0, 0, 0.35)')}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.10 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, 0 ${px(2 * depth)} ${px(4 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.14 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.42 * depth).toFixed(3)})`)}, 0 ${px(5 * depth)} ${px(8 * depth)} -3px ${lightDark(`rgba(${sRgb}, ${(0.16 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.45 * depth).toFixed(3)})`)}`,
+      '--mehan-shadow-primary': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.36)', 'rgba(255, 255, 255, 0.32)')}, ${lipInset}0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(A.buttonContactShadow, 'rgba(0, 0, 0, 0.45)')}, 0 ${px(3 * depth)} ${px(5.5 * depth)} -1px ${A.buttonMidShadow}, 0 ${px(9 * depth)} ${px(15 * depth)} -6px ${A.buttonGlow}`,
+      '--mehan-shadow-primary-hover': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.44)', 'rgba(255, 255, 255, 0.40)')}, ${lipInset}0 ${px(2 * depth)} ${px(3.5 * depth)} ${lightDark(A.buttonContactShadow, 'rgba(0, 0, 0, 0.48)')}, 0 ${px(5 * depth)} ${px(8.5 * depth)} -1px ${A.buttonMidShadow}, 0 ${px(11 * depth)} ${px(19 * depth)} -5px ${A.buttonGlow}`,
+      '--mehan-shadow-primary-pressed': `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.18)', 'rgba(255, 255, 255, 0.16)')}, ${lipPressedInset}inset 0 2px 4px ${lightDark(A.buttonPressedInner, 'rgba(0, 0, 0, 0.45)')}, 0 ${px(1 * depth)} ${px(2 * depth)} ${lightDark(A.buttonContactShadow, 'rgba(0, 0, 0, 0.45)')}`,
+      '--mehan-shadow-danger': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.08)')}, inset 0 -2px 0 ${lightDark('rgba(185, 28, 28, 0.18)', 'rgba(0, 0, 0, 0.38)')}, 0 0 0 1px ${lightDark('rgba(185, 28, 28, 0.08)', 'rgba(248, 113, 113, 0.18)')}, 0 1px 1.5px ${lightDark('rgba(185, 28, 28, 0.08)', 'rgba(0, 0, 0, 0.35)')}, 0 ${px(5 * depth)} ${px(9 * depth)} -4px ${lightDark('rgba(185, 28, 28, 0.24)', 'rgba(0, 0, 0, 0.45)')}`,
+      '--mehan-shadow-danger-pressed': `inset 0 1px 2.5px ${lightDark('rgba(185, 28, 28, 0.22)', 'rgba(0, 0, 0, 0.55)')}, inset 0 0 0 1px ${lightDark('rgba(185, 28, 28, 0.12)', 'rgba(248, 113, 113, 0.18)')}`,
+      ...(options.localTokens ?? {}),
+    },
+
+    adaptations: {
+      rules: [
+        {
+          when: {pointer: 'coarse', width: {below: 'lg'}},
+          value: {
+            typography: {scale: {base: 16, ratio: 1.195}},
+            tokens: {
+              '--size-element-sm': '36px',
+              '--size-element-md': '44px',
+              '--size-element-lg': '48px',
+            },
+          },
+        },
+        {
+          when: {pointer: 'fine', motion: 'no-preference'},
+          value: {
+            components: {
+              button: {
+                'variant:primary': {
+                  [`:hover${ENABLED}${POPUP_CLOSED}`]: {
+                    transform: 'translateY(-1px)',
+                  },
+                },
+                'variant:secondary': {
+                  [`:hover${ENABLED}${POPUP_CLOSED}`]: {
+                    transform: 'translateY(-1px)',
+                  },
+                },
+                'variant:destructive': {
+                  [`:hover${ENABLED}${POPUP_CLOSED}`]: {
+                    transform: 'translateY(-1px)',
+                  },
+                },
+              },
+            },
+          },
+        },
+        {
+          when: {contrast: 'more'},
+          value: {
+            localTokens: {
+              '--mehan-edge-control': [L.lineStrong, D.lineStrong],
+              '--mehan-card-hairline': [L.lineStrong, D.lineStrong],
+            },
+          },
+        },
+      ],
+    },
+
+    tokens: {
+      '--color-accent': [A.accentLight, A.accentDark],
+      '--color-accent-muted': [A.mutedLight, A.mutedDark],
+      '--color-on-accent': [A.onAccentLight, A.onAccentDark],
+      '--color-text-accent': [A.textLight, A.textDark],
+      '--color-icon-accent': [A.textLight, A.textDark],
+
+      '--color-background-body': [L.paper, D.paper],
+      '--color-background-surface': [L.surface, D.surface],
+      '--color-background-card': [L.surface, D.surface],
+      '--color-background-popover': [L.float, D.float],
+      '--color-background-muted': [L.tray, D.tray],
+      '--color-background-inverted': [L.inverted, D.inverted],
+      '--color-on-dark': L.onInverted,
+      '--color-on-light': L.ink,
+
+      '--color-neutral': [withHexAlpha(L.ink, 0.065), withHexAlpha(D.ink, 0.10)],
+      '--color-overlay': [withHexAlpha(L.ink, 0.42), '#080605ab'],
+      '--color-overlay-hover': [
+        withHexAlpha(L.ink, 0.045),
+        withHexAlpha(D.ink, 0.07),
+      ],
+      '--color-overlay-pressed': [
+        withHexAlpha(L.ink, 0.09),
+        withHexAlpha(D.ink, 0.13),
+      ],
+
+      '--color-text-primary': [L.ink, D.ink],
+      '--color-text-secondary': [L.ink2, D.ink2],
+      '--color-text-disabled': [L.inkDisabled, D.inkDisabled],
+
+      '--color-icon-primary': [L.ink, D.ink],
+      '--color-icon-secondary': [L.ink3, D.ink3],
+      '--color-icon-disabled': [L.inkDisabled, D.inkDisabled],
+
+      '--color-border': [L.line, D.line],
+      '--color-border-emphasized': [L.lineStrong, D.lineStrong],
+      '--color-tint-hover': [L.ink, D.ink],
+
+      '--color-info': S.info.solid,
+      '--color-info-muted': S.info.muted,
+      '--color-on-info': S.info.onSolid,
+      '--color-on-info-muted': S.info.onMuted,
+      '--color-text-info': S.info.text,
+
+      '--color-success': S.success.solid,
+      '--color-success-muted': S.success.muted,
+      '--color-on-success': S.success.onSolid,
+      '--color-on-success-muted': S.success.onMuted,
+      '--color-text-success': S.success.text,
+
+      '--color-warning': S.warning.solid,
+      '--color-warning-muted': S.warning.muted,
+      '--color-on-warning': S.warning.onSolid,
+      '--color-on-warning-muted': S.warning.onMuted,
+      '--color-text-warning': S.warning.text,
+
+      '--color-error': S.error.solid,
+      '--color-error-muted': S.error.muted,
+      '--color-on-error': S.error.onSolid,
+      '--color-on-error-muted': S.error.onMuted,
+      '--color-text-error': S.error.text,
+      '--color-background-error-inverted': ['#991b1b', '#fca5a5'],
+
+      '--focus-outline-color': [L.ink, D.ink],
+
+      '--size-element-sm': dna.sizing.controlSm,
+      '--size-element-md': dna.sizing.controlMd,
+      '--size-element-lg': dna.sizing.controlLg,
+
+      '--radius-none': '0px',
+      '--radius-inner': dna.radii.inner,
+      '--radius-element': dna.radii.element,
+      '--radius-container': dna.radii.container,
+      '--radius-page': dna.radii.page,
+      '--radius-chat': dna.radii.chat,
+      '--radius-full': '9999px',
+
+      '--color-skeleton': [L.socket, D.wellHover],
+      '--color-shadow': [withHexAlpha(L.ink, 0.14), '#00000080'],
+      '--shadow-low': `inset 0 -2px 0 ${lightDark(lightPanelLip, 'rgba(255, 255, 255, 0.03)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.04)`, 'rgba(255, 255, 255, 0.05)')}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.03 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.30 * depth).toFixed(3)})`)}, 0 ${px(3 * depth)} ${px(5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.04 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.35 * depth).toFixed(3)})`)}, 0 ${px(10 * depth)} ${px(18 * depth)} -8px ${lightDark(`rgba(${sRgb}, ${(0.08 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, 0 ${px(26 * depth)} ${px(40 * depth)} -22px ${lightDark(`rgba(${sRgb}, ${(0.16 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.60 * depth).toFixed(3)})`)}`,
+      '--shadow-med': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.09)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.06)')}, 0 ${px(2 * depth)} ${px(5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.06 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.36 * depth).toFixed(3)})`)}, 0 ${px(8 * depth)} ${px(16 * depth)} -4px ${lightDark(`rgba(${sRgb}, ${(0.12 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.48 * depth).toFixed(3)})`)}, 0 ${px(24 * depth)} ${px(44 * depth)} -16px ${lightDark(`rgba(${sRgb}, ${(0.24 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.68 * depth).toFixed(3)})`)}`,
+      '--shadow-high': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.08)')}, 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.06)')}, 0 ${px(8 * depth)} ${px(20 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.12 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.50 * depth).toFixed(3)})`)}, 0 ${px(44 * depth)} ${px(100 * depth)} -24px ${lightDark(`rgba(${sRgb}, ${(0.38 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.72 * depth).toFixed(3)})`)}`,
+      '--shadow-inset-hover': `inset 0 0 0 1.5px ${lightDark(withHexAlpha(L.ink, 0.16), withHexAlpha(D.ink, 0.22))}`,
+      '--shadow-inset-selected': `inset 0 0 0 2px ${lightDark(A.accentLight, A.accentDark)}`,
+
+      // Categorical families
+      '--color-background-blue': [C.blue.bgLight, C.blue.bgDark],
+      '--color-border-blue': [C.blue.borderLight, C.blue.borderDark],
+      '--color-icon-blue': [C.blue.textLight, C.blue.textDark],
+      '--color-text-blue': [C.blue.textLight, C.blue.textDark],
+
+      '--color-background-cyan': [C.cyan.bgLight, C.cyan.bgDark],
+      '--color-border-cyan': [C.cyan.borderLight, C.cyan.borderDark],
+      '--color-icon-cyan': [C.cyan.textLight, C.cyan.textDark],
+      '--color-text-cyan': [C.cyan.textLight, C.cyan.textDark],
+
+      '--color-background-gray': [C.gray.bgLight, C.gray.bgDark],
+      '--color-border-gray': [C.gray.borderLight, C.gray.borderDark],
+      '--color-icon-gray': [C.gray.textLight, C.gray.textDark],
+      '--color-text-gray': [C.gray.textLight, C.gray.textDark],
+
+      '--color-background-green': [C.green.bgLight, C.green.bgDark],
+      '--color-border-green': [C.green.borderLight, C.green.borderDark],
+      '--color-icon-green': [C.green.textLight, C.green.textDark],
+      '--color-text-green': [C.green.textLight, C.green.textDark],
+
+      '--color-background-orange': [C.orange.bgLight, C.orange.bgDark],
+      '--color-border-orange': [C.orange.borderLight, C.orange.borderDark],
+      '--color-icon-orange': [C.orange.textLight, C.orange.textDark],
+      '--color-text-orange': [C.orange.textLight, C.orange.textDark],
+
+      '--color-background-pink': [C.pink.bgLight, C.pink.bgDark],
+      '--color-border-pink': [C.pink.borderLight, C.pink.borderDark],
+      '--color-icon-pink': [C.pink.textLight, C.pink.textDark],
+      '--color-text-pink': [C.pink.textLight, C.pink.textDark],
+
+      '--color-background-purple': [C.purple.bgLight, C.purple.bgDark],
+      '--color-border-purple': [C.purple.borderLight, C.purple.borderDark],
+      '--color-icon-purple': [C.purple.textLight, C.purple.textDark],
+      '--color-text-purple': [C.purple.textLight, C.purple.textDark],
+
+      '--color-background-red': [C.red.bgLight, C.red.bgDark],
+      '--color-border-red': [C.red.borderLight, C.red.borderDark],
+      '--color-icon-red': [C.red.textLight, C.red.textDark],
+      '--color-text-red': [C.red.textLight, C.red.textDark],
+
+      '--color-background-teal': [C.teal.bgLight, C.teal.bgDark],
+      '--color-border-teal': [C.teal.borderLight, C.teal.borderDark],
+      '--color-icon-teal': [C.teal.textLight, C.teal.textDark],
+      '--color-text-teal': [C.teal.textLight, C.teal.textDark],
+
+      '--color-background-yellow': [C.yellow.bgLight, C.yellow.bgDark],
+      '--color-border-yellow': [C.yellow.borderLight, C.yellow.borderDark],
+      '--color-icon-yellow': [C.yellow.textLight, C.yellow.textDark],
+      '--color-text-yellow': [C.yellow.textLight, C.yellow.textDark],
+
+      // Official Astryx Data Visualization Categorical Tokens (`dataTokens.stylex.ts`)
+      '--color-data-categorical-blue': [C.blue.borderLight, C.blue.borderDark],
+      '--color-data-categorical-orange': [C.orange.borderLight, C.orange.borderDark],
+      '--color-data-categorical-purple': [C.purple.borderLight, C.purple.borderDark],
+      '--color-data-categorical-green': [C.green.borderLight, C.green.borderDark],
+      '--color-data-categorical-pink': [C.pink.borderLight, C.pink.borderDark],
+      '--color-data-categorical-cyan': [C.cyan.borderLight, C.cyan.borderDark],
+      '--color-data-categorical-red': [C.red.borderLight, C.red.borderDark],
+      '--color-data-categorical-teal': [C.teal.borderLight, C.teal.borderDark],
+      '--color-data-categorical-brown': ['#9a5206', '#fbbf24'],
+      '--color-data-categorical-indigo': ['#4f46e5', '#818cf8'],
+      '--color-data-neutral': [L.ink3, D.ink3],
+
+      ...spacingTokens,
+      ...(options.tokens ?? {}),
+    },
+
+    components: options.components
+      ? mergeMehanComponentStyles(baseComponents, options.components)
+      : baseComponents,
   };
 }
 
-export function createMehanBaseTheme(options: MehanThemeOptions): DefinedTheme {
+export function createMehanBaseTheme(
+  options: MehanAstryxThemeOptions,
+): DefinedTheme {
   return defineTheme(buildMehanThemeConfig(options));
 }
 
@@ -947,10 +1058,12 @@ export const mehanStoneBaseTheme: DefinedTheme = createMehanBaseTheme({
 });
 
 /**
- * Runtime theme factory for custom brand themes in any Astryx app:
- * `const appTheme = createMehanTheme({ name: 'acme', atmosphere: 'porcelain', accent: '#4f46e5', density: 'compact' })`
+ * Runtime theme factory combining Mehan's parametric DNA seed with full,
+ * unrestricted Astryx `tokens` and `components` overrides.
  */
-export function createMehanTheme(options: MehanThemeOptions): DefinedTheme {
+export function createMehanTheme(
+  options: MehanAstryxThemeOptions,
+): DefinedTheme {
   return defineTheme({
     ...buildMehanThemeConfig(options),
     icons: mehanIconRegistry,

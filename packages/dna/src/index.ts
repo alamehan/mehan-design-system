@@ -34,8 +34,11 @@ export {
   resolveMehanDna,
   type CategoricalFamilyStops,
   type MehanDensity,
+  type MehanLipStyle,
   type MehanMotion,
+  type MehanSegmentedStyle,
   type MehanThemeOptions,
+  type MehanWellStyle,
   type ResolvedMehanDna,
 } from './materials';
 

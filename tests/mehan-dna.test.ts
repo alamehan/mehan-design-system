@@ -51,6 +51,10 @@ describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws
           contrastRatio(ramp.borderDark, dna.atmosphere.dark.surface),
         ).toBeGreaterThanOrEqual(3);
       }
+      for (const st of Object.values(dna.statuses)) {
+        expect(contrastRatio(st.onSolid[0], st.solid[0])).toBeGreaterThanOrEqual(4.5);
+        expect(contrastRatio(st.onSolid[1], st.solid[1])).toBeGreaterThanOrEqual(4.5);
+      }
     });
   }
 
@@ -133,5 +137,48 @@ describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws
     });
     expect(kit).toContain('Universal UX, Semantic & Copywriting Standards');
     expect(kit).toContain('data-density="compact"');
+  });
+
+  it('supports Shotcandy 1:1 Espresso segmented pills, lip/well modes, data viz tokens, and unrestricted Astryx overrides', () => {
+    const shotcandyTheme = createMehanTheme({
+      name: 'shotcandy-open',
+      atmosphere: 'confectionery',
+      accent: 'strawberry',
+      typeBase: 13.5,
+      sizeBase: 32,
+      lipStyle: 'subtle',
+      segmentedStyle: 'espresso',
+      wellStyle: 'bordered',
+      motion: 'crisp',
+      durationStep: 1.25,
+      tokens: {
+        '--radius-page': '28px',
+      },
+      components: {
+        card: {
+          base: {
+            borderRadius: '24px',
+          },
+        },
+      },
+    });
+
+    expect(shotcandyTheme.tokens['--size-element-md']).toBe('32px');
+    expect(shotcandyTheme.tokens['--radius-page']).toBe('28px');
+    expect(shotcandyTheme.tokens['--color-data-categorical-blue']).toMatch(
+      /light-dark\(#/,
+    );
+    expect(shotcandyTheme.tokens['--color-data-neutral']).toMatch(/light-dark\(#/);
+
+    const portableEspresso = generatePortableCss({
+      name: 'shotcandy-portable',
+      atmosphere: 'confectionery',
+      segmentedStyle: 'espresso',
+      typeBase: 13.5,
+      lipStyle: 'flat',
+    });
+    expect(portableEspresso).toContain('--mh-font-base:13.5px');
+    expect(portableEspresso).toContain('--mh-lip-pad:0px');
+    expect(portableEspresso).toContain('--mh-seg-active-bg:#261b16');
   });
 });

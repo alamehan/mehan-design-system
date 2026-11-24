@@ -2,7 +2,7 @@
 export default {
   type: 'generic',
   name: 'mehan-design-rules',
-  title: 'Mehan Tactile Surfaces and 6-Knob DNA',
+  title: 'Mehan Tactile Surfaces and Parametric Theme Engine',
   category: 'guide',
   keywords: [
     'mehan',
@@ -13,9 +13,10 @@ export default {
     'createMehanTheme',
     'material hierarchy',
     'color budget',
+    'segmentedStyle',
   ],
   description:
-    '7-role material hierarchy, 80/15/5 color budget, borderless lip physics, focus-vs-selection separation, and 6-knob parametric theming for @mehan/astryx.',
+    '7-role material hierarchy, 80/15/5 color budget, tactile button and input physics, and full Astryx token/component extensibility for @mehan/astryx.',
   sections: [
     {
       id: 'material-hierarchy',
@@ -27,7 +28,7 @@ export default {
         },
         {
           type: 'prose',
-          text: 'Buttons, input wells, sockets, and floating overlays use borderless tone steps, top highlights, inner lips, and progressive drop shadows instead of wireframe outlines. Grouping containers inside a card use `tray`, never a `well` nested inside another `well`.',
+          text: 'Buttons, input wells, sockets, and floating overlays default to borderless tone steps, top highlights, inner lips, and progressive drop shadows. Grouping containers inside a card step down to `tray`, never nesting a `well` inside another `well`.',
         },
       ],
     },
@@ -37,23 +38,23 @@ export default {
       content: [
         {
           type: 'prose',
-          text: 'Maintain an 80% neutral, 15% brand action/selection, and 5% semantic status color budget across every view. Keyboard focus (`--focus-outline-color`) uses high-contrast neutral ink, while active selection (`--color-accent` and `--shadow-inset-selected`) uses the brand accent so focused-vs-selected states never blur.',
+          text: 'Maintain an 80% neutral, 15% brand action/selection, and 5% semantic status color budget across every view. Keyboard focus (`--focus-outline-color`) uses high-contrast neutral ink, while active selection (`--color-accent` and `--shadow-inset-selected`) uses the brand accent so focused-vs-selected states stay distinct.',
         },
       ],
     },
     {
-      id: 'parametric-theming',
-      title: '6-Knob Parametric Theming',
+      id: 'parametric-and-open-theming',
+      title: 'Parametric Seed Plus Full Astryx Extensibility',
       content: [
         {
           type: 'prose',
-          text: 'Load a prebuilt stylesheet (`mehan-confectionery`, `mehan-porcelain`, `mehan-stone`) or build a custom brand configuration with `createMehanTheme()` from `@mehan/astryx/dna` across 6 bounded knobs: `atmosphere`, `accent` (preset or `#rrggbb` seed), `depth` (`0.5..1.5`), `radiusScale` (`0.75..1.25`), `density` (`standard` 36px or `compact` 32px, expanding to 44px on coarse touch pointers), and `motion` (`expressive`, `standard`, or `calm`). Pair these visual rules with {@link generic:mehan-ux-complexity}, {@link generic:mehan-copy-and-states}, and {@link generic:mehan-page-archetypes}.',
+          text: 'Load a prebuilt stylesheet (`mehan-confectionery`, `mehan-porcelain`, `mehan-stone`) or configure `createMehanTheme()` from `@mehan/astryx/dna`. `createMehanTheme()` provides fast tactile seed options (`atmosphere`, `accent`, `depth`, `lipStyle`, `segmentedStyle`, `wellStyle`, `typeBase`, `typeRatio`, `spacingBase`, `radiusBase`, `sizeBase`, `motion`, `durationStep`) and accepts any raw Astryx `tokens` and `components` overrides on top without restriction. Pair these visual rules with {@link generic:mehan-ux-complexity}, {@link generic:mehan-copy-and-states}, and {@link generic:mehan-page-archetypes}.',
         },
         {
           type: 'code',
           lang: 'tsx',
-          label: 'Custom 6-knob Mehan theme',
-          code: "import {createMehanTheme} from '@mehan/astryx/dna';\n\nexport const workspaceTheme = createMehanTheme({\n  name: 'acme-workspace',\n  atmosphere: 'porcelain',\n  accent: '#4f46e5',\n  depth: 1,\n  radiusScale: 1,\n  density: 'compact',\n  motion: 'calm',\n});",
+          label: 'Custom Mehan theme with tactile seed and raw Astryx overrides',
+          code: "import {createMehanTheme} from '@mehan/astryx/dna';\n\nexport const workspaceTheme = createMehanTheme({\n  name: 'acme-workspace',\n  atmosphere: 'confectionery',\n  accent: '#d42a5f',\n  segmentedStyle: 'espresso',\n  lipStyle: 'candy',\n  typeBase: 13.5,\n  sizeBase: 32,\n  tokens: {\n    '--radius-chat': '22px',\n  },\n  components: {\n    card: {base: {padding: 'var(--spacing-4)'}},\n  },\n});",
         },
       ],
     },

@@ -165,6 +165,9 @@ if (cmd === 'init') {
   const radiusScale = Number(readFlag('--radius', '1'));
   const density = readFlag('--density', 'standard');
   const motion = readFlag('--motion', 'expressive');
+  const lipStyle = readFlag('--lip', 'candy');
+  const segmentedStyle = readFlag('--segmented', 'raised');
+  const wellStyle = readFlag('--well', 'recessed');
   const forcePortable = args.includes('--portable');
   const preferNpm = args.includes('--npm');
   const scope = readCurrentScope();
@@ -196,6 +199,9 @@ if (cmd === 'init') {
         radiusScale,
         density,
         motion,
+        lipStyle,
+        segmentedStyle,
+        wellStyle,
       }),
       'utf8',
     );
@@ -225,7 +231,10 @@ if (cmd === 'init') {
     depth === 1 &&
     radiusScale === 1 &&
     density === 'standard' &&
-    motion === 'expressive';
+    motion === 'expressive' &&
+    lipStyle === 'candy' &&
+    segmentedStyle === 'raised' &&
+    wellStyle === 'recessed';
 
   const cssPath = path.join(srcDir, 'mehan.css');
   const cssLines = usesTailwind
@@ -297,6 +306,9 @@ export const mehanAppTheme = createMehanTheme({
   radiusScale: ${radiusScale},
   density: '${density}',
   motion: '${motion}',
+  lipStyle: '${lipStyle}',
+  segmentedStyle: '${segmentedStyle}',
+  wellStyle: '${wellStyle}',
 });
 
 /** Optional SSR / Next.js <head> inline script to prevent dark-mode flash on load. */
@@ -346,7 +358,7 @@ export function MehanProvider({
 console.log(`Mehan Design System CLI (v1.0.0)
 Usage:
   • Double-click STUDIO.html (Windows / macOS / Linux) to open Interactive Studio offline!
-  • node bin/mehan.mjs init <project-folder> [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--density standard|compact] [--motion expressive|standard|calm] [--tailwind] [--local|--npm] [--portable]
+  • node bin/mehan.mjs init <project-folder> [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--lip candy|subtle|flat] [--segmented raised|espresso] [--well recessed|bordered] [--density standard|compact] [--motion expressive|standard|crisp|calm] [--tailwind] [--local|--npm] [--portable]
   • node bin/mehan.mjs ai-kit [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--out kit.md]
   • node bin/mehan.mjs tokens [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
   • node bin/mehan.mjs set-scope @yourscope

@@ -22,9 +22,12 @@ export {
   type MehanAtmosphere,
   type MehanAtmosphereId,
   type MehanDensity,
+  type MehanLipStyle,
   type MehanMotion,
   type MehanPresetAccentId,
+  type MehanSegmentedStyle,
   type MehanThemeOptions,
+  type MehanWellStyle,
   type OklchColor,
   type ResolvedMehanAccent,
   type ResolvedMehanDna,
@@ -40,5 +43,7 @@ export {
   mehanConfectioneryBaseTheme,
   mehanPorcelainBaseTheme,
   mehanStoneBaseTheme,
+  mergeMehanComponentStyles,
+  type MehanAstryxThemeOptions,
 } from './createMehanTheme';
 export {mehanIconRegistry} from './icons';

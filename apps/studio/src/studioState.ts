@@ -1,114 +1,181 @@
+import {isPresetAccent} from '@mehan/astryx/dna';
 import {
-  isPresetAccent,
-  type MehanAtmosphereId,
-  type MehanDensity,
-  type MehanMotion,
-  type MehanPresetAccentId,
-} from '@mehan/astryx/dna';
+  DEFAULT_SEED_CONFIG,
+  SHOTCANDY_AUTHENTIC_SEED,
+  type FullThemeEditorState,
+  type StudioSeedConfig,
+} from './theme-editor/themeEditorModel';
 
 export type StudioLang = 'id' | 'en';
 export type InstallSourceMode = 'local' | 'npm';
 export type InstallCssMode = 'plain' | 'tailwind';
 
-export interface StudioConfig {
-  atmosphere: MehanAtmosphereId;
-  accent: MehanPresetAccentId | string;
-  depth: number;
-  radiusScale: number;
-  density: MehanDensity;
-  motion: MehanMotion;
-}
-
 export interface NamedStudioPreset {
   id: string;
   name: string;
-  config: StudioConfig;
+  state: FullThemeEditorState;
 }
 
-export const DEFAULT_STUDIO_CONFIG: StudioConfig = {
-  atmosphere: 'confectionery',
-  accent: 'strawberry',
-  depth: 1,
-  radiusScale: 1,
-  density: 'standard',
-  motion: 'expressive',
+export const DEFAULT_EDITOR_STATE: FullThemeEditorState = {
+  seed: {...DEFAULT_SEED_CONFIG},
+  tokenOverrides: {},
+  customOverrides: [],
 };
 
-const STORAGE_KEY = 'mehan-studio-state-v1';
+const STORAGE_KEY = 'mehan-studio-state-v2';
 
 interface PersistedStudioState {
   lang?: StudioLang;
   mode?: 'light' | 'dark';
-  config?: Partial<StudioConfig>;
+  editorOpen?: boolean;
+  themeState?: Partial<FullThemeEditorState>;
   presets?: NamedStudioPreset[];
+}
+
+export function getBuiltInPresets(): NamedStudioPreset[] {
+  return [
+    {
+      id: 'preset-confectionery',
+      name: 'Confectionery',
+      state: {
+        seed: {...DEFAULT_SEED_CONFIG},
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
+      id: 'preset-shotcandy',
+      name: 'Shotcandy 1:1',
+      state: {
+        seed: {...SHOTCANDY_AUTHENTIC_SEED},
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
+      id: 'preset-porcelain',
+      name: 'Porcelain SaaS',
+      state: {
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'porcelain',
+          accent: 'blueberry',
+          depth: 0.95,
+          sizeBase: 32,
+          motion: 'standard',
+        },
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
+      id: 'preset-stone',
+      name: 'Stone Editorial',
+      state: {
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'stone',
+          accent: 'teal',
+          depth: 0.9,
+          motion: 'calm',
+        },
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+  ];
+}
+
+function sanitizeSeed(raw?: Partial<StudioSeedConfig>): StudioSeedConfig {
+  if (!raw) return {...DEFAULT_SEED_CONFIG};
+  return {
+    atmosphere:
+      raw.atmosphere === 'porcelain' || raw.atmosphere === 'stone'
+        ? raw.atmosphere
+        : 'confectionery',
+    accent: typeof raw.accent === 'string' && raw.accent ? raw.accent : 'strawberry',
+    depth: typeof raw.depth === 'number' ? raw.depth : DEFAULT_SEED_CONFIG.depth,
+    radiusScale:
+      typeof raw.radiusScale === 'number'
+        ? raw.radiusScale
+        : DEFAULT_SEED_CONFIG.radiusScale,
+    radiusBase:
+      typeof raw.radiusBase === 'number' && Number.isFinite(raw.radiusBase)
+        ? raw.radiusBase
+        : null,
+    spacingBase:
+      typeof raw.spacingBase === 'number'
+        ? raw.spacingBase
+        : DEFAULT_SEED_CONFIG.spacingBase,
+    sizeBase:
+      typeof raw.sizeBase === 'number' ? raw.sizeBase : DEFAULT_SEED_CONFIG.sizeBase,
+    typeBase:
+      typeof raw.typeBase === 'number' ? raw.typeBase : DEFAULT_SEED_CONFIG.typeBase,
+    typeRatio:
+      typeof raw.typeRatio === 'number'
+        ? raw.typeRatio
+        : DEFAULT_SEED_CONFIG.typeRatio,
+    headingFont:
+      typeof raw.headingFont === 'string' && raw.headingFont
+        ? raw.headingFont
+        : DEFAULT_SEED_CONFIG.headingFont,
+    bodyFont:
+      typeof raw.bodyFont === 'string' && raw.bodyFont
+        ? raw.bodyFont
+        : DEFAULT_SEED_CONFIG.bodyFont,
+    codeFont:
+      typeof raw.codeFont === 'string' && raw.codeFont
+        ? raw.codeFont
+        : DEFAULT_SEED_CONFIG.codeFont,
+    motion:
+      raw.motion === 'calm' || raw.motion === 'standard' || raw.motion === 'crisp'
+        ? raw.motion
+        : 'expressive',
+    durationStep:
+      typeof raw.durationStep === 'number'
+        ? raw.durationStep
+        : DEFAULT_SEED_CONFIG.durationStep,
+    lipStyle:
+      raw.lipStyle === 'subtle' || raw.lipStyle === 'flat' ? raw.lipStyle : 'candy',
+    segmentedStyle: raw.segmentedStyle === 'espresso' ? 'espresso' : 'raised',
+    wellStyle: raw.wellStyle === 'bordered' ? 'bordered' : 'recessed',
+  };
 }
 
 export function loadPersistedStudioState(): {
   lang: StudioLang;
   mode: 'light' | 'dark';
-  config: StudioConfig;
+  editorOpen: boolean;
+  themeState: FullThemeEditorState;
   presets: NamedStudioPreset[];
 } {
-  const defaultPresets: NamedStudioPreset[] = [
-    {
-      id: 'preset-confectionery',
-      name: 'Confectionery Default',
-      config: DEFAULT_STUDIO_CONFIG,
-    },
-    {
-      id: 'preset-porcelain-saas',
-      name: 'Porcelain SaaS',
-      config: {
-        atmosphere: 'porcelain',
-        accent: 'blueberry',
-        depth: 0.95,
-        radiusScale: 0.95,
-        density: 'compact',
-        motion: 'standard',
-      },
-    },
-    {
-      id: 'preset-stone-editorial',
-      name: 'Stone Calm',
-      config: {
-        atmosphere: 'stone',
-        accent: 'teal',
-        depth: 0.9,
-        radiusScale: 1,
-        density: 'standard',
-        motion: 'calm',
-      },
-    },
-  ];
-
+  const defaultPresets = getBuiltInPresets();
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
       return {
         lang: 'id',
         mode: 'light',
-        config: DEFAULT_STUDIO_CONFIG,
+        editorOpen: false,
+        themeState: DEFAULT_EDITOR_STATE,
         presets: defaultPresets,
       };
     }
     const parsed = JSON.parse(raw) as PersistedStudioState;
-    const cfg = parsed.config ?? {};
+    const ts = parsed.themeState ?? {};
     return {
       lang: parsed.lang === 'en' ? 'en' : 'id',
       mode: parsed.mode === 'dark' ? 'dark' : 'light',
-      config: {
-        atmosphere:
-          cfg.atmosphere === 'porcelain' || cfg.atmosphere === 'stone'
-            ? cfg.atmosphere
-            : 'confectionery',
-        accent: typeof cfg.accent === 'string' && cfg.accent ? cfg.accent : 'strawberry',
-        depth: typeof cfg.depth === 'number' ? cfg.depth : 1,
-        radiusScale: typeof cfg.radiusScale === 'number' ? cfg.radiusScale : 1,
-        density: cfg.density === 'compact' ? 'compact' : 'standard',
-        motion:
-          cfg.motion === 'calm' || cfg.motion === 'standard'
-            ? cfg.motion
-            : 'expressive',
+      editorOpen: Boolean(parsed.editorOpen),
+      themeState: {
+        seed: sanitizeSeed(ts.seed),
+        tokenOverrides:
+          ts.tokenOverrides && typeof ts.tokenOverrides === 'object'
+            ? (ts.tokenOverrides as Record<string, string>)
+            : {},
+        customOverrides: Array.isArray(ts.customOverrides)
+          ? ts.customOverrides
+          : [],
       },
       presets:
         Array.isArray(parsed.presets) && parsed.presets.length > 0
@@ -119,7 +186,8 @@ export function loadPersistedStudioState(): {
     return {
       lang: 'id',
       mode: 'light',
-      config: DEFAULT_STUDIO_CONFIG,
+      editorOpen: false,
+      themeState: DEFAULT_EDITOR_STATE,
       presets: defaultPresets,
     };
   }
@@ -128,7 +196,8 @@ export function loadPersistedStudioState(): {
 export function savePersistedStudioState(state: {
   lang: StudioLang;
   mode: 'light' | 'dark';
-  config: StudioConfig;
+  editorOpen: boolean;
+  themeState: FullThemeEditorState;
   presets: NamedStudioPreset[];
 }): void {
   try {
@@ -174,28 +243,46 @@ export function downloadTextFile(
   URL.revokeObjectURL(url);
 }
 
-export function isDefaultPresetConfig(cfg: StudioConfig): boolean {
+export function isDefaultPresetState(state: FullThemeEditorState): boolean {
+  const {seed, tokenOverrides, customOverrides} = state;
+  if (Object.keys(tokenOverrides).length > 0 || customOverrides.length > 0) {
+    return false;
+  }
   const expectedAccent =
-    cfg.atmosphere === 'porcelain'
+    seed.atmosphere === 'porcelain'
       ? 'blueberry'
-      : cfg.atmosphere === 'stone'
+      : seed.atmosphere === 'stone'
         ? 'tangerine'
         : 'strawberry';
   return (
-    cfg.accent === expectedAccent &&
-    cfg.depth === 1 &&
-    cfg.radiusScale === 1 &&
-    cfg.density === 'standard' &&
-    cfg.motion === 'expressive'
+    seed.accent === expectedAccent &&
+    seed.depth === 1 &&
+    seed.radiusScale === 1 &&
+    seed.radiusBase === null &&
+    seed.spacingBase === 4 &&
+    seed.sizeBase === 36 &&
+    seed.typeBase === 14 &&
+    seed.typeRatio === 1.22 &&
+    seed.headingFont === 'Bricolage Grotesque' &&
+    seed.bodyFont === 'Figtree' &&
+    seed.codeFont === 'Geist Mono' &&
+    seed.motion === 'expressive' &&
+    seed.durationStep === 1 &&
+    seed.lipStyle === 'candy' &&
+    seed.segmentedStyle === 'raised' &&
+    seed.wellStyle === 'recessed'
   );
 }
 
 export function buildReactInstallSnippet(
-  cfg: StudioConfig,
+  state: FullThemeEditorState,
   sourceMode: InstallSourceMode,
   cssMode: InstallCssMode,
   mode: 'light' | 'dark',
+  exportedThemeTs: string,
 ): {installCmd: string; cssCode: string; tsxCode: string} {
+  const {seed} = state;
+  const density = seed.sizeBase <= 32 ? 'compact' : 'standard';
   const pkgTarget =
     sourceMode === 'local'
       ? '"D:/mehan-design-system/release/mehan-astryx-1.0.0.tgz"'
@@ -204,15 +291,15 @@ export function buildReactInstallSnippet(
   const srcFlag = sourceMode === 'local' ? ' --local' : ' --npm';
   const installCmd = [
     `# Option 1 — One-command auto-setup (detects React/Next/Vite & Tailwind):`,
-    `node "D:/mehan-design-system/bin/mehan.mjs" init . --atmosphere ${cfg.atmosphere} --accent "${cfg.accent}" --density ${cfg.density} --motion ${cfg.motion}${twFlag}${srcFlag}`,
+    `node "D:/mehan-design-system/bin/mehan.mjs" init . --atmosphere ${seed.atmosphere} --accent "${seed.accent}" --density ${density} --motion ${seed.motion}${twFlag}${srcFlag}`,
     ``,
     `# Option 2 — Install packages directly:`,
     `pnpm add @astryxdesign/core@~0.7.17 @stylexjs/stylex@^0.19.0 lucide-react ${pkgTarget}`,
     `pnpm add -D @astryxdesign/cli@~0.7.17 && pnpm exec astryx init --features agents`,
   ].join('\n');
 
-  const isPreset = isDefaultPresetConfig(cfg);
-  const slug = `mehan-${cfg.atmosphere}`;
+  const isPreset = isDefaultPresetState(state);
+  const slug = `mehan-${seed.atmosphere}`;
   const camel = `${slug.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())}Theme`;
 
   const cssCode =
@@ -237,10 +324,6 @@ export function buildReactInstallSnippet(
           `@import "@mehan/astryx/styles.css";`,
         ].join('\n');
 
-  const accentLiteral = isPresetAccent(cfg.accent)
-    ? `'${cfg.accent}'`
-    : `'${cfg.accent}'`;
-
   const tsxCode = isPreset
     ? `'use client';
 
@@ -264,26 +347,16 @@ export function App() {
     </Theme>
   );
 }`
-    : `'use client';
+    : `${exportedThemeTs}
 
+// src/App.tsx
 import './mehan.css';
 import {LayerProvider, Button, Card, Heading, Stack, TextInput} from '@astryxdesign/core';
 import {Theme} from '@astryxdesign/core/theme';
-import {createMehanTheme} from '@mehan/astryx/dna';
-
-const appTheme = createMehanTheme({
-  name: 'app-${cfg.atmosphere}',
-  atmosphere: '${cfg.atmosphere}',
-  accent: ${accentLiteral},
-  depth: ${cfg.depth},
-  radiusScale: ${cfg.radiusScale},
-  density: '${cfg.density}',
-  motion: '${cfg.motion}',
-});
 
 export function App() {
   return (
-    <Theme theme={appTheme} mode="${mode}">
+    <Theme theme={customMehanTheme} mode="${mode}">
       <LayerProvider>
         <Card maxWidth={480}>
           <Stack gap={4}>
@@ -301,38 +374,44 @@ export function App() {
 }
 
 export function buildAgentSetupPrompt(
-  cfg: StudioConfig,
+  state: FullThemeEditorState,
   sourceMode: InstallSourceMode,
   cssMode: InstallCssMode,
 ): string {
+  const {seed} = state;
+  const density = seed.sizeBase <= 32 ? 'compact' : 'standard';
   const pkgTarget =
     sourceMode === 'local'
       ? `"D:/mehan-design-system/release/mehan-astryx-1.0.0.tgz"`
       : `@mehan/astryx`;
+  const accentNote = isPresetAccent(seed.accent)
+    ? seed.accent
+    : `${seed.accent} (custom OKLCH hex)`;
+  const overrideCount =
+    Object.keys(state.tokenOverrides).length + state.customOverrides.length;
+
   return `Set up Mehan Design System (powered by Meta Astryx ~0.7.17) in this repository with these exact settings:
-- Atmosphere: ${cfg.atmosphere}
-- Accent: ${cfg.accent}
-- Depth: ${cfg.depth}
-- Radius scale: ${cfg.radiusScale}
-- Density: ${cfg.density}
-- Motion: ${cfg.motion}
+- Atmosphere: ${seed.atmosphere}
+- Accent: ${accentNote}
+- Tactile surface: lip=${seed.lipStyle}, segmented=${seed.segmentedStyle}, input=${seed.wellStyle}, depth=${seed.depth}
+- Typography & Scale: heading="${seed.headingFont}", body="${seed.bodyFont}", base=${seed.typeBase}px, ratio=${seed.typeRatio}, sizeBase=${seed.sizeBase}px, spacingBase=${seed.spacingBase}px
+- Motion: ${seed.motion} (${seed.durationStep}x)
+- Custom token/component overrides: ${overrideCount}
 - CSS stack: ${cssMode === 'tailwind' ? 'Tailwind CSS v4 (@layer bridge + @astryxdesign/core/tailwind-theme.css)' : 'Plain CSS'}
 
 Steps to execute:
-1. Run \`node "D:/mehan-design-system/bin/mehan.mjs" init . --atmosphere ${cfg.atmosphere} --accent "${cfg.accent}" --depth ${cfg.depth} --radius ${cfg.radiusScale} --density ${cfg.density} --motion ${cfg.motion}${cssMode === 'tailwind' ? ' --tailwind' : ''}${sourceMode === 'local' ? ' --local' : ' --npm'}\` (or install \`@astryxdesign/core@~0.7.17 @stylexjs/stylex@^0.19.0 lucide-react ${pkgTarget}\` and dev dependency \`@astryxdesign/cli@~0.7.17\`).
+1. Run \`node "D:/mehan-design-system/bin/mehan.mjs" init . --atmosphere ${seed.atmosphere} --accent "${seed.accent}" --depth ${seed.depth} --density ${density} --motion ${seed.motion}${cssMode === 'tailwind' ? ' --tailwind' : ''}${sourceMode === 'local' ? ' --local' : ' --npm'}\` (or install \`@astryxdesign/core@~0.7.17 @stylexjs/stylex@^0.19.0 lucide-react ${pkgTarget}\` and dev dependency \`@astryxdesign/cli@~0.7.17\`).
 2. Run \`pnpm exec astryx init --features agents\` so Astryx + Mehan UX & Copywriting docs are indexed for AI agents.
-3. Wrap the root application in \`<MehanProvider>\` (and include \`MEHAN_THEME_INIT_SCRIPT\` in \`<head>\` if using Next.js / SSR to prevent dark-mode FOUC).
+3. Wrap the root application in \`<MehanProvider>\` or \`<Theme theme={customMehanTheme}>\` (and include \`MEHAN_THEME_INIT_SCRIPT\` in \`<head>\` if using Next.js / SSR to prevent dark-mode FOUC).
 4. Read \`pnpm exec astryx docs mehan-design-rules\`, \`mehan-ux-complexity\`, and \`mehan-copy-and-states\` before building UI screens.`;
 }
 
-export function buildThemeCommitPrompt(cfg: StudioConfig): string {
-  return `Inside D:\\mehan-design-system, update the default studio/preset theme configuration to match my customized settings:
-- atmosphere: '${cfg.atmosphere}'
-- accent: '${cfg.accent}'
-- depth: ${cfg.depth}
-- radiusScale: ${cfg.radiusScale}
-- density: '${cfg.density}'
-- motion: '${cfg.motion}'
+export function buildThemeCommitPrompt(exportedThemeTs: string): string {
+  return `Inside D:\\mehan-design-system, update the default studio/preset theme configuration to match my customized Theme Editor setup:
+
+\`\`\`ts
+${exportedThemeTs}
+\`\`\`
 
 Then run \`pnpm verify\` so all packages, \`release/mehan-astryx-1.0.0.tgz\`, \`release/mehan-tokens.w3c.json\`, and \`STUDIO.html\` are rebuilt and verified across all 6 quality gates (0 errors, 0 warnings, 0 axe contrast violations).`;
 }

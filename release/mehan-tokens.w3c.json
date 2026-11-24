@@ -231,65 +231,65 @@
         }
       },
       "infoText": {
-        "$value": "#1d5bbf",
+        "$value": "#1252b5",
         "$type": "color",
         "$description": "Info status text",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.4925,
-              "c": 0.1694,
-              "h": 259.9
+              "l": 0.4629,
+              "c": 0.1692,
+              "h": 259.8
             },
-            "contrastRatio": 6.22,
+            "contrastRatio": 7.08,
             "wcagAA": true
           }
         }
       },
       "successText": {
-        "$value": "#14704e",
+        "$value": "#006544",
         "$type": "color",
         "$description": "Success status text",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.4851,
-              "c": 0.0989,
-              "h": 162.5
+              "l": 0.448,
+              "c": 0.0977,
+              "h": 162.4
             },
-            "contrastRatio": 5.93,
+            "contrastRatio": 6.97,
             "wcagAA": true
           }
         }
       },
       "warningText": {
-        "$value": "#9a5206",
+        "$value": "#8b4800",
         "$type": "color",
         "$description": "Warning status text",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.5149,
-              "c": 0.1217,
-              "h": 57.3
+              "l": 0.4751,
+              "c": 0.115,
+              "h": 57
             },
-            "contrastRatio": 5.73,
+            "contrastRatio": 6.78,
             "wcagAA": true
           }
         }
       },
       "dangerText": {
-        "$value": "#b91c1c",
+        "$value": "#ae0610",
         "$type": "color",
         "$description": "Danger status text",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.5054,
-              "c": 0.1905,
+              "l": 0.4741,
+              "c": 0.1907,
               "h": 27.5
             },
-            "contrastRatio": 6.32,
+            "contrastRatio": 7.24,
             "wcagAA": true
           }
         }
