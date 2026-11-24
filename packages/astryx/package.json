@@ -1,0 +1,124 @@
+{
+  "name": "@mehan/astryx",
+  "version": "1.0.0",
+  "displayName": "Mehan Design System for Astryx",
+  "description": "Tactile, parametric design system for Meta Astryx — 3 atmospheres (Confectionery, Porcelain, Stone), custom OKLCH brand accents, and signature precision controls.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./dna": {
+      "types": "./dist/dna.d.ts",
+      "default": "./dist/dna.js"
+    },
+    "./styles.css": {
+      "types": "./styles.css.d.ts",
+      "default": "./dist/styles.css"
+    },
+    "./fonts.css": {
+      "types": "./fonts.css.d.ts",
+      "default": "./fonts.css"
+    },
+    "./themes/mehan-confectionery": {
+      "types": "./dist/themes/mehan-confectionery.d.ts",
+      "default": "./dist/themes/mehan-confectionery.js"
+    },
+    "./themes/mehan-confectionery.css": {
+      "types": "./theme.css.d.ts",
+      "default": "./dist/themes/mehan-confectionery.css"
+    },
+    "./themes/mehan-confectionery.fonts.css": {
+      "types": "./fonts.css.d.ts",
+      "default": "./fonts.css"
+    },
+    "./themes/mehan-porcelain": {
+      "types": "./dist/themes/mehan-porcelain.d.ts",
+      "default": "./dist/themes/mehan-porcelain.js"
+    },
+    "./themes/mehan-porcelain.css": {
+      "types": "./theme.css.d.ts",
+      "default": "./dist/themes/mehan-porcelain.css"
+    },
+    "./themes/mehan-porcelain.fonts.css": {
+      "types": "./fonts.css.d.ts",
+      "default": "./fonts.css"
+    },
+    "./themes/mehan-stone": {
+      "types": "./dist/themes/mehan-stone.d.ts",
+      "default": "./dist/themes/mehan-stone.js"
+    },
+    "./themes/mehan-stone.css": {
+      "types": "./theme.css.d.ts",
+      "default": "./dist/themes/mehan-stone.css"
+    },
+    "./themes/mehan-stone.fonts.css": {
+      "types": "./fonts.css.d.ts",
+      "default": "./fonts.css"
+    },
+    "./blocks/ColorSwatchShowcase": {
+      "types": "./dist/blocks/ColorSwatchShowcase.d.ts",
+      "default": "./dist/blocks/ColorSwatchShowcase.js"
+    },
+    "./blocks/ColorPickerShowcase": {
+      "types": "./dist/blocks/ColorPickerShowcase.d.ts",
+      "default": "./dist/blocks/ColorPickerShowcase.js"
+    },
+    "./blocks/PrecisionSliderShowcase": {
+      "types": "./dist/blocks/PrecisionSliderShowcase.d.ts",
+      "default": "./dist/blocks/PrecisionSliderShowcase.js"
+    },
+    "./blocks/MetricCardShowcase": {
+      "types": "./dist/blocks/MetricCardShowcase.d.ts",
+      "default": "./dist/blocks/MetricCardShowcase.js"
+    }
+  },
+  "files": [
+    "astryx.integration.mjs",
+    "assets",
+    "blocks",
+    "docs",
+    "themes",
+    "dist",
+    "src",
+    "fonts",
+    "fonts.css",
+    "fonts.css.d.ts",
+    "styles.css.d.ts",
+    "theme.css.d.ts",
+    "README.md",
+    "!**/*.test.*"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "verify": "astryx integration check --strict --next && astryx integration verify"
+  },
+  "dependencies": {
+    "lucide-react": "^1.66.0"
+  },
+  "peerDependencies": {
+    "@astryxdesign/core": "^0.7.17",
+    "@astryxdesign/cli": "^0.7.17",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@astryxdesign/cli": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@astryxdesign/cli": "0.7.17",
+    "@astryxdesign/core": "0.7.17",
+    "@mehan/dna": "workspace:*"
+  }
+}

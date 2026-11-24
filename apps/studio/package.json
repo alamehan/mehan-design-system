@@ -1,0 +1,29 @@
+{
+  "name": "@mehan/studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && pnpm build:singlefile",
+    "build:singlefile": "vite build --config vite.singlefile.config.ts",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@astryxdesign/core": "0.7.17",
+    "@astryxdesign/theme-neutral": "0.7.17",
+    "@mehan/astryx": "workspace:*",
+    "@mehan/dna": "workspace:*",
+    "@mehan/portable": "workspace:*",
+    "@stylexjs/stylex": "^0.19.1",
+    "lucide-react": "^1.66.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "browserslist": [
+    "Chrome >= 123",
+    "Firefox >= 120",
+    "Safari >= 17.5"
+  ]
+}

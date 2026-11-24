@@ -1,0 +1,396 @@
+/* Mehan Design System — Pre-compiled Extension Component Styles */
+@layer reset, astryx-base, astryx-theme;
+
+@layer astryx-base {
+  .mehan-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* 1. Boiled-Sweet 3D ColorSwatch */
+  .mehan-swatch {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 9999px;
+    cursor: pointer;
+    box-shadow:
+      inset 0 -2px 0 rgba(0, 0, 0, 0.16),
+      inset 0 0 0 1px light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16)),
+      0 2px 4px rgba(0, 0, 0, 0.16);
+    transition: transform 140ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 140ms ease;
+  }
+  .mehan-swatch[data-size="sm"] {
+    width: 24px;
+    height: 24px;
+  }
+  .mehan-swatch[data-size="lg"] {
+    width: 40px;
+    height: 40px;
+  }
+  .mehan-swatch[data-shape="rounded"] {
+    border-radius: var(--radius-element, 10px);
+  }
+  .mehan-swatch[data-rainbow="true"] {
+    background-image: conic-gradient(
+      from 200deg,
+      #ff4f7b,
+      #ff9a3c,
+      #ffd84d,
+      #5fd4a8,
+      #4f8bff,
+      #8b6cff,
+      #ff4f7b
+    );
+  }
+  .mehan-swatch::after {
+    content: "";
+    position: absolute;
+    left: 21%;
+    top: 15%;
+    width: 34%;
+    height: 22%;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.52);
+    transform: rotate(-28deg);
+    pointer-events: none;
+  }
+  .mehan-swatch:hover:not(:disabled) {
+    transform: scale(1.08);
+  }
+  .mehan-swatch[data-selected="true"] {
+    box-shadow:
+      0 0 0 2px var(--color-background-card, #ffffff),
+      0 0 0 4px var(--color-accent, #d42a5f),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.16);
+  }
+  .mehan-swatch:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 3px;
+  }
+  .mehan-swatch:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  /* 2. Tactile HSV ColorPicker */
+  .mehan-color-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 248px;
+    max-width: 100%;
+    padding: 12px;
+    border-radius: var(--radius-container, 16px);
+    background-color: var(--color-background-card, #ffffff);
+    border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+    box-shadow: var(--shadow-low);
+  }
+  .mehan-cp-sv {
+    position: relative;
+    height: 144px;
+    border-radius: var(--radius-element, 10px);
+    background-image:
+      linear-gradient(to top, #000000, transparent),
+      linear-gradient(to right, #ffffff, transparent);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+    cursor: crosshair;
+    touch-action: none;
+    user-select: none;
+  }
+  .mehan-cp-sv:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+  }
+  .mehan-cp-cursor {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+    margin-top: -8px;
+    border-radius: 9999px;
+    border: 2.5px solid #ffffff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 2px 5px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+  }
+  .mehan-cp-hue-wrap {
+    display: flex;
+    align-items: center;
+  }
+  .mehan-cp-hue {
+    width: 100%;
+    height: 12px;
+    margin: 0;
+    appearance: none;
+    border-radius: 9999px;
+    background: linear-gradient(
+      90deg,
+      #ff0000 0%,
+      #ffff00 17%,
+      #00ff00 33%,
+      #00ffff 50%,
+      #0000ff 67%,
+      #ff00ff 83%,
+      #ff0000 100%
+    );
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+  }
+  .mehan-cp-hue::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.28);
+  }
+  .mehan-cp-hex-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mehan-cp-preview {
+    width: 30px;
+    height: 30px;
+    flex: none;
+    border-radius: var(--radius-inner, 7px);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  }
+  .mehan-cp-hex-input {
+    flex: 1;
+    min-width: 0;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: var(--radius-inner, 7px);
+    border: 1px solid var(--mehan-edge-control, transparent);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-well);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-code, monospace);
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .mehan-cp-hex-input:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 1px;
+  }
+  .mehan-cp-eyedropper {
+    width: 32px;
+    height: 32px;
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-inner, 7px);
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+    cursor: pointer;
+  }
+  .mehan-cp-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding-top: 2px;
+  }
+
+  /* 3. PrecisionSlider (Shift 0.25x + Click-to-Type + Magnetic Stops) */
+  .mehan-precision-slider {
+    display: grid;
+    grid-template-columns: minmax(68px, auto) minmax(0, 1fr) 56px;
+    align-items: center;
+    gap: 10px;
+    min-height: 36px;
+  }
+  .mehan-precision-slider[data-disabled="true"] {
+    opacity: 0.5;
+  }
+  .mehan-ps-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+  .mehan-ps-rail-hit {
+    position: relative;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+  }
+  .mehan-ps-rail-hit:focus-visible {
+    outline: none;
+  }
+  .mehan-ps-rail-hit:focus-visible .mehan-ps-knob {
+    box-shadow:
+      0 0 0 2px var(--color-background-card, #ffffff),
+      0 0 0 4px var(--focus-outline-color, var(--color-text-primary));
+  }
+  .mehan-ps-track {
+    position: relative;
+    width: 100%;
+    height: 7px;
+    border-radius: 9999px;
+    background-color: var(--mehan-socket, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-socket);
+    overflow: hidden;
+  }
+  .mehan-ps-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+    background-image: var(--mehan-primary-grad);
+  }
+  .mehan-ps-stop {
+    position: absolute;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    margin-top: -2px;
+    border-radius: 9999px;
+    background-color: var(--color-text-disabled);
+    opacity: 0.65;
+  }
+  .mehan-ps-knob {
+    position: absolute;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    margin-left: -11px;
+    margin-top: -11px;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    background-image: var(--mehan-knob-grad);
+    box-shadow: var(--mehan-shadow-knob, 0 2px 5px rgba(0, 0, 0, 0.25));
+    transition: transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .mehan-ps-knob::after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 7px;
+    width: 2px;
+    height: 8px;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+  }
+  .mehan-ps-rail-hit:hover .mehan-ps-knob {
+    transform: scale(1.07);
+  }
+  .mehan-ps-knob[data-bump="true"] {
+    transform: scale(1.16);
+  }
+  .mehan-ps-value-btn,
+  .mehan-ps-value-input {
+    height: 28px;
+    width: 56px;
+    padding: 0 6px;
+    border-radius: var(--radius-inner, 7px);
+    font-family: var(--font-family-code, monospace);
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: var(--color-text-primary);
+  }
+  .mehan-ps-value-btn {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+  .mehan-ps-value-btn:hover:not(:disabled) {
+    background-color: var(--mehan-well, var(--color-background-muted));
+  }
+  .mehan-ps-value-input {
+    border: 1px solid var(--color-accent);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    outline: none;
+  }
+
+  /* 4. Tactile MetricCard */
+  .mehan-metric-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 18px;
+    border-radius: var(--radius-container, 16px);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-low);
+  }
+  .mehan-mc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .mehan-mc-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+  .mehan-mc-icon {
+    color: var(--color-icon-secondary);
+    display: inline-flex;
+  }
+  .mehan-mc-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .mehan-mc-value {
+    font-family: var(--font-family-heading, sans-serif);
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
+  }
+  .mehan-mc-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-family: var(--font-family-code, monospace);
+    font-size: 11.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-secondary);
+  }
+  .mehan-mc-delta[data-sentiment="positive"] {
+    background-color: var(--color-success-muted);
+    color: var(--color-text-success);
+  }
+  .mehan-mc-delta[data-sentiment="negative"] {
+    background-color: var(--color-error-muted);
+    color: var(--color-text-error);
+  }
+  .mehan-mc-caption {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+  }
+}

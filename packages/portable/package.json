@@ -1,0 +1,32 @@
+{
+  "name": "@mehan/portable",
+  "version": "1.0.0",
+  "description": "Zero-dependency portable CSS, vanilla interactive runtime, and 1-click Claude/Gemini single-HTML AI Prototype Kit for Mehan Design System.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./mehan-portable.css": "./dist/mehan-portable.css",
+    "./mehan-portable.js": "./dist/mehan-portable.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node scripts/build-portable.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@mehan/dna": "workspace:*"
+  }
+}
