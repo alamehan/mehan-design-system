@@ -5,23 +5,24 @@ import {
   Button,
   Card,
   CodeBlock,
-  Divider,
+  Collapsible,
   Grid,
+  HStack,
   Heading,
   IconButton,
   LayerProvider,
   SegmentedControl,
   SegmentedControlItem,
   Stack,
+  Switch,
   Tab,
   TabList,
   Text,
   useToast,
 } from '@astryxdesign/core';
 import {Theme} from '@astryxdesign/core/theme';
-import {ColorSwatch} from '@mehan/astryx';
+import {MetricCard, PrecisionSlider} from '@mehan/astryx';
 import {
-  MEHAN_ACCENT_PRESETS,
   MEHAN_ATMOSPHERES,
   contrastRatio,
   resolveMehanDna,
@@ -65,8 +66,6 @@ import {
 } from './theme-editor/themeEditorModel';
 import {UxCopyView} from './UxCopyView';
 
-const PRESET_ACCENT_LIST = Object.values(MEHAN_ACCENT_PRESETS);
-
 interface StudioInnerProps {
   lang: StudioLang;
   setLang: (lang: StudioLang) => void;
@@ -102,6 +101,11 @@ function StudioInner({
   const [sourceMode, setSourceMode] = useState<InstallSourceMode>('local');
   const [cssMode, setCssMode] = useState<InstallCssMode>('plain');
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  // Live Hero Demo Widget state (real product surface, not duplicate theme knobs)
+  const [heroChannel, setHeroChannel] = useState<string>('production');
+  const [heroRollout, setHeroRollout] = useState<number>(85);
+  const [heroAutoGuard, setHeroAutoGuard] = useState<boolean>(true);
 
   const {seed} = themeState;
 
@@ -227,7 +231,7 @@ function StudioInner({
 
   return (
     <div className="studio-shell">
-      {/* Sticky Top Bar */}
+      {/* Calm, Uncluttered Sticky Top Bar */}
       <header className="studio-topbar">
         <div className="studio-topbar-inner">
           <div className="studio-brand">
@@ -235,21 +239,7 @@ function StudioInner({
               m
             </div>
             <span className="studio-wordmark">mehan</span>
-            <Badge variant="neutral" label="v1.0.0" />
-            <button
-              type="button"
-              className="studio-active-theme-pill"
-              onClick={() => setEditorOpen(prev => !prev)}
-              title={copy.nav.customize}
-            >
-              <span
-                className="studio-pill-dot"
-                style={{backgroundColor: dna.accent.accentLight}}
-              />
-              <span>
-                {atmosphereName} · {accentName}
-              </span>
-            </button>
+            <Badge variant="neutral" label="v1.0" />
           </div>
 
           <nav className="studio-topnav" aria-label="Studio navigation">
@@ -306,20 +296,20 @@ function StudioInner({
               <section className="studio-hero">
                 <Grid
                   columns={{minWidth: 320, max: 2, repeat: 'fit'}}
-                  gap={5}
+                  gap={6}
                   align="center"
                 >
                   <Stack gap={3}>
-                    <Stack direction="horizontal" gap={2} align="center" wrap="wrap">
+                    <HStack gap={2} vAlign="center" wrap="wrap">
                       <Badge variant="info" label={copy.overview.eyebrow} />
                       <Badge
                         variant="success"
                         label={`WCAG AA · ${accentTextContrast}:1`}
                       />
-                    </Stack>
+                    </HStack>
                     <Heading level={1}>{copy.overview.heroTitle}</Heading>
                     <Text color="secondary">{copy.overview.heroDesc}</Text>
-                    <Stack direction="horizontal" gap={2} wrap="wrap">
+                    <HStack gap={2} wrap="wrap" vAlign="center">
                       <Button
                         variant="primary"
                         label={copy.overview.ctaCustomize}
@@ -328,115 +318,88 @@ function StudioInner({
                       />
                       <Button
                         variant="secondary"
+                        label={copy.overview.ctaExploreComponents}
+                        onClick={() => setActiveTab('components')}
+                      />
+                      <Button
+                        variant="ghost"
                         label={copy.overview.ctaCopyAiKit}
                         icon={<Sparkles size={15} />}
                         onClick={() => void handleCopyAiKit()}
                       />
-                      <Button
-                        variant="ghost"
-                        label={copy.overview.ctaExploreComponents}
-                        onClick={() => setActiveTab('components')}
-                      />
-                    </Stack>
+                    </HStack>
                   </Stack>
 
-                  {/* Live Tactile Specimen right inside Hero */}
+                  {/* Focused Real-World Tactile Widget (Zero Duplicate Settings Clutter) */}
                   <div className="studio-tray-panel">
                     <Stack gap={3}>
-                      <Stack
-                        direction="horizontal"
-                        justify="between"
-                        align="center"
-                        wrap="wrap"
-                        gap={2}
-                      >
-                        <Text weight="semibold">
-                          {isId ? 'Pratinjau Taktil Langsung' : 'Live Tactile Specimen'}
-                        </Text>
-                        <Stack direction="horizontal" gap={1.5}>
-                          {PRESET_ACCENT_LIST.map(preset => (
-                            <ColorSwatch
-                              key={preset.id}
-                              size="sm"
-                              color={preset.seed}
-                              label={`${preset.name} accent`}
-                              isSelected={seed.accent === preset.id}
-                              onSelect={() =>
-                                setThemeState(prev => ({
-                                  ...prev,
-                                  seed: {...prev.seed, accent: preset.id},
-                                }))
-                              }
-                            />
-                          ))}
-                        </Stack>
-                      </Stack>
+                      <HStack hAlign="between" vAlign="center" gap={2}>
+                        <div style={{minWidth: 0, flex: 1}}>
+                          <Stack gap={0.5}>
+                            <Text weight="semibold">
+                              {isId ? 'Kontrol rilis bertahap' : 'Progressive rollout'}
+                            </Text>
+                            <Text type="supporting" color="secondary" maxLines={1}>
+                              {atmosphereName} · {accentName} · {seed.headingFont}
+                            </Text>
+                          </Stack>
+                        </div>
+                        <div style={{flex: 'none'}}>
+                          <Badge
+                            variant="success"
+                            label={heroChannel === 'production' ? 'Live' : 'Canary'}
+                          />
+                        </div>
+                      </HStack>
 
                       <SegmentedControl
-                        label="Atmosphere quick switch"
+                        label="Deployment environment"
                         size="sm"
-                        value={seed.atmosphere}
-                        onChange={val =>
-                          setThemeState(prev => ({
-                            ...prev,
-                            seed: {
-                              ...prev.seed,
-                              atmosphere: val as typeof prev.seed.atmosphere,
-                            },
-                          }))
-                        }
+                        value={heroChannel}
+                        onChange={setHeroChannel}
                       >
-                        <SegmentedControlItem
-                          value="confectionery"
-                          label="Confectionery"
-                        />
-                        <SegmentedControlItem value="porcelain" label="Porcelain" />
-                        <SegmentedControlItem value="stone" label="Stone" />
+                        <SegmentedControlItem value="production" label="Production" />
+                        <SegmentedControlItem value="canary" label="Canary" />
+                        <SegmentedControlItem value="preview" label="Preview" />
                       </SegmentedControl>
 
-                      <SegmentedControl
-                        label="Segmented active pill quick switch"
-                        size="sm"
-                        value={seed.segmentedStyle}
-                        onChange={val =>
-                          setThemeState(prev => ({
-                            ...prev,
-                            seed: {
-                              ...prev.seed,
-                              segmentedStyle:
-                                val as typeof prev.seed.segmentedStyle,
-                            },
-                          }))
+                      <MetricCard
+                        label={isId ? 'Latensi tepi (p95)' : 'Edge latency (p95)'}
+                        value={heroChannel === 'production' ? '18.4 ms' : '21.2 ms'}
+                        delta={{value: '-2.8 ms', direction: 'down'}}
+                        caption={
+                          isId
+                            ? 'Angka sejajar otomatis (tabular-nums)'
+                            : 'Aligned tabular numerals across live updates'
                         }
-                      >
-                        <SegmentedControlItem
-                          value="raised"
-                          label="Raised Ceramic"
-                        />
-                        <SegmentedControlItem
-                          value="espresso"
-                          label="Espresso Ink (Shotcandy)"
-                        />
-                      </SegmentedControl>
+                      />
 
-                      <Stack direction="horizontal" gap={2} wrap="wrap">
-                        <Button
-                          variant="primary"
-                          label={isId ? 'Simpan perubahan' : 'Save changes'}
+                      <PrecisionSlider
+                        label={isId ? 'Trafik' : 'Traffic'}
+                        value={heroRollout}
+                        min={0}
+                        max={100}
+                        step={5}
+                        stops={[25, 50, 85, 100]}
+                        unit="%"
+                        onChange={setHeroRollout}
+                      />
+
+                      <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                        <Switch
+                          label={
+                            isId ? 'Proteksi kontras otomatis' : 'Auto contrast guard'
+                          }
+                          value={heroAutoGuard}
+                          onChange={setHeroAutoGuard}
                         />
                         <Button
                           variant="secondary"
-                          label={
-                            isId ? 'Lihat Theme Showcase' : 'Open Theme Showcase'
-                          }
+                          size="sm"
+                          label={isId ? 'Buka Showcase' : 'Open Showcase'}
                           onClick={() => setActiveTab('templates')}
                         />
-                        <Button
-                          variant="destructive"
-                          label={isId ? 'Hapus item' : 'Delete item'}
-                          onClick={() => setConfirmOpen(true)}
-                        />
-                      </Stack>
+                      </HStack>
                     </Stack>
                   </div>
                 </Grid>
@@ -480,54 +443,12 @@ function StudioInner({
                 </Stack>
               </Card>
 
-              {/* 3 Practical Start / Install Paths */}
+              {/* 3 Practical Start Paths + Progressive Disclosure for Raw Setup Code */}
               <Card elevation="low">
                 <Stack gap={4}>
-                  <Stack
-                    direction="horizontal"
-                    justify="between"
-                    align="center"
-                    wrap="wrap"
-                    gap={3}
-                  >
-                    <Stack gap={1}>
-                      <Heading level={2}>{copy.overview.installTitle}</Heading>
-                      <Text color="secondary">{copy.overview.installSub}</Text>
-                    </Stack>
-
-                    <Stack direction="horizontal" gap={2} wrap="wrap">
-                      <SegmentedControl
-                        label="Package source"
-                        size="sm"
-                        value={sourceMode}
-                        onChange={v => setSourceMode(v as InstallSourceMode)}
-                      >
-                        <SegmentedControlItem
-                          value="local"
-                          label={copy.overview.sourceLocal}
-                        />
-                        <SegmentedControlItem
-                          value="npm"
-                          label={copy.overview.sourceNpm}
-                        />
-                      </SegmentedControl>
-
-                      <SegmentedControl
-                        label="CSS stack"
-                        size="sm"
-                        value={cssMode}
-                        onChange={v => setCssMode(v as InstallCssMode)}
-                      >
-                        <SegmentedControlItem
-                          value="plain"
-                          label={copy.overview.cssPlain}
-                        />
-                        <SegmentedControlItem
-                          value="tailwind"
-                          label={copy.overview.cssTailwind}
-                        />
-                      </SegmentedControl>
-                    </Stack>
+                  <Stack gap={1}>
+                    <Heading level={2}>{copy.overview.installTitle}</Heading>
+                    <Text color="secondary">{copy.overview.installSub}</Text>
                   </Stack>
 
                   <Grid columns={{minWidth: 280, max: 3, repeat: 'fit'}} gap={3}>
@@ -536,7 +457,7 @@ function StudioInner({
                         <Badge variant="pink" label={copy.overview.cardAiBadge} />
                         <Heading level={4}>{copy.overview.cardAiTitle}</Heading>
                         <Text color="secondary">{copy.overview.cardAiDesc}</Text>
-                        <Stack direction="horizontal" gap={2} wrap="wrap">
+                        <HStack gap={2} wrap="wrap">
                           <Button
                             variant="primary"
                             size="sm"
@@ -551,7 +472,7 @@ function StudioInner({
                             icon={<Download size={14} />}
                             onClick={handleDownloadStarterHtml}
                           />
-                        </Stack>
+                        </HStack>
                       </Stack>
                     </div>
 
@@ -560,9 +481,9 @@ function StudioInner({
                         <Badge variant="blue" label={copy.overview.cardReactBadge} />
                         <Heading level={4}>{copy.overview.cardReactTitle}</Heading>
                         <Text color="secondary">{copy.overview.cardReactDesc}</Text>
-                        <Stack direction="horizontal" gap={2} wrap="wrap">
+                        <HStack gap={2} wrap="wrap">
                           <Button
-                            variant="primary"
+                            variant="secondary"
                             size="sm"
                             label={copy.overview.cardReactAgentBtn}
                             icon={<Copy size={14} />}
@@ -571,13 +492,13 @@ function StudioInner({
                               showToast({
                                 type: 'info',
                                 body: isId
-                                  ? 'Prompt Setup untuk AI Agent berhasil disalin!'
-                                  : 'Copied Agent Setup Prompt to clipboard!',
+                                  ? 'Prompt Setup disalin ke clipboard.'
+                                  : 'Copied Agent Setup Prompt to clipboard.',
                               });
                             }}
                           />
                           <Button
-                            variant="secondary"
+                            variant="ghost"
                             size="sm"
                             label={copy.overview.cardReactCmdBtn}
                             icon={<Terminal size={14} />}
@@ -586,12 +507,12 @@ function StudioInner({
                               showToast({
                                 type: 'info',
                                 body: isId
-                                  ? 'Perintah instalasi disalin.'
+                                  ? 'Perintah CLI disalin.'
                                   : 'Copied CLI install command.',
                               });
                             }}
                           />
-                        </Stack>
+                        </HStack>
                       </Stack>
                     </div>
 
@@ -600,7 +521,7 @@ function StudioInner({
                         <Badge variant="teal" label={copy.overview.cardHtmlBadge} />
                         <Heading level={4}>{copy.overview.cardHtmlTitle}</Heading>
                         <Text color="secondary">{copy.overview.cardHtmlDesc}</Text>
-                        <Stack direction="horizontal" gap={2} wrap="wrap">
+                        <HStack gap={2} wrap="wrap">
                           <Button
                             variant="secondary"
                             size="sm"
@@ -609,40 +530,84 @@ function StudioInner({
                             onClick={() => void handleCopyPortableCss()}
                           />
                           <Button
-                            variant="secondary"
+                            variant="ghost"
                             size="sm"
                             label={copy.overview.cardHtmlCdnBtn}
                             icon={<Download size={14} />}
                             onClick={handleDownloadStarterHtml}
                           />
-                        </Stack>
+                        </HStack>
                       </Stack>
                     </div>
                   </Grid>
 
-                  <Divider />
-
-                  <Grid columns={{minWidth: 320, max: 2, repeat: 'fit'}} gap={3}>
-                    <CodeBlock
-                      code={`${reactSnippets.installCmd}\n\n${reactSnippets.cssCode}`}
-                      language="bash"
-                      title={
-                        cssMode === 'tailwind'
-                          ? 'Terminal + src/mehan.css (Tailwind v4 Bridge)'
-                          : 'Terminal + src/mehan.css'
+                  <div className="te-disclosure-box">
+                    <Collapsible
+                      trigger={
+                        isId
+                          ? 'Lihat kode setup lengkap (React, Next.js & Tailwind CSS v4)'
+                          : 'Show full setup snippets (React, Next.js & Tailwind CSS v4)'
                       }
-                      hasCopyButton
-                      maxHeight={240}
-                    />
-                    <CodeBlock
-                      code={reactSnippets.tsxCode}
-                      language="tsx"
-                      title="src/App.tsx"
-                      hasCopyButton
-                      hasLineNumbers
-                      maxHeight={240}
-                    />
-                  </Grid>
+                    >
+                      <Stack gap={3}>
+                        <HStack gap={2} wrap="wrap" vAlign="center">
+                          <SegmentedControl
+                            label="Package source"
+                            size="sm"
+                            value={sourceMode}
+                            onChange={v => setSourceMode(v as InstallSourceMode)}
+                          >
+                            <SegmentedControlItem
+                              value="local"
+                              label={copy.overview.sourceLocal}
+                            />
+                            <SegmentedControlItem
+                              value="npm"
+                              label={copy.overview.sourceNpm}
+                            />
+                          </SegmentedControl>
+
+                          <SegmentedControl
+                            label="CSS stack"
+                            size="sm"
+                            value={cssMode}
+                            onChange={v => setCssMode(v as InstallCssMode)}
+                          >
+                            <SegmentedControlItem
+                              value="plain"
+                              label={copy.overview.cssPlain}
+                            />
+                            <SegmentedControlItem
+                              value="tailwind"
+                              label={copy.overview.cssTailwind}
+                            />
+                          </SegmentedControl>
+                        </HStack>
+
+                        <Grid columns={{minWidth: 320, max: 2, repeat: 'fit'}} gap={3}>
+                          <CodeBlock
+                            code={`${reactSnippets.installCmd}\n\n${reactSnippets.cssCode}`}
+                            language="bash"
+                            title={
+                              cssMode === 'tailwind'
+                                ? 'Terminal + src/mehan.css (Tailwind v4)'
+                                : 'Terminal + src/mehan.css'
+                            }
+                            hasCopyButton
+                            maxHeight={220}
+                          />
+                          <CodeBlock
+                            code={reactSnippets.tsxCode}
+                            language="tsx"
+                            title="src/App.tsx"
+                            hasCopyButton
+                            hasLineNumbers
+                            maxHeight={220}
+                          />
+                        </Grid>
+                      </Stack>
+                    </Collapsible>
+                  </div>
                 </Stack>
               </Card>
             </Stack>

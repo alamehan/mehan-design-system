@@ -6,7 +6,6 @@ import {
   Collapsible,
   Divider,
   DropdownMenu,
-  Heading,
   IconButton,
   NumberInput,
   Popover,
@@ -16,14 +15,13 @@ import {
   Stack,
   Tab,
   TabList,
-  Text,
   TextInput,
+  Tooltip,
   useToast,
 } from '@astryxdesign/core';
 import {ColorPicker, ColorSwatch, PrecisionSlider} from '@mehan/astryx';
 import {
   MEHAN_ACCENT_PRESETS,
-  MEHAN_ATMOSPHERES,
   contrastRatio,
   exportW3cDesignTokens,
   isPresetAccent,
@@ -87,11 +85,11 @@ const PRESET_HEX_SWATCHES = PRESET_ACCENT_LIST.map(p => p.seed);
 const BASE_CORE_COLOR_TOKENS = [
   {token: '--color-accent', label: 'Accent (Primary)'},
   {token: '--color-neutral', label: 'Neutral'},
-  {token: '--color-background-card', label: 'Card Surface'},
+  {token: '--color-background-card', label: 'Card surface'},
   {token: '--color-background-surface', label: 'Surface'},
-  {token: '--color-background-body', label: 'Page Body'},
-  {token: '--color-background-muted', label: 'Muted Tray'},
-  {token: '--color-text-primary', label: 'Text Primary'},
+  {token: '--color-background-body', label: 'Page body'},
+  {token: '--color-background-muted', label: 'Muted tray'},
+  {token: '--color-text-primary', label: 'Text primary'},
 ] as const;
 
 interface DockedThemeEditorProps {
@@ -139,11 +137,24 @@ export function DockedThemeEditor({
 
   const {seed, tokenOverrides, customOverrides} = themeState;
 
-  const updateSeed = (patch: Partial<StudioSeedConfig>) => {
-    setThemeState(prev => ({
-      ...prev,
-      seed: {...prev.seed, ...patch},
-    }));
+  const updateSeed = (
+    patch: Partial<StudioSeedConfig>,
+    clearTokens: string[] = [],
+  ) => {
+    setThemeState(prev => {
+      let nextTokens = prev.tokenOverrides;
+      if (clearTokens.length > 0) {
+        nextTokens = {...prev.tokenOverrides};
+        for (const k of clearTokens) {
+          delete nextTokens[k];
+        }
+      }
+      return {
+        ...prev,
+        seed: {...prev.seed, ...patch},
+        tokenOverrides: nextTokens,
+      };
+    });
   };
 
   const setTokenOverride = (tokenName: string, value: string) => {
@@ -164,7 +175,6 @@ export function DockedThemeEditor({
   const totalOverrides =
     Object.keys(tokenOverrides).length + customOverrides.length;
 
-  // Live Contrast Telemetry (checks effective Light/Dark colors including manual overrides!)
   const contrastAudit = useMemo(() => {
     const resolveBranch = (val: string | undefined, fallback: string) => {
       if (!val) return fallback;
@@ -202,9 +212,28 @@ export function DockedThemeEditor({
     [seed.radiusBase, seed.spacingBase],
   );
 
+  const activePresetId = useMemo(() => {
+    const match = presets.find(
+      p =>
+        p.state.seed.atmosphere === seed.atmosphere &&
+        p.state.seed.accent === seed.accent &&
+        p.state.seed.segmentedStyle === seed.segmentedStyle &&
+        p.state.seed.typeBase === seed.typeBase &&
+        p.state.seed.headingFont === seed.headingFont &&
+        p.state.seed.bodyFont === seed.bodyFont &&
+        totalOverrides ===
+          Object.keys(p.state.tokenOverrides).length +
+            p.state.customOverrides.length,
+    );
+    return match?.id ?? '__custom__';
+  }, [presets, seed, totalOverrides]);
+
   if (!isOpen) return null;
 
   const isCustomHex = !isPresetAccent(seed.accent);
+  const isCustomUserPreset =
+    activePresetId !== '__custom__' &&
+    !getBuiltInPresets().some(b => b.id === activePresetId);
 
   const handleSavePreset = () => {
     const trimmed = newPresetName.trim();
@@ -223,7 +252,7 @@ export function DockedThemeEditor({
     setPresetSaveOpen(false);
     showToast({
       type: 'info',
-      body: isId ? `Preset "${trimmed}" tersimpan.` : `Saved preset "${trimmed}".`,
+      body: isId ? `Preset "${trimmed}" disimpan.` : `Saved preset "${trimmed}".`,
     });
   };
 
@@ -244,8 +273,8 @@ export function DockedThemeEditor({
       showToast({
         type: 'error',
         body: isId
-          ? 'Format tidak dikenali. Pilih file .json Mehan atau .ts defineTheme Astryx.'
-          : 'Unrecognized file. Choose a Mehan .json or Astryx defineTheme .ts file.',
+          ? 'Pilih file .json Studio atau .ts defineTheme yang valid.'
+          : 'Choose a valid Mehan .json or Astryx defineTheme .ts file.',
       });
     } finally {
       e.target.value = '';
@@ -279,7 +308,7 @@ export function DockedThemeEditor({
     showToast({
       type: 'info',
       body: isId
-        ? 'Seluruh pengaturan tema dikembalikan ke bawaan.'
+        ? 'Tema dikembalikan ke setelan awal.'
         : 'Reset all seed & token overrides to default.',
     });
   };
@@ -304,18 +333,31 @@ export function DockedThemeEditor({
       className="te-docked-panel"
       aria-label={isId ? 'Editor Tema Langsung' : 'Live Theme Editor'}
     >
-      {/* Sticky Top Header */}
+      {/* Clean, Uncluttered Sticky Header */}
       <div className="te-header">
         <div className="te-header-top">
           <div className="te-header-title-row">
-            <Palette size={16} />
-            <span className="te-header-title">
-              {isId ? 'Theme Editor' : 'Theme Editor'}
-            </span>
+            <Palette size={15} />
+            <span className="te-header-title">Theme Editor</span>
+            <Tooltip
+              content={`Body ${contrastAudit.textOnBody}:1 · Card ${contrastAudit.textOnCard}:1 · CTA ${contrastAudit.ctaRatio}:1`}
+            >
+              <span
+                className={`te-contrast-pill ${contrastAudit.passesAll ? 'te-contrast-ok' : 'te-contrast-warn'}`}
+              >
+                {contrastAudit.passesAll ? (
+                  <CheckCircle2 size={11} />
+                ) : (
+                  <AlertTriangle size={11} />
+                )}
+                <span>{contrastAudit.passesAll ? 'AA' : 'Check'}</span>
+              </span>
+            </Tooltip>
             {totalOverrides > 0 && (
-              <Badge variant="info" label={`${totalOverrides} custom`} />
+              <Badge variant="info" label={`${totalOverrides}`} />
             )}
           </div>
+
           <div className="te-header-actions">
             <input
               ref={fileInputRef}
@@ -324,13 +366,15 @@ export function DockedThemeEditor({
               style={{display: 'none'}}
               onChange={handleImportFile}
             />
-            <Button
-              variant="ghost"
-              size="sm"
-              label={isId ? 'Impor' : 'Import'}
-              icon={<Upload size={13} />}
-              onClick={() => fileInputRef.current?.click()}
-            />
+            <Tooltip content={isId ? 'Impor tema (.json / .ts)' : 'Import theme (.json / .ts)'}>
+              <IconButton
+                variant="ghost"
+                size="sm"
+                label={isId ? 'Impor tema' : 'Import theme'}
+                icon={<Upload size={14} />}
+                onClick={() => fileInputRef.current?.click()}
+              />
+            </Tooltip>
             <DropdownMenu
               button={{
                 label: isId ? 'Ekspor' : 'Export',
@@ -362,7 +406,7 @@ export function DockedThemeEditor({
                   },
                 },
                 {
-                  label: 'Studio State (.json)',
+                  label: 'Studio state (.json)',
                   onClick: () => {
                     downloadTextFile(
                       `mehan-${seed.atmosphere}-theme.json`,
@@ -389,7 +433,7 @@ export function DockedThemeEditor({
                   },
                 },
                 {
-                  label: isId ? 'Salin AI Prototype Kit' : 'Copy AI Prototype Kit',
+                  label: isId ? 'Salin Kit Prototipe AI' : 'Copy AI Prototype Kit',
                   onClick: async () => {
                     const md = generateAiPrototypeKit({
                       ...seed,
@@ -400,7 +444,7 @@ export function DockedThemeEditor({
                   },
                 },
                 {
-                  label: 'W3C Figma Tokens (.w3c.json)',
+                  label: 'W3C Figma tokens (.w3c.json)',
                   onClick: () => {
                     const w3c = exportW3cDesignTokens({
                       name: `mehan-${seed.atmosphere}`,
@@ -420,13 +464,15 @@ export function DockedThemeEditor({
                 },
               ]}
             />
-            <IconButton
-              variant="ghost"
-              size="sm"
-              label={isId ? 'Reset semua' : 'Reset all to default'}
-              icon={<RotateCcw size={14} />}
-              onClick={handleResetAll}
-            />
+            <Tooltip content={isId ? 'Reset semua ke bawaan' : 'Reset all to default'}>
+              <IconButton
+                variant="ghost"
+                size="sm"
+                label={isId ? 'Reset semua' : 'Reset all to default'}
+                icon={<RotateCcw size={14} />}
+                onClick={handleResetAll}
+              />
+            </Tooltip>
             <IconButton
               variant="ghost"
               size="sm"
@@ -437,59 +483,38 @@ export function DockedThemeEditor({
           </div>
         </div>
 
-        {/* Live WCAG Contrast Strip */}
-        <div className="te-contrast-strip">
-          <span
-            className={`te-contrast-pill ${contrastAudit.passesAll ? 'te-contrast-ok' : 'te-contrast-warn'}`}
-          >
-            {contrastAudit.passesAll ? (
-              <CheckCircle2 size={12} />
-            ) : (
-              <AlertTriangle size={12} />
-            )}
-            <span>{contrastAudit.passesAll ? 'WCAG AA' : 'Check Contrast'}</span>
-          </span>
-          <span className="te-contrast-metric">Body {contrastAudit.textOnBody}:1</span>
-          <span className="te-contrast-metric">Card {contrastAudit.textOnCard}:1</span>
-          <span className="te-contrast-metric">CTA {contrastAudit.ctaRatio}:1</span>
-        </div>
-
-        {/* Quick Preset Strip */}
-        <div className="te-preset-bar">
-          {presets.map(p => {
-            const active =
-              p.state.seed.atmosphere === seed.atmosphere &&
-              p.state.seed.accent === seed.accent &&
-              p.state.seed.segmentedStyle === seed.segmentedStyle &&
-              p.state.seed.typeBase === seed.typeBase &&
-              totalOverrides ===
-                Object.keys(p.state.tokenOverrides).length +
-                  p.state.customOverrides.length;
-            const isBuiltIn = getBuiltInPresets().some(b => b.id === p.id);
-            return (
-              <span key={p.id} className="te-preset-chip">
-                <button
-                  type="button"
-                  className={`te-preset-btn ${active ? 'is-active' : ''}`}
-                  onClick={() => setThemeState(p.state)}
-                >
-                  {p.name}
-                </button>
-                {!isBuiltIn && (
-                  <button
-                    type="button"
-                    className="te-preset-del"
-                    aria-label={`Delete preset ${p.name}`}
-                    onClick={() =>
-                      setPresets(prev => prev.filter(item => item.id !== p.id))
-                    }
-                  >
-                    ×
-                  </button>
-                )}
-              </span>
-            );
-          })}
+        {/* Clean Preset Selector Row (Zero Overflowing Chip Clutter) */}
+        <div className="te-preset-row">
+          <div className="te-preset-selector">
+            <Selector
+              label={isId ? 'Preset tema' : 'Theme preset'}
+              isLabelHidden
+              size="sm"
+              value={activePresetId}
+              options={[
+                ...presets.map(p => ({value: p.id, label: `Preset: ${p.name}`})),
+                ...(activePresetId === '__custom__'
+                  ? [{value: '__custom__', label: isId ? 'Preset: Kustom aktif' : 'Preset: Custom active'}]
+                  : []),
+              ]}
+              onChange={id => {
+                if (!id || id === '__custom__') return;
+                const found = presets.find(p => p.id === id);
+                if (found) setThemeState(found.state);
+              }}
+            />
+          </div>
+          {isCustomUserPreset && (
+            <IconButton
+              variant="ghost"
+              size="sm"
+              label="Delete active preset"
+              icon={<Trash2 size={13} />}
+              onClick={() =>
+                setPresets(prev => prev.filter(item => item.id !== activePresetId))
+              }
+            />
+          )}
           <Popover
             isOpen={presetSaveOpen}
             onOpenChange={setPresetSaveOpen}
@@ -497,19 +522,19 @@ export function DockedThemeEditor({
             placement="below"
             alignment="end"
             content={
-              <div style={{padding: 10, width: 230}}>
+              <div style={{padding: 12, width: 232}}>
                 <Stack gap={2}>
                   <TextInput
                     label={isId ? 'Nama preset' : 'Preset name'}
                     size="sm"
-                    placeholder="e.g. Shotcandy Dark"
+                    placeholder="For example: Editorial Dark"
                     value={newPresetName}
                     onChange={setNewPresetName}
                   />
                   <Button
                     variant="primary"
                     size="sm"
-                    label={isId ? 'Simpan' : 'Save preset'}
+                    label={isId ? 'Simpan preset' : 'Save preset'}
                     icon={<Bookmark size={13} />}
                     onClick={handleSavePreset}
                   />
@@ -517,13 +542,12 @@ export function DockedThemeEditor({
               </div>
             }
           >
-            <button
-              type="button"
-              className="te-preset-btn te-preset-save-trigger"
-              aria-label="Save current theme as preset"
-            >
-              + {isId ? 'Simpan' : 'Save'}
-            </button>
+            <Button
+              variant="secondary"
+              size="sm"
+              label={isId ? 'Simpan' : 'Save'}
+              icon={<Bookmark size={13} />}
+            />
           </Popover>
         </div>
 
@@ -540,47 +564,51 @@ export function DockedThemeEditor({
         </TabList>
       </div>
 
-      {/* Scrollable Body */}
+      {/* Scrollable Chunked Body */}
       <div className="te-body">
         {/* ================================================================
-            TAB 1: BASE STYLES (Mehan Tactile Seed + Astryx BaseStylesPanel)
+            TAB 1: BASE STYLES (Chunked with Progressive Disclosure)
            ================================================================ */}
         {editorTab === 'base' && (
-          <Stack gap={4}>
-            {/* Section A: Mehan Tactile Seed */}
+          <Stack gap={3}>
+            {/* Group 1 (Primary): Tactile Seed & Brand */}
             <section className="te-section">
               <div className="te-section-title">
-                {isId ? '1. Fisika & Suasana Taktil Mehan' : '1. Mehan Tactile Physics & Seed'}
+                {isId ? '1. Atmosfer & Aksen Taktil' : '1. Atmosphere & Brand Seed'}
               </div>
 
               <Stack gap={3}>
                 <Stack gap={1}>
                   <span className="te-field-label">
-                    {isId ? 'Suasana Netral (Atmosphere)' : 'Neutral Atmosphere'}
+                    {isId ? 'Suasana permukaan' : 'Neutral atmosphere'}
                   </span>
                   <SegmentedControl
                     label="Neutral atmosphere"
                     size="sm"
                     value={seed.atmosphere}
-                    onChange={v => updateSeed({atmosphere: v as MehanAtmosphereId})}
+                    onChange={v =>
+                      updateSeed(
+                        {atmosphere: v as MehanAtmosphereId},
+                        [
+                          '--color-background-body',
+                          '--color-background-surface',
+                          '--color-background-card',
+                          '--color-background-muted',
+                          '--color-text-primary',
+                        ],
+                      )
+                    }
                   >
                     <SegmentedControlItem value="confectionery" label="Confectionery" />
                     <SegmentedControlItem value="porcelain" label="Porcelain" />
                     <SegmentedControlItem value="stone" label="Stone" />
                   </SegmentedControl>
-                  <span className="te-field-hint">
-                    {seed.atmosphere === 'confectionery'
-                      ? 'Warm oat paper & soft espresso ink (Shotcandy signature)'
-                      : seed.atmosphere === 'porcelain'
-                        ? 'Crisp daylight ceramic for dense SaaS workspaces'
-                        : 'Calm architectural stone & warm slate'}
-                  </span>
                 </Stack>
 
                 <Stack gap={1.5}>
                   <Stack direction="horizontal" justify="between" align="center">
                     <span className="te-field-label">
-                      {isId ? 'Aksen Brand (OKLCH Seed)' : 'Brand Accent Seed (OKLCH)'}
+                      {isId ? 'Benih aksen (OKLCH)' : 'Brand accent (OKLCH)'}
                     </span>
                     <code className="te-token-code">{dna.accent.seed}</code>
                   </Stack>
@@ -592,7 +620,9 @@ export function DockedThemeEditor({
                         color={preset.seed}
                         label={`${preset.name} (${preset.seed})`}
                         isSelected={seed.accent === preset.id}
-                        onSelect={() => updateSeed({accent: preset.id})}
+                        onSelect={() =>
+                          updateSeed({accent: preset.id}, ['--color-accent'])
+                        }
                       />
                     ))}
                     <Popover
@@ -606,7 +636,9 @@ export function DockedThemeEditor({
                           <ColorPicker
                             label="Custom brand hex"
                             value={dna.accent.seed}
-                            onChange={hex => updateSeed({accent: hex})}
+                            onChange={hex =>
+                              updateSeed({accent: hex}, ['--color-accent'])
+                            }
                             presets={PRESET_HEX_SWATCHES}
                           />
                         </div>
@@ -621,165 +653,111 @@ export function DockedThemeEditor({
                   </Stack>
                 </Stack>
 
-                {/* Tactile Hardware Switches: Lip, Segmented Espresso, Input Well */}
-                <Stack gap={1}>
-                  <span className="te-field-label">
-                    {isId ? 'Bibir Tombol 3D (Button Lip)' : '3D Button Lip'}
-                  </span>
-                  <SegmentedControl
-                    label="Button lip style"
-                    size="sm"
-                    value={seed.lipStyle}
-                    onChange={v => updateSeed({lipStyle: v as MehanLipStyle})}
-                  >
-                    <SegmentedControlItem value="candy" label="Candy 2.5px" />
-                    <SegmentedControlItem value="subtle" label="Subtle 1px" />
-                    <SegmentedControlItem value="flat" label="Flat 0px" />
-                  </SegmentedControl>
-                </Stack>
+                <Divider variant="subtle" />
 
-                <Stack gap={1}>
-                  <span className="te-field-label">
-                    {isId
-                      ? 'Pil Aktif SegmentedControl'
-                      : 'Segmented Active Pill'}
-                  </span>
-                  <SegmentedControl
-                    label="Segmented control active style"
-                    size="sm"
-                    value={seed.segmentedStyle}
-                    onChange={v =>
-                      updateSeed({segmentedStyle: v as MehanSegmentedStyle})
+                <Stack gap={2}>
+                  <Stack gap={1}>
+                    <span className="te-field-label">
+                      {isId ? 'Pil aktif SegmentedControl' : 'Segmented active pill'}
+                    </span>
+                    <SegmentedControl
+                      label="Segmented control active style"
+                      size="sm"
+                      value={seed.segmentedStyle}
+                      onChange={v =>
+                        updateSeed({segmentedStyle: v as MehanSegmentedStyle})
+                      }
+                    >
+                      <SegmentedControlItem value="raised" label="Raised Ceramic" />
+                      <SegmentedControlItem
+                        value="espresso"
+                        label="Espresso Ink"
+                      />
+                    </SegmentedControl>
+                  </Stack>
+
+                  <Stack gap={1}>
+                    <span className="te-field-label">
+                      {isId ? 'Bibir tombol 3D' : '3D button lip'}
+                    </span>
+                    <SegmentedControl
+                      label="Button lip style"
+                      size="sm"
+                      value={seed.lipStyle}
+                      onChange={v => updateSeed({lipStyle: v as MehanLipStyle})}
+                    >
+                      <SegmentedControlItem value="candy" label="Candy 3px" />
+                      <SegmentedControlItem value="subtle" label="Subtle 2px" />
+                      <SegmentedControlItem value="flat" label="Flat 0px" />
+                    </SegmentedControl>
+                  </Stack>
+
+                  <Stack gap={1}>
+                    <span className="te-field-label">
+                      {isId ? 'Gaya kolom input' : 'Input field surface'}
+                    </span>
+                    <SegmentedControl
+                      label="Input field surface style"
+                      size="sm"
+                      value={seed.wellStyle}
+                      onChange={v => updateSeed({wellStyle: v as MehanWellStyle})}
+                    >
+                      <SegmentedControlItem value="recessed" label="Recessed Well" />
+                      <SegmentedControlItem value="bordered" label="Bordered 1px" />
+                    </SegmentedControl>
+                  </Stack>
+
+                  <PrecisionSlider
+                    label={isId ? 'Kedalaman 3D' : 'Shadow depth'}
+                    value={Math.round(seed.depth * 100)}
+                    min={0}
+                    max={150}
+                    step={5}
+                    stops={[50, 100, 150]}
+                    unit="%"
+                    onChange={val =>
+                      updateSeed({depth: Number((val / 100).toFixed(2))})
                     }
-                  >
-                    <SegmentedControlItem value="raised" label="Raised Ceramic" />
-                    <SegmentedControlItem
-                      value="espresso"
-                      label="Espresso Ink (Shotcandy)"
-                    />
-                  </SegmentedControl>
+                  />
                 </Stack>
-
-                <Stack gap={1}>
-                  <span className="te-field-label">
-                    {isId ? 'Gaya Kolom Input' : 'Input Field Surface'}
-                  </span>
-                  <SegmentedControl
-                    label="Input field surface style"
-                    size="sm"
-                    value={seed.wellStyle}
-                    onChange={v => updateSeed({wellStyle: v as MehanWellStyle})}
-                  >
-                    <SegmentedControlItem value="recessed" label="Recessed Well" />
-                    <SegmentedControlItem value="bordered" label="Bordered 1px" />
-                  </SegmentedControl>
-                </Stack>
-
-                <PrecisionSlider
-                  label={isId ? 'Intensitas Bayangan 3D' : '3D Shadow Depth'}
-                  value={Math.round(seed.depth * 100)}
-                  min={0}
-                  max={150}
-                  step={5}
-                  stops={[50, 100, 150]}
-                  unit="%"
-                  onChange={val =>
-                    updateSeed({depth: Number((val / 100).toFixed(2))})
-                  }
-                />
               </Stack>
             </section>
 
-            {/* Section B: 7 Official Astryx Core Semantic Colors */}
+            {/* Group 2 (Primary): Typography & Real Offline Font Pairing */}
             <section className="te-section">
               <div className="te-section-title">
-                {isId
-                  ? `2. Warna Inti Semantik (${mode === 'dark' ? 'Mode Gelap' : 'Mode Terang'})`
-                  : `2. Core Colors (${mode === 'dark' ? 'Dark' : 'Light'} Mode)`}
-              </div>
-              <div className="te-token-list">
-                {BASE_CORE_COLOR_TOKENS.map(({token, label}) => (
-                  <TokenColorRow
-                    key={token}
-                    tokenName={token}
-                    label={label}
-                    effectiveValue={effectiveTokens[token] ?? ''}
-                    isOverridden={token in tokenOverrides}
-                    mode={mode}
-                    swatches={PRESET_HEX_SWATCHES}
-                    onChange={val => setTokenOverride(token, val)}
-                    onReset={() => removeTokenOverride(token)}
-                  />
-                ))}
-              </div>
-            </section>
-
-            {/* Section C: Unified Scale Presets */}
-            <section className="te-section">
-              <div className="te-section-title">
-                {isId ? '3. Preset Skala Terpadu' : '3. Unified Scale Presets'}
-              </div>
-              <div className="te-unified-grid">
-                {(
-                  Object.entries(UNIFIED_PRESETS) as Array<
-                    [
-                      keyof typeof UNIFIED_PRESETS,
-                      (typeof UNIFIED_PRESETS)[keyof typeof UNIFIED_PRESETS],
-                    ]
-                  >
-                ).map(([id, preset]) => (
-                  <button
-                    key={id}
-                    type="button"
-                    className={`te-unified-card ${activeUnifiedPreset === id ? 'is-active' : ''}`}
-                    onClick={() =>
-                      updateSeed({
-                        typeBase: preset.typeBase,
-                        typeRatio: preset.typeRatio,
-                        spacingBase: preset.spacing,
-                        radiusBase: preset.radius,
-                        sizeBase: preset.sizeMd,
-                      })
-                    }
-                  >
-                    <span className="te-unified-name">{preset.label}</span>
-                    <span className="te-unified-meta">
-                      {preset.typeBase}px · {preset.sizeMd}h · {preset.spacing}sp
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            {/* Section D: Typography */}
-            <section className="te-section">
-              <div className="te-section-title">
-                {isId ? '4. Tipografi & Skala Huruf' : '4. Typography'}
+                {isId ? '2. Tipografi & Pasangan Font' : '2. Typography & Font Pairing'}
               </div>
               <Stack gap={2}>
                 <Selector
-                  label={isId ? 'Font Judul (Heading)' : 'Heading Font'}
+                  label={isId ? 'Font judul (Heading)' : 'Heading font'}
                   size="sm"
                   value={seed.headingFont}
                   options={HEADING_FONT_OPTIONS}
-                  onChange={v => v && updateSeed({headingFont: v})}
+                  onChange={v =>
+                    v && updateSeed({headingFont: v}, ['--font-family-heading'])
+                  }
                 />
                 <Selector
-                  label={isId ? 'Font Isi (Body)' : 'Body Font'}
+                  label={isId ? 'Font isi (Body)' : 'Body font'}
                   size="sm"
                   value={seed.bodyFont}
                   options={BODY_FONT_OPTIONS}
-                  onChange={v => v && updateSeed({bodyFont: v})}
+                  onChange={v =>
+                    v && updateSeed({bodyFont: v}, ['--font-family-body'])
+                  }
                 />
                 <Selector
-                  label={isId ? 'Font Kode (Monospace)' : 'Code Font'}
+                  label={isId ? 'Font kode (Monospace)' : 'Code font'}
                   size="sm"
                   value={seed.codeFont}
                   options={CODE_FONT_OPTIONS}
-                  onChange={v => v && updateSeed({codeFont: v})}
+                  onChange={v =>
+                    v && updateSeed({codeFont: v}, ['--font-family-code'])
+                  }
                 />
                 <Selector
-                  label={isId ? 'Rasio Skala (Type Scale)' : 'Type Scale Ratio'}
+                  label={isId ? 'Rasio skala huruf' : 'Type scale ratio'}
                   size="sm"
                   value={String(seed.typeRatio)}
                   options={RATIO_OPTIONS.map(r => ({
@@ -791,7 +769,7 @@ export function DockedThemeEditor({
 
                 <div className="te-scale-row">
                   <span className="te-field-label">
-                    {isId ? 'Ukuran Teks Dasar' : 'Base Type Size'}
+                    {isId ? 'Ukuran teks dasar' : 'Base type size'}
                   </span>
                   <div className="te-scale-controls">
                     <SegmentedControl
@@ -806,16 +784,16 @@ export function DockedThemeEditor({
                         if (v !== 'custom') updateSeed({typeBase: Number(v)});
                       }}
                     >
-                      <SegmentedControlItem value="13" label="S" />
+                      <SegmentedControlItem value="13" label="13" />
                       <SegmentedControlItem value="13.5" label="13.5" />
-                      <SegmentedControlItem value="14" label="M" />
-                      <SegmentedControlItem value="16" label="L" />
+                      <SegmentedControlItem value="14" label="14" />
+                      <SegmentedControlItem value="16" label="16" />
                     </SegmentedControl>
                     <NumberInput
                       label="Base type size px"
                       isLabelHidden
                       size="sm"
-                      width={80}
+                      width={78}
                       min={11}
                       max={22}
                       step={0.5}
@@ -829,180 +807,244 @@ export function DockedThemeEditor({
               </Stack>
             </section>
 
-            {/* Section E: Shape & Layout */}
-            <section className="te-section">
-              <div className="te-section-title">
-                {isId ? '5. Sudut Lengkung, Jarak & Ukuran' : '5. Shape & Layout'}
-              </div>
-              <Stack gap={3}>
-                <div className="te-scale-row">
-                  <span className="te-field-label">
-                    {isId ? 'Sudut Lengkung (Radius Base)' : 'Corner Radius Base'}
-                  </span>
-                  <div className="te-scale-controls">
-                    <SegmentedControl
-                      label="Corner radius base preset"
-                      size="sm"
-                      value={
-                        seed.radiusBase === null
-                          ? 'mehan'
-                          : [0, 2, 4, 8].includes(seed.radiusBase)
-                            ? String(seed.radiusBase)
-                            : 'custom'
-                      }
-                      onChange={v => {
-                        if (v === 'mehan') {
-                          updateSeed({radiusBase: null, radiusScale: 1});
-                        } else if (v !== 'custom') {
-                          updateSeed({radiusBase: Number(v)});
+            {/* Group 3 (Progressive Disclosure): Shape, Scale & Density */}
+            <div className="te-disclosure-box">
+              <Collapsible
+                trigger={
+                  isId
+                    ? '3. Skala Kepadatan, Sudut & Spasi'
+                    : '3. Scale Presets, Radius & Spacing'
+                }
+              >
+                <Stack gap={3}>
+                  <div className="te-unified-grid">
+                    {(
+                      Object.entries(UNIFIED_PRESETS) as Array<
+                        [
+                          keyof typeof UNIFIED_PRESETS,
+                          (typeof UNIFIED_PRESETS)[keyof typeof UNIFIED_PRESETS],
+                        ]
+                      >
+                    ).map(([id, preset]) => (
+                      <button
+                        key={id}
+                        type="button"
+                        className={`te-unified-card ${activeUnifiedPreset === id ? 'is-active' : ''}`}
+                        onClick={() =>
+                          updateSeed({
+                            typeBase: preset.typeBase,
+                            typeRatio: preset.typeRatio,
+                            spacingBase: preset.spacing,
+                            radiusBase: preset.radius,
+                            sizeBase: preset.sizeMd,
+                          })
                         }
-                      }}
-                    >
-                      <SegmentedControlItem value="0" label="0" />
-                      <SegmentedControlItem value="2" label="S" />
-                      <SegmentedControlItem value="4" label="M" />
-                      <SegmentedControlItem value="mehan" label="Mehan" />
-                      <SegmentedControlItem value="8" label="XL" />
-                    </SegmentedControl>
-                    <NumberInput
-                      label="Corner radius base px"
-                      isLabelHidden
-                      size="sm"
-                      width={78}
-                      min={0}
-                      max={20}
-                      step={1}
-                      value={seed.radiusBase ?? 5}
-                      onChange={v =>
-                        v != null && updateSeed({radiusBase: Number(v)})
-                      }
-                    />
+                      >
+                        <span className="te-unified-name">{preset.label}</span>
+                        <span className="te-unified-meta">
+                          {preset.typeBase}px · {preset.sizeMd}h · {preset.spacing}sp
+                        </span>
+                      </button>
+                    ))}
                   </div>
-                </div>
 
-                {concentricityWarning && (
-                  <Banner
-                    status="warning"
-                    title={
-                      isId
-                        ? 'Peringatan Konsentrisitas Sudut'
-                        : 'Concentric Radius Notice'
-                    }
-                    description={concentricityWarning}
-                  />
-                )}
-
-                <div className="te-scale-row">
-                  <span className="te-field-label">
-                    {isId ? 'Unit Jarak (Spacing Base)' : 'Spacing Base Unit'}
-                  </span>
-                  <div className="te-scale-controls">
-                    <SegmentedControl
-                      label="Spacing base unit"
-                      size="sm"
-                      value={
-                        [3, 4, 5, 6].includes(seed.spacingBase)
-                          ? String(seed.spacingBase)
-                          : 'custom'
-                      }
-                      onChange={v => {
-                        if (v !== 'custom') updateSeed({spacingBase: Number(v)});
-                      }}
-                    >
-                      <SegmentedControlItem value="3" label="3px" />
-                      <SegmentedControlItem value="4" label="4px" />
-                      <SegmentedControlItem value="5" label="5px" />
-                      <SegmentedControlItem value="6" label="6px" />
-                    </SegmentedControl>
-                    <NumberInput
-                      label="Spacing base px"
-                      isLabelHidden
-                      size="sm"
-                      width={78}
-                      min={2}
-                      max={10}
-                      step={1}
-                      value={seed.spacingBase}
-                      onChange={v =>
-                        v != null && updateSeed({spacingBase: Number(v)})
-                      }
-                    />
+                  <div className="te-scale-row">
+                    <span className="te-field-label">
+                      {isId ? 'Sudut lengkung dasar' : 'Corner radius base'}
+                    </span>
+                    <div className="te-scale-controls">
+                      <SegmentedControl
+                        label="Corner radius base preset"
+                        size="sm"
+                        value={
+                          seed.radiusBase === null
+                            ? 'mehan'
+                            : [0, 2, 4, 8].includes(seed.radiusBase)
+                              ? String(seed.radiusBase)
+                              : 'custom'
+                        }
+                        onChange={v => {
+                          if (v === 'mehan') {
+                            updateSeed({radiusBase: null, radiusScale: 1});
+                          } else if (v !== 'custom') {
+                            updateSeed({radiusBase: Number(v)});
+                          }
+                        }}
+                      >
+                        <SegmentedControlItem value="0" label="0" />
+                        <SegmentedControlItem value="2" label="S" />
+                        <SegmentedControlItem value="4" label="M" />
+                        <SegmentedControlItem value="mehan" label="Mehan" />
+                        <SegmentedControlItem value="8" label="XL" />
+                      </SegmentedControl>
+                      <NumberInput
+                        label="Corner radius base px"
+                        isLabelHidden
+                        size="sm"
+                        width={76}
+                        min={0}
+                        max={20}
+                        step={1}
+                        value={seed.radiusBase ?? 5}
+                        onChange={v =>
+                          v != null && updateSeed({radiusBase: Number(v)})
+                        }
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="te-scale-row">
-                  <span className="te-field-label">
-                    {isId ? 'Tinggi Kontrol (Element Size)' : 'Element Size (md)'}
-                  </span>
-                  <div className="te-scale-controls">
-                    <SegmentedControl
-                      label="Element height md"
-                      size="sm"
-                      value={
-                        [28, 32, 36, 40].includes(seed.sizeBase)
-                          ? String(seed.sizeBase)
-                          : 'custom'
+                  {concentricityWarning && (
+                    <Banner
+                      status="warning"
+                      title={
+                        isId
+                          ? 'Konsentrisitas sudut bersarang'
+                          : 'Concentric radius notice'
                       }
-                      onChange={v => {
-                        if (v !== 'custom') updateSeed({sizeBase: Number(v)});
-                      }}
-                    >
-                      <SegmentedControlItem value="28" label="28" />
-                      <SegmentedControlItem value="32" label="32" />
-                      <SegmentedControlItem value="36" label="36" />
-                      <SegmentedControlItem value="40" label="40" />
-                    </SegmentedControl>
-                    <NumberInput
-                      label="Element height px"
-                      isLabelHidden
-                      size="sm"
-                      width={78}
-                      min={26}
-                      max={52}
-                      step={2}
-                      value={seed.sizeBase}
-                      onChange={v =>
-                        v != null && updateSeed({sizeBase: Number(v)})
-                      }
+                      description={concentricityWarning}
                     />
+                  )}
+
+                  <div className="te-scale-row">
+                    <span className="te-field-label">
+                      {isId ? 'Unit jarak dasar' : 'Spacing base unit'}
+                    </span>
+                    <div className="te-scale-controls">
+                      <SegmentedControl
+                        label="Spacing base unit"
+                        size="sm"
+                        value={
+                          [3, 4, 5, 6].includes(seed.spacingBase)
+                            ? String(seed.spacingBase)
+                            : 'custom'
+                        }
+                        onChange={v => {
+                          if (v !== 'custom') updateSeed({spacingBase: Number(v)});
+                        }}
+                      >
+                        <SegmentedControlItem value="3" label="3px" />
+                        <SegmentedControlItem value="4" label="4px" />
+                        <SegmentedControlItem value="5" label="5px" />
+                        <SegmentedControlItem value="6" label="6px" />
+                      </SegmentedControl>
+                      <NumberInput
+                        label="Spacing base px"
+                        isLabelHidden
+                        size="sm"
+                        width={76}
+                        min={2}
+                        max={10}
+                        step={1}
+                        value={seed.spacingBase}
+                        onChange={v =>
+                          v != null && updateSeed({spacingBase: Number(v)})
+                        }
+                      />
+                    </div>
                   </div>
+
+                  <div className="te-scale-row">
+                    <span className="te-field-label">
+                      {isId ? 'Tinggi kontrol sedang' : 'Control height (md)'}
+                    </span>
+                    <div className="te-scale-controls">
+                      <SegmentedControl
+                        label="Element height md"
+                        size="sm"
+                        value={
+                          [28, 32, 36, 40].includes(seed.sizeBase)
+                            ? String(seed.sizeBase)
+                            : 'custom'
+                        }
+                        onChange={v => {
+                          if (v !== 'custom') updateSeed({sizeBase: Number(v)});
+                        }}
+                      >
+                        <SegmentedControlItem value="28" label="28" />
+                        <SegmentedControlItem value="32" label="32" />
+                        <SegmentedControlItem value="36" label="36" />
+                        <SegmentedControlItem value="40" label="40" />
+                      </SegmentedControl>
+                      <NumberInput
+                        label="Element height px"
+                        isLabelHidden
+                        size="sm"
+                        width={76}
+                        min={26}
+                        max={52}
+                        step={2}
+                        value={seed.sizeBase}
+                        onChange={v =>
+                          v != null && updateSeed({sizeBase: Number(v)})
+                        }
+                      />
+                    </div>
+                  </div>
+                </Stack>
+              </Collapsible>
+            </div>
+
+            {/* Group 4 (Progressive Disclosure): Core Semantic Color Overrides */}
+            <div className="te-disclosure-box">
+              <Collapsible
+                trigger={
+                  isId
+                    ? `4. Override Warna Inti (${mode === 'dark' ? 'Gelap' : 'Terang'})`
+                    : `4. Core Semantic Colors (${mode === 'dark' ? 'Dark' : 'Light'})`
+                }
+              >
+                <div className="te-token-list">
+                  {BASE_CORE_COLOR_TOKENS.map(({token, label}) => (
+                    <TokenColorRow
+                      key={token}
+                      tokenName={token}
+                      label={label}
+                      effectiveValue={effectiveTokens[token] ?? ''}
+                      isOverridden={token in tokenOverrides}
+                      mode={mode}
+                      swatches={PRESET_HEX_SWATCHES}
+                      onChange={val => setTokenOverride(token, val)}
+                      onReset={() => removeTokenOverride(token)}
+                    />
+                  ))}
                 </div>
-              </Stack>
-            </section>
+              </Collapsible>
+            </div>
 
-            {/* Section F: Motion & Duration */}
-            <section className="te-section">
-              <div className="te-section-title">
-                {isId ? '6. Karakter Gerak & Durasi' : '6. Motion & Duration'}
-              </div>
-              <Stack gap={2}>
-                <SegmentedControl
-                  label="Motion character"
-                  size="sm"
-                  value={seed.motion}
-                  onChange={v => updateSeed({motion: v as MehanMotion})}
-                >
-                  <SegmentedControlItem value="expressive" label="Expressive" />
-                  <SegmentedControlItem value="standard" label="Standard" />
-                  <SegmentedControlItem value="crisp" label="Crisp" />
-                  <SegmentedControlItem value="calm" label="Calm" />
-                </SegmentedControl>
+            {/* Group 5 (Progressive Disclosure): Motion & Tempo */}
+            <div className="te-disclosure-box">
+              <Collapsible
+                trigger={isId ? '5. Karakter Gerak & Durasi' : '5. Motion & Tempo'}
+              >
+                <Stack gap={2}>
+                  <SegmentedControl
+                    label="Motion character"
+                    size="sm"
+                    value={seed.motion}
+                    onChange={v => updateSeed({motion: v as MehanMotion})}
+                  >
+                    <SegmentedControlItem value="expressive" label="Expressive" />
+                    <SegmentedControlItem value="standard" label="Standard" />
+                    <SegmentedControlItem value="crisp" label="Crisp" />
+                    <SegmentedControlItem value="calm" label="Calm" />
+                  </SegmentedControl>
 
-                <SegmentedControl
-                  label="Duration speed multiplier"
-                  size="sm"
-                  value={String(seed.durationStep)}
-                  onChange={v => updateSeed({durationStep: Number(v)})}
-                >
-                  <SegmentedControlItem value="0.5" label="0.5×" />
-                  <SegmentedControlItem value="0.75" label="0.75×" />
-                  <SegmentedControlItem value="1" label="1×" />
-                  <SegmentedControlItem value="1.25" label="1.25×" />
-                  <SegmentedControlItem value="1.5" label="1.5×" />
-                  <SegmentedControlItem value="2" label="2×" />
-                </SegmentedControl>
-              </Stack>
-            </section>
+                  <SegmentedControl
+                    label="Duration speed multiplier"
+                    size="sm"
+                    value={String(seed.durationStep)}
+                    onChange={v => updateSeed({durationStep: Number(v)})}
+                  >
+                    <SegmentedControlItem value="0.5" label="0.5×" />
+                    <SegmentedControlItem value="0.75" label="0.75×" />
+                    <SegmentedControlItem value="1" label="1×" />
+                    <SegmentedControlItem value="1.25" label="1.25×" />
+                    <SegmentedControlItem value="1.5" label="1.5×" />
+                    <SegmentedControlItem value="2" label="2×" />
+                  </SegmentedControl>
+                </Stack>
+              </Collapsible>
+            </div>
           </Stack>
         )}
 
@@ -1010,7 +1052,7 @@ export function DockedThemeEditor({
             TAB 2: COMPONENTS (11 Official Astryx Groups + Custom CSS Overrides)
            ================================================================ */}
         {editorTab === 'components' && (
-          <Stack gap={4}>
+          <Stack gap={3}>
             <TextInput
               label="Filter component tokens"
               isLabelHidden
@@ -1019,7 +1061,7 @@ export function DockedThemeEditor({
               startIcon={<Search size={14} />}
               placeholder={
                 isId
-                  ? 'Cari komponen (button, card, input, chat)...'
+                  ? 'Saring slot komponen (button, card, input, chat)...'
                   : 'Filter component slots (button, card, input, chat)...'
               }
               value={compQuery}
@@ -1133,7 +1175,7 @@ export function DockedThemeEditor({
             <section className="te-section">
               <div className="te-section-title">
                 {isId
-                  ? 'Override CSS Komponen Bebas (defineTheme.components)'
+                  ? 'Override CSS Komponen Bebas (65+ Target)'
                   : 'Custom Component CSS Overrides (65+ Targets)'}
               </div>
               <Stack gap={2}>
@@ -1163,7 +1205,7 @@ export function DockedThemeEditor({
                 <Button
                   variant="secondary"
                   size="sm"
-                  label={isId ? 'Tambah Override' : 'Add Component Override'}
+                  label={isId ? 'Tambah override' : 'Add component override'}
                   icon={<Plus size={14} />}
                   onClick={handleAddCustomOverride}
                 />
@@ -1252,30 +1294,29 @@ export function DockedThemeEditor({
                   );
                   if (filtered.length === 0) return null;
                   return (
-                    <Collapsible
-                      key={catName}
-                      defaultIsOpen={
-                        catName === 'Core Semantic' ||
-                        catName === 'Surface Variants' ||
-                        Boolean(qLower)
-                      }
-                      trigger={`${catName} (${filtered.length})`}
-                    >
-                      <div className="te-token-list">
-                        {filtered.map(token => (
-                          <TokenColorRow
-                            key={token}
-                            tokenName={token}
-                            effectiveValue={effectiveTokens[token] ?? ''}
-                            isOverridden={token in tokenOverrides}
-                            mode={mode}
-                            swatches={PRESET_HEX_SWATCHES}
-                            onChange={val => setTokenOverride(token, val)}
-                            onReset={() => removeTokenOverride(token)}
-                          />
-                        ))}
-                      </div>
-                    </Collapsible>
+                    <div key={catName} className="te-disclosure-box">
+                      <Collapsible
+                        defaultIsOpen={
+                          catName === 'Core Semantic' || Boolean(qLower)
+                        }
+                        trigger={`${catName} (${filtered.length})`}
+                      >
+                        <div className="te-token-list">
+                          {filtered.map(token => (
+                            <TokenColorRow
+                              key={token}
+                              tokenName={token}
+                              effectiveValue={effectiveTokens[token] ?? ''}
+                              isOverridden={token in tokenOverrides}
+                              mode={mode}
+                              swatches={PRESET_HEX_SWATCHES}
+                              onChange={val => setTokenOverride(token, val)}
+                              onReset={() => removeTokenOverride(token)}
+                            />
+                          ))}
+                        </div>
+                      </Collapsible>
+                    </div>
                   );
                 })}
               </Stack>

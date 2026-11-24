@@ -123,21 +123,21 @@
     --font-size-5xl: var(--_scaled-font-size-5xl);
     --text-heading-1-size: var(--font-size-2xl);
     --text-heading-1-weight: var(--font-weight-bold);
-    --text-heading-1-leading: 1.44;
+    --text-heading-1-leading: 1.22;
     --text-heading-2-size: var(--font-size-xl);
     --text-heading-2-weight: var(--font-weight-bold);
-    --text-heading-2-leading: 1.3333;
+    --text-heading-2-leading: 1.26;
     --text-heading-3-size: var(--font-size-lg);
-    --text-heading-3-weight: var(--font-weight-bold);
-    --text-heading-3-leading: 1.4118;
+    --text-heading-3-weight: var(--font-weight-semibold);
+    --text-heading-3-leading: 1.32;
     --text-heading-4-size: var(--font-size-base);
     --text-heading-4-weight: var(--font-weight-semibold);
-    --text-heading-4-leading: 1.4286;
+    --text-heading-4-leading: 1.38;
     --text-heading-5-size: var(--font-size-sm);
-    --text-heading-5-weight: var(--font-weight-bold);
+    --text-heading-5-weight: var(--font-weight-semibold);
     --text-heading-5-leading: 1.4545;
     --text-heading-6-size: var(--font-size-xs);
-    --text-heading-6-weight: var(--font-weight-bold);
+    --text-heading-6-weight: var(--font-weight-semibold);
     --text-heading-6-leading: 1.7778;
     --text-body-size: var(--font-size-base);
     --text-body-weight: var(--font-weight-normal);
@@ -408,28 +408,28 @@
     font-family: var(--font-family-heading);
     font-size: var(--text-display-1-size);
     line-height: var(--text-display-1-leading);
-    font-weight: 800;
-    letter-spacing: -0.035em;
+    font-weight: 700;
+    letter-spacing: -0.03em;
   }
 
   .astryx-heading[data-type="display-2"] {
     font-family: var(--font-family-heading);
     font-size: var(--text-display-2-size);
     line-height: var(--text-display-2-leading);
-    font-weight: 800;
-    letter-spacing: -0.032em;
+    font-weight: 700;
+    letter-spacing: -0.026em;
   }
 
   .astryx-heading[data-type="display-3"] {
     font-family: var(--font-family-heading);
     font-size: var(--text-display-3-size);
     line-height: var(--text-display-3-leading);
-    font-weight: 800;
-    letter-spacing: -0.03em;
+    font-weight: 700;
+    letter-spacing: -0.022em;
   }
 
   .astryx-heading {
-    letter-spacing: -0.025em;
+    letter-spacing: -0.018em;
   }
 
   .astryx-text[data-type="body"] {
@@ -482,8 +482,8 @@
 
   .astryx-empty-state-title {
     font-family: var(--font-family-heading);
-    font-weight: 800;
-    letter-spacing: -0.028em;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   .astryx-button {
@@ -1572,6 +1572,20 @@
     font-weight: 600;
   }
 
+  .astryx-table-header-cell {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: var(--mehan-tray);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--color-border-emphasized);
+  }
+
   .astryx-table-cell {
     font-variant-numeric: tabular-nums;
   }
@@ -1584,11 +1598,11 @@
     font-weight: 500;
   }
 
-  .astryx-item[data-selected="selected"]:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) *):not(:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) :is(.astryx-card[data-variant="default"], .astryx-card[data-variant="muted"], .astryx-clickable-card[data-variant="default"], .astryx-clickable-card[data-variant="muted"], .astryx-selectable-card[data-variant="default"], .astryx-selectable-card[data-variant="muted"], .astryx-section[data-variant="section"], .astryx-section[data-variant="muted"], .astryx-app-shell[data-variant="surface"], .astryx-app-shell[data-variant="section"], .astryx-app-shell-header[data-variant="surface"], .astryx-app-shell-sidenav[data-variant="surface"], .astryx-layout-panel, .astryx-layout-content, .astryx-code, .astryx-avatar, .astryx-avatar-group-overflow, .astryx-segmented-control-item[data-selected="selected"], .astryx-step-indicator[data-progress="not-started"], .astryx-banner-content, .astryx-input-group-text, .astryx-text-input, .astryx-text-area, .astryx-number-input, .astryx-date-input, .astryx-date-range-input, .astryx-date-time-input-date-segment, .astryx-date-time-input-time-segment, .astryx-time-input, .astryx-file-input, .astryx-typeahead, .astryx-tokenizer, .astryx-selector[data-variant="input"], .astryx-multi-selector[data-variant="input"], .astryx-selector-popup, .astryx-multi-selector-popup, .astryx-complex-selector-popup, .astryx-dropdown-menu, .astryx-dropdown-menu-radio, .astryx-context-menu, .astryx-more-menu, .astryx-popover, .astryx-hover-card, .astryx-dialog, .astryx-alert-dialog, .astryx-drawer, .astryx-bottom-sheet, .astryx-chat-composer, .astryx-chat-composer-drawer) *)) {
+  .astryx-item[data-selected="selected"]:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) *):not(:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) :is(.astryx-card[data-variant="default"], .astryx-card[data-variant="muted"], .astryx-clickable-card[data-variant="default"], .astryx-clickable-card[data-variant="muted"], .astryx-selectable-card[data-variant="default"], .astryx-selectable-card[data-variant="muted"], .astryx-section[data-variant="section"], .astryx-section[data-variant="muted"], .astryx-app-shell[data-variant="surface"], .astryx-app-shell[data-variant="section"], .astryx-app-shell-header[data-variant="surface"], .astryx-app-shell-sidenav[data-variant="surface"], .astryx-layout-panel, .astryx-layout-content, .astryx-code, .astryx-avatar, .astryx-avatar-group-overflow, .astryx-segmented-control-item[data-selected="selected"], .astryx-step-indicator[data-progress="not-started"], .astryx-table-header-cell, .astryx-banner-content, .astryx-input-group-text, .astryx-text-input, .astryx-text-area, .astryx-number-input, .astryx-date-input, .astryx-date-range-input, .astryx-date-time-input-date-segment, .astryx-date-time-input-time-segment, .astryx-time-input, .astryx-file-input, .astryx-typeahead, .astryx-tokenizer, .astryx-selector[data-variant="input"], .astryx-multi-selector[data-variant="input"], .astryx-selector-popup, .astryx-multi-selector-popup, .astryx-complex-selector-popup, .astryx-dropdown-menu, .astryx-dropdown-menu-radio, .astryx-context-menu, .astryx-more-menu, .astryx-popover, .astryx-hover-card, .astryx-dialog, .astryx-alert-dialog, .astryx-drawer, .astryx-bottom-sheet, .astryx-chat-composer, .astryx-chat-composer-drawer) *)) {
     --color-text-secondary: #5c4a3e;
   }
 
-  .astryx-tree-list-item[data-selected="selected"]:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) *):not(:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) :is(.astryx-card[data-variant="default"], .astryx-card[data-variant="muted"], .astryx-clickable-card[data-variant="default"], .astryx-clickable-card[data-variant="muted"], .astryx-selectable-card[data-variant="default"], .astryx-selectable-card[data-variant="muted"], .astryx-section[data-variant="section"], .astryx-section[data-variant="muted"], .astryx-app-shell[data-variant="surface"], .astryx-app-shell[data-variant="section"], .astryx-app-shell-header[data-variant="surface"], .astryx-app-shell-sidenav[data-variant="surface"], .astryx-layout-panel, .astryx-layout-content, .astryx-code, .astryx-avatar, .astryx-avatar-group-overflow, .astryx-segmented-control-item[data-selected="selected"], .astryx-step-indicator[data-progress="not-started"], .astryx-banner-content, .astryx-input-group-text, .astryx-text-input, .astryx-text-area, .astryx-number-input, .astryx-date-input, .astryx-date-range-input, .astryx-date-time-input-date-segment, .astryx-date-time-input-time-segment, .astryx-time-input, .astryx-file-input, .astryx-typeahead, .astryx-tokenizer, .astryx-selector[data-variant="input"], .astryx-multi-selector[data-variant="input"], .astryx-selector-popup, .astryx-multi-selector-popup, .astryx-complex-selector-popup, .astryx-dropdown-menu, .astryx-dropdown-menu-radio, .astryx-context-menu, .astryx-more-menu, .astryx-popover, .astryx-hover-card, .astryx-dialog, .astryx-alert-dialog, .astryx-drawer, .astryx-bottom-sheet, .astryx-chat-composer, .astryx-chat-composer-drawer) *)) {
+  .astryx-tree-list-item[data-selected="selected"]:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) *):not(:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) :is(.astryx-card[data-variant="default"], .astryx-card[data-variant="muted"], .astryx-clickable-card[data-variant="default"], .astryx-clickable-card[data-variant="muted"], .astryx-selectable-card[data-variant="default"], .astryx-selectable-card[data-variant="muted"], .astryx-section[data-variant="section"], .astryx-section[data-variant="muted"], .astryx-app-shell[data-variant="surface"], .astryx-app-shell[data-variant="section"], .astryx-app-shell-header[data-variant="surface"], .astryx-app-shell-sidenav[data-variant="surface"], .astryx-layout-panel, .astryx-layout-content, .astryx-code, .astryx-avatar, .astryx-avatar-group-overflow, .astryx-segmented-control-item[data-selected="selected"], .astryx-step-indicator[data-progress="not-started"], .astryx-table-header-cell, .astryx-banner-content, .astryx-input-group-text, .astryx-text-input, .astryx-text-area, .astryx-number-input, .astryx-date-input, .astryx-date-range-input, .astryx-date-time-input-date-segment, .astryx-date-time-input-time-segment, .astryx-time-input, .astryx-file-input, .astryx-typeahead, .astryx-tokenizer, .astryx-selector[data-variant="input"], .astryx-multi-selector[data-variant="input"], .astryx-selector-popup, .astryx-multi-selector-popup, .astryx-complex-selector-popup, .astryx-dropdown-menu, .astryx-dropdown-menu-radio, .astryx-context-menu, .astryx-more-menu, .astryx-popover, .astryx-hover-card, .astryx-dialog, .astryx-alert-dialog, .astryx-drawer, .astryx-bottom-sheet, .astryx-chat-composer, .astryx-chat-composer-drawer) *)) {
     --color-text-secondary: #5c4a3e;
   }
 
@@ -1768,16 +1782,16 @@
     --text-heading-2-weight: var(--font-weight-bold);
     --text-heading-2-leading: 1.3913;
     --text-heading-3-size: var(--font-size-lg);
-    --text-heading-3-weight: var(--font-weight-bold);
+    --text-heading-3-weight: var(--font-weight-semibold);
     --text-heading-3-leading: 1.4737;
     --text-heading-4-size: var(--font-size-base);
     --text-heading-4-weight: var(--font-weight-semibold);
     --text-heading-4-leading: 1.5;
     --text-heading-5-size: var(--font-size-sm);
-    --text-heading-5-weight: var(--font-weight-bold);
+    --text-heading-5-weight: var(--font-weight-semibold);
     --text-heading-5-leading: 1.5385;
     --text-heading-6-size: var(--font-size-xs);
-    --text-heading-6-weight: var(--font-weight-bold);
+    --text-heading-6-weight: var(--font-weight-semibold);
     --text-heading-6-leading: 1.4545;
     --text-body-size: var(--font-size-base);
     --text-body-weight: var(--font-weight-normal);

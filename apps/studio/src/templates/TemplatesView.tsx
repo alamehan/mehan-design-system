@@ -962,7 +962,7 @@ function OfficialThemeShowcase() {
                     {
                       key: 'tags',
                       header: 'Tag',
-                      width: proportional(1, {minWidth: 80}),
+                      width: pixel(98),
                       align: 'end',
                       renderCell: row => (
                         <HStack gap={1} hAlign="end">

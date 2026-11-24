@@ -16,7 +16,14 @@ Mehan Design System (`@mehan/dna`, `@mehan/astryx`, `@mehan/portable`) is releas
 - **Copyright:** Copyright (c) Cole Bemis and Lucide Contributors
 - **License:** ISC License (`https://lucide.dev/license`)
 
-## 4. Bundled Open-Source Typefaces (`packages/astryx/fonts/` & `packages/portable/fonts/`)
-- **Bricolage Grotesque** — Copyright (c) Mathieu Triay. Licensed under the SIL Open Font License, Version 1.1 (`OFL-1.1`).
-- **Figtree** — Copyright (c) Erik Kennedy. Licensed under the SIL Open Font License, Version 1.1 (`OFL-1.1`).
-- **Geist Mono** — Copyright (c) Vercel, Inc. Licensed under the SIL Open Font License, Version 1.1 (`OFL-1.1`).
+## 4. Bundled Open-Source Typefaces (`packages/astryx/fonts/`)
+- **Bricolage Grotesque** — Copyright (c) Mathieu Triay. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
+- **Figtree** — Copyright (c) Erik Kennedy. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
+- **Albert Sans** — Copyright (c) Andreas Rasmussen. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
+- **Outfit** — Copyright (c) Outfit.io / Rodrigo Fuenzalida. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
+- **Poppins** — Copyright (c) Indian Type Foundry. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
+- **Montserrat** — Copyright (c) Julieta Ulanovsky. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
+- **Fraunces** — Copyright (c) Undercase Type. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
+- **Crimson Text** — Copyright (c) Sebastian Kosch. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
+- **Geist Mono** — Copyright (c) Vercel, Inc. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
+- **JetBrains Mono** — Copyright (c) JetBrains s.r.o. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).

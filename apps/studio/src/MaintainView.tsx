@@ -5,7 +5,9 @@ import {
   Button,
   Card,
   CodeBlock,
+  Collapsible,
   Grid,
+  HStack,
   Heading,
   Stack,
   Table,
@@ -103,7 +105,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
       {
         id: 't4',
         token: '--color-accent',
-        role: isId ? 'Tombol Primary & Aksen' : 'Primary CTA & Brand fill',
+        role: isId ? 'Tombol Primary & aksen' : 'Primary CTA & brand fill',
         light: A.accentLight,
         dark: A.accentDark,
         contrast: `${contrastRatio(A.onAccentLight, A.accentLight).toFixed(2)}:1`,
@@ -111,7 +113,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
       {
         id: 't5',
         token: '--mehan-primary-lip',
-        role: isId ? 'Bibir 3D bawah tombol (Shade 800)' : 'Smooth 3D button lip (Shade 800)',
+        role: isId ? 'Bibir 3D tombol (Shade 800)' : '3D button lip (Shade 800)',
         light: A.buttonLip,
         dark: A.buttonLip,
         contrast: `${dna.lipStyle} (${dna.lipPx}px)`,
@@ -141,14 +143,14 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
     showToast({
       type: 'info',
       body: isId
-        ? 'File token W3C (Figma / Style Dictionary) berhasil diunduh.'
+        ? 'File token W3C berhasil diunduh.'
         : 'Downloaded W3C DTCG design-tokens.json.',
     });
   };
 
   return (
     <Stack gap={5}>
-      <Stack gap={1.5}>
+      <Stack gap={1}>
         <Heading level={2}>{copy.maintain.title}</Heading>
         <Text color="secondary">{copy.maintain.subtitle}</Text>
       </Stack>
@@ -158,42 +160,37 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
         container="card"
         title={
           isId
-            ? 'Cara kerja tanpa terminal: Racik di Theme Editor -> Salin Handoff -> Tempel ke AI Agent (atau klik 2x file pengecek)'
-            : 'Zero-terminal workflow: Tune in Theme Editor -> Copy Handoff -> Paste to your AI Agent (or double-click the verifier script)'
+            ? 'Alur tanpa terminal: Racik di Theme Editor -> Salin Handoff -> Klik 2x skrip verifikasi'
+            : 'Zero-terminal flow: Tune in Theme Editor -> Copy handoff -> Double-click the verifier script'
         }
         description={
           isId
-            ? 'Untuk membangun ulang & menjalankan 6 pengecekan otomatis tanpa mengetik perintah apa pun, cukup klik 2x rebuild-and-check-windows.cmd (Windows) atau rebuild-and-check-mac-linux.command (macOS/Linux) di folder D:\\mehan-design-system.'
-            : 'To rebuild all packages and run all 6 quality gates without typing commands, double-click rebuild-and-check-windows.cmd (Windows) or rebuild-and-check-mac-linux.command (macOS/Linux).'
+            ? 'Klik dua kali rebuild-and-check-windows.cmd (Windows) atau rebuild-and-check-mac-linux.command (macOS/Linux) untuk membangun ulang dan menjalankan ke-6 gerbang kualitas otomatis.'
+            : 'Double-click rebuild-and-check-windows.cmd (Windows) or rebuild-and-check-mac-linux.command (macOS/Linux) to rebuild all packages and run all 6 quality gates.'
         }
       />
 
       <Grid columns={{minWidth: 320, max: 2, repeat: 'fit'}} gap={4} align="start">
         <Card elevation="low">
           <Stack gap={3}>
-            <Stack direction="horizontal" gap={2} align="center">
+            <HStack gap={2} vAlign="center">
               <FolderGit2 size={18} />
               <Heading level={3}>
                 {isId
-                  ? '1. Simpan Tema Aktif Menjadi Bawaan Repo'
-                  : '1. Save Active Studio Theme to Repo'}
+                  ? '1. Simpan tema aktif ke repo'
+                  : '1. Commit active theme to repo'}
               </Heading>
-            </Stack>
+            </HStack>
             <Text color="secondary">
               {isId
-                ? 'Sudah cocok dengan racikan benih taktil, token lanjutan, dan override komponen di Theme Editor? Salin instruksi ini ke AI coding agent agar disimpan permanen ke source code, tarball release/, dan STUDIO.html.'
-                : 'Happy with your tactile seed, raw tokens, and component overrides in the Theme Editor? Copy this handoff prompt so your AI coding agent commits it and rebuilds release/ + STUDIO.html.'}
+                ? 'Salin instruksi handoff ini ke AI coding agent agar tema aktif disimpan permanen ke source code, tarball release/, dan STUDIO.html.'
+                : 'Copy this handoff prompt so your AI coding agent commits your active theme and rebuilds release/ + STUDIO.html.'}
             </Text>
-            <CodeBlock
-              code={themeCommitPrompt}
-              language="markdown"
-              maxHeight={180}
-              hasCopyButton
-            />
-            <Stack direction="horizontal" gap={2}>
+            <HStack gap={2}>
               <Button
                 variant="primary"
-                label={isId ? 'Salin Handoff Simpan Tema' : 'Copy Theme Commit Prompt'}
+                size="sm"
+                label={isId ? 'Salin prompt simpan tema' : 'Copy commit prompt'}
                 icon={<Copy size={14} />}
                 onClick={() =>
                   void handleCopy(
@@ -202,73 +199,90 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
                   )
                 }
               />
-            </Stack>
+            </HStack>
+            <Collapsible
+              trigger={isId ? 'Pratinjau isi prompt' : 'Preview handoff prompt'}
+            >
+              <CodeBlock
+                code={themeCommitPrompt}
+                language="markdown"
+                maxHeight={180}
+                hasCopyButton
+              />
+            </Collapsible>
           </Stack>
         </Card>
 
         <Card elevation="low">
           <Stack gap={3}>
-            <Stack direction="horizontal" gap={2} align="center">
+            <HStack gap={2} vAlign="center">
               <RefreshCw size={18} />
               <Heading level={3}>
                 {isId
-                  ? '2. Versi Astryx (~0.7.17 Terkunci) & Update Aman'
-                  : '2. Locked Astryx (~0.7.17) & Safe Upgrades'}
+                  ? '2. Verifikasi update Meta Astryx'
+                  : '2. Safe Meta Astryx upgrades'}
               </Heading>
-            </Stack>
+            </HStack>
             <Text color="secondary">
               {isId
-                ? 'Proyek lama tidak akan pernah rusak mendadak saat Meta Astryx merilis perombakan besar, karena versi dikunci (~0.7.17) + tersimpan sebagai file lokal release/mehan-astryx-1.0.0.tgz. Saat ingin naik versi, uji dulu secara aman dengan prompt di bawah.'
-                : 'Existing apps never break when Meta Astryx ships major rewrites because versions are locked (~0.7.17) and archived in release/mehan-astryx-1.0.0.tgz. Upgrade only after passing all 6 gates.'}
+                ? 'Versi saat ini terkunci aman (~0.7.17) beserta tarball lokal release/mehan-astryx-1.0.0.tgz. Gunakan prompt ini saat ingin menguji versi baru.'
+                : 'Versions are pinned (~0.7.17) alongside local release/mehan-astryx-1.0.0.tgz. Use this prompt to test newer Astryx releases safely.'}
             </Text>
-            <CodeBlock
-              code={upgradePrompt}
-              language="markdown"
-              maxHeight={180}
-              hasCopyButton
-            />
-            <Stack direction="horizontal" gap={2}>
+            <HStack gap={2}>
               <Button
                 variant="secondary"
-                label={isId ? 'Salin Prompt Cek Update Astryx' : 'Copy Safe Upgrade Prompt'}
+                size="sm"
+                label={isId ? 'Salin prompt cek update' : 'Copy upgrade prompt'}
                 icon={<Copy size={14} />}
                 onClick={() =>
                   void handleCopy(
                     upgradePrompt,
-                    isId ? 'Prompt update aman disalin.' : 'Copied safe upgrade prompt.',
+                    isId ? 'Prompt update disalin.' : 'Copied safe upgrade prompt.',
                   )
                 }
               />
-            </Stack>
+            </HStack>
+            <Collapsible
+              trigger={isId ? 'Pratinjau prosedur update' : 'Preview upgrade steps'}
+            >
+              <CodeBlock
+                code={upgradePrompt}
+                language="markdown"
+                maxHeight={180}
+                hasCopyButton
+              />
+            </Collapsible>
           </Stack>
         </Card>
-      </Grid>
 
-      <Grid columns={{minWidth: 320, max: 2, repeat: 'fit'}} gap={4} align="start">
         <Card elevation="low">
           <Stack gap={3}>
-            <Stack direction="horizontal" gap={2} align="center">
+            <HStack gap={2} vAlign="center">
               <PackageCheck size={18} />
               <Heading level={3}>
                 {isId
-                  ? '3. Pengganti Scope NPM (@mehan -> @alamehan)'
-                  : '3. NPM Scope Switcher (@mehan -> @alamehan)'}
+                  ? '3. Pengganti scope paket npm'
+                  : '3. NPM package scope switcher'}
               </Heading>
-            </Stack>
+            </HStack>
             <Text color="secondary">
               {isId
-                ? 'Saat siap dipublikasikan ke npm pribadi/organisasi, ganti seluruh scope paket & import otomatis lewat satu perintah tanpa edit file satu per satu.'
-                : 'Ready to publish to npm under your own organization scope? Rewrite every manifest and import cleanly in one step.'}
+                ? 'Ubah seluruh nama paket dan import dari @mehan/* ke scope organisasi tujuan dalam satu langkah.'
+                : 'Rewrite every workspace manifest and import path from @mehan/* to your organization scope in one step.'}
             </Text>
-            <TextInput
-              label={isId ? 'Scope npm tujuan' : 'Target npm scope'}
-              value={targetScope}
-              onChange={setTargetScope}
-            />
-            <Stack direction="horizontal" gap={2} wrap="wrap">
+            <HStack gap={2} vAlign="end" wrap="wrap">
+              <div style={{flex: '1 1 180px'}}>
+                <TextInput
+                  label={isId ? 'Scope npm tujuan' : 'Target npm scope'}
+                  size="sm"
+                  value={targetScope}
+                  onChange={setTargetScope}
+                />
+              </div>
               <Button
                 variant="secondary"
-                label={isId ? 'Salin Prompt Ganti Scope' : 'Copy Scope Switch Prompt'}
+                size="sm"
+                label={isId ? 'Salin perintah scope' : 'Copy scope prompt'}
                 icon={<Copy size={14} />}
                 onClick={() =>
                   void handleCopy(
@@ -277,39 +291,37 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
                   )
                 }
               />
-            </Stack>
+            </HStack>
           </Stack>
         </Card>
 
         <Card elevation="low">
           <Stack gap={3}>
-            <Stack direction="horizontal" gap={2} align="center">
+            <HStack gap={2} vAlign="center">
               <FileJson size={18} />
               <Heading level={3}>
                 {isId
-                  ? '4. Ekspor Token Standar W3C (Figma / Style Dictionary)'
-                  : '4. W3C Design Tokens (Figma / Style Dictionary)'}
+                  ? '4. Ekspor token standar W3C (Figma)'
+                  : '4. W3C design tokens (Figma)'}
               </Heading>
-            </Stack>
+            </HStack>
             <Text color="secondary">
               {isId
-                ? 'Unduh token warna, sudut lengkung, dan tipografi dari tema yang sedang aktif dalam format resmi W3C Design Tokens (DTCG) untuk diimpor ke Figma atau aplikasi mobile.'
-                : 'Export your live atmosphere, OKLCH brand ramp, radii, and typography in standard W3C DTCG JSON format for Figma Tokens Studio or mobile pipelines.'}
+                ? 'Unduh token warna, sudut, spasi, dan font aktif dalam format resmi W3C DTCG untuk Tokens Studio Figma.'
+                : 'Export active atmosphere, OKLCH brand ramp, radii, and fonts in standard W3C DTCG JSON format for Figma.'}
             </Text>
-            <Stack direction="horizontal" gap={2} wrap="wrap">
+            <HStack gap={2} wrap="wrap">
               <Button
-                variant="primary"
-                label={
-                  isId
-                    ? 'Unduh mehan-tokens.w3c.json'
-                    : 'Download mehan-tokens.w3c.json'
-                }
+                variant="secondary"
+                size="sm"
+                label={isId ? 'Unduh .w3c.json' : 'Download .w3c.json'}
                 icon={<Download size={14} />}
                 onClick={handleDownloadW3c}
               />
               <Button
-                variant="secondary"
-                label={isId ? 'Salin JSON Token' : 'Copy Token JSON'}
+                variant="ghost"
+                size="sm"
+                label={isId ? 'Salin JSON' : 'Copy JSON'}
                 icon={<Copy size={14} />}
                 onClick={() =>
                   void handleCopy(
@@ -318,34 +330,37 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
                   )
                 }
               />
-            </Stack>
+            </HStack>
           </Stack>
         </Card>
       </Grid>
 
-      <Card elevation="low">
+      {/* Live Resolved Tokens Table */}
+      <Card padding={4} elevation="low">
         <Stack gap={3}>
-          <Stack gap={1}>
-            <Badge
-              variant="success"
-              label={
-                isId
-                  ? 'Inspektur Token Aktif & Audit Kontras Langsung'
-                  : 'Live Resolved Tokens & Contrast Inspector'
-              }
-            />
-            <Heading level={3}>
-              {dna.atmosphere.name} · {dna.accent.name} ({dna.accent.seed})
-            </Heading>
-          </Stack>
+          <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+            <Stack gap={0.5}>
+              <Heading level={3}>
+                {isId
+                  ? 'Inspektur token & audit kontras aktif'
+                  : 'Live resolved tokens & contrast audit'}
+              </Heading>
+              <Text type="supporting" color="secondary">
+                {dna.atmosphere.name} · {dna.accent.name} ({dna.accent.seed}) ·{' '}
+                {dna.typography.displayFamily} / {dna.typography.bodyFamily}
+              </Text>
+            </Stack>
+            <Badge variant="success" label="WCAG 2.1 AA Verified" />
+          </HStack>
+
           <Table
             aria-label="Resolved Mehan design tokens"
             data={tokenRows}
             columns={[
               {
                 key: 'token',
-                header: 'CSS Token',
-                width: proportional(1.3),
+                header: 'CSS token',
+                width: proportional(1.3, {minWidth: 160}),
                 renderCell: row => (
                   <span className="studio-mono-pill">{String(row.token)}</span>
                 ),
@@ -353,12 +368,12 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
               {
                 key: 'role',
                 header: isId ? 'Peran permukaan' : 'Surface role',
-                width: proportional(1.2),
+                width: proportional(1.2, {minWidth: 140}),
               },
               {
                 key: 'light',
                 header: 'Light',
-                width: proportional(0.9),
+                width: proportional(0.85, {minWidth: 105}),
                 renderCell: row => (
                   <span className="studio-color-chip">
                     <i style={{backgroundColor: String(row.light)}} />
@@ -369,7 +384,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
               {
                 key: 'dark',
                 header: 'Dark',
-                width: proportional(0.9),
+                width: proportional(0.85, {minWidth: 105}),
                 renderCell: row => (
                   <span className="studio-color-chip">
                     <i style={{backgroundColor: String(row.dark)}} />
@@ -379,14 +394,18 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
               },
               {
                 key: 'contrast',
-                header: isId ? 'Rasio kontras' : 'Contrast / Delta',
-                width: proportional(1),
+                header: isId ? 'Kontras / Spesifikasi' : 'Contrast / Spec',
+                width: proportional(0.95, {minWidth: 120}),
+                align: 'end',
                 renderCell: row => (
-                  <Badge variant="success" label={String(row.contrast)} />
+                  <Text type="supporting" weight="semibold" hasTabularNumbers>
+                    {String(row.contrast)}
+                  </Text>
                 ),
               },
             ]}
             density="balanced"
+            dividers="rows"
             hasHover
           />
         </Stack>

@@ -90,6 +90,7 @@ const OWN_FILL_RULES: ReadonlyArray<readonly [string, string, string?]> = [
   ['avatar-group-overflow', 'base'],
   ['segmented-control-item', 'selected'],
   ['step-indicator', 'progress:not-started'],
+  ['table-header-cell', 'base'],
   ['table-row', 'striped', STRIPED_ROW],
   ['banner-content', 'base'],
   ['input-group-text', 'base'],
@@ -337,27 +338,27 @@ export function buildMehanThemeConfig(
   const baseComponents = withOwnFillText({
       heading: {
         base: {
-          letterSpacing: '-0.025em',
+          letterSpacing: '-0.018em',
         },
         'type:display-1': {
-          fontWeight: '800',
-          letterSpacing: '-0.035em',
+          fontWeight: '700',
+          letterSpacing: '-0.03em',
         },
         'type:display-2': {
-          fontWeight: '800',
-          letterSpacing: '-0.032em',
+          fontWeight: '700',
+          letterSpacing: '-0.026em',
         },
         'type:display-3': {
-          fontWeight: '800',
-          letterSpacing: '-0.03em',
+          fontWeight: '700',
+          letterSpacing: '-0.022em',
         },
       },
 
       'empty-state-title': {
         base: {
           fontFamily: 'var(--font-family-heading)',
-          fontWeight: '800',
-          letterSpacing: '-0.028em',
+          fontWeight: '700',
+          letterSpacing: '-0.02em',
         },
       },
 
@@ -736,6 +737,18 @@ export function buildMehanThemeConfig(
           fontWeight: '600',
         },
       },
+      'table-header-cell': {
+        base: {
+          backgroundColor: 'var(--mehan-tray)',
+          color: 'var(--color-text-secondary)',
+          fontSize: 'var(--font-size-xs)',
+          fontWeight: '600',
+          letterSpacing: '-0.005em',
+          borderBottomWidth: '1px',
+          borderBottomStyle: 'solid',
+          borderBottomColor: 'var(--color-border-emphasized)',
+        },
+      },
       'table-cell': {
         base: {
           fontVariantNumeric: 'tabular-nums',
@@ -782,8 +795,15 @@ export function buildMehanThemeConfig(
       heading: {
         family: dna.typography.displayFamily.replace(/^"|"$/g, ''),
         fallbacks: '"Figtree", ui-sans-serif, system-ui, sans-serif',
-        weight: 'bold',
-        weights: {1: 'bold', 2: 'bold', 3: 'bold', 4: 'semibold'},
+        weight: 'semibold',
+        weights: {
+          1: 'bold',
+          2: 'bold',
+          3: 'semibold',
+          4: 'semibold',
+          5: 'semibold',
+          6: 'semibold',
+        },
       },
       code: {
         family: dna.typography.monoFamily.replace(/^"|"$/g, ''),
@@ -950,6 +970,11 @@ export function buildMehanThemeConfig(
       '--radius-page': dna.radii.page,
       '--radius-chat': dna.radii.chat,
       '--radius-full': '9999px',
+
+      '--text-heading-1-leading': '1.22',
+      '--text-heading-2-leading': '1.26',
+      '--text-heading-3-leading': '1.32',
+      '--text-heading-4-leading': '1.38',
 
       '--color-skeleton': [L.socket, D.wellHover],
       '--color-shadow': [withHexAlpha(L.ink, 0.14), '#00000080'],

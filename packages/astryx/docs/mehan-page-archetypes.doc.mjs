@@ -55,16 +55,18 @@ export default {
     },
     {
       id: 'scroll-and-overflow',
-      title: 'Scroll, Tabs, and Tabular Numerals',
+      title: 'Grouping, Truncation, Scroll, and Tabular Numerals',
       content: [
         {
           type: 'list',
           style: 'unordered',
           items: [
+            'Group related fields tightly (`gap={1.5}` to `gap={2}`) and separate distinct semantic groups with wider breathing room (`gap={4}` to `gap={6}`) rather than wrapping every group in a bordered `Card`.',
+            'Use `maxLines={1}` for overflowing IDs, file paths, and fixed-height cells (relying on Astryx smart tooltips), and `maxLines={2}` for uniform card summaries. Never truncate button action labels, validation messages, or currency figures.',
             'Prefer one primary document scroll region per page; introduce nested scroll areas only for bounded code blocks, wide tables, or multi-pane editors.',
             'Keep outer rounded containers (`Card`, `Dialog`, `CodeBlock`) clipped while scrolling an inner unrounded body with `overscroll-behavior: contain` so scrollbars do not cut across rounded corners.',
             'Keep `TabList` (`overflow="auto"`) and `Toolbar` on a single horizontal line rather than wrapping tabs onto multiple rows.',
-            'Apply `font-variant-numeric: tabular-nums` on dynamic counters, slider readouts, prices, and table columns (`MetricCard` and `PrecisionSlider` enforce this automatically). See {@link generic:mehan-design-rules}.',
+            'Apply `font-variant-numeric: tabular-nums` and `align: "end"` on dynamic counters, slider readouts, prices, and numeric table columns (`MetricCard` and `PrecisionSlider` enforce this automatically). See {@link generic:mehan-design-rules}.',
           ],
         },
       ],

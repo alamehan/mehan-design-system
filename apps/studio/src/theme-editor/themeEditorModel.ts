@@ -120,32 +120,31 @@ export const ALL_ASTRYX_DEFAULTS: Record<string, string> = {
 };
 
 export const HEADING_FONT_OPTIONS = [
-  {value: 'Bricolage Grotesque', label: 'Bricolage Grotesque (Mehan)'},
-  {value: 'Figtree', label: 'Figtree'},
-  {value: 'Inter', label: 'Inter'},
-  {value: 'DM Sans', label: 'DM Sans'},
-  {value: 'IBM Plex Sans', label: 'IBM Plex Sans'},
-  {value: 'Poppins', label: 'Poppins'},
-  {value: 'Roboto', label: 'Roboto'},
-  {value: 'Source Sans 3', label: 'Source Sans 3'},
-  {value: 'Georgia', label: 'Georgia (Serif)'},
+  {value: 'Bricolage Grotesque', label: 'Bricolage Grotesque (Mehan Tactile)'},
+  {value: 'Figtree', label: 'Figtree (Clean Humanist)'},
+  {value: 'Albert Sans', label: 'Albert Sans (Neo-Grotesque SaaS)'},
+  {value: 'Outfit', label: 'Outfit (Modern Geometric)'},
+  {value: 'Poppins', label: 'Poppins (Friendly Circular)'},
+  {value: 'Montserrat', label: 'Montserrat (Architectural Wide)'},
+  {value: 'Fraunces', label: 'Fraunces (Editorial Serif)'},
+  {value: 'Crimson Text', label: 'Crimson Text (Classic Book Serif)'},
+  {value: 'Georgia', label: 'Georgia (System Serif)'},
 ];
 
 export const BODY_FONT_OPTIONS = [
-  {value: 'Figtree', label: 'Figtree (Mehan)'},
-  {value: 'Inter', label: 'Inter'},
-  {value: 'DM Sans', label: 'DM Sans'},
-  {value: 'IBM Plex Sans', label: 'IBM Plex Sans'},
-  {value: 'Roboto', label: 'Roboto'},
-  {value: 'Source Sans 3', label: 'Source Sans 3'},
-  {value: 'Noto Sans', label: 'Noto Sans'},
-  {value: 'system-ui', label: 'System UI'},
+  {value: 'Figtree', label: 'Figtree (Mehan Default)'},
+  {value: 'Albert Sans', label: 'Albert Sans (Crisp SaaS)'},
+  {value: 'Outfit', label: 'Outfit (Geometric Sans)'},
+  {value: 'Poppins', label: 'Poppins (Circular Sans)'},
+  {value: 'Bricolage Grotesque', label: 'Bricolage Grotesque'},
+  {value: 'Montserrat', label: 'Montserrat'},
+  {value: 'Crimson Text', label: 'Crimson Text (Editorial Serif)'},
+  {value: 'system-ui', label: 'System UI (OS Native)'},
 ];
 
 export const CODE_FONT_OPTIONS = [
-  {value: 'Geist Mono', label: 'Geist Mono (Mehan)'},
+  {value: 'Geist Mono', label: 'Geist Mono (Mehan Default)'},
   {value: 'JetBrains Mono', label: 'JetBrains Mono'},
-  {value: 'SFMono-Regular', label: 'SF Mono'},
   {value: 'Consolas', label: 'Consolas'},
   {value: 'ui-monospace', label: 'System Monospace'},
 ];

@@ -1,17 +1,15 @@
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {expect, test} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import {expect, test} from '@playwright/test';
 
-const studioFileUrl = pathToFileURL(
-  path.resolve(import.meta.dirname, '../STUDIO.html'),
-).href;
+const repoRoot = path.resolve(import.meta.dirname, '..');
+const studioHtmlPath = path.join(repoRoot, 'STUDIO.html');
+const studioFileUrl = pathToFileURL(studioHtmlPath).href;
+const shotDir = process.env.MEHAN_SHOT_DIR ?? path.join(repoRoot, 'test-results');
 
-const shotDir =
-  process.env.MEHAN_SHOT_DIR ?? path.resolve(import.meta.dirname, '../test-results');
-
-test.describe('STUDIO.html v1.0.0 — 12-Category Catalog, Official Theme Showcase & Docked 3-Tier Theme Editor', () => {
-  test('passes Desktop 1366x900 Light/Dark across Overview, 12-Category Catalog, Official Theme Showcase, and Docked 3-Tier Theme Editor with 0 errors and 0 axe contrast violations', async ({
+test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Playbook & Theme Editor', () => {
+  test('passes Desktop 1366x900 Light/Dark across real font switching, bounded Layout, rich Table, UX Playbook & Theme Editor with 0 errors and 0 axe contrast violations', async ({
     page,
   }) => {
     const errors: string[] = [];
@@ -22,11 +20,21 @@ test.describe('STUDIO.html v1.0.0 — 12-Category Catalog, Official Theme Showca
 
     await page.setViewportSize({width: 1366, height: 900});
     await page.goto(studioFileUrl, {waitUntil: 'load'});
-    await expect(page.getByText('mehan', {exact: true})).toBeVisible();
 
-    // 1. Overview (Indonesian default, Confectionery Light)
+    // 1. Overview (ID, Light) + Verify real bundled WOFF2 fonts actually loaded!
+    await expect(page.getByText('mehan', {exact: true})).toBeVisible();
+    const initialFontsLoaded = await page.evaluate(async () => {
+      await document.fonts.ready;
+      return {
+        bricolage: document.fonts.check('600 18px "Bricolage Grotesque"'),
+        figtree: document.fonts.check('400 14px "Figtree"'),
+      };
+    });
+    expect(initialFontsLoaded.bricolage).toBe(true);
+    expect(initialFontsLoaded.figtree).toBe(true);
+
     await page.screenshot({
-      path: path.join(shotDir, 'studio-v2-overview-id-light-1366.png'),
+      path: path.join(shotDir, 'studio-v3-overview-id-light-1366.png'),
       fullPage: false,
     });
     expect(
@@ -34,17 +42,17 @@ test.describe('STUDIO.html v1.0.0 — 12-Category Catalog, Official Theme Showca
         .violations,
     ).toEqual([]);
 
-    // 2. Switch to English + 12-Category Components Catalog (Light)
-    await page.getByRole('radio', {name: 'EN', exact: true}).click();
+    // Switch to English
+    await page.getByText('EN', {exact: true}).click();
+    await page.waitForTimeout(120);
+
+    // 2. Components Catalog: Action (default focused category) -> Layout (verify AppShell height <= 320px!) -> Table & List
     await page.getByRole('tab', {name: 'Components'}).click();
     await expect(
-      page.getByRole('navigation', {
-        name: 'Official Astryx component categories',
-      }),
+      page.getByText('107 live specimens'),
     ).toBeVisible();
-    await page.waitForTimeout(200);
     await page.screenshot({
-      path: path.join(shotDir, 'studio-v2-catalog-12cat-light-1366.png'),
+      path: path.join(shotDir, 'studio-v3-catalog-action-light-1366.png'),
       fullPage: false,
     });
     expect(
@@ -52,15 +60,15 @@ test.describe('STUDIO.html v1.0.0 — 12-Category Catalog, Official Theme Showca
         .violations,
     ).toEqual([]);
 
-    // 3. Filter to "Form Controls" category + Dark Mode
-    await page
-      .getByRole('navigation', {name: 'Official Astryx component categories'})
-      .getByRole('button', {name: /^Form Controls/})
-      .click();
-    await page.getByRole('button', {name: /Dark mode/i}).click();
-    await page.waitForTimeout(250);
+    // Check Layout category: AppShell card must NOT explode to 100dvh!
+    await page.locator('.cat-nav-btn', {hasText: 'Layout'}).click();
+    await page.waitForTimeout(150);
+    const appShellCardHeight = await page
+      .locator('[data-component="app-shell"]')
+      .evaluate(el => el.getBoundingClientRect().height);
+    expect(appShellCardHeight).toBeLessThan(360);
     await page.screenshot({
-      path: path.join(shotDir, 'studio-v2-catalog-form-dark-1366.png'),
+      path: path.join(shotDir, 'studio-v3-catalog-layout-light-1366.png'),
       fullPage: false,
     });
     expect(
@@ -68,56 +76,56 @@ test.describe('STUDIO.html v1.0.0 — 12-Category Catalog, Official Theme Showca
         .violations,
     ).toEqual([]);
 
-    // 4. Templates -> Official Theme Showcase + Docked 3-Tier Theme Editor (Light Split-Pane!)
-    await page.getByRole('button', {name: /Light mode/i}).click();
+    // Check Table & List category: rich full-width production Table
+    await page.locator('.cat-nav-btn', {hasText: 'Table & List'}).click();
+    await page.waitForTimeout(150);
+    await page.screenshot({
+      path: path.join(shotDir, 'studio-v3-catalog-table-light-1366.png'),
+      fullPage: false,
+    });
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
+
+    // 3. Official Theme Showcase + Docked Chunked Theme Editor + Live Font Switching Proof!
     await page.getByRole('tab', {name: 'Templates'}).click();
-    await page.getByRole('button', {name: 'Theme Editor', exact: true}).click();
+    await expect(
+      page.getByText('Little joys, everywhere you go'),
+    ).toBeVisible();
+    await page.getByRole('button', {name: 'Theme Editor'}).click();
     await expect(
       page.getByRole('complementary', {name: 'Live Theme Editor'}),
     ).toBeVisible();
-    await page.waitForTimeout(250);
-    await page.screenshot({
-      path: path.join(shotDir, 'studio-v2-showcase-docked-editor-light-1366.png'),
-      fullPage: false,
-    });
-    expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
-    ).toEqual([]);
 
-    // 5. Activate Shotcandy 1:1 Preset (Espresso active pill + 13.5px) + Advanced Raw Tokens tab in Dark Mode
-    await page
-      .getByRole('complementary', {name: 'Live Theme Editor'})
-      .getByRole('button', {name: 'Shotcandy 1:1'})
-      .click();
-    await page
-      .getByRole('tablist', {name: 'Theme editor sections'})
-      .getByRole('tab', {name: 'Advanced'})
-      .click();
-    await page.getByRole('button', {name: /Dark mode/i}).click();
-    await page.waitForTimeout(250);
-    await page.screenshot({
-      path: path.join(
-        shotDir,
-        'studio-v2-showcase-advanced-espresso-dark-1366.png',
-      ),
-      fullPage: false,
-    });
-    expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
-    ).toEqual([]);
-
-    // 6. Switch back to Light + UX & Copy + Theme Editor "Components" Tab
-    await page.getByRole('button', {name: /Light mode/i}).click();
-    await page.getByRole('tab', {name: 'UX & Copy'}).click();
-    await page
-      .getByRole('tablist', {name: 'Theme editor sections'})
-      .getByRole('tab', {name: 'Components'})
-      .click();
+    // Switch Heading font to Fraunces & Body font to Outfit and verify REAL DOM computed style + loaded WOFF2!
+    const editor = page.getByRole('complementary', {name: 'Live Theme Editor'});
+    await editor.getByRole('combobox', {name: 'Heading font'}).click();
+    await page.getByRole('option', {name: /Fraunces/}).click();
+    await editor.getByRole('combobox', {name: 'Body font'}).click();
+    await page.getByRole('option', {name: /Outfit/}).click();
     await page.waitForTimeout(200);
+
+    const switchedFonts = await page.evaluate(async () => {
+      await document.fonts.ready;
+      const h2 = document.querySelector('h2');
+      const shell = document.querySelector('.studio-shell');
+      return {
+        h2Family: h2 ? getComputedStyle(h2).fontFamily : '',
+        bodyFamily: shell ? getComputedStyle(shell).fontFamily : '',
+        frauncesLoaded: document.fonts.check('600 20px "Fraunces"'),
+        outfitLoaded: document.fonts.check('400 14px "Outfit"'),
+      };
+    });
+    expect(switchedFonts.h2Family).toContain('Fraunces');
+    expect(switchedFonts.bodyFamily).toContain('Outfit');
+    expect(switchedFonts.frauncesLoaded).toBe(true);
+    expect(switchedFonts.outfitLoaded).toBe(true);
+
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(100);
     await page.screenshot({
-      path: path.join(shotDir, 'studio-v2-editor-components-tab-light-1366.png'),
+      path: path.join(shotDir, 'studio-v3-showcase-fraunces-light-1366.png'),
       fullPage: false,
     });
     expect(
@@ -125,31 +133,58 @@ test.describe('STUDIO.html v1.0.0 — 12-Category Catalog, Official Theme Showca
         .violations,
     ).toEqual([]);
 
-    // 6b. Verify live component CSS mutation: add Custom CSS Override -> button radius 999px -> Reset!
+    // Reset back to default Bricolage Grotesque + Figtree, then switch Preset to Shotcandy 1:1 in Dark Mode!
+    await editor.getByRole('button', {name: 'Reset all to default'}).click();
+    await page.waitForTimeout(120);
+    await editor.getByRole('combobox', {name: 'Theme preset'}).click();
+    await page.getByRole('option', {name: /Shotcandy 1:1/}).click();
+    await page.getByRole('button', {name: 'Dark mode'}).click();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(200);
+
+    await page.screenshot({
+      path: path.join(shotDir, 'studio-v3-showcase-espresso-dark-1366.png'),
+      fullPage: false,
+    });
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
+
+    // 4. Switch back to Light Mode -> UX & Copy 6-Chapter Playbook + Live Component CSS Override Proof!
+    await page.getByRole('button', {name: 'Light mode'}).click();
+    await page.getByRole('tab', {name: 'UX & Copy'}).click();
+    await page.waitForTimeout(150);
+    await page.screenshot({
+      path: path.join(shotDir, 'studio-v3-ux-playbook-light-1366.png'),
+      fullPage: false,
+    });
+    expect(
+      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+        .violations,
+    ).toEqual([]);
+
+    // Navigate to Chapter 04 (Actions & Control Roles) and verify live button radius override -> 999px!
     await page
-      .getByRole('complementary', {name: 'Live Theme Editor'})
+      .locator('.ux-sidebar .cat-nav-btn', {hasText: 'Actions & Control Roles'})
+      .click();
+    await editor.getByRole('tab', {name: 'Components'}).click();
+    await editor
       .getByRole('textbox', {name: 'CSS property (camelCase)'})
       .fill('borderRadius');
-    await page
-      .getByRole('complementary', {name: 'Live Theme Editor'})
-      .getByRole('textbox', {name: 'CSS value'})
-      .fill('999px');
-    await page
-      .getByRole('complementary', {name: 'Live Theme Editor'})
-      .getByRole('button', {name: 'Add Component Override'})
-      .click();
+    await editor.getByRole('textbox', {name: 'CSS value'}).fill('999px');
+    await editor.getByRole('button', {name: 'Add component override'}).click();
     await page.waitForTimeout(150);
+
     const mutatedRadius = await page
       .getByRole('button', {name: 'Publish release'})
       .evaluate(el => getComputedStyle(el).borderRadius);
     expect(mutatedRadius).toBe('999px');
-    await page
-      .getByRole('complementary', {name: 'Live Theme Editor'})
-      .getByRole('button', {name: 'Reset all to default'})
-      .click();
-    await page.waitForTimeout(150);
 
-    // 7. Maintain Tab contrast check
+    await editor.getByRole('button', {name: 'Reset all to default'}).click();
+    await page.waitForTimeout(120);
+
+    // 5. Maintain Tab contrast check
     await page.getByRole('tab', {name: 'Maintain'}).click();
     await page.waitForTimeout(150);
     expect(
@@ -173,7 +208,7 @@ test.describe('STUDIO.html v1.0.0 — 12-Category Catalog, Official Theme Showca
     expect(overflow).toBeLessThanOrEqual(1);
 
     await page.screenshot({
-      path: path.join(shotDir, 'studio-v2-mobile-id-light-375.png'),
+      path: path.join(shotDir, 'studio-v3-mobile-id-light-375.png'),
       fullPage: false,
     });
 

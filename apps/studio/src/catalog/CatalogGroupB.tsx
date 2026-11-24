@@ -12,6 +12,7 @@ import {
   DateTimeInput,
   Field,
   FileInput,
+  Grid,
   HStack,
   InfoTip,
   InputGroup,
@@ -84,7 +85,6 @@ const POWER_SEARCH_DEFS = [
 ] as const;
 
 export function useCatalogGroupB(): SpecimenDefinition[] {
-  // Data Viz & Feedback states
   const [swatchHex, setSwatchHex] = useState('#e0366b');
   const [pickerHex, setPickerHex] = useState('#e0366b');
 
@@ -144,16 +144,25 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       name: 'MetricCard',
       category: 'Data Visualization',
       pkg: 'mehan',
-      summaryEn: 'KPI readout card with tabular figures, trend badge, and comparison hint.',
-      summaryId: 'Kartu metrik KPI dengan angka tabular sejajar dan lencana arah tren.',
-      code: `<MetricCard label="Conversion rate" value="4.82%" delta="+0.64%" trend="up" hint="30-day rolling window" />`,
+      span: 'wide',
+      summaryEn: 'KPI readout card with aligned tabular numerals, trend delta pill, and context caption.',
+      summaryId: 'Kartu metrik KPI dengan angka tabular sejajar, lencana arah tren, dan konteks waktu.',
+      code: `<MetricCard label="Conversion rate" value="4.82%" delta={{value: '+0.64%', direction: 'up'}} caption="30-day rolling window" />`,
       render: () => (
-        <MetricCard
-          label="Conversion rate"
-          value="4.82%"
-          delta={{value: '+0.64%', direction: 'up'}}
-          caption="30-day rolling window"
-        />
+        <Grid columns={{minWidth: 220, max: 2, repeat: 'fit'}} gap={3}>
+          <MetricCard
+            label="Conversion rate"
+            value="4.82%"
+            delta={{value: '+0.64%', direction: 'up'}}
+            caption="30-day rolling window"
+          />
+          <MetricCard
+            label="P95 edge latency"
+            value="18.4 ms"
+            delta={{value: '-3.1 ms', direction: 'down'}}
+            caption="Global PoP median"
+          />
+        </Grid>
       ),
     },
     {
@@ -161,20 +170,22 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       name: 'Data Categorical Tokens',
       category: 'Data Visualization',
       pkg: 'core',
-      summaryEn: 'Harmonized `--color-data-categorical-*` tokens tuned in OKLCH for charts.',
-      summaryId: 'Rangkaian token warna grafik `--color-data-categorical-*` yang harmonis.',
+      span: 'wide',
+      summaryEn: 'Perceptually balanced `--color-data-categorical-*` OKLCH tokens (>= 3:1 chart stroke contrast).',
+      summaryId: 'Token warna grafik `--color-data-categorical-*` berbasis OKLCH dengan kontras >= 3:1.',
       code: `<div style={{backgroundColor: 'var(--color-data-categorical-blue)'}} />`,
       render: () => (
-        <VStack gap={1.5}>
+        <VStack gap={2}>
           {DATA_VIZ_SERIES.map(s => (
-            <HStack key={s.label} gap={2} vAlign="center">
-              <span style={{width: 52, fontSize: 11.5}}>{s.label}</span>
+            <HStack key={s.label} gap={3} vAlign="center">
+              <span style={{width: 56, fontSize: 12, fontWeight: 500}}>{s.label}</span>
               <div
                 style={{
                   flex: 1,
                   height: 10,
                   borderRadius: 999,
                   backgroundColor: 'var(--mehan-well)',
+                  boxShadow: 'var(--mehan-shadow-well)',
                   overflow: 'hidden',
                 }}
               >
@@ -187,7 +198,15 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
                   }}
                 />
               </div>
-              <span style={{fontSize: 11, fontFamily: 'var(--font-family-code)'}}>
+              <span
+                style={{
+                  width: 36,
+                  textAlign: 'right',
+                  fontSize: 11.5,
+                  fontFamily: 'var(--font-family-code)',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
                 {s.pct}%
               </span>
             </HStack>
@@ -198,13 +217,30 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
 
     // ==================== CATEGORY 6: FEEDBACK & STATUS ====================
     {
+      id: 'banner',
+      name: 'Banner',
+      category: 'Feedback & Status',
+      pkg: 'core',
+      span: 'wide',
+      summaryEn: 'Inline status callout surface for informational, success, warning, and error notices.',
+      summaryId: 'Kotak pemberitahuan kontekstual sebaris untuk info, peringatan, dan keberhasilan.',
+      code: `<Banner status="success" title="All 6 quality gates passed" description="0 integration errors · 0 WCAG AA contrast violations." />`,
+      render: () => (
+        <Banner
+          status="success"
+          title="All 6 quality gates passed"
+          description="0 integration errors · 0 WCAG AA contrast violations across Light & Dark modes."
+        />
+      ),
+    },
+    {
       id: 'badge',
       name: 'Badge',
       category: 'Feedback & Status',
       pkg: 'core',
-      summaryEn: 'Semantic status and categorical pills with WCAG-verified tint fills.',
-      summaryId: 'Lencana status semantik dan warna kategori dengan kontras terjaga.',
-      code: `<HStack gap={1.5}>\n  <Badge variant="success" label="Healthy" />\n  <Badge variant="warning" label="Degraded" />\n  <Badge variant="error" label="Failed" />\n</HStack>`,
+      summaryEn: 'Semantic status and categorical pills with WCAG AA-verified foreground contrast.',
+      summaryId: 'Lencana status semantik dan kategori warna dengan kontras teks WCAG AA.',
+      code: `<HStack gap={1.5}><Badge variant="success" label="Healthy" /><Badge variant="warning" label="Review" /></HStack>`,
       render: () => (
         <HStack gap={1.5} wrap="wrap">
           <Badge variant="success" label="Healthy" />
@@ -216,38 +252,27 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       ),
     },
     {
-      id: 'banner',
-      name: 'Banner',
+      id: 'status-dot',
+      name: 'StatusDot',
       category: 'Feedback & Status',
       pkg: 'core',
-      summaryEn: 'Inline callout surface for info, success, warning, and error notices.',
-      summaryId: 'Kotak pemberitahuan sebaris untuk info, peringatan, dan keberhasilan.',
-      code: `<Banner status="info" title="Zero-fork architecture" description="Safe to upgrade." />`,
+      summaryEn: '8px presence indicator with optional reduced-motion-safe pulse.',
+      summaryId: 'Titik status kehadiran 8px dengan animasi denyut ramah aksesibilitas.',
+      code: `<StatusDot variant="success" label="Online" isPulsing />`,
       render: () => (
-        <Banner
-          status="success"
-          title="All 6 quality gates passed"
-          description="0 integration errors · 0 WCAG AA contrast violations."
-        />
-      ),
-    },
-    {
-      id: 'info-tip',
-      name: 'InfoTip',
-      category: 'Feedback & Status',
-      pkg: 'core',
-      summaryEn: 'Focusable `"i"` button revealing concise contextual help on hover or tap.',
-      summaryId: 'Tombol info kecil untuk menampilkan penjelasan singkat saat diklik/diarahkan.',
-      code: `<InfoTip label="About OKLCH" content="Perceptually uniform lightness across hues." />`,
-      render: () => (
-        <HStack gap={1.5} vAlign="center">
-          <Text type="supporting" weight="semibold">
-            Perceptual Contrast Gate
-          </Text>
-          <InfoTip
-            label="About perceptual contrast"
-            content="Binary-searches OKLCH lightness so every brand seed passes WCAG 2.1 AA."
-          />
+        <HStack gap={4} vAlign="center" wrap="wrap">
+          <HStack gap={1.5} vAlign="center">
+            <StatusDot variant="success" label="Online" isPulsing />
+            <Text type="supporting">Operational</Text>
+          </HStack>
+          <HStack gap={1.5} vAlign="center">
+            <StatusDot variant="warning" label="Standby" />
+            <Text type="supporting">Degraded</Text>
+          </HStack>
+          <HStack gap={1.5} vAlign="center">
+            <StatusDot variant="error" label="Offline" />
+            <Text type="supporting">Outage</Text>
+          </HStack>
         </HStack>
       ),
     },
@@ -256,9 +281,9 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       name: 'ProgressBar',
       category: 'Feedback & Status',
       pkg: 'core',
-      summaryEn: 'Recessed socket progress track with determinate or indeterminate fill.',
-      summaryId: 'Bilah progres cekung dengan warna aksen penuh.',
-      code: `<ProgressBar label="Bundle verification" value={76} />`,
+      summaryEn: 'Recessed socket progress track with determinate percentage or indeterminate fill.',
+      summaryId: 'Jalur progres cekung dengan warna aksen penuh dan pembacaan persentase.',
+      code: `<ProgressBar label="Theme compilation progress" value={76} />`,
       render: () => <ProgressBar label="Theme compilation progress" value={76} />,
     },
     {
@@ -266,15 +291,15 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       name: 'Skeleton',
       category: 'Feedback & Status',
       pkg: 'core',
-      summaryEn: 'Staggered shimmer placeholders matching content geometry before load.',
-      summaryId: 'Kerangka pemuatan beranimasi lembut sesuai bentuk konten asli.',
-      code: `<Skeleton width="100%" height={16} index={0} />`,
+      summaryEn: 'Geometry-matched shimmer placeholder preserving layout stability while loading.',
+      summaryId: 'Kerangka pemuatan beranimasi lembut yang menjaga tata letak tidak melompat.',
+      code: `<Skeleton width="100%" height={14} index={0} />`,
       render: () => (
         <HStack gap={3} vAlign="center">
-          <Skeleton width={36} height={36} radius="rounded" index={0} />
+          <Skeleton width={38} height={38} radius="rounded" index={0} />
           <VStack gap={1.5} width="100%">
-            <Skeleton width="75%" height={12} index={1} />
-            <Skeleton width="50%" height={10} index={2} />
+            <Skeleton width="72%" height={12} index={1} />
+            <Skeleton width="48%" height={10} index={2} />
           </VStack>
         </HStack>
       ),
@@ -284,111 +309,95 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       name: 'Spinner',
       category: 'Feedback & Status',
       pkg: 'core',
-      summaryEn: 'Accessible loading rotor in `sm`, `md`, `lg`, and `xl` diameters.',
-      summaryId: 'Indikator putar pemuatan aksesibel dalam empat ukuran.',
+      summaryEn: 'Accessible activity rotor for short (< 2s) in-place async operations.',
+      summaryId: 'Indikator putar aksesibel untuk proses pemuatan singkat di bawah 2 detik.',
       code: `<Spinner size="md" label="Verifying…" />`,
       render: () => (
-        <HStack gap={3} vAlign="center">
+        <HStack gap={4} vAlign="center">
           <Spinner size="sm" aria-label="Small loader" />
-          <Spinner size="md" label="Syncing…" />
+          <Spinner size="md" label="Verifying tokens…" />
         </HStack>
       ),
     },
     {
-      id: 'status-dot',
-      name: 'StatusDot',
+      id: 'info-tip',
+      name: 'InfoTip',
       category: 'Feedback & Status',
       pkg: 'core',
-      summaryEn: '8px live presence indicator with optional reduced-motion-safe pulse.',
-      summaryId: 'Titik indikator status 8px dengan opsi denyut aktivitas.',
-      code: `<StatusDot variant="success" label="Online" isPulsing />`,
+      summaryEn: 'Focusable info trigger revealing concise contextual guidance on click or hover.',
+      summaryId: 'Tombol info fokus-aman untuk menampilkan penjelasan istilah teknis secara ringkas.',
+      code: `<InfoTip label="About OKLCH" content="Perceptually uniform lightness across hues." />`,
       render: () => (
-        <HStack gap={3} vAlign="center" wrap="wrap">
-          <HStack gap={1.5} vAlign="center">
-            <StatusDot variant="success" label="Online" isPulsing />
-            <Text type="supporting">Live</Text>
-          </HStack>
-          <HStack gap={1.5} vAlign="center">
-            <StatusDot variant="warning" label="Standby" />
-            <Text type="supporting">Standby</Text>
-          </HStack>
-          <HStack gap={1.5} vAlign="center">
-            <StatusDot variant="error" label="Offline" />
-            <Text type="supporting">Offline</Text>
-          </HStack>
+        <HStack gap={1.5} vAlign="center">
+          <Text type="supporting" weight="semibold">
+            Perceptual contrast solver
+          </Text>
+          <InfoTip
+            label="About perceptual contrast"
+            content="Binary-searches OKLCH lightness so every custom hex seed meets WCAG 2.1 AA."
+          />
         </HStack>
       ),
     },
 
     // ==================== CATEGORY 7: FORM CONTROLS ====================
     {
-      id: 'calendar',
-      name: 'Calendar',
+      id: 'text-input',
+      name: 'TextInput',
       category: 'Form Controls',
       pkg: 'core',
-      summaryEn: 'Full keyboard-navigable month grid supporting single or date-range selection.',
-      summaryId: 'Kalender interaktif dengan navigasi tombol panah penuh.',
-      code: `<Calendar value={date} onChange={setDate} />`,
+      summaryEn: 'Recessed well (or 1px bordered) text field with visible label and clear button.',
+      summaryId: 'Kolom teks utama bergaya sumur cekung atau bingkai 1px dengan tombol bersihkan.',
+      code: `<TextInput label="Project name" value={name} onChange={setName} hasClear />`,
       render: () => (
-        <Calendar
-          value={calDate}
-          onChange={setCalDate}
-          hasVariableRowCount
+        <TextInput
+          label="Project name"
+          size="sm"
+          hasClear
+          value={projectInput}
+          onChange={setProjectInput}
         />
       ),
     },
     {
-      id: 'checkbox-input',
-      name: 'CheckboxInput',
+      id: 'selector',
+      name: 'Selector',
       category: 'Form Controls',
       pkg: 'core',
-      summaryEn: 'Single boolean checkbox with crisp indicator and optional helper text.',
-      summaryId: 'Kotak centang tunggal dengan deskripsi bantu opsional.',
-      code: `<CheckboxInput label="Lock WCAG AA contrast" value={checked} onChange={setChecked} />`,
+      summaryEn: 'Accessible listbox field (`Select`) retaining a chosen value inside forms.',
+      summaryId: 'Kotak pilih nilai form (`Select`) dengan dukungan navigasi papan ketik penuh.',
+      code: `<Selector label="Primary edge region" options={options} value={region} onChange={setRegion} />`,
       render: () => (
-        <CheckboxInput
-          label="Enforce strict WCAG AA contrast"
-          description="Automatically clamps text lightness on light & dark surfaces."
-          value={chkSingle}
-          onChange={setChkSingle}
+        <Selector
+          label="Primary edge region"
+          size="sm"
+          options={[
+            {value: 'ap-southeast-1', label: 'Singapore (ap-southeast-1)'},
+            {value: 'ap-northeast-1', label: 'Tokyo (ap-northeast-1)'},
+            {value: 'eu-central-1', label: 'Frankfurt (eu-central-1)'},
+          ]}
+          value={selRegion}
+          onChange={setSelRegion}
         />
       ),
     },
     {
-      id: 'checkbox-list',
-      name: 'CheckboxList',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Grouped multi-checkbox field managing an array of selected string values.',
-      summaryId: 'Kelompok kotak centang terstruktur untuk memilih beberapa opsi sekaligus.',
-      code: `<CheckboxList label="Export targets" value={targets} onChange={setTargets}>...</CheckboxList>`,
-      render: () => (
-        <CheckboxList
-          label="Export targets"
-          density="compact"
-          value={chkList}
-          onChange={setChkList}
-        >
-          <CheckboxListItem value="wcag" label="TypeScript Theme (.ts)" />
-          <CheckboxListItem value="tokens" label="W3C Figma Tokens (.json)" />
-          <CheckboxListItem value="portable" label="Portable CSS (.css)" />
-        </CheckboxList>
-      ),
-    },
-    {
-      id: 'color-picker',
-      name: 'ColorPicker',
+      id: 'precision-slider',
+      name: 'PrecisionSlider',
       category: 'Form Controls',
       pkg: 'mehan',
-      summaryEn: '2D HSV saturation/value canvas, hue rail, hex field, and curated swatches.',
-      summaryId: 'Pemilih warna kanvas HSV 2D khas Mehan lengkap dengan input Hex.',
-      code: `<ColorPicker label="Brand seed" value={hex} onChange={setHex} />`,
+      summaryEn: 'Studio slider with Shift 0.25× fine-scrubbing, magnetic stops, and click-to-type readout.',
+      summaryId: 'Slider presisi khas studio dengan Shift 0.25×, titik magnetis, dan klik angka untuk ketik.',
+      code: `<PrecisionSlider label="Spring tension" value={val} min={0} max={100} stops={[50, 72, 100]} unit="%" onChange={setVal} />`,
       render: () => (
-        <ColorPicker
-          label="Brand seed hex"
-          value={pickerHex}
-          onChange={setPickerHex}
-          presets={Object.values(MEHAN_ACCENT_PRESETS).map(p => p.seed)}
+        <PrecisionSlider
+          label="Tension"
+          value={precisionVal}
+          min={0}
+          max={100}
+          stops={[50, 72, 100]}
+          unit="%"
+          onChange={setPrecisionVal}
         />
       ),
     },
@@ -397,11 +406,11 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       name: 'ColorSwatch',
       category: 'Form Controls',
       pkg: 'mehan',
-      summaryEn: 'Tactile color token button with selection halo and WCAG checkmark.',
-      summaryId: 'Tombol sampel warna taktil dengan cincin fokus & tanda centang kontras.',
+      summaryEn: 'Boiled-sweet 3D color token button with specular glint and dual-ring selection halo.',
+      summaryId: 'Tombol sampel warna 3D berkilau halus dengan cincin seleksi kontras tinggi.',
       code: `<ColorSwatch color="#e0366b" label="Strawberry" isSelected onSelect={() => {}} />`,
       render: () => (
-        <HStack gap={1.5} wrap="wrap">
+        <HStack gap={2} wrap="wrap">
           {Object.values(MEHAN_ACCENT_PRESETS).map(p => (
             <ColorSwatch
               key={p.id}
@@ -415,13 +424,252 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       ),
     },
     {
+      id: 'number-input',
+      name: 'NumberInput',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Numeric quantity field with min/max clamping and stepper buttons.',
+      summaryId: 'Input kuantitas angka presisi dengan batas minimum/maksimum dan tombol tambah-kurang.',
+      code: `<NumberInput label="Team seats" value={seats} onChange={setSeats} min={1} max={250} />`,
+      render: () => (
+        <NumberInput
+          label="Team seats"
+          size="sm"
+          min={1}
+          max={250}
+          value={numSeats}
+          onChange={setNumSeats}
+        />
+      ),
+    },
+    {
+      id: 'input-group',
+      name: 'InputGroup',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Joined prefix/suffix addons (`InputGroupText`, `Selector`, `Button`) around an input.',
+      summaryId: 'Penggabung awalan atau akhiran teks/tombol yang menyatu rapi dengan kolom input.',
+      code: `<InputGroup label="Workspace URL"><InputGroupText>mehan.design/</InputGroupText><TextInput ... /></InputGroup>`,
+      render: () => (
+        <InputGroup label="Workspace URL" size="sm">
+          <InputGroupText>mehan.design/</InputGroupText>
+          <TextInput
+            label="Workspace slug"
+            isLabelHidden
+            value={slugText}
+            onChange={setSlugText}
+          />
+        </InputGroup>
+      ),
+    },
+    {
+      id: 'multi-selector',
+      name: 'MultiSelector',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Searchable multi-select dropdown rendering selected items as compact chips.',
+      summaryId: 'Pemilih banyak nilai sekaligus dengan pencarian cepat dan tampilan chip.',
+      code: `<MultiSelector label="Target stacks" options={options} value={selected} onChange={setSelected} />`,
+      render: () => (
+        <MultiSelector
+          label="Target stacks"
+          size="sm"
+          options={[
+            {value: 'react', label: 'React 19'},
+            {value: 'tailwind', label: 'Tailwind v4'},
+            {value: 'portable', label: 'Portable HTML'},
+            {value: 'figma', label: 'Figma W3C'},
+          ]}
+          value={multiVals}
+          onChange={setMultiVals}
+        />
+      ),
+    },
+    {
+      id: 'typeahead',
+      name: 'Typeahead',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Async-ready single-entity search combobox powered by `SearchSource`.',
+      summaryId: 'Kotak pencarian pilihan tunggal berbasis daftar sumber data terindeks.',
+      code: `<Typeahead label="Primary framework" searchSource={source} value={item} onChange={setItem} />`,
+      render: () => (
+        <Typeahead
+          label="Primary framework"
+          size="sm"
+          hasEntriesOnFocus
+          searchSource={frameworkSource}
+          value={taItem}
+          onChange={setTaItem}
+        />
+      ),
+    },
+    {
+      id: 'switch',
+      name: 'Switch',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Immediate boolean toggle with recessed socket track and 3D spherical thumb.',
+      summaryId: 'Sakelar aktif/nonaktif seketika dengan soket cekung dan kenop bulat 3D.',
+      code: `<Switch label="Auto-expand coarse touch targets (44px)" value={on} onChange={setOn} />`,
+      render: () => (
+        <Switch
+          label="Auto-expand touch targets (44px)"
+          value={switchVal}
+          onChange={setSwitchVal}
+        />
+      ),
+    },
+    {
+      id: 'slider',
+      name: 'Slider',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Core WAI-ARIA range slider with recessed track and spherical dome thumb.',
+      summaryId: 'Slider rentang standar WAI-ARIA dengan jalur cekung dan kenop 3D.',
+      code: `<Slider label="Ambient shadow opacity" value={val} onChange={setVal} valueDisplay="text" />`,
+      render: () => (
+        <Slider
+          label="Ambient shadow opacity"
+          value={sliderVal}
+          onChange={setSliderVal}
+          valueDisplay="text"
+        />
+      ),
+    },
+    {
+      id: 'checkbox-input',
+      name: 'CheckboxInput',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Single boolean checkbox with tactile indicator and supporting description.',
+      summaryId: 'Kotak centang tunggal dengan indikator taktil dan teks penjelasan bantu.',
+      code: `<CheckboxInput label="Enforce strict WCAG AA contrast" value={checked} onChange={setChecked} />`,
+      render: () => (
+        <CheckboxInput
+          label="Enforce strict WCAG AA contrast"
+          description="Clamps perceptual lightness across Light and Dark surfaces."
+          value={chkSingle}
+          onChange={setChkSingle}
+        />
+      ),
+    },
+    {
+      id: 'checkbox-list',
+      name: 'CheckboxList',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Grouped fieldset of related checkboxes managing an array of selected keys.',
+      summaryId: 'Kelompok kotak centang terstruktur untuk memilih beberapa target sekaligus.',
+      code: `<CheckboxList label="Export targets" value={targets} onChange={setTargets}>...</CheckboxList>`,
+      render: () => (
+        <CheckboxList
+          label="Export targets"
+          density="compact"
+          value={chkList}
+          onChange={setChkList}
+        >
+          <CheckboxListItem value="wcag" label="TypeScript theme (.ts)" />
+          <CheckboxListItem value="tokens" label="W3C Figma tokens (.json)" />
+          <CheckboxListItem value="portable" label="Portable stylesheet (.css)" />
+        </CheckboxList>
+      ),
+    },
+    {
+      id: 'radio-list',
+      name: 'RadioList',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Mutually exclusive radio group supporting rich item descriptions.',
+      summaryId: 'Kelompok pilihan tunggal (radio) dengan dukungan deskripsi tiap opsi.',
+      code: `<RadioList label="Desktop density" value={val} onChange={setVal}>...</RadioList>`,
+      render: () => (
+        <RadioList
+          label="Desktop density"
+          value={radioVal}
+          onChange={setRadioVal}
+        >
+          <RadioListItem value="compact" label="Compact (32px Shotcandy)" />
+          <RadioListItem value="standard" label="Standard (36px Default)" />
+        </RadioList>
+      ),
+    },
+    {
+      id: 'text-area',
+      name: 'TextArea',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Multi-line recessed text input with optional character count and auto-resize.',
+      summaryId: 'Kolom teks multi-baris cekung untuk catatan atau ringkasan rilis.',
+      code: `<TextArea label="Release summary" rows={2} value={notes} onChange={setNotes} />`,
+      render: () => (
+        <TextArea
+          label="Release summary"
+          rows={2}
+          value={notesVal}
+          onChange={setNotesVal}
+        />
+      ),
+    },
+    {
+      id: 'date-input',
+      name: 'DateInput',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Segmented keyboard date field paired with an anchored calendar popover.',
+      summaryId: 'Input tanggal terstruktur dengan dukungan ketik langsung dan popup kalender.',
+      code: `<DateInput label="Release date" value={date} onChange={setDate} />`,
+      render: () => (
+        <DateInput
+          label="Release date"
+          size="sm"
+          value={dateVal}
+          onChange={setDateVal}
+        />
+      ),
+    },
+    {
+      id: 'time-input',
+      name: 'TimeInput',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Steppable clock time field supporting 12-hour and 24-hour locales.',
+      summaryId: 'Input waktu jam presisi dengan navigasi panah atas/bawah.',
+      code: `<TimeInput label="Maintenance window" value={time} onChange={setTime} />`,
+      render: () => (
+        <TimeInput
+          label="Maintenance window"
+          size="sm"
+          value={timeVal}
+          onChange={setTimeVal}
+        />
+      ),
+    },
+    {
+      id: 'date-range-input',
+      name: 'DateRangeInput',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Start-to-end date window selector with dual-calendar range highlighting.',
+      summaryId: 'Pemilih rentang tanggal awal hingga akhir dengan sorotan kalender.',
+      code: `<DateRangeInput label="Sprint window" value={range} onChange={setRange} />`,
+      render: () => (
+        <DateRangeInput
+          label="Sprint window"
+          size="sm"
+          value={dateRange}
+          onChange={setDateRange}
+        />
+      ),
+    },
+    {
       id: 'complex-selector',
       name: 'ComplexSelector',
       category: 'Form Controls',
       pkg: 'core',
-      summaryEn: 'Combobox trigger opening a custom rich popover picker surface.',
-      summaryId: 'Pemilih fleksibel untuk menampilkan antarmuka kustom di dalam popover.',
-      code: `<ComplexSelector label="Role" value={role} triggerLabel={role}>{(val, onChange, close) => ...}</ComplexSelector>`,
+      summaryEn: 'Combobox trigger opening a custom interactive picker layout inside a popover.',
+      summaryId: 'Pemicu pemilih kustom untuk menampilkan tata letak kaya di dalam popover.',
+      code: `<ComplexSelector label="Workspace persona" value={role} triggerLabel={role}>...</ComplexSelector>`,
       render: () => (
         <ComplexSelector
           label="Workspace persona"
@@ -453,69 +701,18 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       ),
     },
     {
-      id: 'date-input',
-      name: 'DateInput',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Recessed date field with typed entry and calendar popover.',
-      summaryId: 'Kolom tanggal cekung dengan dukungan ketik langsung & kalender.',
-      code: `<DateInput label="Release date" value={date} onChange={setDate} />`,
-      render: () => (
-        <DateInput
-          label="Release date"
-          size="sm"
-          value={dateVal}
-          onChange={setDateVal}
-        />
-      ),
-    },
-    {
-      id: 'date-range-input',
-      name: 'DateRangeInput',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Start-to-end date window picker with dual-month popover support.',
-      summaryId: 'Pemilih rentang tanggal awal hingga akhir.',
-      code: `<DateRangeInput label="Sprint window" value={range} onChange={setRange} />`,
-      render: () => (
-        <DateRangeInput
-          label="Sprint window"
-          size="sm"
-          value={dateRange}
-          onChange={setDateRange}
-        />
-      ),
-    },
-    {
-      id: 'date-time-input',
-      name: 'DateTimeInput',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Paired date + clock time segments in a unified Field wrapper.',
-      summaryId: 'Input gabungan tanggal dan jam dalam satu grup kolom.',
-      code: `<DateTimeInput label="Deploy schedule" value={dt} onChange={setDt} />`,
-      render: () => (
-        <DateTimeInput
-          label="Deploy schedule"
-          size="sm"
-          value={dateTimeVal}
-          onChange={setDateTimeVal}
-        />
-      ),
-    },
-    {
       id: 'field',
       name: 'Field',
       category: 'Form Controls',
       pkg: 'core',
-      summaryEn: 'Low-level accessible label, description, and validation wrapper for custom inputs.',
-      summaryId: 'Pembungkus label, deskripsi, dan pesan validasi untuk kontrol kustom.',
-      code: `<Field label="Custom slug" inputID="slug-id" description="Lowercase letters">\n  <input id="slug-id" />\n</Field>`,
+      summaryEn: 'Accessible label, helper text, and validation message wrapper for custom controls.',
+      summaryId: 'Pembungkus semantik label, petunjuk, dan validasi untuk elemen input kustom.',
+      code: `<Field label="Custom slug" inputID="slug-id" description="Lowercase kebab-case"><input id="slug-id" /></Field>`,
       render: () => (
         <Field
           label="Custom native control"
           inputID="catalog-custom-native-input"
-          description="Wrapped in Astryx Field semantics"
+          description="Bound via aria-describedby & htmlFor"
         >
           <input
             id="catalog-custom-native-input"
@@ -541,9 +738,9 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       name: 'FileInput',
       category: 'Form Controls',
       pkg: 'core',
-      summaryEn: 'Accessible file & dropzone uploader with size/type validation.',
-      summaryId: 'Pengunggah file aksesibel dengan dukungan seret & lepas (dropzone).',
-      code: `<FileInput label="Import theme JSON" accept=".json,.ts" value={file} onChange={setFile} />`,
+      summaryEn: 'Accessible file picker and drag-and-drop zone with MIME/size validation.',
+      summaryId: 'Pengunggah berkas dengan dukungan klik maupun seret-lepas (dropzone).',
+      code: `<FileInput label="Theme JSON or TS" accept=".json,.ts" value={file} onChange={setFile} />`,
       render: () => (
         <FileInput
           label="Theme JSON or TS"
@@ -554,230 +751,23 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       ),
     },
     {
-      id: 'input-group',
-      name: 'InputGroup',
+      id: 'date-time-input',
+      name: 'DateTimeInput',
       category: 'Form Controls',
       pkg: 'core',
-      summaryEn: 'Joined prefix/suffix addons (`InputGroupText`, `Selector`, `Button`) around an input.',
-      summaryId: 'Penggabung awalan/akhiran teks atau tombol yang menyatu dengan kolom input.',
-      code: `<InputGroup label="Workspace URL">\n  <InputGroupText>https://</InputGroupText>\n  <TextInput label="Slug" isLabelHidden value={slug} onChange={setSlug} />\n</InputGroup>`,
+      span: 'wide',
+      summaryEn: 'Coordinated date and clock segments inside a unified accessible Field.',
+      summaryId: 'Gabungan segmen tanggal dan jam presisi dalam satu kesatuan Field.',
+      code: `<DateTimeInput label="Scheduled deployment" value={dt} onChange={setDt} />`,
       render: () => (
-        <InputGroup label="Workspace URL" size="sm">
-          <InputGroupText>mehan.design/</InputGroupText>
-          <TextInput
-            label="Workspace slug"
-            isLabelHidden
-            value={slugText}
-            onChange={setSlugText}
+        <div style={{maxWidth: 360}}>
+          <DateTimeInput
+            label="Scheduled deployment"
+            size="sm"
+            value={dateTimeVal}
+            onChange={setDateTimeVal}
           />
-        </InputGroup>
-      ),
-    },
-    {
-      id: 'multi-selector',
-      name: 'MultiSelector',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Searchable multi-select dropdown with token chips and select-all support.',
-      summaryId: 'Pemilih banyak nilai sekaligus dengan pencarian dan chip.',
-      code: `<MultiSelector label="Stacks" options={options} value={selected} onChange={setSelected} />`,
-      render: () => (
-        <MultiSelector
-          label="Target stacks"
-          size="sm"
-          options={[
-            {value: 'react', label: 'React 19'},
-            {value: 'tailwind', label: 'Tailwind v4'},
-            {value: 'portable', label: 'Portable HTML'},
-            {value: 'figma', label: 'Figma W3C'},
-          ]}
-          value={multiVals}
-          onChange={setMultiVals}
-        />
-      ),
-    },
-    {
-      id: 'number-input',
-      name: 'NumberInput',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Numeric stepper input with min/max clamping and arrow-key increments.',
-      summaryId: 'Input angka presisi dengan tombol tambah/kurang terpadu.',
-      code: `<NumberInput label="Team seats" value={seats} onChange={setSeats} min={1} max={100} />`,
-      render: () => (
-        <NumberInput
-          label="Team seats"
-          size="sm"
-          min={1}
-          max={250}
-          value={numSeats}
-          onChange={setNumSeats}
-        />
-      ),
-    },
-    {
-      id: 'power-search',
-      name: 'PowerSearch',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Structured query bar turning field + operator + value into editable tokens.',
-      summaryId: 'Bilah pencarian terstruktur berbasis filter atribut & operator.',
-      code: `<PowerSearch config={config} filters={filters} onChange={setFilters} />`,
-      render: () => (
-        <PowerSearch
-          label="Filter deployments"
-          size="sm"
-          placeholder="Filter by status or service…"
-          config={psConfig}
-          filters={psFilters}
-          onChange={next => setPsFilters(next)}
-        />
-      ),
-    },
-    {
-      id: 'precision-slider',
-      name: 'PrecisionSlider',
-      category: 'Form Controls',
-      pkg: 'mehan',
-      summaryEn: 'Scrubbable CAD/studio slider with tabular readout and double-click reset.',
-      summaryId: 'Slider presisi khas studio kreatif dengan klik 2x untuk reset ke nilai awal.',
-      code: `<PrecisionSlider label="Spring tension" value={val} min={0} max={100} defaultValue={72} unit="%" onChange={setVal} />`,
-      render: () => (
-        <PrecisionSlider
-          label="Spring tension"
-          value={precisionVal}
-          min={0}
-          max={100}
-          stops={[50, 72, 100]}
-          unit="%"
-          onChange={setPrecisionVal}
-        />
-      ),
-    },
-    {
-      id: 'radio-list',
-      name: 'RadioList',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Single-choice radio group with rich item descriptions and trailing metadata.',
-      summaryId: 'Daftar pilihan tunggal (radio) lengkap dengan deskripsi tiap opsi.',
-      code: `<RadioList label="Density" value={val} onChange={setVal}>\n  <RadioListItem value="compact" label="Compact (32px)" />\n</RadioList>`,
-      render: () => (
-        <RadioList
-          label="Desktop density"
-          value={radioVal}
-          onChange={setRadioVal}
-        >
-          <RadioListItem value="compact" label="Compact (32px Shotcandy)" />
-          <RadioListItem value="standard" label="Standard (36px Balanced)" />
-        </RadioList>
-      ),
-    },
-    {
-      id: 'selector',
-      name: 'Selector',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Accessible combobox select supporting recessed `input` or raised `secondary` trigger.',
-      summaryId: 'Kotak pilih nilai form (Select) dengan navigasi pencarian cepat.',
-      code: `<Selector label="Region" options={['ap-southeast-1', 'us-east-1']} value={region} onChange={setRegion} />`,
-      render: () => (
-        <Selector
-          label="Primary edge region"
-          size="sm"
-          options={[
-            {value: 'ap-southeast-1', label: 'Singapore (ap-southeast-1)'},
-            {value: 'ap-northeast-1', label: 'Tokyo (ap-northeast-1)'},
-            {value: 'eu-central-1', label: 'Frankfurt (eu-central-1)'},
-          ]}
-          value={selRegion}
-          onChange={setSelRegion}
-        />
-      ),
-    },
-    {
-      id: 'slider',
-      name: 'Slider',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Core WAI-ARIA range slider with spherical 3D dome thumb and recessed socket.',
-      summaryId: 'Slider rentang inti dengan kenop kubah 3D dan jalur cekung.',
-      code: `<Slider label="Output gain" value={gain} onChange={setGain} />`,
-      render: () => (
-        <Slider
-          label="Ambient shadow opacity"
-          value={sliderVal}
-          onChange={setSliderVal}
-          valueDisplay="text"
-        />
-      ),
-    },
-    {
-      id: 'switch',
-      name: 'Switch',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Immediate toggle switch with recessed socket and tactile dome thumb.',
-      summaryId: 'Sakelar aktif/nonaktif seketika dengan soket cekung halus.',
-      code: `<Switch label="Auto-adapt touch targets (44px)" value={on} onChange={setOn} />`,
-      render: () => (
-        <Switch
-          label="Auto-expand touch targets (44px)"
-          value={switchVal}
-          onChange={setSwitchVal}
-        />
-      ),
-    },
-    {
-      id: 'text-area',
-      name: 'TextArea',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Multi-line recessed text field with character counter and auto-grow option.',
-      summaryId: 'Kolom teks banyak baris dengan penghitung karakter opsional.',
-      code: `<TextArea label="Release summary" value={notes} onChange={setNotes} rows={2} />`,
-      render: () => (
-        <TextArea
-          label="Release summary"
-          rows={2}
-          value={notesVal}
-          onChange={setNotesVal}
-        />
-      ),
-    },
-    {
-      id: 'text-input',
-      name: 'TextInput',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Borderless recessed well input (or crisp 1px bordered mode) with clear button.',
-      summaryId: 'Kolom input teks utama dengan gaya cekung atau berbingkai 1px.',
-      code: `<TextInput label="Project name" value={name} onChange={setName} hasClear />`,
-      render: () => (
-        <TextInput
-          label="Project name"
-          size="sm"
-          hasClear
-          value={projectInput}
-          onChange={setProjectInput}
-        />
-      ),
-    },
-    {
-      id: 'time-input',
-      name: 'TimeInput',
-      category: 'Form Controls',
-      pkg: 'core',
-      summaryEn: 'Keyboard-steppable clock time field (`12h` or `24h`) with preset dropdown.',
-      summaryId: 'Input jam presisi dengan dukungan format 12 jam atau 24 jam.',
-      code: `<TimeInput label="Maintenance window" value={time} onChange={setTime} />`,
-      render: () => (
-        <TimeInput
-          label="Maintenance window"
-          size="sm"
-          value={timeVal}
-          onChange={setTimeVal}
-        />
+        </div>
       ),
     },
     {
@@ -785,9 +775,10 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       name: 'Tokenizer',
       category: 'Form Controls',
       pkg: 'core',
-      summaryEn: 'Multi-entity typeahead turning selected suggestions into inline `Token` chips.',
-      summaryId: 'Kolom ketik multi-entitas yang mengubah pilihan menjadi chip Token.',
-      code: `<Tokenizer label="Frameworks" searchSource={source} value={items} onChange={setItems} />`,
+      span: 'wide',
+      summaryEn: 'Multi-entity typeahead converting chosen items into removable inline `Token` chips.',
+      summaryId: 'Pencarian multi-entitas yang mengubah pilihan menjadi deretan chip `Token`.',
+      code: `<Tokenizer label="Supported runtimes" searchSource={source} value={items} onChange={setItems} />`,
       render: () => (
         <Tokenizer
           label="Supported runtimes"
@@ -800,22 +791,60 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       ),
     },
     {
-      id: 'typeahead',
-      name: 'Typeahead',
+      id: 'power-search',
+      name: 'PowerSearch',
       category: 'Form Controls',
       pkg: 'core',
-      summaryEn: 'Single-entity async/static search combobox.',
-      summaryId: 'Kotak pencarian saran cepat untuk memilih satu entitas.',
-      code: `<Typeahead label="Framework" searchSource={source} value={item} onChange={setItem} />`,
+      span: 'wide',
+      summaryEn: 'Structured filter query bar composing `attribute + operator + value` tokens.',
+      summaryId: 'Bilah kueri filter terstruktur berbasis atribut, operator, dan nilai.',
+      code: `<PowerSearch label="Filter deployments" config={config} filters={filters} onChange={setFilters} />`,
       render: () => (
-        <Typeahead
-          label="Primary framework"
+        <PowerSearch
+          label="Filter deployments"
           size="sm"
-          hasEntriesOnFocus
-          searchSource={frameworkSource}
-          value={taItem}
-          onChange={setTaItem}
+          placeholder="Filter by status or service name…"
+          config={psConfig}
+          filters={psFilters}
+          onChange={next => setPsFilters(next)}
         />
+      ),
+    },
+    {
+      id: 'calendar',
+      name: 'Calendar',
+      category: 'Form Controls',
+      pkg: 'core',
+      summaryEn: 'Arrow-key navigable month grid supporting single-date and range selection.',
+      summaryId: 'Grid kalender bulanan aksesibel dengan navigasi tombol panah penuh.',
+      code: `<Calendar value={date} onChange={setDate} />`,
+      render: () => (
+        <div style={{alignSelf: 'center'}}>
+          <Calendar
+            value={calDate}
+            onChange={setCalDate}
+            hasVariableRowCount
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'color-picker',
+      name: 'ColorPicker',
+      category: 'Form Controls',
+      pkg: 'mehan',
+      summaryEn: '2D HSV saturation/brightness canvas, hue rail, hex input, eyedropper, and swatches.',
+      summaryId: 'Kanvas warna HSV 2D khas Mehan lengkap dengan rel hue, input Hex, dan sampel.',
+      code: `<ColorPicker label="Brand seed" value={hex} onChange={setHex} />`,
+      render: () => (
+        <div style={{alignSelf: 'center'}}>
+          <ColorPicker
+            label="Brand seed hex"
+            value={pickerHex}
+            onChange={setPickerHex}
+            presets={Object.values(MEHAN_ACCENT_PRESETS).map(p => p.seed)}
+          />
+        </div>
       ),
     },
   ];

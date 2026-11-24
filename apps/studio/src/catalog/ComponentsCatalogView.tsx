@@ -1,7 +1,9 @@
 import React, {useMemo, useState} from 'react';
 import {
   Badge,
+  Button,
   EmptyState,
+  HStack,
   Heading,
   SegmentedControl,
   SegmentedControlItem,
@@ -16,6 +18,7 @@ import {useCatalogGroupA} from './CatalogGroupA';
 import {useCatalogGroupB} from './CatalogGroupB';
 import {useCatalogGroupC} from './CatalogGroupC';
 import {
+  CATEGORY_DESC,
   CATEGORY_LABELS_ID,
   OFFICIAL_ASTRYX_CATEGORIES,
   SpecimenCard,
@@ -29,9 +32,10 @@ interface ComponentsCatalogViewProps {
 
 export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) {
   const isId = lang === 'id';
+  // Focused by default: start on 'Action' (10 specimens) instead of dumping 107 cards at once!
   const [selectedCategory, setSelectedCategory] = useState<
-    'all' | OfficialAstryxCategory
-  >('all');
+    OfficialAstryxCategory | 'all'
+  >('Action');
   const [pkgFilter, setPkgFilter] = useState<'all' | 'core' | 'mehan'>('all');
   const [query, setQuery] = useState('');
 
@@ -56,11 +60,16 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
   }, [allSpecimens]);
 
   const qLower = query.trim().toLowerCase();
+  const isGlobalSearchActive = Boolean(qLower) || pkgFilter === 'mehan';
 
   const filteredSpecimens = useMemo(
     () =>
       allSpecimens.filter(item => {
-        if (selectedCategory !== 'all' && item.category !== selectedCategory) {
+        if (
+          !isGlobalSearchActive &&
+          selectedCategory !== 'all' &&
+          item.category !== selectedCategory
+        ) {
           return false;
         }
         if (pkgFilter !== 'all' && item.pkg !== pkgFilter) {
@@ -72,7 +81,7 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
         }
         return true;
       }),
-    [allSpecimens, selectedCategory, pkgFilter, qLower],
+    [allSpecimens, isGlobalSearchActive, selectedCategory, pkgFilter, qLower],
   );
 
   const visibleCategories = useMemo(
@@ -85,33 +94,19 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
 
   return (
     <Stack gap={4}>
-      <Stack
-        direction="horizontal"
-        justify="between"
-        align="center"
-        wrap="wrap"
-        gap={3}
-      >
-        <Stack gap={1}>
-          <Stack direction="horizontal" gap={2} align="center" wrap="wrap">
-            <Heading level={2}>{copy.components.title}</Heading>
-            <Badge
-              variant="info"
-              label={`${allSpecimens.length} live specimens`}
-            />
-          </Stack>
-          <Text color="secondary">{copy.components.subtitle}</Text>
-        </Stack>
+      <Stack gap={1}>
+        <HStack gap={2} vAlign="center" wrap="wrap">
+          <Heading level={2}>{copy.components.title}</Heading>
+          <Badge
+            variant="info"
+            label={`${allSpecimens.length} live specimens`}
+          />
+        </HStack>
+        <Text color="secondary">{copy.components.subtitle}</Text>
       </Stack>
 
       {/* Search & Package Filter Bar */}
-      <Stack
-        direction="horizontal"
-        justify="between"
-        align="center"
-        wrap="wrap"
-        gap={3}
-      >
+      <HStack hAlign="between" vAlign="center" wrap="wrap" gap={3}>
         <div style={{flex: '1 1 300px', maxWidth: 520}}>
           <TextInput
             label="Search components"
@@ -136,70 +131,104 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
           />
           <SegmentedControlItem
             value="core"
-            label={`@astryxdesign/core (${allSpecimens.length - 4})`}
+            label={`Core (${allSpecimens.length - 4})`}
           />
-          <SegmentedControlItem value="mehan" label="@mehan/astryx (4)" />
+          <SegmentedControlItem value="mehan" label="Mehan Extensions (4)" />
         </SegmentedControl>
-      </Stack>
+      </HStack>
 
-      {/* Sticky 12-Category Sidebar + Live Specimen Grid */}
+      {/* Sticky 12-Category Sidebar + Adaptive Specimen Grid */}
       <div className="cat-layout">
         <nav
           className="cat-sidebar"
           aria-label="Official Astryx component categories"
         >
+          {OFFICIAL_ASTRYX_CATEGORIES.map(cat => {
+            const isActive =
+              !isGlobalSearchActive && selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                className={`cat-nav-btn ${isActive ? 'is-active' : ''}`}
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  if (pkgFilter === 'mehan') setPkgFilter('all');
+                  if (query) setQuery('');
+                }}
+              >
+                <span>{cat}</span>
+                <span className="cat-nav-count">{countsByCategory[cat] ?? 0}</span>
+              </button>
+            );
+          })}
+
+          <div className="cat-sidebar-divider" role="separator" />
+
           <button
             type="button"
-            className={`cat-nav-btn ${selectedCategory === 'all' ? 'is-active' : ''}`}
-            onClick={() => setSelectedCategory('all')}
+            className={`cat-nav-btn ${!isGlobalSearchActive && selectedCategory === 'all' ? 'is-active' : ''}`}
+            onClick={() => {
+              setSelectedCategory('all');
+              if (query) setQuery('');
+            }}
           >
             <span>{isId ? 'Semua Kategori' : 'All Categories'}</span>
             <span className="cat-nav-count">{allSpecimens.length}</span>
           </button>
-          {OFFICIAL_ASTRYX_CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              type="button"
-              className={`cat-nav-btn ${selectedCategory === cat ? 'is-active' : ''}`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              <span>{cat}</span>
-              <span className="cat-nav-count">{countsByCategory[cat] ?? 0}</span>
-            </button>
-          ))}
         </nav>
 
         <Stack gap={6}>
           {visibleCategories.length === 0 ? (
             <EmptyState
-              icon={<Search size={26} />}
+              icon={<Search size={24} />}
               title={
                 isId
                   ? 'Komponen tidak ditemukan'
-                  : 'No matching components found'
+                  : 'No matching components'
               }
               description={
                 isId
-                  ? 'Coba kata kunci lain atau kembalikan filter kategori ke Semua.'
-                  : 'Try another search term or reset the category filter to All.'
+                  ? 'Gunakan kata kunci lain atau bersihkan filter pencarian.'
+                  : 'Try another search term or clear the active filter.'
+              }
+              actions={
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  label={isId ? 'Reset pencarian' : 'Clear search'}
+                  onClick={() => {
+                    setQuery('');
+                    setPkgFilter('all');
+                  }}
+                />
               }
             />
           ) : (
             visibleCategories.map(cat => {
               const items = filteredSpecimens.filter(s => s.category === cat);
+              const desc = CATEGORY_DESC[cat];
               return (
                 <section key={cat} className="cat-category-section">
-                  <Stack
-                    direction="horizontal"
-                    justify="between"
-                    align="center"
-                    gap={2}
-                  >
-                    <Heading level={3}>
-                      {isId ? CATEGORY_LABELS_ID[cat] : cat}
-                    </Heading>
-                    <Badge variant="neutral" label={`${items.length}`} />
+                  <Stack gap={0.5}>
+                    <HStack hAlign="between" vAlign="center" gap={2}>
+                      <Heading level={3}>
+                        {isId ? CATEGORY_LABELS_ID[cat] : cat}
+                      </Heading>
+                      <Badge
+                        variant="neutral"
+                        label={
+                          isId
+                            ? `${items.length} komponen`
+                            : `${items.length} specimens`
+                        }
+                      />
+                    </HStack>
+                    <Text type="supporting" color="secondary">
+                      {isId ? desc.id : desc.en}
+                    </Text>
                   </Stack>
+
                   <div className="cat-grid">
                     {items.map(item => (
                       <SpecimenCard key={item.id} item={item} isId={isId} />
