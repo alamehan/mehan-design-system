@@ -12,7 +12,7 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
   test('passes Desktop 1366x900 Light/Dark across real font switching, bounded Layout, rich Table, UX Playbook & Theme Editor with 0 errors and 0 axe contrast violations', async ({
     page,
   }) => {
-    test.setTimeout(90_000);
+    test.setTimeout(180_000);
     const errors: string[] = [];
     page.on('pageerror', err => errors.push(err.message));
     page.on('console', msg => {
@@ -39,8 +39,11 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       fullPage: false,
     });
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
 
     // Switch to English
@@ -57,8 +60,11 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       fullPage: false,
     });
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
 
     // Check Layout category: AppShell card must NOT explode to 100dvh!
@@ -73,8 +79,11 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       fullPage: false,
     });
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
 
     // Check Table & List category: rich full-width production Table
@@ -85,8 +94,11 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       fullPage: false,
     });
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
 
     // Open "All categories" (renders all 107 specimens across all 12 official categories simultaneously!)
@@ -100,8 +112,11 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     expect(catalogAudit.count).toBe(107);
     expect(catalogAudit.maxHeight).toBeLessThan(560);
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
 
     // 3. Official Theme Showcase + Docked Chunked Theme Editor + Live Font Switching Proof!
@@ -143,8 +158,11 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       fullPage: false,
     });
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
 
     // Reset back to default Bricolage Grotesque + Figtree, then switch Preset to Shotcandy 1:1 in Dark Mode!
@@ -161,8 +179,11 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       fullPage: false,
     });
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
 
     // 4. Switch back to Light Mode -> UX & Copy 6-Chapter Playbook + Live Component CSS Override Proof!
@@ -174,8 +195,11 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       fullPage: false,
     });
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
 
     // Navigate to Chapter 04 (Actions & Control Roles) and verify live button radius override -> 999px!
@@ -239,21 +263,30 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     await page.getByRole('tab', {name: 'Maintain'}).click();
     await page.waitForTimeout(120);
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
 
     await page.getByRole('button', {name: 'Dark mode'}).click();
     await page.waitForTimeout(120);
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
     await page.getByRole('tab', {name: 'UX & Copy'}).click();
     await page.waitForTimeout(120);
     expect(
-      (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
-        .violations,
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
     ).toEqual([]);
 
     expect(errors).toEqual([]);
@@ -277,7 +310,7 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     });
 
     const mobileAxe = await new AxeBuilder({page})
-      .withRules(['color-contrast'])
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
       .analyze();
     expect(mobileAxe.violations).toEqual([]);
   });

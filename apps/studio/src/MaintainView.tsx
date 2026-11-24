@@ -201,6 +201,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
               />
             </HStack>
             <Collapsible
+              defaultIsOpen={false}
               trigger={isId ? 'Pratinjau isi prompt' : 'Preview handoff prompt'}
             >
               <CodeBlock
@@ -243,6 +244,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
               />
             </HStack>
             <Collapsible
+              defaultIsOpen={false}
               trigger={isId ? 'Pratinjau prosedur update' : 'Preview upgrade steps'}
             >
               <CodeBlock

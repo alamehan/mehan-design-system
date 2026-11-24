@@ -21,11 +21,19 @@ import {
   useToast,
 } from '@astryxdesign/core';
 import {Theme} from '@astryxdesign/core/theme';
-import {MetricCard, PrecisionSlider} from '@mehan/astryx';
+import {
+  ColorSwatch,
+  MetricCard,
+  PrecisionSlider,
+  isTypingTarget,
+  useHistoryStore,
+} from '@mehan/astryx';
 import {
   MEHAN_ATMOSPHERES,
   contrastRatio,
+  createHistoryStore,
   resolveMehanDna,
+  type HistoryUpdateOptions,
 } from '@mehan/astryx/dna';
 import {
   MEHAN_PORTABLE_RUNTIME_JS,
@@ -74,8 +82,18 @@ interface StudioInnerProps {
   editorOpen: boolean;
   setEditorOpen: React.Dispatch<React.SetStateAction<boolean>>;
   themeState: FullThemeEditorState;
-  setThemeState: React.Dispatch<React.SetStateAction<FullThemeEditorState>>;
+  setThemeState: (
+    next:
+      | FullThemeEditorState
+      | ((prev: FullThemeEditorState) => FullThemeEditorState),
+    options?: HistoryUpdateOptions,
+  ) => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  onUndo: () => void;
+  onRedo: () => void;
   effectiveTokens: Record<string, string>;
+  baseComponents: Record<string, unknown>;
   presets: NamedStudioPreset[];
   setPresets: React.Dispatch<React.SetStateAction<NamedStudioPreset[]>>;
 }
@@ -89,7 +107,12 @@ function StudioInner({
   setEditorOpen,
   themeState,
   setThemeState,
+  canUndo,
+  canRedo,
+  onUndo,
+  onRedo,
   effectiveTokens,
+  baseComponents,
   presets,
   setPresets,
 }: StudioInnerProps) {
@@ -543,6 +566,7 @@ function StudioInner({
 
                   <div className="te-disclosure-box">
                     <Collapsible
+                      defaultIsOpen={false}
                       trigger={
                         isId
                           ? 'Lihat kode setup lengkap (React, Next.js & Tailwind CSS v4)'
@@ -646,7 +670,12 @@ function StudioInner({
           mode={mode}
           themeState={themeState}
           setThemeState={setThemeState}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          onUndo={onUndo}
+          onRedo={onRedo}
           effectiveTokens={effectiveTokens}
+          baseComponents={baseComponents}
           dna={dna}
           presets={presets}
           setPresets={setPresets}
@@ -688,9 +717,19 @@ export function App() {
   const [lang, setLang] = useState<StudioLang>(initial.lang);
   const [mode, setMode] = useState<'light' | 'dark'>(initial.mode);
   const [editorOpen, setEditorOpen] = useState<boolean>(initial.editorOpen);
-  const [themeState, setThemeState] = useState<FullThemeEditorState>(
-    initial.themeState,
+  const historyStore = useMemo(
+    () =>
+      createHistoryStore<FullThemeEditorState>(initial.themeState, {
+        limit: 60,
+        coalesceMs: 650,
+      }),
+    [initial],
   );
+  const {
+    present: themeState,
+    canUndo,
+    canRedo,
+  } = useHistoryStore(historyStore);
   const [presets, setPresets] = useState<NamedStudioPreset[]>(initial.presets);
 
   useEffect(() => {
@@ -703,7 +742,24 @@ export function App() {
     document.documentElement.style.colorScheme = mode;
   }, [lang, mode]);
 
-  const {theme: liveTheme, effectiveTokens} = useMemo(
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.isComposing || e.keyCode === 229) return;
+      if (isTypingTarget(e.target)) return;
+      const mod = e.metaKey || e.ctrlKey;
+      if (!mod) return;
+      const key = e.key.toLowerCase();
+      if (key === 'z' && !e.shiftKey) {
+        if (historyStore.undo()) e.preventDefault();
+      } else if ((key === 'z' && e.shiftKey) || (key === 'y' && !e.metaKey)) {
+        if (historyStore.redo()) e.preventDefault();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [historyStore]);
+
+  const {theme: liveTheme, effectiveTokens, baseComponents} = useMemo(
     () => composeStudioTheme(themeState),
     [themeState],
   );
@@ -719,8 +775,17 @@ export function App() {
           editorOpen={editorOpen}
           setEditorOpen={setEditorOpen}
           themeState={themeState}
-          setThemeState={setThemeState}
+          setThemeState={historyStore.set}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          onUndo={() => {
+            historyStore.undo();
+          }}
+          onRedo={() => {
+            historyStore.redo();
+          }}
           effectiveTokens={effectiveTokens}
+          baseComponents={baseComponents}
           presets={presets}
           setPresets={setPresets}
         />

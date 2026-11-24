@@ -1,8 +1,24 @@
 /* Mehan Portable Progressive Runtime (Zero Dependencies) */
 (function () {
+  try {
+    var saved = localStorage.getItem('mehan-mode');
+    if (saved === 'dark' || saved === 'light') {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.documentElement.style.colorScheme = saved;
+    }
+  } catch (e) {}
+
   document.addEventListener('click', function (e) {
     var target = e.target;
     if (!(target instanceof Element)) return;
+
+    if (target instanceof HTMLDialogElement && target.classList.contains('mh-modal')) {
+      var r = target.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) {
+        target.close();
+        return;
+      }
+    }
 
     var segBtn = target.closest('.mh-seg button');
     if (segBtn && segBtn.parentElement) {
@@ -51,7 +67,10 @@
       var root = document.documentElement;
       var isDark = root.getAttribute('data-theme') === 'dark' ||
         (!root.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
-      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      var nextMode = isDark ? 'light' : 'dark';
+      root.setAttribute('data-theme', nextMode);
+      root.style.colorScheme = nextMode;
+      try { localStorage.setItem('mehan-mode', nextMode); } catch (err) {}
     }
   });
 })();

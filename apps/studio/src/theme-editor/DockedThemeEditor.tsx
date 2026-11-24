@@ -25,6 +25,7 @@ import {
   contrastRatio,
   exportW3cDesignTokens,
   isPresetAccent,
+  type HistoryUpdateOptions,
   type MehanAtmosphereId,
   type MehanLipStyle,
   type MehanMotion,
@@ -40,9 +41,11 @@ import {
   Download,
   Palette,
   Plus,
+  Redo2,
   RotateCcw,
   Search,
   Trash2,
+  Undo2,
   Upload,
   X,
 } from 'lucide-react';
@@ -72,6 +75,8 @@ import {
   parseColorWithAlpha,
   parseImportedThemeText,
   parseLightDark,
+  readSeededComponentValue,
+  resolveComponentOptionLabel,
   spacingToPx,
   type AdvancedTokenGroupKey,
   type FullThemeEditorState,
@@ -98,8 +103,18 @@ interface DockedThemeEditorProps {
   lang: StudioLang;
   mode: 'light' | 'dark';
   themeState: FullThemeEditorState;
-  setThemeState: React.Dispatch<React.SetStateAction<FullThemeEditorState>>;
+  setThemeState: (
+    next:
+      | FullThemeEditorState
+      | ((prev: FullThemeEditorState) => FullThemeEditorState),
+    options?: HistoryUpdateOptions,
+  ) => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  onUndo: () => void;
+  onRedo: () => void;
   effectiveTokens: Record<string, string>;
+  baseComponents: Record<string, unknown>;
   dna: ResolvedMehanDna;
   presets: NamedStudioPreset[];
   setPresets: React.Dispatch<React.SetStateAction<NamedStudioPreset[]>>;
@@ -112,7 +127,12 @@ export function DockedThemeEditor({
   mode,
   themeState,
   setThemeState,
+  canUndo,
+  canRedo,
+  onUndo,
+  onRedo,
   effectiveTokens,
+  baseComponents,
   dna,
   presets,
   setPresets,
@@ -141,6 +161,7 @@ export function DockedThemeEditor({
     patch: Partial<StudioSeedConfig>,
     clearTokens: string[] = [],
     clearPrefixes: string[] = [],
+    historyOpts?: HistoryUpdateOptions,
   ) => {
     setThemeState(prev => {
       let nextTokens = prev.tokenOverrides;
@@ -162,14 +183,21 @@ export function DockedThemeEditor({
         seed: {...prev.seed, ...patch},
         tokenOverrides: nextTokens,
       };
-    });
+    }, historyOpts);
   };
 
-  const setTokenOverride = (tokenName: string, value: string) => {
-    setThemeState(prev => ({
-      ...prev,
-      tokenOverrides: {...prev.tokenOverrides, [tokenName]: value},
-    }));
+  const setTokenOverride = (
+    tokenName: string,
+    value: string,
+    coalesce?: string,
+  ) => {
+    setThemeState(
+      prev => ({
+        ...prev,
+        tokenOverrides: {...prev.tokenOverrides, [tokenName]: value},
+      }),
+      coalesce ? {coalesce} : undefined,
+    );
   };
 
   const removeTokenOverride = (tokenName: string) => {
@@ -370,111 +398,26 @@ export function DockedThemeEditor({
           </div>
 
           <div className="te-header-actions">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".json,.ts,.tsx,application/json,text/plain"
-              style={{display: 'none'}}
-              onChange={handleImportFile}
-            />
-            <Tooltip content={isId ? 'Impor tema (.json / .ts)' : 'Import theme (.json / .ts)'}>
+            <Tooltip content={isId ? 'Urungkan (Ctrl+Z)' : 'Undo (Ctrl+Z)'}>
               <IconButton
                 variant="ghost"
                 size="sm"
-                label={isId ? 'Impor tema' : 'Import theme'}
-                icon={<Upload size={14} />}
-                onClick={() => fileInputRef.current?.click()}
+                isDisabled={!canUndo}
+                label={isId ? 'Urungkan perubahan tema' : 'Undo theme change'}
+                icon={<Undo2 size={14} />}
+                onClick={onUndo}
               />
             </Tooltip>
-            <DropdownMenu
-              button={{
-                label: isId ? 'Ekspor' : 'Export',
-                variant: 'secondary',
-                size: 'sm',
-                icon: <Download size={13} />,
-              }}
-              items={[
-                {
-                  label: 'createMehanTheme (.ts)',
-                  onClick: () => {
-                    const ts = exportCreateMehanThemeTs(themeState, 'customMehan');
-                    downloadTextFile('mehan-theme.ts', ts, 'text/typescript');
-                    showToast({type: 'info', body: 'Downloaded mehan-theme.ts'});
-                  },
-                },
-                {
-                  label: 'Astryx defineTheme (.ts)',
-                  onClick: () => {
-                    const ts = exportPureAstryxDefineThemeTs(
-                      themeState,
-                      'astryxMehan',
-                    );
-                    downloadTextFile('astryx-theme.ts', ts, 'text/typescript');
-                    showToast({
-                      type: 'info',
-                      body: 'Downloaded pure Astryx astryx-theme.ts',
-                    });
-                  },
-                },
-                {
-                  label: 'Studio state (.json)',
-                  onClick: () => {
-                    downloadTextFile(
-                      `mehan-${seed.atmosphere}-theme.json`,
-                      `${JSON.stringify(themeState, null, 2)}\n`,
-                      'application/json',
-                    );
-                    showToast({type: 'info', body: 'Downloaded Studio JSON'});
-                  },
-                },
-                {type: 'divider'},
-                {
-                  label: isId ? 'Salin Portable CSS' : 'Copy Portable CSS (.css)',
-                  onClick: async () => {
-                    const css = generatePortableCss({
-                      name: `mehan-${seed.atmosphere}`,
-                      ...seed,
-                      radiusBase: seed.radiusBase ?? undefined,
-                    });
-                    await copyText(css);
-                    showToast({
-                      type: 'info',
-                      body: 'Copied standalone mehan-portable.css',
-                    });
-                  },
-                },
-                {
-                  label: isId ? 'Salin Kit Prototipe AI' : 'Copy AI Prototype Kit',
-                  onClick: async () => {
-                    const md = generateAiPrototypeKit({
-                      ...seed,
-                      radiusBase: seed.radiusBase ?? undefined,
-                    });
-                    await copyText(md);
-                    showToast({type: 'info', body: 'Copied AI Prototype Kit'});
-                  },
-                },
-                {
-                  label: 'W3C Figma tokens (.w3c.json)',
-                  onClick: () => {
-                    const w3c = exportW3cDesignTokens({
-                      name: `mehan-${seed.atmosphere}`,
-                      ...seed,
-                      radiusBase: seed.radiusBase ?? undefined,
-                    });
-                    downloadTextFile(
-                      'mehan-tokens.w3c.json',
-                      `${JSON.stringify(w3c, null, 2)}\n`,
-                      'application/json',
-                    );
-                    showToast({
-                      type: 'info',
-                      body: 'Downloaded mehan-tokens.w3c.json',
-                    });
-                  },
-                },
-              ]}
-            />
+            <Tooltip content={isId ? 'Ulangi (Ctrl+Shift+Z)' : 'Redo (Ctrl+Shift+Z)'}>
+              <IconButton
+                variant="ghost"
+                size="sm"
+                isDisabled={!canRedo}
+                label={isId ? 'Ulangi perubahan tema' : 'Redo theme change'}
+                icon={<Redo2 size={14} />}
+                onClick={onRedo}
+              />
+            </Tooltip>
             <Tooltip content={isId ? 'Reset semua ke bawaan' : 'Reset all to default'}>
               <IconButton
                 variant="ghost"
@@ -494,8 +437,15 @@ export function DockedThemeEditor({
           </div>
         </div>
 
-        {/* Clean Preset Selector Row (Zero Overflowing Chip Clutter) */}
+        {/* Clean Preset & File I/O Row (Zero Header Crowding) */}
         <div className="te-preset-row">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json,.ts,.tsx,application/json,text/plain"
+            style={{display: 'none'}}
+            onChange={handleImportFile}
+          />
           <div className="te-preset-selector">
             <Selector
               label={isId ? 'Preset tema' : 'Theme preset'}
@@ -553,13 +503,112 @@ export function DockedThemeEditor({
               </div>
             }
           >
-            <Button
+            <IconButton
               variant="secondary"
               size="sm"
               label={isId ? 'Simpan' : 'Save'}
               icon={<Bookmark size={13} />}
             />
           </Popover>
+          <Tooltip content={isId ? 'Impor tema (.json / .ts)' : 'Import theme (.json / .ts)'}>
+            <IconButton
+              variant="secondary"
+              size="sm"
+              label={isId ? 'Impor tema' : 'Import theme'}
+              icon={<Upload size={13} />}
+              onClick={() => fileInputRef.current?.click()}
+            />
+          </Tooltip>
+          <DropdownMenu
+            button={{
+              label: isId ? 'Ekspor tema' : 'Export theme',
+              isIconOnly: true,
+              variant: 'secondary',
+              size: 'sm',
+              icon: <Download size={13} />,
+            }}
+            items={[
+              {
+                label: 'createMehanTheme (.ts)',
+                onClick: () => {
+                  const ts = exportCreateMehanThemeTs(themeState, 'customMehan');
+                  downloadTextFile('mehan-theme.ts', ts, 'text/typescript');
+                  showToast({type: 'info', body: 'Downloaded mehan-theme.ts'});
+                },
+              },
+              {
+                label: 'Astryx defineTheme (.ts)',
+                onClick: () => {
+                  const ts = exportPureAstryxDefineThemeTs(
+                    themeState,
+                    'astryxMehan',
+                  );
+                  downloadTextFile('astryx-theme.ts', ts, 'text/typescript');
+                  showToast({
+                    type: 'info',
+                    body: 'Downloaded pure Astryx astryx-theme.ts',
+                  });
+                },
+              },
+              {
+                label: 'Studio state (.json)',
+                onClick: () => {
+                  downloadTextFile(
+                    `mehan-${seed.atmosphere}-theme.json`,
+                    `${JSON.stringify(themeState, null, 2)}\n`,
+                    'application/json',
+                  );
+                  showToast({type: 'info', body: 'Downloaded Studio JSON'});
+                },
+              },
+              {type: 'divider'},
+              {
+                label: isId ? 'Salin Portable CSS' : 'Copy Portable CSS (.css)',
+                onClick: async () => {
+                  const css = generatePortableCss({
+                    name: `mehan-${seed.atmosphere}`,
+                    ...seed,
+                    radiusBase: seed.radiusBase ?? undefined,
+                  });
+                  await copyText(css);
+                  showToast({
+                    type: 'info',
+                    body: 'Copied standalone mehan-portable.css',
+                  });
+                },
+              },
+              {
+                label: isId ? 'Salin Kit Prototipe AI' : 'Copy AI Prototype Kit',
+                onClick: async () => {
+                  const md = generateAiPrototypeKit({
+                    ...seed,
+                    radiusBase: seed.radiusBase ?? undefined,
+                  });
+                  await copyText(md);
+                  showToast({type: 'info', body: 'Copied AI Prototype Kit'});
+                },
+              },
+              {
+                label: 'W3C Figma tokens (.w3c.json)',
+                onClick: () => {
+                  const w3c = exportW3cDesignTokens({
+                    name: `mehan-${seed.atmosphere}`,
+                    ...seed,
+                    radiusBase: seed.radiusBase ?? undefined,
+                  });
+                  downloadTextFile(
+                    'mehan-tokens.w3c.json',
+                    `${JSON.stringify(w3c, null, 2)}\n`,
+                    'application/json',
+                  );
+                  showToast({
+                    type: 'info',
+                    body: 'Downloaded mehan-tokens.w3c.json',
+                  });
+                },
+              },
+            ]}
+          />
         </div>
 
         {/* Official 3 Astryx Theme Editor Tabs */}
@@ -648,7 +697,12 @@ export function DockedThemeEditor({
                             label="Custom brand hex"
                             value={dna.accent.seed}
                             onChange={hex =>
-                              updateSeed({accent: hex}, ['--color-accent'])
+                              updateSeed(
+                                {accent: hex},
+                                ['--color-accent'],
+                                [],
+                                {coalesce: 'seed:accent'},
+                              )
                             }
                             presets={PRESET_HEX_SWATCHES}
                           />
@@ -731,6 +785,7 @@ export function DockedThemeEditor({
                         {depth: Number((val / 100).toFixed(2))},
                         [],
                         ['--shadow-'],
+                        {coalesce: 'seed:depth'},
                       )
                     }
                   />
@@ -843,6 +898,7 @@ export function DockedThemeEditor({
             {/* Group 3 (Progressive Disclosure): Shape, Scale & Density */}
             <div className="te-disclosure-box">
               <Collapsible
+                defaultIsOpen={false}
                 trigger={
                   isId
                     ? '3. Skala Kepadatan, Sudut & Spasi'
@@ -1065,6 +1121,7 @@ export function DockedThemeEditor({
             {/* Group 4 (Progressive Disclosure): Core Semantic Color Overrides */}
             <div className="te-disclosure-box">
               <Collapsible
+                defaultIsOpen={false}
                 trigger={
                   isId
                     ? `4. Override Warna Inti (${mode === 'dark' ? 'Gelap' : 'Terang'})`
@@ -1081,7 +1138,9 @@ export function DockedThemeEditor({
                       isOverridden={token in tokenOverrides}
                       mode={mode}
                       swatches={PRESET_HEX_SWATCHES}
-                      onChange={val => setTokenOverride(token, val)}
+                      onChange={val =>
+                        setTokenOverride(token, val, `color:${token}`)
+                      }
                       onReset={() => removeTokenOverride(token)}
                     />
                   ))}
@@ -1092,6 +1151,7 @@ export function DockedThemeEditor({
             {/* Group 5 (Progressive Disclosure): Motion & Tempo */}
             <div className="te-disclosure-box">
               <Collapsible
+                defaultIsOpen={false}
                 trigger={isId ? '5. Karakter Gerak & Durasi' : '5. Motion & Tempo'}
               >
                 <Stack gap={2}>
@@ -1172,7 +1232,11 @@ export function DockedThemeEditor({
                     <div className="te-section-title">{group.label}</div>
                     <Stack gap={2}>
                       {group.vars.map(slot => {
-                        const currentVal = tokenOverrides[slot.name] ?? slot.default;
+                        const seededDefault =
+                          readSeededComponentValue(baseComponents, slot.name) ??
+                          slot.default;
+                        const currentVal =
+                          tokenOverrides[slot.name] ?? seededDefault;
                         const isOverridden = slot.name in tokenOverrides;
                         const isKnownOption = slot.options.some(
                           o => o.value === currentVal,
@@ -1200,11 +1264,20 @@ export function DockedThemeEditor({
                                   label={`${group.label} ${slot.description}`}
                                   isLabelHidden
                                   size="sm"
-                                  value={isCustomMode ? '__custom__' : currentVal}
+                                  value={
+                                    isCustomMode
+                                      ? '__custom__'
+                                      : isKnownOption
+                                        ? currentVal
+                                        : slot.default
+                                  }
                                   options={[
                                     ...slot.options.map(o => ({
                                       value: o.value,
-                                      label: `${o.label} (${o.token ?? o.value})`,
+                                      label: resolveComponentOptionLabel(
+                                        o,
+                                        effectiveTokens,
+                                      ),
                                     })),
                                     {value: '__custom__', label: 'Custom CSS value...'},
                                   ]}
@@ -1301,27 +1374,48 @@ export function DockedThemeEditor({
                 />
 
                 {customOverrides.length > 0 && (
-                  <Stack gap={1}>
+                  <Stack gap={1.5}>
                     {customOverrides.map(ov => (
-                      <div key={ov.id} className="te-custom-override-row">
-                        <code>
-                          {ov.component}.base.{ov.property}: {ov.value}
-                        </code>
-                        <IconButton
-                          variant="ghost"
+                      <Stack key={ov.id} gap={1}>
+                        <div className="te-custom-override-row">
+                          <code>
+                            {ov.component}.base.{ov.property}
+                          </code>
+                          <IconButton
+                            variant="ghost"
+                            size="sm"
+                            label={`Remove override ${ov.component}.${ov.property}`}
+                            icon={<Trash2 size={13} />}
+                            onClick={() =>
+                              setThemeState(prev => ({
+                                ...prev,
+                                customOverrides: prev.customOverrides.filter(
+                                  item => item.id !== ov.id,
+                                ),
+                              }))
+                            }
+                          />
+                        </div>
+                        <TextInput
+                          label={`Override value for ${ov.component}.${ov.property}`}
+                          isLabelHidden
                           size="sm"
-                          label={`Remove override ${ov.component}.${ov.property}`}
-                          icon={<Trash2 size={13} />}
-                          onClick={() =>
-                            setThemeState(prev => ({
-                              ...prev,
-                              customOverrides: prev.customOverrides.filter(
-                                item => item.id !== ov.id,
-                              ),
-                            }))
+                          value={ov.value}
+                          onChange={nextVal =>
+                            setThemeState(
+                              prev => ({
+                                ...prev,
+                                customOverrides: prev.customOverrides.map(item =>
+                                  item.id === ov.id
+                                    ? {...item, value: nextVal}
+                                    : item,
+                                ),
+                              }),
+                              {coalesce: `ov:${ov.id}`},
+                            )
                           }
                         />
-                      </div>
+                      </Stack>
                     ))}
                   </Stack>
                 )}
@@ -1400,7 +1494,9 @@ export function DockedThemeEditor({
                               isOverridden={token in tokenOverrides}
                               mode={mode}
                               swatches={PRESET_HEX_SWATCHES}
-                              onChange={val => setTokenOverride(token, val)}
+                              onChange={val =>
+                        setTokenOverride(token, val, `color:${token}`)
+                      }
                               onReset={() => removeTokenOverride(token)}
                             />
                           ))}
@@ -1454,7 +1550,9 @@ export function DockedThemeEditor({
                                     isLabelHidden
                                     size="sm"
                                     value={val}
-                                    onChange={next => setTokenOverride(token, next)}
+                                    onChange={next =>
+                                      setTokenOverride(token, next, `raw:${token}`)
+                                    }
                                   />
                                 </div>
                                 {isOverridden ? (

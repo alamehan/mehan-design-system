@@ -912,3 +912,14 @@ body,
     flex-wrap: wrap;
   }
 }
+
+/* Print hygiene: hide sticky navigation & docked Theme Editor when printing */
+@media print {
+  .studio-topbar,
+  .te-docked-panel {
+    display: none !important;
+  }
+  .studio-workspace {
+    display: block !important;
+  }
+}

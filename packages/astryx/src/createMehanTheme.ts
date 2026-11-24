@@ -260,6 +260,9 @@ export function buildMehanThemeConfig(
     },
   } as const;
 
+  const secHalf = Number((Math.min(2, lipPx) * 0.5).toFixed(2));
+  const priHalf = Number((lipPx * 0.5).toFixed(2));
+
   // Borderless tactile raised secondary surface (shared by Button & Selector triggers per AST-079 FR2)
   const SECONDARY_RAISED = {
     backgroundColor: lightDark(L.surface, D.raisedBottom),
@@ -268,8 +271,10 @@ export function buildMehanThemeConfig(
     borderStyle: 'none',
     color: 'var(--color-text-primary)',
     boxShadow: 'var(--mehan-shadow-raised)',
-    paddingBlockStart: 'calc(var(--spacing-2) - 1px)',
-    paddingBlockEnd: 'calc(var(--spacing-2) + 1px)',
+    paddingBlockStart:
+      secHalf > 0 ? `calc(var(--spacing-2) - ${secHalf}px)` : 'var(--spacing-2)',
+    paddingBlockEnd:
+      secHalf > 0 ? `calc(var(--spacing-2) + ${secHalf}px)` : 'var(--spacing-2)',
     [`:hover${ENABLED}`]: {
       boxShadow: 'var(--mehan-shadow-raised-hover)',
     },
@@ -318,6 +323,26 @@ export function buildMehanThemeConfig(
         : dna.motion === 'standard'
           ? {tempo: tempoFromStep, character: 'standard' as const}
           : {tempo: tempoFromStep, character: 'expressive' as const};
+
+  const durationTokens: Partial<Record<TokenName, TokenValue>> = {};
+  const calmFactor = dna.motion === 'calm' ? 1.35 : 1;
+  if (dna.durationStep !== 1 || calmFactor !== 1) {
+    const durationBases: ReadonlyArray<[TokenName, number]> = [
+      ['--duration-fast-min', 130],
+      ['--duration-fast', 175],
+      ['--duration-fast-max', 230],
+      ['--duration-medium-min', 310],
+      ['--duration-medium', 410],
+      ['--duration-medium-max', 550],
+      ['--duration-slow-min', 730],
+      ['--duration-slow', 975],
+      ['--duration-slow-max', 1300],
+    ];
+    for (const [tokenKey, baseMs] of durationBases) {
+      durationTokens[tokenKey] =
+        `${Math.max(20, Math.round((baseMs * calmFactor) / dna.durationStep))}ms`;
+    }
+  }
 
   const spacingTokens: Partial<Record<TokenName, TokenValue>> = {};
   if (options.spacingBase !== undefined && options.spacingBase !== 4) {
@@ -378,17 +403,25 @@ export function buildMehanThemeConfig(
           color: '#ffffff',
           borderWidth: '0px',
           boxShadow: 'var(--mehan-shadow-primary)',
-          paddingBlockStart: 'calc(var(--spacing-2) - 1.5px)',
-          paddingBlockEnd: 'calc(var(--spacing-2) + 1.5px)',
+          paddingBlockStart:
+            priHalf > 0
+              ? `calc(var(--spacing-2) - ${priHalf}px)`
+              : 'var(--spacing-2)',
+          paddingBlockEnd:
+            priHalf > 0
+              ? `calc(var(--spacing-2) + ${priHalf}px)`
+              : 'var(--spacing-2)',
           [`:hover${ENABLED}`]: {
             backgroundImage: 'var(--mehan-primary-grad-hover)',
             boxShadow: 'var(--mehan-shadow-primary-hover)',
           },
           [`:active${ENABLED}${POPUP_CLOSED}`]: {
-            transform: 'translateY(1.5px)',
+            transform: `translateY(${lipPx > 0 ? priHalf : 0.5}px)`,
             boxShadow: 'var(--mehan-shadow-primary-pressed)',
-            paddingBlockStart: 'calc(var(--spacing-2) - 0.5px)',
-            paddingBlockEnd: 'calc(var(--spacing-2) + 0.5px)',
+            paddingBlockStart:
+              lipPx > 0 ? 'calc(var(--spacing-2) - 0.5px)' : 'var(--spacing-2)',
+            paddingBlockEnd:
+              lipPx > 0 ? 'calc(var(--spacing-2) + 0.5px)' : 'var(--spacing-2)',
             backgroundImage:
               'var(--_press-paint-image, linear-gradient(transparent, transparent)), var(--mehan-primary-grad)',
           },
@@ -396,7 +429,7 @@ export function buildMehanThemeConfig(
         'variant:secondary': {
           ...SECONDARY_RAISED,
           [`:active${ENABLED}${POPUP_CLOSED}`]: {
-            transform: 'translateY(1px)',
+            transform: `translateY(${lipPx > 0 ? 1 : 0.5}px)`,
             boxShadow: 'var(--mehan-shadow-pressed)',
             paddingBlockStart: 'var(--spacing-2)',
             paddingBlockEnd: 'var(--spacing-2)',
@@ -410,10 +443,16 @@ export function buildMehanThemeConfig(
           borderWidth: '0px',
           borderStyle: 'none',
           boxShadow: 'var(--mehan-shadow-danger)',
-          paddingBlockStart: 'calc(var(--spacing-2) - 1px)',
-          paddingBlockEnd: 'calc(var(--spacing-2) + 1px)',
+          paddingBlockStart:
+            secHalf > 0
+              ? `calc(var(--spacing-2) - ${secHalf}px)`
+              : 'var(--spacing-2)',
+          paddingBlockEnd:
+            secHalf > 0
+              ? `calc(var(--spacing-2) + ${secHalf}px)`
+              : 'var(--spacing-2)',
           [`:active${ENABLED}${POPUP_CLOSED}`]: {
-            transform: 'translateY(1px)',
+            transform: `translateY(${lipPx > 0 ? 1 : 0.5}px)`,
             boxShadow: 'var(--mehan-shadow-danger-pressed)',
             paddingBlockStart: 'var(--spacing-2)',
             paddingBlockEnd: 'var(--spacing-2)',
@@ -1049,6 +1088,7 @@ export function buildMehanThemeConfig(
       '--color-data-neutral': [L.ink3, D.ink3],
 
       ...spacingTokens,
+      ...durationTokens,
       ...(options.tokens ?? {}),
     },
 

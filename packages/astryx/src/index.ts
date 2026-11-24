@@ -1,12 +1,22 @@
 export {
   MEHAN_ACCENT_PRESETS,
   MEHAN_ATMOSPHERES,
+  auditMehanThemeContrast,
   buildMehanThemeConfig,
   contrastRatio,
+  createHistoryStore,
   createMehanBaseTheme,
   createMehanTheme,
   ensureContrast,
   exportW3cDesignTokens,
+  formatBytes,
+  formatCompactNumber,
+  formatCurrency,
+  formatNumber,
+  formatPercent,
+  formatRelativeTime,
+  generateOklchScale,
+  gradientBandContrast,
   hexToOklch,
   hexToRgb,
   hexToRgbaCss,
@@ -14,19 +24,29 @@ export {
   mehanIconRegistry,
   mergeMehanComponentStyles,
   mixHex,
+  mixOklab,
   normalizeHex,
   oklchToHex,
+  parseLocalIsoDate,
   relativeLuminance,
   resolveMehanAccent,
   resolveMehanDna,
   rgbToHex,
+  suggestOklchHarmonies,
   withHexAlpha,
   type AtmosphereModeScale,
   type CategoricalFamilyStops,
+  type ContrastAuditCheck,
+  type CreateHistoryStoreOptions,
+  type HistoryEntry,
+  type HistorySnapshot,
+  type HistoryStore,
+  type HistoryUpdateOptions,
   type MehanAccentPreset,
   type MehanAstryxThemeOptions,
   type MehanAtmosphere,
   type MehanAtmosphereId,
+  type MehanContrastAuditReport,
   type MehanDensity,
   type MehanLipStyle,
   type MehanMotion,
@@ -35,6 +55,8 @@ export {
   type MehanThemeOptions,
   type MehanWellStyle,
   type OklchColor,
+  type OklchHarmonies,
+  type OklchShadeStop,
   type ResolvedMehanAccent,
   type ResolvedMehanDna,
   type RgbColor,
@@ -42,11 +64,18 @@ export {
   type W3cTokenLeaf,
 } from './dna';
 
-/**
- * Inline `<head>` script preventing dark-mode Flash of Unstyled Content (FOUC)
- * in Next.js App Router, Remix, Astro, or SSR HTML shells.
- */
-export const MEHAN_THEME_INIT_SCRIPT = `(function(){try{var m=localStorage.getItem('mehan-mode');var d=m==='dark'||((!m||m==='system')&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();`;
+export {
+  MEHAN_THEME_INIT_SCRIPT,
+  copyTextSafe,
+  formatShortcutKeys,
+  isApplePlatform,
+  isTypingTarget,
+  useHistoryStore,
+  useMehanThemeMode,
+  type MehanThemeModePreference,
+  type UseMehanThemeModeOptions,
+  type UseMehanThemeModeResult,
+} from './runtime';
 
 export {ColorSwatch, type ColorSwatchProps} from './components/ColorSwatch/ColorSwatch';
 export {ColorPicker, type ColorPickerProps} from './components/ColorPicker/ColorPicker';

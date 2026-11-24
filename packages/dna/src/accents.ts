@@ -102,14 +102,15 @@ export function resolveMehanAccent(
   const {l: seedL, c: seedC, h} = hexToOklch(rawSeed);
   const chroma = Math.max(0.12, Math.min(0.24, seedC || 0.16));
 
-  // Shade 600: solid fill carrying crisp white text (#ffffff) at >= 4.55:1
+  // Shade 600: solid fill carrying crisp white text (#ffffff) at >= 4.75:1 so the
+  // entire 33%..60% glyph band of the 3-stop gradient clears >= 4.5:1 WCAG AA!
   const baseSolidCandidate = preset
     ? rawSeed
-    : oklchToHex(Math.min(seedL, 0.545), chroma, h);
+    : oklchToHex(Math.min(seedL, 0.535), chroma, h);
   const accentLight = ensureContrast(
     baseSolidCandidate,
     '#ffffff',
-    4.55,
+    4.75,
     'darker',
   );
   const onAccentLight = '#ffffff';
@@ -139,22 +140,23 @@ export function resolveMehanAccent(
 
   // Sculptural OKLCH shade ladder (500 -> 600 -> 700 -> 800 perceptual lip)
   const s600 = hexToOklch(accentLight);
-  const shade500 = oklchToHex(
-    Math.min(s600.l + 0.076, 0.65),
-    Math.min(s600.c * 0.95, 0.24),
+  const rawShade500 = oklchToHex(
+    Math.min(s600.l + 0.045, 0.61),
+    Math.min(s600.c * 0.96, 0.24),
     h,
   );
+  const shade500 = ensureContrast(rawShade500, '#ffffff', 4.35, 'darker');
   const shade700 = oklchToHex(
-    Math.max(s600.l - 0.056, 0.41),
+    Math.max(s600.l - 0.054, 0.39),
     Math.min(s600.c * 0.99, 0.24),
     h,
   );
   const s700 = hexToOklch(shade700);
 
-  // Shade 800 lip sits smoothly ~0.062 below shade 700 while keeping rich chroma
+  // Shade 800 lip sits smoothly ~0.058 below shade 700 while keeping rich chroma
   // so the bottom bevel reads as one continuous curved keycap, never a dark band.
   const buttonLip = oklchToHex(
-    Math.max(s700.l - 0.062, 0.34),
+    Math.max(s700.l - 0.058, 0.32),
     Math.min(s600.c * 0.84, 0.21),
     h,
   );

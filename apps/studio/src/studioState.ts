@@ -1,3 +1,4 @@
+import {copyTextSafe} from '@mehan/astryx';
 import {isPresetAccent} from '@mehan/astryx/dna';
 import {
   DEFAULT_SEED_CONFIG,
@@ -208,23 +209,7 @@ export function savePersistedStudioState(state: {
 }
 
 export async function copyText(text: string): Promise<boolean> {
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text);
-      return true;
-    }
-  } catch {
-    // Fallback for file:// environments
-  }
-  const area = document.createElement('textarea');
-  area.value = text;
-  area.style.position = 'fixed';
-  area.style.opacity = '0';
-  document.body.appendChild(area);
-  area.select();
-  const ok = document.execCommand('copy');
-  document.body.removeChild(area);
-  return ok;
+  return copyTextSafe(text);
 }
 
 export function downloadTextFile(

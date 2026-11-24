@@ -546,6 +546,7 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
 
                     {/* Tier 3: Inline Collapsible */}
                     <Collapsible
+                      defaultIsOpen={false}
                       trigger={
                         isId
                           ? '3. Pengaturan ahli (Webhook & HMAC)'

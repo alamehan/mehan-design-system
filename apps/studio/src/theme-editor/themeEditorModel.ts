@@ -384,14 +384,35 @@ export const COMPONENT_VAR_TO_OVERRIDE: Record<
   string,
   {component: string; cssProperty: string}[]
 > = {
-  '--button-radius': [{component: 'button', cssProperty: 'borderRadius'}],
-  '--card-radius': [{component: 'card', cssProperty: 'borderRadius'}],
-  '--card-padding': [{component: 'card', cssProperty: 'padding'}],
+  '--button-radius': [
+    {component: 'button', cssProperty: 'borderRadius'},
+    {component: 'icon-button', cssProperty: 'borderRadius'},
+    {component: 'toggle-button', cssProperty: 'borderRadius'},
+  ],
+  '--card-radius': [
+    {component: 'card', cssProperty: 'borderRadius'},
+    {component: 'clickable-card', cssProperty: 'borderRadius'},
+    {component: 'selectable-card', cssProperty: 'borderRadius'},
+  ],
+  '--card-padding': [
+    {component: 'card', cssProperty: 'padding'},
+    {component: 'clickable-card', cssProperty: 'padding'},
+  ],
   '--input-radius': [
     {component: 'text-input', cssProperty: '--_field-radius'},
     {component: 'text-area', cssProperty: '--_field-radius'},
     {component: 'number-input', cssProperty: '--_field-radius'},
+    {component: 'date-input', cssProperty: '--_field-radius'},
+    {component: 'date-range-input', cssProperty: '--_field-radius'},
+    {component: 'date-time-input-date-segment', cssProperty: '--_field-radius'},
+    {component: 'date-time-input-time-segment', cssProperty: '--_field-radius'},
+    {component: 'time-input', cssProperty: '--_field-radius'},
+    {component: 'typeahead', cssProperty: '--_field-radius'},
+    {component: 'tokenizer', cssProperty: '--_field-radius'},
+    {component: 'power-search', cssProperty: '--_field-radius'},
     {component: 'selector', cssProperty: '--_field-radius'},
+    {component: 'multi-selector', cssProperty: '--_field-radius'},
+    {component: 'file-input', cssProperty: 'borderRadius'},
   ],
   '--banner-radius': [{component: 'banner', cssProperty: 'borderRadius'}],
   '--segmented-control-radius': [
@@ -400,12 +421,34 @@ export const COMPONENT_VAR_TO_OVERRIDE: Record<
   '--segmented-control-padding': [
     {component: 'segmented-control', cssProperty: 'padding'},
   ],
-  '--dialog-radius': [{component: 'dialog', cssProperty: 'borderRadius'}],
-  '--dialog-padding': [{component: 'dialog', cssProperty: 'padding'}],
+  '--dialog-radius': [
+    {component: 'dialog', cssProperty: 'borderRadius'},
+    {component: 'alert-dialog', cssProperty: 'borderRadius'},
+  ],
+  '--dialog-padding': [
+    {component: 'dialog', cssProperty: 'padding'},
+    {component: 'dialog', cssProperty: '--astryx-dialog-padding'},
+    {component: 'alert-dialog', cssProperty: 'padding'},
+  ],
   '--dropdown-radius': [
     {component: 'dropdown-menu', cssProperty: 'borderRadius'},
+    {component: 'dropdown-menu', cssProperty: '--_dropdown-menu-radius'},
+    {component: 'context-menu', cssProperty: 'borderRadius'},
+    {component: 'context-menu', cssProperty: '--_dropdown-menu-radius'},
+    {component: 'more-menu', cssProperty: 'borderRadius'},
+    {component: 'more-menu', cssProperty: '--_dropdown-menu-radius'},
+    {component: 'selector-popup', cssProperty: 'borderRadius'},
+    {component: 'multi-selector-popup', cssProperty: 'borderRadius'},
+    {component: 'complex-selector-popup', cssProperty: 'borderRadius'},
   ],
-  '--dropdown-padding': [{component: 'dropdown-menu', cssProperty: 'padding'}],
+  '--dropdown-padding': [
+    {component: 'dropdown-menu', cssProperty: 'padding'},
+    {component: 'dropdown-menu', cssProperty: '--_dropdown-menu-padding'},
+    {component: 'context-menu', cssProperty: 'padding'},
+    {component: 'context-menu', cssProperty: '--_dropdown-menu-padding'},
+    {component: 'more-menu', cssProperty: 'padding'},
+    {component: 'more-menu', cssProperty: '--_dropdown-menu-padding'},
+  ],
   '--section-padding': [{component: 'section', cssProperty: 'padding'}],
   '--popover-radius': [{component: 'popover', cssProperty: 'borderRadius'}],
   '--hovercard-radius': [
@@ -413,11 +456,36 @@ export const COMPONENT_VAR_TO_OVERRIDE: Record<
   ],
   '--composer-radius': [
     {component: 'chat-composer', cssProperty: '--_chat-composer-radius'},
+    {component: 'chat-composer', cssProperty: 'borderRadius'},
   ],
   '--composer-padding': [
     {component: 'chat-composer', cssProperty: '--_chat-composer-padding'},
   ],
 };
+
+export function resolveComponentOptionLabel(
+  option: {label: string; token?: string; value: string},
+  tokens: Record<string, string>,
+): string {
+  if (!option.token) return option.label;
+  const resolved = tokens[option.token];
+  return resolved ? `${option.label} — ${resolved}` : `${option.label} (${option.token})`;
+}
+
+export function readSeededComponentValue(
+  baseComponents: Record<string, unknown> | undefined,
+  varName: string,
+): string | undefined {
+  if (!baseComponents) return undefined;
+  const mapping = COMPONENT_VAR_TO_OVERRIDE[varName]?.[0];
+  if (!mapping) return undefined;
+  const comp = baseComponents[mapping.component];
+  if (!comp || typeof comp !== 'object') return undefined;
+  const base = (comp as Record<string, unknown>).base;
+  if (!base || typeof base !== 'object') return undefined;
+  const val = (base as Record<string, unknown>)[mapping.cssProperty];
+  return typeof val === 'string' ? val : undefined;
+}
 
 export const COMPONENT_VAR_NAMES = new Set(
   Object.keys(COMPONENT_VAR_TO_OVERRIDE),
@@ -752,9 +820,11 @@ function fnvHash8(input: string): string {
  * from `FullThemeEditorState` (Mehan DNA seed + Base/Advanced token overrides +
  * Component token overrides + Custom CSS overrides).
  */
-export function composeStudioTheme(
-  state: FullThemeEditorState,
-): {theme: DefinedTheme; effectiveTokens: Record<string, string>} {
+export function composeStudioTheme(state: FullThemeEditorState): {
+  theme: DefinedTheme;
+  effectiveTokens: Record<string, string>;
+  baseComponents: Record<string, unknown>;
+} {
   const {seed, tokenOverrides, customOverrides} = state;
 
   const coreTokenOverrides: Partial<Record<TokenName, TokenValue>> = {};
@@ -782,6 +852,27 @@ export function composeStudioTheme(
   );
 
   const slug = `mh-${seed.atmosphere}-${fnvHash8(JSON.stringify(state))}`;
+
+  const baseSeedTheme = createMehanTheme({
+    name: `${slug}-seed`,
+    atmosphere: seed.atmosphere,
+    accent: seed.accent,
+    depth: seed.depth,
+    radiusScale: seed.radiusScale,
+    radiusBase: seed.radiusBase ?? undefined,
+    spacingBase: seed.spacingBase,
+    sizeBase: seed.sizeBase,
+    typeBase: seed.typeBase,
+    typeRatio: seed.typeRatio,
+    headingFont: seed.headingFont,
+    bodyFont: seed.bodyFont,
+    codeFont: seed.codeFont,
+    motion: seed.motion,
+    durationStep: seed.durationStep,
+    lipStyle: seed.lipStyle,
+    segmentedStyle: seed.segmentedStyle,
+    wellStyle: seed.wellStyle,
+  });
 
   const theme = createMehanTheme({
     name: slug,
@@ -815,7 +906,11 @@ export function composeStudioTheme(
     ...compVarOverrides,
   };
 
-  return {theme, effectiveTokens};
+  return {
+    theme,
+    effectiveTokens,
+    baseComponents: (baseSeedTheme.components ?? {}) as Record<string, unknown>,
+  };
 }
 
 /**

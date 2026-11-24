@@ -1,16 +1,22 @@
 export {
   contrastRatio,
   ensureContrast,
+  generateOklchScale,
+  gradientBandContrast,
   hexToOklch,
   hexToRgb,
   hexToRgbaCss,
   mixHex,
+  mixOklab,
   normalizeHex,
   oklchToHex,
   relativeLuminance,
   rgbToHex,
+  suggestOklchHarmonies,
   withHexAlpha,
   type OklchColor,
+  type OklchHarmonies,
+  type OklchShadeStop,
   type RgbColor,
 } from './color';
 
@@ -47,3 +53,28 @@ export {
   type W3cTokenDocument,
   type W3cTokenLeaf,
 } from './w3c';
+
+export {
+  auditMehanThemeContrast,
+  type ContrastAuditCheck,
+  type MehanContrastAuditReport,
+} from './audit';
+
+export {
+  createHistoryStore,
+  type CreateHistoryStoreOptions,
+  type HistoryEntry,
+  type HistorySnapshot,
+  type HistoryStore,
+  type HistoryUpdateOptions,
+} from './history';
+
+export {
+  formatBytes,
+  formatCompactNumber,
+  formatCurrency,
+  formatNumber,
+  formatPercent,
+  formatRelativeTime,
+  parseLocalIsoDate,
+} from './format';

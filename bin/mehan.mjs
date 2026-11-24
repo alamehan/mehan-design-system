@@ -310,7 +310,7 @@ import {Theme} from '@astryxdesign/core/theme';
 import {${camel}} from '${scope}/astryx/themes/${slug}';
 
 /** Optional SSR / Next.js <head> inline script to prevent dark-mode flash on load. */
-export const MEHAN_THEME_INIT_SCRIPT = \`(function(){try{var m=localStorage.getItem('mehan-mode');var d=m==='dark'||((!m||m==='system')&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();\`;
+export const MEHAN_THEME_INIT_SCRIPT = \`(function(){try{var m=localStorage.getItem('mehan-mode');var d=m==='dark'||((!m||m==='system')&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();\`;
 
 export function MehanProvider({
   children,
@@ -351,7 +351,7 @@ export const mehanAppTheme = createMehanTheme({
 });
 
 /** Optional SSR / Next.js <head> inline script to prevent dark-mode flash on load. */
-export const MEHAN_THEME_INIT_SCRIPT = \`(function(){try{var m=localStorage.getItem('mehan-mode');var d=m==='dark'||((!m||m==='system')&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();\`;
+export const MEHAN_THEME_INIT_SCRIPT = \`(function(){try{var m=localStorage.getItem('mehan-mode');var d=m==='dark'||((!m||m==='system')&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();\`;
 
 export function MehanProvider({
   children,

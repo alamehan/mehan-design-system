@@ -197,3 +197,147 @@ export function ensureContrast(
   }
   return best;
 }
+
+/**
+ * Perceptual Oklab color interpolation (`t = 0..1`) avoiding the muddy grey
+ * midpoints produced by naive gamma-sRGB channel mixing.
+ */
+export function mixOklab(hexA: string, hexB: string, weightB: number): string {
+  const t = clamp(weightB, 0, 1);
+  const a = hexToOklch(hexA);
+  const b = hexToOklch(hexB);
+  const radA = (a.h * Math.PI) / 180;
+  const radB = (b.h * Math.PI) / 180;
+  const aLabA = a.c * Math.cos(radA);
+  const aLabB = a.c * Math.sin(radA);
+  const bLabA = b.c * Math.cos(radB);
+  const bLabB = b.c * Math.sin(radB);
+
+  const l = a.l + (b.l - a.l) * t;
+  const labA = aLabA + (bLabA - aLabA) * t;
+  const labB = aLabB + (bLabB - aLabB) * t;
+  const c = Math.hypot(labA, labB);
+  const h = c < 1e-6 ? 0 : ((Math.atan2(labB, labA) * 180) / Math.PI + 360) % 360;
+  return oklchToHex(l, c, h);
+}
+
+export type OklchShadeStop =
+  | 50
+  | 100
+  | 200
+  | 300
+  | 400
+  | 500
+  | 600
+  | 700
+  | 800
+  | 900
+  | 950;
+
+/**
+ * Generates a perceptually uniform 11-stop (`50..950`) OKLCH tonal ramp with
+ * natural chroma tapering near highlights and deep shadows.
+ */
+export function generateOklchScale(
+  seedHex: string,
+): Record<OklchShadeStop, string> {
+  const {c: rawC, h} = hexToOklch(seedHex);
+  const peakC = clamp(rawC, 0.02, 0.28);
+  const stops: ReadonlyArray<[OklchShadeStop, number, number]> = [
+    [50, 0.975, 0.14],
+    [100, 0.94, 0.26],
+    [200, 0.88, 0.48],
+    [300, 0.8, 0.72],
+    [400, 0.71, 0.92],
+    [500, 0.62, 1.0],
+    [600, 0.53, 0.98],
+    [700, 0.45, 0.88],
+    [800, 0.37, 0.74],
+    [900, 0.28, 0.56],
+    [950, 0.2, 0.42],
+  ];
+  const out = {} as Record<OklchShadeStop, string>;
+  for (const [stop, targetL, chromaFactor] of stops) {
+    out[stop] = oklchToHex(targetL, peakC * chromaFactor, h);
+  }
+  return out;
+}
+
+export interface OklchHarmonies {
+  seed: string;
+  analogous: [string, string];
+  complementary: string;
+  splitComplementary: [string, string];
+  triadic: [string, string];
+  softSurfaceLight: string;
+  softSurfaceDark: string;
+  linearGradientCss: string;
+}
+
+/**
+ * Generates deterministic OKLCH color harmonies and soft backdrop recipes from
+ * any `#rrggbb` seed (with a warm confectionery hue fallback when achromatic).
+ */
+export function suggestOklchHarmonies(seedHex: string): OklchHarmonies {
+  const norm = normalizeHex(seedHex);
+  const parsed = hexToOklch(norm);
+  const h = parsed.c < 0.015 ? 18 : parsed.h;
+  const l = clamp(parsed.l, 0.45, 0.68);
+  const c = clamp(Math.max(parsed.c, 0.14), 0.08, 0.24);
+  const wrap = (deg: number) => ((deg % 360) + 360) % 360;
+
+  const ana1 = oklchToHex(l, c, wrap(h - 32));
+  const ana2 = oklchToHex(l, c, wrap(h + 32));
+  const comp = oklchToHex(l, c * 0.92, wrap(h + 180));
+  const split1 = oklchToHex(l, c * 0.95, wrap(h + 150));
+  const split2 = oklchToHex(l, c * 0.95, wrap(h + 210));
+  const tri1 = oklchToHex(l, c * 0.92, wrap(h + 120));
+  const tri2 = oklchToHex(l, c * 0.92, wrap(h + 240));
+
+  return {
+    seed: norm,
+    analogous: [ana1, ana2],
+    complementary: comp,
+    splitComplementary: [split1, split2],
+    triadic: [tri1, tri2],
+    softSurfaceLight: oklchToHex(0.96, Math.min(c * 0.22, 0.04), h),
+    softSurfaceDark: oklchToHex(0.22, Math.min(c * 0.28, 0.05), h),
+    linearGradientCss: `linear-gradient(135deg, ${ana1} 0%, ${norm} 52%, ${ana2} 100%)`,
+  };
+}
+
+/**
+ * Computes the worst-case WCAG contrast ratio of `fgHex` across the `33%..60%`
+ * vertical glyph band of a multi-stop button gradient in BOTH Oklab and sRGB
+ * interpolation spaces.
+ */
+export function gradientBandContrast(
+  fgHex: string,
+  stops: readonly string[],
+): number {
+  if (stops.length === 0) {
+    throw new Error('gradientBandContrast requires at least 1 gradient stop.');
+  }
+  if (stops.length === 1) {
+    return contrastRatio(fgHex, stops[0]);
+  }
+
+  const sampleAt = (pos01: number, mode: 'oklab' | 'srgb'): string => {
+    const scaled = clamp(pos01, 0, 1) * (stops.length - 1);
+    const idx = Math.min(stops.length - 2, Math.floor(scaled));
+    const localT = scaled - idx;
+    return mode === 'oklab'
+      ? mixOklab(stops[idx], stops[idx + 1], localT)
+      : mixHex(stops[idx], stops[idx + 1], localT);
+  };
+
+  let minRatio = Number.POSITIVE_INFINITY;
+  for (const pos of [0.33, 0.42, 0.5, 0.6]) {
+    minRatio = Math.min(
+      minRatio,
+      contrastRatio(fgHex, sampleAt(pos, 'oklab')),
+      contrastRatio(fgHex, sampleAt(pos, 'srgb')),
+    );
+  }
+  return Number(minRatio.toFixed(2));
+}

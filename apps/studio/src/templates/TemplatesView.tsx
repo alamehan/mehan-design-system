@@ -1362,6 +1362,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
             />
 
             <Collapsible
+              defaultIsOpen={false}
               trigger={
                 isId
                   ? 'Pengaturan developer & webhook (lanjutan)'
