@@ -133,7 +133,7 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
             value="core"
             label={`Core (${allSpecimens.length - 4})`}
           />
-          <SegmentedControlItem value="mehan" label="Mehan Extensions (4)" />
+          <SegmentedControlItem value="mehan" label="Mehan extensions (4)" />
         </SegmentedControl>
       </HStack>
 
@@ -173,7 +173,7 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
               if (query) setQuery('');
             }}
           >
-            <span>{isId ? 'Semua Kategori' : 'All Categories'}</span>
+            <span>{isId ? 'Semua kategori' : 'All categories'}</span>
             <span className="cat-nav-count">{allSpecimens.length}</span>
           </button>
         </nav>

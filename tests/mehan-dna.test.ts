@@ -177,10 +177,24 @@ describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws
       segmentedStyle: 'espresso',
       typeBase: 13.5,
       lipStyle: 'flat',
+      headingFont: 'Fraunces',
+      bodyFont: 'Albert Sans',
+      codeFont: 'JetBrains Mono',
     });
     expect(portableEspresso).toContain('--mh-font-base:13.5px');
     expect(portableEspresso).toContain('--mh-lip-pad:0px');
     expect(portableEspresso).toContain('--mh-seg-active-bg:#261b16');
+    expect(portableEspresso).toContain('--mh-font-display:"Fraunces"');
+    expect(portableEspresso).toContain('--mh-font-body:"Albert Sans"');
+    expect(portableEspresso).toContain('--mh-font-mono:"JetBrains Mono"');
+    expect(portableEspresso).toContain('padding-bottom:var(--mh-lip-pad,3px)');
+    expect(portableEspresso).not.toContain('text-transform:uppercase');
+
+    const stoneDefault = resolveMehanDna({
+      name: 'stone-default',
+      atmosphere: 'stone',
+    });
+    expect(stoneDefault.accent.name).toBe('Teal');
 
     const w3cCustom = exportW3cDesignTokens({
       name: 'shotcandy-figma',

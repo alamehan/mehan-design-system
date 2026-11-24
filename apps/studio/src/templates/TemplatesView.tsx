@@ -957,6 +957,7 @@ function OfficialThemeShowcase() {
                       key: 'available',
                       header: 'Stock',
                       width: pixel(74),
+                      align: 'end',
                       renderCell: row => <Text hasTabularNumbers>{row.available}</Text>,
                     },
                     {
@@ -1001,7 +1002,7 @@ function OfficialThemeShowcase() {
             {/* Revenue & Activity Card */}
             <Card padding={4}>
               <VStack gap={4}>
-                <Heading level={3}>Revenue & Activity</Heading>
+                <Heading level={3}>Revenue & activity</Heading>
                 <Grid columns={{minWidth: 130, max: 2, repeat: 'fit'}} gap={3}>
                   <MetricCard
                     label="Monthly revenue"
@@ -1044,6 +1045,7 @@ function OfficialThemeShowcase() {
                         description={act.detail}
                         endContent={
                           <Text
+                            hasTabularNumbers
                             weight="bold"
                             color={act.refund ? 'secondary' : 'primary'}
                           >
@@ -1243,7 +1245,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
             />
           </Grid>
 
-          <Card elevation="low">
+          <Card elevation="low" padding={4}>
             <Stack gap={3}>
               <Stack
                 direction="horizontal"
@@ -1253,7 +1255,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                 gap={2}
               >
                 <Heading level={3}>
-                  {isId ? 'Layanan Produksi' : 'Service Deployments'}
+                  {isId ? 'Deployment layanan' : 'Service deployments'}
                 </Heading>
                 <Stack direction="horizontal" gap={2} wrap="wrap">
                   <SegmentedControl
@@ -1294,8 +1296,14 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                   },
                   {
                     key: 'latency',
-                    header: 'p50 Latency',
+                    header: 'P50 latency',
                     width: proportional(0.9),
+                    align: 'end',
+                    renderCell: row => (
+                      <Text hasTabularNumbers weight="semibold">
+                        {String(row.latency)}
+                      </Text>
+                    ),
                   },
                   {
                     key: 'status',
@@ -1310,6 +1318,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                   },
                 ]}
                 density="balanced"
+                dividers="rows"
                 hasHover
               />
             </Stack>
@@ -1318,12 +1327,12 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
       )}
 
       {templateTab === 'settings' && (
-        <Card elevation="low" maxWidth={680}>
+        <Card elevation="low" padding={4} maxWidth={680}>
           <Stack gap={4}>
             <Stack gap={1}>
-              <Badge variant="info" label="Progressive Disclosure" />
+              <Badge variant="info" label="Progressive disclosure" />
               <Heading level={3}>
-                {isId ? 'Pengaturan Organisasi' : 'Organization Settings'}
+                {isId ? 'Pengaturan organisasi' : 'Organization settings'}
               </Heading>
               <Text color="secondary">
                 {isId
@@ -1355,8 +1364,8 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
             <Collapsible
               trigger={
                 isId
-                  ? 'Pengaturan Developer & Webhook (Lanjutan)'
-                  : 'Developer & Webhook Options (Advanced)'
+                  ? 'Pengaturan developer & webhook (lanjutan)'
+                  : 'Developer & webhook options (advanced)'
               }
             >
               <Stack gap={3}>
@@ -1387,12 +1396,12 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
 
       {templateTab === 'canvas' && (
         <Grid columns={{minWidth: 300, max: 2, repeat: 'fit'}} gap={4} align="start">
-          <Card elevation="low">
+          <Card elevation="low" padding={4}>
             <Stack gap={3}>
               <Stack gap={1}>
-                <Badge variant="pink" label="Shotcandy DNA Archetype" />
+                <Badge variant="pink" label="Shotcandy DNA archetype" />
                 <Heading level={3}>
-                  {isId ? 'Inspektur Kanvas 3D' : '3D Canvas Inspector'}
+                  {isId ? 'Inspektur kanvas 3D' : '3D canvas inspector'}
                 </Heading>
                 <Text color="secondary">
                   {isId
@@ -1414,7 +1423,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
               </Stack>
 
               <PrecisionSlider
-                label="Backdrop Padding"
+                label={isId ? 'Padding latar' : 'Backdrop padding'}
                 value={shotPadding}
                 min={16}
                 max={72}
@@ -1423,7 +1432,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                 onChange={setShotPadding}
               />
               <PrecisionSlider
-                label="Window Corner Radius"
+                label={isId ? 'Radius sudut' : 'Corner radius'}
                 value={shotRadius}
                 min={0}
                 max={32}
@@ -1432,7 +1441,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                 onChange={setShotRadius}
               />
               <PrecisionSlider
-                label="Perspective Tilt"
+                label={isId ? 'Kemiringan 3D' : 'Perspective tilt'}
                 value={shotTilt}
                 min={-16}
                 max={16}
@@ -1466,7 +1475,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                 </div>
                 <Stack gap={2}>
                   <Badge variant="info" label="Shotcandy × Astryx" />
-                  <Heading level={4}>Tactile Surface Render</Heading>
+                  <Heading level={4}>Tactile surface render</Heading>
                   <Text type="supporting" color="secondary">
                     Warm confectionery paper, recessed wells, and boiled-sweet CTA
                     lips rendered at 60fps.

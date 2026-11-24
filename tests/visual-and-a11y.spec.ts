@@ -88,12 +88,26 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
         .violations,
     ).toEqual([]);
 
+    // Sweep Form Controls & Overlay categories to ensure bounded card heights & 0 contrast issues
+    for (const extraCat of ['Form Controls', 'Overlay']) {
+      await page.locator('.cat-nav-btn', {hasText: extraCat}).click();
+      await page.waitForTimeout(100);
+      const maxCardH = await page
+        .locator('.cat-specimen-card')
+        .evaluateAll(els =>
+          Math.max(0, ...els.map(el => el.getBoundingClientRect().height)),
+        );
+      expect(maxCardH).toBeLessThan(520);
+      expect(
+        (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+          .violations,
+      ).toEqual([]);
+    }
+
     // 3. Official Theme Showcase + Docked Chunked Theme Editor + Live Font Switching Proof!
     await page.getByRole('tab', {name: 'Templates'}).click();
-    await expect(
-      page.getByText('Little joys, everywhere you go'),
-    ).toBeVisible();
-    await page.getByRole('button', {name: 'Theme Editor'}).click();
+    await page.getByText('Little joys, everywhere you go').waitFor();
+    await page.getByRole('button', {name: 'Theme Editor', exact: true}).click();
     await expect(
       page.getByRole('complementary', {name: 'Live Theme Editor'}),
     ).toBeVisible();
@@ -183,6 +197,43 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
 
     await editor.getByRole('button', {name: 'Reset all to default'}).click();
     await page.waitForTimeout(120);
+
+    // Sweep remaining UX & Copy chapters + Templates tabs for 0 contrast issues & 0 runtime errors
+    for (const chLabel of [
+      'Progressive Disclosure',
+      'Truncation & Numerals',
+      'States & Recovery',
+      'Microcopy & Glossary',
+    ]) {
+      await page.locator('.ux-sidebar .cat-nav-btn', {hasText: chLabel}).click();
+      await page.waitForTimeout(80);
+      expect(
+        (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+          .violations,
+      ).toEqual([]);
+    }
+
+    await page.getByRole('button', {name: 'Close Theme Editor'}).click();
+    await page.getByRole('tab', {name: 'Templates'}).click();
+    for (const tplLabel of [
+      'SaaS dashboard',
+      'Progressive settings',
+      'Shotcandy 3D studio',
+    ]) {
+      await page.getByText(tplLabel, {exact: true}).click();
+      await page.waitForTimeout(100);
+      await page.screenshot({
+        path: path.join(
+          shotDir,
+          `studio-v3-template-${tplLabel.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-1366.png`,
+        ),
+        fullPage: false,
+      });
+      expect(
+        (await new AxeBuilder({page}).withRules(['color-contrast']).analyze())
+          .violations,
+      ).toEqual([]);
+    }
 
     // 5. Maintain Tab contrast check
     await page.getByRole('tab', {name: 'Maintain'}).click();

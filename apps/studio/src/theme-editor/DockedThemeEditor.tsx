@@ -217,7 +217,10 @@ export function DockedThemeEditor({
       p =>
         p.state.seed.atmosphere === seed.atmosphere &&
         p.state.seed.accent === seed.accent &&
+        p.state.seed.lipStyle === seed.lipStyle &&
         p.state.seed.segmentedStyle === seed.segmentedStyle &&
+        p.state.seed.wellStyle === seed.wellStyle &&
+        p.state.seed.radiusScale === seed.radiusScale &&
         p.state.seed.typeBase === seed.typeBase &&
         p.state.seed.headingFont === seed.headingFont &&
         p.state.seed.bodyFont === seed.bodyFont &&

@@ -31,9 +31,17 @@ function readCurrentScope() {
   return match ? match[1] : '@mehan';
 }
 
+function defaultAccentForAtmosphere(atm) {
+  return atm === 'porcelain'
+    ? 'blueberry'
+    : atm === 'stone'
+      ? 'teal'
+      : 'strawberry';
+}
+
 if (cmd === 'ai-kit') {
   const atmosphere = readFlag('--atmosphere', 'confectionery');
-  const accent = readFlag('--accent', 'strawberry');
+  const accent = readFlag('--accent', defaultAccentForAtmosphere(atmosphere));
   const depth = Number(readFlag('--depth', '1'));
   const radiusScale = Number(readFlag('--radius', '1'));
   const density = readFlag('--density', 'standard');
@@ -41,6 +49,9 @@ if (cmd === 'ai-kit') {
   const lipStyle = readFlag('--lip', 'candy');
   const segmentedStyle = readFlag('--segmented', 'raised');
   const wellStyle = readFlag('--well', 'recessed');
+  const headingFont = readFlag('--heading-font', 'Bricolage Grotesque');
+  const bodyFont = readFlag('--body-font', 'Figtree');
+  const codeFont = readFlag('--code-font', 'Geist Mono');
   const out = readFlag('--out', null);
   const {generateAiPrototypeKit} = await import(
     new URL('../packages/portable/dist/index.js', import.meta.url).href
@@ -55,6 +66,9 @@ if (cmd === 'ai-kit') {
     lipStyle,
     segmentedStyle,
     wellStyle,
+    headingFont,
+    bodyFont,
+    codeFont,
   });
   if (out) {
     const dest = path.resolve(process.cwd(), out);
@@ -68,7 +82,7 @@ if (cmd === 'ai-kit') {
 
 if (cmd === 'tokens') {
   const atmosphere = readFlag('--atmosphere', 'confectionery');
-  const accent = readFlag('--accent', 'strawberry');
+  const accent = readFlag('--accent', defaultAccentForAtmosphere(atmosphere));
   const depth = Number(readFlag('--depth', '1'));
   const radiusScale = Number(readFlag('--radius', '1'));
   const density = readFlag('--density', 'standard');
@@ -76,6 +90,9 @@ if (cmd === 'tokens') {
   const lipStyle = readFlag('--lip', 'candy');
   const segmentedStyle = readFlag('--segmented', 'raised');
   const wellStyle = readFlag('--well', 'recessed');
+  const headingFont = readFlag('--heading-font', 'Bricolage Grotesque');
+  const bodyFont = readFlag('--body-font', 'Figtree');
+  const codeFont = readFlag('--code-font', 'Geist Mono');
   const out = readFlag('--out', 'mehan-tokens.w3c.json');
   const {exportW3cDesignTokens} = await import(
     new URL('../packages/portable/dist/index.js', import.meta.url).href
@@ -92,6 +109,9 @@ if (cmd === 'tokens') {
       lipStyle,
       segmentedStyle,
       wellStyle,
+      headingFont,
+      bodyFont,
+      codeFont,
     }),
     null,
     2,
@@ -166,12 +186,7 @@ if (cmd === 'init') {
   const themeFlag = readFlag('--theme', null);
   const atmosphere =
     themeFlag?.replace(/^mehan-/, '') ?? readFlag('--atmosphere', 'confectionery');
-  const defaultAccentForAtm =
-    atmosphere === 'porcelain'
-      ? 'blueberry'
-      : atmosphere === 'stone'
-        ? 'tangerine'
-        : 'strawberry';
+  const defaultAccentForAtm = defaultAccentForAtmosphere(atmosphere);
   const accent = readFlag('--accent', defaultAccentForAtm);
   const depth = Number(readFlag('--depth', '1'));
   const radiusScale = Number(readFlag('--radius', '1'));
@@ -180,6 +195,9 @@ if (cmd === 'init') {
   const lipStyle = readFlag('--lip', 'candy');
   const segmentedStyle = readFlag('--segmented', 'raised');
   const wellStyle = readFlag('--well', 'recessed');
+  const headingFont = readFlag('--heading-font', 'Bricolage Grotesque');
+  const bodyFont = readFlag('--body-font', 'Figtree');
+  const codeFont = readFlag('--code-font', 'Geist Mono');
   const forcePortable = args.includes('--portable');
   const preferNpm = args.includes('--npm');
   const scope = readCurrentScope();
@@ -214,6 +232,9 @@ if (cmd === 'init') {
         lipStyle,
         segmentedStyle,
         wellStyle,
+        headingFont,
+        bodyFont,
+        codeFont,
       }),
       'utf8',
     );
@@ -246,7 +267,10 @@ if (cmd === 'init') {
     motion === 'expressive' &&
     lipStyle === 'candy' &&
     segmentedStyle === 'raised' &&
-    wellStyle === 'recessed';
+    wellStyle === 'recessed' &&
+    headingFont === 'Bricolage Grotesque' &&
+    bodyFont === 'Figtree' &&
+    codeFont === 'Geist Mono';
 
   const cssPath = path.join(srcDir, 'mehan.css');
   const cssLines = usesTailwind
@@ -321,6 +345,9 @@ export const mehanAppTheme = createMehanTheme({
   lipStyle: '${lipStyle}',
   segmentedStyle: '${segmentedStyle}',
   wellStyle: '${wellStyle}',
+  headingFont: '${headingFont}',
+  bodyFont: '${bodyFont}',
+  codeFont: '${codeFont}',
 });
 
 /** Optional SSR / Next.js <head> inline script to prevent dark-mode flash on load. */

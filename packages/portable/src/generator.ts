@@ -62,9 +62,9 @@ function varsBlock(dna: ResolvedMehanDna, mode: 'light' | 'dark'): string {
     `--mh-lip-pad:${dna.lipPx}px`,
     `--mh-seg-active-bg:${segSelectedBg}`,
     `--mh-seg-active-ink:${segSelectedInk}`,
-    `--mh-font-display:${dna.typography.displayFamily}`,
-    `--mh-font-body:${dna.typography.bodyFamily}`,
-    `--mh-font-mono:${dna.typography.monoFamily}`,
+    `--mh-font-display:"${dna.typography.displayFamily}"`,
+    `--mh-font-body:"${dna.typography.bodyFamily}"`,
+    `--mh-font-mono:"${dna.typography.monoFamily}"`,
     `--mh-font-base:${dna.typeBase}px`,
     `--mh-raised-grad:${M.raisedGradient}`,
     `--mh-knob-grad:${M.knobGradient}`,
@@ -110,14 +110,14 @@ const CORE_PORTABLE_RULES = `
 html,body{margin:0;min-height:100%;background:var(--mh-paper);color:var(--mh-ink);font:400 var(--mh-font-base,14px)/1.5 var(--mh-font-body,"Figtree"),ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4,p{margin:0}
 button,input,select,textarea{font:inherit;color:inherit}
-.mh-display,.mh-h1,.mh-h2,.mh-h3{font-family:var(--mh-font-display,"Bricolage Grotesque"),var(--mh-font-body,"Figtree"),ui-sans-serif,system-ui,sans-serif;letter-spacing:-0.028em;text-wrap:balance}
-.mh-display{font-size:clamp(28px,4vw,42px);line-height:1.08;font-weight:800;letter-spacing:-0.035em}
-.mh-h1{font-size:26px;line-height:1.18;font-weight:800}
-.mh-h2{font-size:19px;line-height:1.25;font-weight:700}
-.mh-h3{font-size:15px;line-height:1.35;font-weight:700}
+.mh-display,.mh-h1,.mh-h2,.mh-h3{font-family:var(--mh-font-display,"Bricolage Grotesque"),var(--mh-font-body,"Figtree"),ui-sans-serif,system-ui,sans-serif;letter-spacing:-0.025em;text-wrap:balance}
+.mh-display{font-size:clamp(28px,4vw,42px);line-height:1.12;font-weight:700;letter-spacing:-0.03em}
+.mh-h1{font-size:26px;line-height:1.22;font-weight:700}
+.mh-h2{font-size:19px;line-height:1.26;font-weight:600}
+.mh-h3{font-size:15px;line-height:1.34;font-weight:600}
 .mh-muted{color:var(--mh-ink-3);font-size:13px}
-.mh-mono{font-family:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;font-variant-numeric:tabular-nums;font-size:12px}
-.mh-kbd{display:inline-flex;align-items:center;padding:3px 7px;border-radius:6px;background:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);border:0;font:600 11px/1 "Geist Mono",monospace;color:var(--mh-ink-2)}
+.mh-mono{font-family:var(--mh-font-mono,"Geist Mono"),ui-monospace,"SFMono-Regular",Menlo,monospace;font-variant-numeric:tabular-nums;font-size:12px}
+.mh-kbd{display:inline-flex;align-items:center;padding:3px 7px;border-radius:6px;background:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);border:0;font:600 11px/1 var(--mh-font-mono,"Geist Mono"),monospace;color:var(--mh-ink-2)}
 
 /* Layout */
 .mh-container{max-width:1160px;margin:0 auto;padding:24px}
@@ -142,15 +142,15 @@ button,input,select,textarea{font:inherit;color:inherit}
 .mh-btn{height:var(--mh-ctrl-md,36px);padding:0 14px;border:0;border-radius:var(--mh-r-md);display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none;transition:transform 150ms var(--mh-ease),box-shadow 150ms ease,background-image 150ms ease,background-color 150ms ease}
 .mh-btn-sm{height:var(--mh-ctrl-sm,32px);padding:0 11px;font-size:12.5px}
 .mh-btn-lg{height:var(--mh-ctrl-lg,44px);padding:0 18px;font-size:14.5px;border-radius:calc(var(--mh-r-md) + 2px)}
-.mh-btn-primary{color:#fff;background-color:var(--mh-accent);background-image:var(--mh-primary-grad);box-shadow:var(--mh-shadow-primary);padding-bottom:3px}
+.mh-btn-primary{color:#fff;background-color:var(--mh-accent);background-image:var(--mh-primary-grad);box-shadow:var(--mh-shadow-primary);padding-bottom:var(--mh-lip-pad,3px)}
 .mh-btn-primary:hover:not(:disabled){background-image:var(--mh-primary-grad-hover);box-shadow:var(--mh-shadow-primary-hover)}
-.mh-btn-primary:active:not(:disabled){transform:translateY(1.5px);padding-bottom:1px;box-shadow:var(--mh-shadow-primary-pressed);transition-duration:80ms}
-.mh-btn-secondary{color:var(--mh-ink);background-color:var(--mh-surface);background-image:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);padding-bottom:2px}
+.mh-btn-primary:active:not(:disabled){transform:translateY(1.5px);padding-bottom:min(var(--mh-lip-pad,1px),1px);box-shadow:var(--mh-shadow-primary-pressed);transition-duration:80ms}
+.mh-btn-secondary{color:var(--mh-ink);background-color:var(--mh-surface);background-image:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);padding-bottom:min(var(--mh-lip-pad,2px),2px)}
 .mh-btn-secondary:hover:not(:disabled){box-shadow:var(--mh-shadow-raised-hover)}
 .mh-btn-secondary:active:not(:disabled){transform:translateY(1px);padding-bottom:0;box-shadow:var(--mh-shadow-pressed);transition-duration:80ms}
 .mh-btn-ghost{background:transparent;color:var(--mh-ink-2)}
 .mh-btn-ghost:hover:not(:disabled){background:var(--mh-well);color:var(--mh-ink)}
-.mh-btn-danger{color:var(--mh-danger);background:var(--mh-danger-soft-solid);box-shadow:var(--mh-shadow-danger);padding-bottom:2px}
+.mh-btn-danger{color:var(--mh-danger);background:var(--mh-danger-soft-solid);box-shadow:var(--mh-shadow-danger);padding-bottom:min(var(--mh-lip-pad,2px),2px)}
 .mh-btn-danger:active:not(:disabled){transform:translateY(1px);padding-bottom:0;box-shadow:var(--mh-shadow-danger-pressed);transition-duration:80ms}
 @media (hover:hover) and (prefers-reduced-motion:no-preference){.mh-btn-primary:hover:not(:disabled),.mh-btn-secondary:hover:not(:disabled),.mh-btn-danger:hover:not(:disabled){transform:translateY(-1px)}}
 .mh-btn:disabled{opacity:.48;cursor:default;transform:none}
@@ -181,8 +181,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 /* KPI Metric Card, Badges, Alerts, Tabs, Table & Borderless Floating Modal */
 .mh-metric{background:var(--mh-surface);border:1px solid var(--mh-card-hairline);border-radius:var(--mh-r-lg);box-shadow:var(--mh-shadow-card);padding:16px 18px;display:flex;flex-direction:column;gap:6px}
-.mh-metric-value{font:800 28px/1.12 "Bricolage Grotesque",sans-serif;letter-spacing:-0.03em;font-variant-numeric:tabular-nums}
-.mh-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--mh-well);color:var(--mh-ink-2)}
+.mh-metric-value{font:700 28px/1.15 var(--mh-font-display,"Bricolage Grotesque"),sans-serif;letter-spacing:-0.03em;font-variant-numeric:tabular-nums}
+.mh-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:600;background:var(--mh-well);color:var(--mh-ink-2)}
 .mh-badge-accent{background:var(--mh-accent-soft);color:var(--mh-accent-text)}
 .mh-badge-info{background:var(--mh-info-soft);color:var(--mh-info)}
 .mh-badge-success{background:var(--mh-success-soft);color:var(--mh-success)}
@@ -194,9 +194,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .mh-tab[aria-selected="true"],.mh-tab.is-active{color:var(--mh-ink)}
 .mh-tab[aria-selected="true"]::after,.mh-tab.is-active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:999px;background:var(--mh-accent)}
 .mh-table-wrap{overflow-x:auto;border-radius:var(--mh-r-lg);border:1px solid var(--mh-card-hairline);background:var(--mh-surface);box-shadow:var(--mh-shadow-card)}
-.mh-table{width:100%;border-collapse:collapse;font-size:13px}
+.mh-table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
 .mh-table th,.mh-table td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--mh-line)}
-.mh-table th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--mh-ink-3);background:var(--mh-tray)}
+.mh-table th{font-size:12px;font-weight:600;letter-spacing:-0.005em;color:var(--mh-ink-2);background:var(--mh-tray);border-bottom:1px solid var(--mh-line-strong)}
 .mh-table tr:last-child td{border-bottom:0}
 .mh-nav-item{height:var(--mh-ctrl-md,36px);padding:0 10px;border-radius:var(--mh-r-sm);display:flex;align-items:center;gap:9px;border:0;background:transparent;color:var(--mh-ink-2);font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;width:100%;text-align:left}
 .mh-nav-item:hover{background:var(--mh-well);color:var(--mh-ink)}
@@ -353,11 +353,12 @@ Use the embedded **Mehan Portable CSS + Runtime** below to build a tactile, acce
 3. **Typography & Tabular Numbers:** Headings use \`.mh-display\`, \`.mh-h1\`, \`.mh-h2\`, \`.mh-h3\`; numbers/KPIs/timestamps use \`.mh-mono\` or \`.mh-metric-value\` (\`tabular-nums\`).
 
 ## 2. Universal UX, Semantic & Copywriting Standards
-1. **Simple First, Power on Demand:** Keep top-level forms/toolbars to \`<= 5\` primary controls; place expert flags inside a collapsible \`<details><summary>Advanced settings</summary>...</details>\`.
-2. **Row-First Data Discipline:** Use a maximum of \`4\` \`.mh-metric\` summary cards at the top; render homogeneous lists of \`5+\` records in \`.mh-table-wrap > .mh-table\` rather than walls of repeated cards.
-3. **Semantic Control Boundaries:** Use \`.mh-seg\` ONLY for \`2–5\` immediate view/mode switches; use \`.mh-tabs\` ONLY when switching distinct content panels; use \`.mh-select\` ONLY for form value selection.
-4. **Recovery States & Microcopy:**
-   - **Sentence case** on all buttons, labels, and headings (e.g., \`Save changes\`, \`Create project\`, \`Delete item\`). Never use vague \`OK\`, \`Yes\`, or \`Submit\`.
+1. **Grouping & Chunking (Anti-Card-Wall):** Keep intra-group spacing tighter than inter-group spacing (\`8–12px\` inside a group, \`20–24px\` between sections). Use at most \`4\` \`.mh-metric\` KPI cards at the top; render homogeneous lists of \`5+\` records in \`.mh-table-wrap > .mh-table\` rather than walls of repeated cards.
+2. **Simple First, Power on Demand:** Keep top-level forms/toolbars to \`<= 5\` primary controls; place expert flags or raw code inside a collapsible \`<details><summary>Advanced settings</summary>...</details>\` (capped at 2 disclosure levels).
+3. **Truncation & Tabular Numerals:** Right-align numeric table columns (\`text-align:right\`) with \`tabular-nums\`. Never truncate button labels, error messages, or financial values; clamp multi-line card descriptions to 2 lines with accessible titles.
+4. **Semantic Control Boundaries:** Use \`.mh-seg\` ONLY for \`2–5\` immediate view/mode switches; use \`.mh-tabs\` ONLY when switching distinct content panels; use \`.mh-select\` ONLY for form value selection.
+5. **Recovery States & Microcopy:**
+   - **Sentence case** on all buttons, table headers, labels, and headings (e.g., \`Save changes\`, \`Create project\`, \`Delete item\`). Never shout in ALL CAPS or use vague \`OK\`, \`Yes\`, or \`Submit\`.
    - **Blame-free errors:** State what happened + how to fix it (e.g., \`Enter a valid work email, like name@company.com.\`), preserving user input.
    - **Actionable empty states:** Explain what belongs in the view in one sentence and provide one clear CTA button.
    - **Destructive confirmation:** Confirm irreversible deletes in a \`<dialog class="mh-modal">\` naming the item, with \`Cancel\` + specific \`Delete <noun>\`.

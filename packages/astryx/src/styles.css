@@ -361,7 +361,7 @@
     font-family: var(--font-family-heading, sans-serif);
     font-size: 28px;
     line-height: 1.15;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
     color: var(--color-text-primary);
