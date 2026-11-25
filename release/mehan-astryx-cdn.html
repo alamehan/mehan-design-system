@@ -4323,23 +4323,56 @@
     color: #ffffff;
   }
 
+  /* U4 Scroll-Chaining Split Law: contain overlays, never trap vertical page scroll in inline editors */
+  .mehan-nc-list,
+  .mehan-split-menu,
+  .mehan-czb-menu,
+  .mehan-color-well-popover {
+    overscroll-behavior: contain;
+  }
+  .mehan-ce-textarea,
+  .mehan-mde-textarea,
+  .mehan-mde-preview {
+    overscroll-behavior-inline: contain;
+    overscroll-behavior-block: auto;
+  }
+
   /* Universal Media Hygiene (Coarse Pointer, High Contrast, Forced Colors, Reduced Motion & Print) */
   @media (pointer: coarse) {
     .mehan-ps-rail-hit,
+    .mehan-ts-rail-hit,
     .mehan-split-main,
     .mehan-split-trigger,
     .mehan-copy-btn,
-    .mehan-color-well-trigger {
+    .mehan-color-well-trigger,
+    .mehan-ic-trigger,
+    .mehan-ic-cancel,
+    .mehan-ic-confirm,
+    .mehan-nc-trigger,
+    .mehan-czb-btn,
+    .mehan-czb-readout,
+    .mehan-ts-play,
+    .mehan-tour-skip,
+    .mehan-tour-prev,
+    .mehan-tour-next {
       min-height: 44px;
     }
-    .mehan-cp-eyedropper {
+    .mehan-cp-eyedropper,
+    .mehan-tour-close {
       width: 44px;
       height: 44px;
+    }
+    .mehan-de-cell {
+      min-width: 44px;
+      min-height: 44px;
+      font-size: 16px;
     }
     .mehan-cp-hex-input,
     .mehan-ps-value-input,
     .mehan-ad-input,
-    .mehan-gp-pos-input {
+    .mehan-gp-pos-input,
+    .mehan-ce-textarea,
+    .mehan-mde-textarea {
       font-size: 16px;
       min-height: 36px;
     }
@@ -4359,7 +4392,17 @@
     .mehan-theme-switch,
     .mehan-ad-socket,
     .mehan-gradient-picker,
-    .mehan-am-grid {
+    .mehan-am-grid,
+    .mehan-de-cell,
+    .mehan-image-well-dropzone,
+    .mehan-error-summary,
+    .mehan-code-editor,
+    .mehan-markdown-editor,
+    .mehan-nc-trigger,
+    .mehan-nc-popover,
+    .mehan-canvas-zoom-bar,
+    .mehan-timeline-scrubber,
+    .mehan-tour-card {
       outline: 1px solid var(--color-border-emphasized);
     }
   }
@@ -4374,11 +4417,14 @@
     .mehan-swatch[data-selected="true"],
     .mehan-gp-handle[data-selected="true"],
     .mehan-ts-option[data-selected="true"],
-    .mehan-am-cell[data-selected="true"] {
+    .mehan-am-cell[data-selected="true"],
+    .mehan-nc-tab[data-active="true"],
+    .mehan-mde-tab[data-active="true"] {
       outline: 2px solid Highlight;
       outline-offset: 2px;
     }
     .mehan-ps-track,
+    .mehan-ts-track,
     .mehan-color-picker,
     .mehan-metric-card,
     .mehan-split-btn,
@@ -4388,13 +4434,25 @@
     .mehan-theme-switch,
     .mehan-ad-socket,
     .mehan-gradient-picker,
-    .mehan-am-grid {
+    .mehan-am-grid,
+    .mehan-de-cell,
+    .mehan-image-well-dropzone,
+    .mehan-error-summary,
+    .mehan-code-editor,
+    .mehan-markdown-editor,
+    .mehan-nc-trigger,
+    .mehan-nc-popover,
+    .mehan-canvas-zoom-bar,
+    .mehan-timeline-scrubber,
+    .mehan-tour-card {
       border: 1px solid CanvasText;
     }
-    .mehan-ps-fill {
+    .mehan-ps-fill,
+    .mehan-ts-fill {
       background: Highlight;
     }
     .mehan-ps-knob,
+    .mehan-ts-playhead,
     .mehan-ad-rotor {
       background: Canvas;
       border: 2px solid Highlight;
@@ -4406,7 +4464,9 @@
     .mehan-ps-knob,
     .mehan-split-main,
     .mehan-split-trigger,
-    .mehan-split-chevron {
+    .mehan-split-chevron,
+    .mehan-gauge-fill,
+    .mehan-ar-fill {
       transition: none !important;
     }
     .mehan-swatch:hover:not(:disabled),
@@ -4417,9 +4477,18 @@
   }
 
   @media print {
+    .mehan-tour-card,
+    .mehan-nc-popover,
+    .mehan-canvas-zoom-bar {
+      display: none !important;
+    }
     .mehan-metric-card,
     .mehan-color-picker,
-    .mehan-gradient-picker {
+    .mehan-gradient-picker,
+    .mehan-code-editor,
+    .mehan-markdown-editor,
+    .mehan-error-summary,
+    .mehan-timeline {
       break-inside: avoid;
       box-shadow: none;
       border: 1px solid #d4d4d8;

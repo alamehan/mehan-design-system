@@ -387,6 +387,39 @@ export const MEHAN_PORTABLE_RUNTIME_JS = `
       });
     }
   });
+
+  document.addEventListener('input', function (e) {
+    var input = e.target;
+    if (!(input instanceof HTMLInputElement) || !input.closest('.mh-otp')) return;
+    var digit = input.value.replace(/[^0-9a-zA-Z]/g, '').slice(-1);
+    input.value = digit;
+    if (digit && input.nextElementSibling instanceof HTMLInputElement) {
+      input.nextElementSibling.focus();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var input = e.target;
+    if (!(input instanceof HTMLInputElement) || !input.closest('.mh-otp')) return;
+    if (e.key === 'Backspace' && !input.value && input.previousElementSibling instanceof HTMLInputElement) {
+      input.previousElementSibling.focus();
+    }
+  });
+
+  document.addEventListener('paste', function (e) {
+    var input = e.target;
+    if (!(input instanceof HTMLInputElement) || !input.closest('.mh-otp')) return;
+    var text = (e.clipboardData ? e.clipboardData.getData('text') : '').replace(/[\s-]+/g, '');
+    if (!text) return;
+    e.preventDefault();
+    var cells = Array.from(input.closest('.mh-otp').querySelectorAll('input'));
+    var startIdx = Math.max(0, cells.indexOf(input));
+    for (var i = 0; i < text.length && startIdx + i < cells.length; i++) {
+      cells[startIdx + i].value = text[i];
+    }
+    var focusIdx = Math.min(cells.length - 1, startIdx + text.length);
+    if (cells[focusIdx]) cells[focusIdx].focus();
+  });
 })();
 `.trim();
 
@@ -417,21 +450,28 @@ Use the embedded **Mehan Portable CSS + Runtime** below to build a tactile, acce
 2. **Silky-Smooth Tactile Buttons:** One \`.mh-btn.mh-btn-primary\` per screen/dialog for the primary CTA; secondary actions use \`.mh-btn.mh-btn-secondary\`; quiet actions use \`.mh-btn.mh-btn-ghost\`; destructive actions use soft-tactile \`.mh-btn.mh-btn-danger\`.
 3. **Typography & Tabular Numbers:** Headings use \`.mh-display\`, \`.mh-h1\`, \`.mh-h2\`, \`.mh-h3\`; numbers/KPIs/timestamps use \`.mh-mono\` or \`.mh-metric-value\` (\`tabular-nums\`).
 
-## 2. Universal UX, Semantic & Copywriting Standards
+## 2. Universal UX, Semantic & Copywriting Standards (Foundations + U1–U6)
 1. **Grouping & Chunking (Anti-Card-Wall):** Keep intra-group spacing tighter than inter-group spacing (\`8–12px\` inside a group, \`20–24px\` between sections). Use at most \`4\` \`.mh-metric\` KPI cards at the top; render homogeneous lists of \`5+\` records in \`.mh-table-wrap > .mh-table\` rather than walls of repeated cards.
 2. **Simple First, Power on Demand:** Keep top-level forms/toolbars to \`<= 5\` primary controls; place expert flags or raw code inside a collapsible \`<details><summary>Advanced settings</summary>...</details>\` (capped at 2 disclosure levels).
-3. **Truncation & Tabular Numerals:** Right-align numeric table columns (\`text-align:right\`) with \`tabular-nums\`. Never truncate button labels, error messages, or financial values; clamp multi-line card descriptions to 2 lines with accessible titles.
+3. **9-Tier Line Budget, Middle-Truncation & Scroll Split (U4):** Right-align numeric table columns (\`text-align:right\`) with \`tabular-nums\`. Never truncate button labels, error messages, or financial values. Use \`.mh-mid-trunc\` (\`.mh-mid-head\` + \`.mh-mid-tail\`) for filenames, paths, SHAs, and API keys so file extensions/tails stay visible. Never trap vertical page scrolling inside inline tables/textareas (\`overscroll-behavior-y:auto\`).
 4. **Semantic Control Boundaries:** Use \`.mh-seg\` ONLY for \`2–5\` immediate view/mode switches; use \`.mh-tabs\` ONLY when switching distinct content panels; use \`.mh-select\` ONLY for form value selection.
-5. **Recovery States & Microcopy:**
-   - **Sentence case** on all buttons, table headers, labels, and headings (e.g., \`Save changes\`, \`Create project\`, \`Delete item\`). Never shout in ALL CAPS or use vague \`OK\`, \`Yes\`, or \`Submit\`.
-   - **Blame-free errors:** State what happened + how to fix it (e.g., \`Enter a valid work email, like name@company.com.\`), preserving user input.
-   - **Actionable empty states:** Explain what belongs in the view in one sentence and provide one clear CTA button.
-   - **Destructive confirmation:** Confirm irreversible deletes in a \`<dialog class="mh-modal">\` naming the item, with \`Cancel\` + specific \`Delete <noun>\`.
+5. **Keyboard, Touch & High-Contrast Ergonomics (U1 & U2):** Guard single-key shortcuts against \`input\`/\`textarea\` typing & IME composition; layer \`Escape\` dismissal cleanly (topmost popover/dialog first). Coarse pointers automatically expand targets to \`>= 44px\` and inputs to \`16px\`, while \`prefers-contrast\` / \`forced-colors\` / \`print\` adapt automatically.
+6. **Validation Timing, Proportional Confirmation & Bilingual Copy (U3, U5 & U6):**
+   - **Reward early, punish late:** Never show red errors while typing the first entry into an untouched field; validate \`onBlur\`/\`onSubmit\`, then clear immediately \`onInput\` once valid.
+   - **Proportional confirmation:** Immediate execution + Undo toast for reversible actions; inline row confirmation for local deletes; \`<dialog class="mh-modal">\` strictly for irreversible destruction naming the exact noun (\`Cancel\` + \`Delete API key\`).
+   - **Sentence case & +30–40% expansion resilience:** Never shout in ALL CAPS or hardcode narrow pixel widths on buttons/tabs so Indonesian/localized strings (\`Save\` -> \`Simpan perubahan\`) grow naturally.
 
 ## 3. Auto-Wired Interactive Markup
 - **Theme toggle:** \`<button type="button" class="mh-btn mh-btn-secondary mh-btn-sm" data-mh-theme-toggle>Light / Dark</button>\`
+- **Split button:** \`<div class="mh-split"><button type="button" class="mh-btn mh-btn-primary">Publish release</button><button type="button" class="mh-btn mh-btn-primary" aria-label="More publish options">▾</button></div>\`
+- **Copy button:** \`<button type="button" class="mh-btn mh-btn-secondary mh-btn-sm mh-copy-btn" data-mh-copy="mh_key_demo_98f4">Copy key</button>\`
+- **Middle truncate:** \`<span class="mh-mid-trunc mh-mono"><span class="mh-mid-head">quarterly-audit-2026-</span><span class="mh-mid-tail">signed.pdf</span></span>\`
 - **Segmented control:** \`<div class="mh-seg"><button aria-selected="true">Day</button><button>Week</button></div>\`
 - **Switch:** \`<button type="button" role="switch" aria-checked="true" class="mh-switch is-on" aria-label="Enable feature"></button>\`
+- **9-point anchor grid:** \`<div class="mh-anchor-grid" role="radiogroup" aria-label="Origin"><button type="button" aria-checked="true" aria-label="Top left"></button><!-- 8 more cells --></div>\`
+- **6-digit OTP entry (auto-advance & paste):** \`<div class="mh-otp"><input maxlength="1" inputmode="numeric" aria-label="Digit 1" /><!-- 5 more inputs --></div>\`
+- **Error summary & inline message:** \`<div role="alert" class="mh-error-summary"><strong>Fix 1 issue:</strong> <a href="#email">Enter a valid work email.</a></div>\` · \`<div class="mh-inline-msg is-success">Saved cleanly.</div>\`
+- **Timeline & Zoom HUD:** \`<ol class="mh-timeline"><li>Deployed v1.0</li></ol>\` · \`<div class="mh-zoom-bar"><button class="mh-btn mh-btn-ghost mh-btn-sm">−</button><span class="mh-mono">100%</span><button class="mh-btn mh-btn-ghost mh-btn-sm">+</button></div>\`
 - **Tabs:** \`<div class="mh-tabs"><button class="mh-tab is-active" data-tab="overview">Overview</button><button class="mh-tab" data-tab="activity">Activity</button></div>\` paired with \`<section data-tab-panel="overview">...</section>\`
 - **Modal:** \`<button class="mh-btn mh-btn-secondary" data-mh-modal-open="confirm-dlg">Delete item</button>\` + \`<dialog id="confirm-dlg" class="mh-modal">...<button class="mh-btn mh-btn-secondary" data-mh-modal-close>Cancel</button></dialog>\`
 

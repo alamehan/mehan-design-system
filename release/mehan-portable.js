@@ -90,4 +90,37 @@
       });
     }
   });
+
+  document.addEventListener('input', function (e) {
+    var input = e.target;
+    if (!(input instanceof HTMLInputElement) || !input.closest('.mh-otp')) return;
+    var digit = input.value.replace(/[^0-9a-zA-Z]/g, '').slice(-1);
+    input.value = digit;
+    if (digit && input.nextElementSibling instanceof HTMLInputElement) {
+      input.nextElementSibling.focus();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var input = e.target;
+    if (!(input instanceof HTMLInputElement) || !input.closest('.mh-otp')) return;
+    if (e.key === 'Backspace' && !input.value && input.previousElementSibling instanceof HTMLInputElement) {
+      input.previousElementSibling.focus();
+    }
+  });
+
+  document.addEventListener('paste', function (e) {
+    var input = e.target;
+    if (!(input instanceof HTMLInputElement) || !input.closest('.mh-otp')) return;
+    var text = (e.clipboardData ? e.clipboardData.getData('text') : '').replace(/[s-]+/g, '');
+    if (!text) return;
+    e.preventDefault();
+    var cells = Array.from(input.closest('.mh-otp').querySelectorAll('input'));
+    var startIdx = Math.max(0, cells.indexOf(input));
+    for (var i = 0; i < text.length && startIdx + i < cells.length; i++) {
+      cells[startIdx + i].value = text[i];
+    }
+    var focusIdx = Math.min(cells.length - 1, startIdx + text.length);
+    if (cells[focusIdx]) cells[focusIdx].focus();
+  });
 })();

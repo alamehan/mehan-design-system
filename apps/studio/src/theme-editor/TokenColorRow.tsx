@@ -104,6 +104,11 @@ export function TokenColorRow({
                   label={`${readableLabel} color`}
                   value={displayHex}
                   onChange={handleHexSelect}
+                  hasAlpha
+                  alpha={parsed?.alpha ?? 1}
+                  onAlphaChange={nextAlpha =>
+                    commitBranchColor(colorWithAlphaToString(displayHex, nextAlpha))
+                  }
                   presets={swatches}
                 />
               </Stack>

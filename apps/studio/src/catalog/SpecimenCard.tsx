@@ -62,8 +62,8 @@ export const CATEGORY_DESC: Record<
   {en: string; id: string}
 > = {
   Action: {
-    en: 'Tactile triggers, command menus, segmented switchers, and keyboard-roving toolbars.',
-    id: 'Pemicu aksi taktil, menu perintah, pemilih mode cekung, dan bilah alat bernavigasi panah.',
+    en: 'Tactile triggers, SplitButton, CopyButton, ThemeSwitch, InlineConfirm, CanvasZoomBar, and toolbars.',
+    id: 'Pemicu aksi taktil, SplitButton, CopyButton, ThemeSwitch, InlineConfirm, CanvasZoomBar, dan bilah alat.',
   },
   Chat: {
     en: 'Conversational AI threads, tool-execution disclosures, and multi-action message composers.',
@@ -74,20 +74,20 @@ export const CATEGORY_DESC: Record<
     id: 'Permukaan kartu bertingkat, kartu pilihan interaktif, rel geser, dan laci lipat.',
   },
   Content: {
-    en: 'Calibrated display & body typography, code highlighting, avatars, citations, and empty states.',
-    id: 'Tipografi judul & isi terkalibrasi, blok kode, avatar, kutipan, serta tampilan kosong.',
+    en: 'Calibrated typography, MiddleTruncate paths/keys, code blocks, avatars, citations, and empty states.',
+    id: 'Tipografi terkalibrasi, MiddleTruncate path/kunci, blok kode, avatar, kutipan, dan tampilan kosong.',
   },
   'Data Visualization': {
-    en: 'Tabular KPI metric cards and perceptually balanced OKLCH categorical chart palettes.',
-    id: 'Kartu metrik KPI berangka sejajar dan palet warna grafik kategorikal OKLCH.',
+    en: 'Tabular KPI MetricCards, Sparklines, 240° Gauges, concentric ActivityRings, and OKLCH chart palettes.',
+    id: 'MetricCard KPI berangka sejajar, Sparkline, Gauge 240°, ActivityRing konsentris, dan palet OKLCH.',
   },
   'Feedback & Status': {
-    en: 'WCAG-verified semantic badges, inline banners, determinate progress tracks, and shimmers.',
-    id: 'Lencana status berkontras terjaga, kotak info sebaris, bilah progres, dan kerangka muat.',
+    en: 'WCAG badges, banners, ErrorSummary focus jumps, InlineMessages, progress tracks, and shimmers.',
+    id: 'Lencana status, kotak info, lompatan fokus ErrorSummary, InlineMessage, bilah progres, dan kerangka muat.',
   },
   'Form Controls': {
-    en: 'Recessed-well inputs, calendars, comboboxes, HSV color pickers, and studio precision sliders.',
-    id: 'Kolom input cekung, kalender, pemilih pencarian, kanvas warna HSV, dan slider presisi.',
+    en: 'Recessed-well fields, DigitEntry OTP, Rating, ImageWell, ColorWell, GradientPicker, AngleDial, AnchorMatrix, TimelineScrubber, and Code/Markdown editors.',
+    id: 'Kolom input cekung, DigitEntry OTP, Rating, ImageWell, ColorWell, GradientPicker, AngleDial, AnchorMatrix, TimelineScrubber, serta editor Kode/Markdown.',
   },
   Layout: {
     en: 'Bounded application shells, structured panels, draggable split-panes, and token-stepped stacks.',
@@ -98,12 +98,12 @@ export const CATEGORY_DESC: Record<
     id: 'Bilah atas, navigasi samping, jejak halaman, daftar isi aktif, penunjuk tahap, dan tab.',
   },
   Overlay: {
-    en: 'Top-layer modal dialogs, named destructive alerts, drawers, bottom sheets, and command palettes.',
-    id: 'Dialog modal pengunci fokus, konfirmasi hapus bernama, laci samping, dan palet perintah.',
+    en: 'Modal dialogs, named destructive alerts, drawers, bottom sheets, NotificationCenter, Tour, and command palettes.',
+    id: 'Dialog modal, konfirmasi hapus bernama, laci samping, NotificationCenter, Tour, dan palet perintah.',
   },
   'Table & List': {
-    en: 'Row-first data tables with shaded headers and tabular numerals, structured lists, and treeviews.',
-    id: 'Tabel data rapi berheader tegas dengan angka sejajar, daftar terstruktur, dan pohon hierarki.',
+    en: 'Row-first data tables with shaded headers and tabular numerals, chronological Timelines, lists, and treeviews.',
+    id: 'Tabel data rapi berheader tegas dengan angka sejajar, lini masa Timeline, daftar terstruktur, dan pohon hierarki.',
   },
   Utility: {
     en: 'Scoped media contrast zones, local syntax-highlighting themes, and screen-reader helpers.',
