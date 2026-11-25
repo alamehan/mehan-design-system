@@ -1,11 +1,12 @@
+import os from 'node:os';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {expect, test} from '@playwright/test';
 
-const repoRoot = path.resolve(import.meta.dirname, '..');
+const repoRoot = path.resolve(import.meta.dirname, '../..');
 const studioHtmlPath = path.join(repoRoot, 'STUDIO.html');
 const studioFileUrl = pathToFileURL(studioHtmlPath).href;
-const shotDir = process.env.MEHAN_SHOT_DIR ?? path.join(repoRoot, 'test-results');
+const shotDir = process.env.MEHAN_SHOT_DIR ?? path.join(os.tmpdir(), 'mehan-playwright-shots');
 
 test.describe('Stage 1 Exhaustive Proof — Every Theme Editor Knob, Slot, Font, Undo/Redo & Media Mode', () => {
   test('verifies real DOM getComputedStyle mutations for every Base Style, Component Token slot, Raw Token group, Undo/Redo, Preset, and Offline Media Hygiene', async ({

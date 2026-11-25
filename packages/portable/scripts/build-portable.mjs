@@ -4,17 +4,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const pkgRoot = path.resolve(import.meta.dirname, '..');
-const repoRoot = path.resolve(pkgRoot, '../..');
-const dnaDir = path.resolve(pkgRoot, '../dna');
 const astryxDir = path.resolve(pkgRoot, '../astryx');
 const distDir = path.join(pkgRoot, 'dist');
-const releaseDir = path.join(repoRoot, 'release');
 
 fs.rmSync(distDir, {recursive: true, force: true});
 fs.mkdirSync(distDir, {recursive: true});
 
 const pnpmCmd = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
-const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 execFileSync(
   pnpmCmd,
@@ -162,30 +158,6 @@ ${inlinedStylesCss}
 
 fs.writeFileSync(path.join(distDir, 'mehan-astryx-cdn.html'), cdnHtml, 'utf8');
 
-// Populate root `release/` directory with ready-to-install local tarball + portable & Figma W3C artifacts
-fs.rmSync(releaseDir, {recursive: true, force: true});
-fs.mkdirSync(releaseDir, {recursive: true});
-
-for (const filename of [
-  'mehan-portable.css',
-  'mehan-portable.js',
-  'MEHAN-AI-PROTOTYPE-KIT.md',
-  'mehan-astryx-cdn.html',
-  'mehan-tokens.w3c.json',
-]) {
-  fs.copyFileSync(path.join(distDir, filename), path.join(releaseDir, filename));
-}
-
-for (const packTarget of [dnaDir, astryxDir, pkgRoot]) {
-  if (fs.existsSync(path.join(packTarget, 'dist/index.js'))) {
-    execFileSync(npmCmd, ['pack', '--pack-destination', releaseDir], {
-      cwd: packTarget,
-      stdio: 'inherit',
-      shell: process.platform === 'win32',
-    });
-  }
-}
-
 console.log(
-  '✅ @mehan/portable built CSS, runtime JS, AI Kit, W3C tokens, CDN HTML, and release/ tarball.',
+  '✅ @mehan/portable built CSS, runtime JS, AI Kit, W3C tokens, and CDN HTML in dist/.',
 );

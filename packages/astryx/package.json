@@ -2,7 +2,7 @@
   "name": "@mehan/astryx",
   "version": "1.0.0",
   "displayName": "Mehan Design System for Astryx",
-  "description": "Tactile, parametric UI & UX extension layer for Meta Astryx — 3 atmospheres, open OKLCH + Astryx token/component theming, 35 universal components & workspace layouts, ergonomic runtime hooks, and 7 UX/copy guides.",
+  "description": "Tactile, parametric UI & UX extension layer for Meta Astryx — curated color atmospheres, perceptual OKLCH theming, self-hosted OFL fonts, workspace & creative components, runtime hooks, and AI-indexed UX guides.",
   "license": "MIT",
   "homepage": "https://github.com/alamehan/mehan-design-system/tree/main/packages/astryx",
   "repository": {

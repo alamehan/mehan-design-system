@@ -16,7 +16,7 @@ import {
 } from '@astryxdesign/core';
 import {ExternalLink, FolderGit2, Globe, Heart, ShieldCheck, Sparkles} from 'lucide-react';
 import {MehanLogoMark} from './MehanLogoMark';
-import type {StudioLang} from './studioState';
+import type {StudioLang} from '../studioState';
 
 export type StudioInfoTab = 'overview' | 'how' | 'privacy' | 'shortcuts' | 'about';
 

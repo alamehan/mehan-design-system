@@ -43,10 +43,12 @@ function resolveChromiumExecutable(): string | undefined {
 }
 
 const executablePath = resolveChromiumExecutable();
+fs.mkdirSync(path.join(os.tmpdir(), 'mehan-playwright-shots'), {recursive: true});
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: './tests/e2e',
   testMatch: '**/*.spec.ts',
+  outputDir: path.join(os.tmpdir(), 'mehan-playwright-results'),
   timeout: 45_000,
   use: {
     headless: true,

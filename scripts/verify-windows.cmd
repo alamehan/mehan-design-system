@@ -1,5 +1,5 @@
 @echo off
-cd /d "%~dp0"
+cd /d "%~dp0.."
 echo ============================================================
 echo  Mehan Design System -- Full Rebuild ^& 6-Gate Verification
 echo ============================================================

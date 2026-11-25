@@ -53,10 +53,10 @@ import {
 } from 'lucide-react';
 import {ComponentsCatalogView} from './catalog/ComponentsCatalogView';
 import {STUDIO_COPY} from './i18n';
-import {MaintainView} from './MaintainView';
-import {MehanLogoMark} from './MehanLogoMark';
-import {OverviewManifesto} from './OverviewManifesto';
-import {StudioInfoDialog, type StudioInfoTab} from './StudioInfoDialog';
+import {MaintainView} from './views/MaintainView';
+import {MehanLogoMark} from './components/MehanLogoMark';
+import {OverviewManifesto} from './views/OverviewManifesto';
+import {StudioInfoDialog, type StudioInfoTab} from './components/StudioInfoDialog';
 import {
   buildAgentSetupPrompt,
   buildReactInstallSnippet,
@@ -77,7 +77,7 @@ import {
   exportCreateMehanThemeTs,
   type FullThemeEditorState,
 } from './theme-editor/themeEditorModel';
-import {UxCopyView} from './UxCopyView';
+import {UxCopyView} from './views/UxCopyView';
 
 interface StudioInnerProps {
   lang: StudioLang;

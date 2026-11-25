@@ -1,12 +1,13 @@
+import os from 'node:os';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import AxeBuilder from '@axe-core/playwright';
 import {expect, test} from '@playwright/test';
 
-const repoRoot = path.resolve(import.meta.dirname, '..');
+const repoRoot = path.resolve(import.meta.dirname, '../..');
 const studioHtmlPath = path.join(repoRoot, 'STUDIO.html');
 const studioFileUrl = pathToFileURL(studioHtmlPath).href;
-const shotDir = process.env.MEHAN_SHOT_DIR ?? path.join(repoRoot, 'test-results');
+const shotDir = process.env.MEHAN_SHOT_DIR ?? path.join(os.tmpdir(), 'mehan-playwright-shots');
 
 test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Playbook & Theme Editor', () => {
   test('passes Desktop 1366x900 Light/Dark across real font switching, bounded Layout, rich Table, UX Playbook & Theme Editor with 0 errors and 0 axe contrast violations', async ({

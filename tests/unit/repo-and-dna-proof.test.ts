@@ -36,10 +36,10 @@ import {
   exportCreateMehanThemeTs,
   parseImportedThemeText,
   type FullThemeEditorState,
-} from '../apps/studio/src/theme-editor/themeEditorModel';
-import {getBuiltInPresets} from '../apps/studio/src/studioState';
+} from '../../apps/studio/src/theme-editor/themeEditorModel';
+import {getBuiltInPresets} from '../../apps/studio/src/studioState';
 
-const repoRoot = path.resolve(import.meta.dirname, '..');
+const repoRoot = path.resolve(import.meta.dirname, '../..');
 
 describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Zero-Bias Repo Lock', () => {
   const atmospheres = Object.keys(MEHAN_ATMOSPHERES) as MehanAtmosphereId[];
@@ -470,21 +470,48 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
     }
     assertNoLocalDrivePaths(repoRoot);
 
-    // Lock 5: Governance convergence (README.md <-> AGENTS.md <-> CLAUDE.md), valid relative links,
-    // Evergreen static SVG (zero brittle inventory tallies), and explicit Selector placement="below" across Studio
-    for (const docName of ['README.md', 'AGENTS.md', 'CLAUDE.md']) {
-      const docPath = path.join(repoRoot, docName);
-      expect(fs.existsSync(docPath), `Missing governance doc ${docName}`).toBe(true);
+    // Lock 5: Clean root hygiene, governance convergence (README.md, README.id.md, AGENTS.md, CLAUDE.md, docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md),
+    // valid relative links, valid XML SVG headers, and explicit Selector placement="below" across Studio
+    const rootEntries = fs.readdirSync(repoRoot);
+    expect(rootEntries.some(f => f.endsWith('.cmd') || f.endsWith('.command'))).toBe(false);
+    expect(fs.existsSync(path.join(repoRoot, 'tsconfig.base.json'))).toBe(false);
+    expect(fs.existsSync(path.join(repoRoot, 'scripts/pack-release.mjs'))).toBe(true);
+
+    for (const docRel of [
+      'README.md',
+      'README.id.md',
+      'AGENTS.md',
+      'CLAUDE.md',
+      'docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md',
+    ]) {
+      const docPath = path.join(repoRoot, docRel);
+      expect(fs.existsSync(docPath), `Missing governance doc ${docRel}`).toBe(true);
+      const docDir = path.dirname(docPath);
       const docContent = fs.readFileSync(docPath, 'utf8');
-      const relLinks = [...docContent.matchAll(/\]\((\.[^)#]+)\)/g)].map(m => m[1]);
-      expect(relLinks.length).toBeGreaterThan(0);
-      for (const rel of relLinks) {
-        const resolved = path.resolve(repoRoot, rel);
+      const mdLinks = [...docContent.matchAll(/\]\((\.\.?\/[^)#\s]+)\)/g)].map(m => m[1]);
+      const htmlLinks = [...docContent.matchAll(/(?:href|src|srcset)="(\.\.?\/[^"#]+)"/g)].map(
+        m => m[1],
+      );
+      const allRelLinks = [...mdLinks, ...htmlLinks];
+      expect(allRelLinks.length).toBeGreaterThan(0);
+      for (const rel of allRelLinks) {
+        const resolved = path.resolve(docDir, rel);
         expect(
           fs.existsSync(resolved),
-          `Broken relative link ${rel} in ${docName}`,
+          `Broken relative link ${rel} in ${docRel}`,
         ).toBe(true);
       }
+    }
+
+    for (const svgRel of [
+      'assets/why-mehan-architecture.svg',
+      'assets/readme-header-dark.svg',
+      'assets/readme-header-light.svg',
+    ]) {
+      const svgText = fs.readFileSync(path.join(repoRoot, svgRel), 'utf8');
+      expect(svgText).toContain('<svg');
+      expect(svgText).toContain('</svg>');
+      expect(svgText, `Unescaped ampersand in ${svgRel}`).not.toMatch(/&(?!amp;|lt;|gt;|quot;|apos;|#\d+;|#x[0-9a-fA-F]+;)/);
     }
 
     const svgSource = fs.readFileSync(

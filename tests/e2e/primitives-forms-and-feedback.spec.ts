@@ -1,12 +1,13 @@
+import os from 'node:os';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import AxeBuilder from '@axe-core/playwright';
 import {expect, test} from '@playwright/test';
 
-const repoRoot = path.resolve(import.meta.dirname, '..');
+const repoRoot = path.resolve(import.meta.dirname, '../..');
 const studioHtmlPath = path.join(repoRoot, 'STUDIO.html');
 const studioFileUrl = pathToFileURL(studioHtmlPath).href;
-const shotDir = process.env.MEHAN_SHOT_DIR ?? path.join(repoRoot, 'test-results');
+const shotDir = process.env.MEHAN_SHOT_DIR ?? path.join(os.tmpdir(), 'mehan-playwright-shots');
 
 test.describe('Stage 2B Interactive Proof — All 6 Tier 2 Application & Form Feedback Components', () => {
   test('interactively exercises InlineConfirm, ErrorSummary focus-jump, InlineMessage, DigitEntry paste/backspace, Rating half-steps, and ImageWell clear/dropzone with 0 WCAG 2.2 AA violations', async ({

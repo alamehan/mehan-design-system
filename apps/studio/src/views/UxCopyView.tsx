@@ -52,8 +52,8 @@ import {
   SlidersHorizontal,
   XCircle,
 } from 'lucide-react';
-import type {StudioCopy} from './i18n';
-import type {StudioLang} from './studioState';
+import type {StudioCopy} from '../i18n';
+import type {StudioLang} from '../studioState';
 
 interface UxCopyViewProps {
   lang: StudioLang;

@@ -19,7 +19,7 @@ import {
   exportPureAstryxDefineThemeTs,
   parseImportedThemeText,
   type FullThemeEditorState,
-} from '../apps/studio/src/theme-editor/themeEditorModel';
+} from '../../apps/studio/src/theme-editor/themeEditorModel';
 
 describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws', () => {
   const atmospheres = Object.keys(MEHAN_ATMOSPHERES) as MehanAtmosphereId[];

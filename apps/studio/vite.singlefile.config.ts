@@ -8,10 +8,12 @@ function copyRootStudioHtml(): Plugin {
   return {
     name: 'copy-root-studio-html',
     closeBundle() {
-      const built = path.resolve(import.meta.dirname, 'dist-single/index.html');
+      const distSingleDir = path.resolve(import.meta.dirname, 'dist-single');
+      const built = path.join(distSingleDir, 'index.html');
       const rootDest = path.resolve(import.meta.dirname, '../../STUDIO.html');
       if (fs.existsSync(built)) {
         fs.copyFileSync(built, rootDest);
+        fs.rmSync(distSingleDir, {recursive: true, force: true});
         console.log(`✅ Emitted root offline launcher: ${rootDest}`);
       }
     },

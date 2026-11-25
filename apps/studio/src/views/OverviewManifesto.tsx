@@ -17,8 +17,8 @@ import {
   type ResolvedMehanDna,
 } from '@mehan/astryx/dna';
 import {Check, ExternalLink, SlidersHorizontal} from 'lucide-react';
-import type {NamedStudioPreset, StudioLang} from './studioState';
-import type {FullThemeEditorState} from './theme-editor/themeEditorModel';
+import type {NamedStudioPreset, StudioLang} from '../studioState';
+import type {FullThemeEditorState} from '../theme-editor/themeEditorModel';
 
 interface OverviewManifestoProps {
   lang: StudioLang;

@@ -1,5 +1,6 @@
-#!/usr/bin/env sh
-cd "$(dirname "$0")" || exit 1
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
 echo "Starting Mehan Design System Live Studio..."
 if [ ! -d "node_modules" ]; then
   echo "Installing dependencies for first run..."

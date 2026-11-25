@@ -39,6 +39,21 @@ function readCurrentScope() {
   return match ? match[1] : '@mehan';
 }
 
+function readGithubRepoUrl() {
+  try {
+    const rootPkg = readJsonSafe(path.join(repoRoot, 'package.json'));
+    const rawUrl = typeof rootPkg?.repository === 'string'
+      ? rootPkg.repository
+      : rootPkg?.repository?.url;
+    if (typeof rawUrl === 'string' && rawUrl.trim().length > 0) {
+      return rawUrl.trim().replace(/^git\+/, '').replace(/\.git$/, '').replace(/\/$/, '');
+    }
+  } catch {
+    // Fallback below
+  }
+  return 'https://github.com/alamehan/mehan-design-system';
+}
+
 function defaultAccentForAtmosphere(atm) {
   switch (atm) {
     case 'porcelain':
@@ -415,7 +430,7 @@ if (cmd === 'init') {
   const preferGithub = args.includes('--github');
   const preferNpm = args.includes('--npm');
   const scope = readCurrentScope();
-  const githubRepoUrl = 'https://github.com/alamehan/mehan-design-system';
+  const githubRepoUrl = readGithubRepoUrl();
 
   fs.mkdirSync(targetDir, {recursive: true});
   const pkgPath = path.join(targetDir, 'package.json');

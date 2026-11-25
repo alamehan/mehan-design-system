@@ -1,12 +1,13 @@
+import os from 'node:os';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import AxeBuilder from '@axe-core/playwright';
 import {expect, test} from '@playwright/test';
 
-const repoRoot = path.resolve(import.meta.dirname, '..');
+const repoRoot = path.resolve(import.meta.dirname, '../..');
 const studioHtmlPath = path.join(repoRoot, 'STUDIO.html');
 const studioFileUrl = pathToFileURL(studioHtmlPath).href;
-const shotDir = process.env.MEHAN_SHOT_DIR ?? path.join(repoRoot, 'test-results');
+const shotDir = process.env.MEHAN_SHOT_DIR ?? path.join(os.tmpdir(), 'mehan-playwright-shots');
 
 test.describe('Mehan Workspaces, DataChart, ColumnSettings, ColumnView, PropertyRow & ShortcutSheet E2E', () => {
   test('verifies global ? ShortcutSheet, / search shortcut, WorkspaceLayout + CanvasStage, PropertyRow reset, ColumnSettingsMenu, ColumnView 2D keys, DataChart, 5-in-1 Topologies & 200% zoom height release', async ({

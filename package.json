@@ -2,7 +2,7 @@
   "name": "mehan-design-system-workspace",
   "version": "1.0.0",
   "private": true,
-  "description": "Mehan Design System — Universal tactile UI system powered by Meta Astryx and Mehan Portable.",
+  "description": "Mehan Design System — Warm, tactile design system built on Meta Astryx with Portable CSS, AI Kit, and interactive Studio.",
   "license": "MIT",
   "homepage": "https://alamehan.github.io/mehan-design-system/",
   "repository": {
@@ -14,14 +14,17 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "build": "pnpm --filter @mehan/dna build && pnpm --filter @mehan/astryx build && pnpm --filter @mehan/portable build && pnpm --filter @mehan/studio build",
+    "build": "pnpm --filter @mehan/dna build && pnpm --filter @mehan/astryx build && pnpm --filter @mehan/portable build && pnpm --filter @mehan/studio build && node scripts/pack-release.mjs",
+    "pack:release": "node scripts/pack-release.mjs",
     "dev": "pnpm --filter @mehan/studio dev",
     "studio": "pnpm --filter @mehan/studio build:singlefile",
-    "typecheck": "pnpm -r typecheck && tsc --noEmit -p tsconfig.json",
+    "typecheck": "pnpm -r typecheck && tsc --noEmit -p tests/tsconfig.json",
     "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
     "verify:astryx": "pnpm --filter @mehan/astryx verify",
     "verify:visual": "playwright test",
-    "verify": "pnpm build && pnpm typecheck && pnpm test && pnpm verify:astryx && pnpm verify:visual",
+    "verify": "pnpm build && pnpm typecheck && pnpm test:unit && pnpm verify:astryx && pnpm test:e2e",
     "init-project": "node bin/mehan.mjs init"
   },
   "browserslist": [

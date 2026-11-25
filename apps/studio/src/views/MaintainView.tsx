@@ -22,8 +22,8 @@ import {
   exportW3cDesignTokens,
   type ResolvedMehanDna,
 } from '@mehan/astryx/dna';
-import {Copy, Download, FileJson, FolderGit2, PackageCheck, RefreshCw} from 'lucide-react';
-import type {StudioCopy} from './i18n';
+import {BookCopy, Copy, Download, FileJson, FolderGit2, PackageCheck, RefreshCw} from 'lucide-react';
+import type {StudioCopy} from '../i18n';
 import {
   buildAstryxUpgradePrompt,
   buildScopeSwitchPrompt,
@@ -31,11 +31,11 @@ import {
   copyText,
   downloadTextFile,
   type StudioLang,
-} from './studioState';
+} from '../studioState';
 import {
   exportCreateMehanThemeTs,
   type FullThemeEditorState,
-} from './theme-editor/themeEditorModel';
+} from '../theme-editor/themeEditorModel';
 
 interface MaintainViewProps {
   lang: StudioLang;
@@ -176,8 +176,8 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
         }
         description={
           isId
-            ? 'Klik dua kali rebuild-and-check-windows.cmd (Windows) atau rebuild-and-check-mac-linux.command (macOS/Linux) untuk membangun ulang paket dan menjalankan seluruh pemeriksaan kualitas otomatis.'
-            : 'Double-click rebuild-and-check-windows.cmd (Windows) or rebuild-and-check-mac-linux.command (macOS/Linux) to rebuild all packages and run every automated quality check.'
+            ? 'Klik dua kali scripts/verify-windows.cmd (Windows) atau scripts/verify-mac-linux.command (macOS/Linux) untuk membangun ulang paket dan menjalankan seluruh pemeriksaan kualitas otomatis.'
+            : 'Double-click scripts/verify-windows.cmd (Windows) or scripts/verify-mac-linux.command (macOS/Linux) to rebuild all packages and run every automated quality check.'
         }
       />
 
@@ -347,6 +347,44 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
           </Stack>
         </Card>
       </Grid>
+
+      <Card elevation="low">
+        <Stack gap={3}>
+          <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+            <HStack gap={2} vAlign="center">
+              <BookCopy size={18} />
+              <Heading level={3}>
+                {isId
+                  ? '5. Standarisasi Design System lain (HRIS, PM, Enterprise SaaS)'
+                  : '5. Replicate architecture for sibling Design Systems (HRIS, PM, SaaS)'}
+              </Heading>
+            </HStack>
+            <Button
+              variant="secondary"
+              size="sm"
+              label={
+                isId
+                  ? 'Salin prompt buat DS baru'
+                  : 'Copy new DS kickoff prompt'
+              }
+              icon={<Copy size={14} />}
+              onClick={() =>
+                void handleCopy(
+                  `Read AGENTS.md, CLAUDE.md, and docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md inside mehan-design-system, then help me scaffold a new standalone Meta Astryx-powered Design System repository following all 9 touchpoints in the playbook.`,
+                  isId
+                    ? 'Prompt pembuatan Design System baru disalin.'
+                    : 'Copied new Design System kickoff prompt.',
+                )
+              }
+            />
+          </HStack>
+          <Text color="secondary">
+            {isId
+              ? 'Ingin membangun Design System mandiri dengan karakter visual dan komponen domain berbeda (misalnya HRIS, Project Management, atau ERP) di atas standar mesin Meta Astryx yang sama? Buka panduan lengkap langkah demi langkah di docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md di dalam repositori ini.'
+              : 'Building a separate domain Design System (such as HRIS, Project Management, or FinOps) on the same Meta Astryx chassis with its own visual DNA and custom components? Follow the complete 9-step blueprint in docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md.'}
+          </Text>
+        </Stack>
+      </Card>
 
       {/* Live Resolved Tokens Table */}
       <Card padding={4} elevation="low">
