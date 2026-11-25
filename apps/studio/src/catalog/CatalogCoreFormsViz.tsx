@@ -85,8 +85,8 @@ const POWER_SEARCH_DEFS = [
 ] as const;
 
 export function useCatalogCoreFormsViz(): SpecimenDefinition[] {
-  const [swatchHex, setSwatchHex] = useState('#e0366b');
-  const [pickerHex, setPickerHex] = useState('#e0366b');
+  const [swatchHex, setSwatchHex] = useState('#2563eb');
+  const [pickerHex, setPickerHex] = useState('#2563eb');
 
   // Form Controls states
   const [calDate, setCalDate] = useState<ISODateString | null>(

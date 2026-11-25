@@ -60,7 +60,7 @@ import type {SpecimenDefinition} from './SpecimenCard';
 const THUMB_SVG_URI =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" rx="16" fill="#fce7f3"/><circle cx="48" cy="48" r="22" fill="#e0366b"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" rx="16" fill="#dbeafe"/><circle cx="48" cy="48" r="22" fill="#2563eb"/></svg>`,
   );
 
 function ActionSpecimens(): SpecimenDefinition[] {
@@ -792,14 +792,14 @@ function ChatAndContainerAndContentSpecimens(): SpecimenDefinition[] {
       span: 'wide',
       summaryEn: 'Syntax-highlighted code block with line numbers, title bar, and 1-click copy.',
       summaryId: 'Blok kode berwarna dengan judul file, nomor baris, dan tombol salin cepat.',
-      code: `<CodeBlock language="tsx" title="theme.ts" code="const theme = createMehanTheme({ atmosphere: 'confectionery' });" hasCopyButton />`,
+      code: `<CodeBlock language="tsx" title="theme.ts" code="const theme = createMehanTheme({ atmosphere: 'porcelain' });" hasCopyButton />`,
       render: () => (
         <CodeBlock
           language="tsx"
           title="src/theme.ts"
           hasLineNumbers
           hasCopyButton
-          code={`import {createMehanTheme} from '@mehan/astryx/dna';\n\nexport const appTheme = createMehanTheme({\n  name: 'app-confectionery',\n  atmosphere: 'confectionery',\n  segmentedStyle: 'espresso',\n});`}
+          code={`import {createMehanTheme} from '@mehan/astryx/dna';\n\nexport const appTheme = createMehanTheme({\n  name: 'app-porcelain',\n  atmosphere: 'porcelain',\n  accent: 'blueberry',\n});`}
         />
       ),
     },

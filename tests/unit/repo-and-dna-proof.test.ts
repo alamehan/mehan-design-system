@@ -222,11 +222,31 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
 
     // Every <button in AI Prototype Kit examples must declare explicit type="button"
     const aiKit = generateAiPrototypeKit({atmosphere: 'porcelain', accent: 'blueberry'});
+    expect(aiKit).not.toContain('build a warm,');
+    expect(aiKit).toContain('build a tactile, clear, accessible');
     const rawButtonTags = [...aiKit.matchAll(/<button\b[^>]*>/g)].map(m => m[0]);
     expect(rawButtonTags.length).toBeGreaterThan(5);
     for (const tag of rawButtonTags) {
       expect(tag, `Button tag missing type="button": ${tag}`).toContain('type="button"');
     }
+
+    // Favicon & package brand marks default to Porcelain SaaS Royal Blue (not Confectionery Berry)
+    const studioIndexHtml = fs.readFileSync(
+      path.join(repoRoot, 'apps/studio/index.html'),
+      'utf8',
+    );
+    expect(studioIndexHtml).toContain('%232563eb');
+    expect(studioIndexHtml).not.toContain('%23d42a5f');
+    const logoLight = fs.readFileSync(
+      path.join(repoRoot, 'packages/astryx/assets/logo-light.svg'),
+      'utf8',
+    );
+    const logoDark = fs.readFileSync(
+      path.join(repoRoot, 'packages/astryx/assets/logo-dark.svg'),
+      'utf8',
+    );
+    expect(logoLight).toContain('#2563EB');
+    expect(logoDark).toContain('#3B82F6');
   });
 
   it('roundtrips Theme Editor component-token slots (.ts) and sanitizes malformed JSON imports', () => {

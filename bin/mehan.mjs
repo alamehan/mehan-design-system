@@ -2,12 +2,12 @@
 /**
  * Mehan Design System Universal Helper CLI (`node bin/mehan.mjs`)
  * Works identically on Windows, macOS, and Linux:
- *   node bin/mehan.mjs init [target-dir] [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex]
+ *   node bin/mehan.mjs init [target-dir] [--from theme.json] [--atmosphere porcelain|confectionery|stone] [--accent blueberry|#hex]
  *        [--depth 1] [--radius 1] [--radius-base <px>] [--type-base 14] [--type-ratio 1.22] [--size-base 36]
  *        [--spacing-base 4] [--duration-step 1] [--density standard|compact] [--motion expressive|standard|crisp|calm]
  *        [--tailwind] [--github|--local|--npm] [--portable]
- *   node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out prototype-kit.md]
- *   node bin/mehan.mjs tokens [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
+ *   node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere porcelain] [--accent blueberry] [--out prototype-kit.md]
+ *   node bin/mehan.mjs tokens [--from theme.json] [--atmosphere porcelain] [--accent blueberry] [--out mehan-tokens.w3c.json]
  *   node bin/mehan.mjs set-scope <@newscope>
  */
 import fs from 'node:fs';
@@ -652,8 +652,8 @@ export function MehanProvider({
 console.log(`Mehan Design System CLI (v1.0.0)
 Usage:
   • Double-click STUDIO.html (Windows / macOS / Linux) to open Interactive Studio offline!
-  • node bin/mehan.mjs init <project-folder> [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--lip candy|subtle|flat] [--segmented raised|espresso] [--well recessed|bordered] [--density standard|compact] [--motion expressive|standard|crisp|calm] [--type-base 14] [--type-ratio 1.22] [--size-base 36] [--spacing-base 4] [--radius-base 8] [--duration-step 1] [--tailwind] [--github|--local|--npm] [--portable]
-  • node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--out kit.md]
-  • node bin/mehan.mjs tokens [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
+  • node bin/mehan.mjs init <project-folder> [--from theme.json] [--atmosphere porcelain|confectionery|stone] [--accent blueberry|#hex] [--lip candy|subtle|flat] [--segmented raised|espresso] [--well recessed|bordered] [--density standard|compact] [--motion expressive|standard|crisp|calm] [--type-base 14] [--type-ratio 1.22] [--size-base 36] [--spacing-base 4] [--radius-base 8] [--duration-step 1] [--tailwind] [--github|--local|--npm] [--portable]
+  • node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere porcelain|confectionery|stone] [--accent blueberry|#hex] [--out kit.md]
+  • node bin/mehan.mjs tokens [--from theme.json] [--atmosphere porcelain] [--accent blueberry] [--out mehan-tokens.w3c.json]
   • node bin/mehan.mjs set-scope @yourscope
 `);

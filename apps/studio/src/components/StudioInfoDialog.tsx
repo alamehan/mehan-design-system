@@ -27,6 +27,8 @@ interface StudioInfoDialogProps {
   tab: StudioInfoTab;
   onTabChange: (tab: StudioInfoTab) => void;
   lang: StudioLang;
+  presetCount: number;
+  uxChapterCount: number;
 }
 
 export function StudioInfoDialog({
@@ -35,6 +37,8 @@ export function StudioInfoDialog({
   tab,
   onTabChange,
   lang,
+  presetCount,
+  uxChapterCount,
 }: StudioInfoDialogProps) {
   const isId = lang === 'id';
 
@@ -60,11 +64,11 @@ export function StudioInfoDialog({
     {
       step: '01',
       title: isId
-        ? 'Strategi Cerdas: Fondasi Meta × Karakter Hangat'
-        : 'Smart Leverage: Meta’s Foundation × Tactile Warmth',
+        ? 'Strategi Cerdas: Fondasi Meta × Presisi Taktil'
+        : 'Smart Leverage: Meta’s Foundation × Tactile Craft',
       desc: isId
-        ? 'Terinspirasi dari antarmuka produk kreatif yang hangat namun menolak membuang waktu berbulan-bulan membuat ulang tombol dasar yang rapuh — sehingga memilih Meta Astryx (teruji 8 tahun di 13.000+ aplikasi) sebagai fondasi utamanya.'
-        : 'Sparked by warm creative tools while refusing to waste months redrawing fragile basic inputs — choosing Meta Astryx (proven over 8 years across 13,000+ apps) as the core foundation.',
+        ? 'Menolak membuang waktu berbulan-bulan merakit ulang tombol dasar yang rapuh — sehingga berdiri langsung di atas Meta Astryx (teruji 8 tahun di 13.000+ aplikasi) agar energi tercurah penuh pada rasa antarmuka.'
+        : 'Refusing to waste months redrawing fragile basic inputs — standing directly on Meta Astryx (proven over 8 years across 13,000+ apps) so 100% of craft focuses on surface feel and clarity.',
     },
     {
       step: '02',
@@ -81,7 +85,7 @@ export function StudioInfoDialog({
         ? 'Theme Editor Langsung di Layar'
         : 'Live 3-Tier Docked Theme Editor',
       desc: isId
-        ? 'Menghadirkan panel kustomisasi langsung (suasana warna, pasangan huruf WOFF2 offline, sudut, hingga override komponen) lengkap dengan Undo/Redo.'
+        ? 'Menghadirkan panel kustomisasi langsung (suasana permukaan, pasangan huruf WOFF2 offline, sudut, hingga override komponen) lengkap dengan Undo/Redo.'
         : 'Crafted an instant docked Theme Editor (surfaces, bundled offline WOFF2 fonts, corners, and component slots) with coalescing Undo/Redo.',
     },
     {
@@ -96,11 +100,11 @@ export function StudioInfoDialog({
     {
       step: '05',
       title: isId
-        ? 'Katalog Rapi & 12 Bab Panduan UX'
-        : 'Unified Catalog & 12 Human UX Chapters',
+        ? `Katalog Seragam & ${uxChapterCount} Bab Panduan UX`
+        : `Unified Catalog & ${uxChapterCount} Human UX Chapters`,
       desc: isId
-        ? 'Menyelaraskan proporsi 135+ komponen dan menuangkan kebiasaan desain yang tenang serta bahasa antarmuka EN/ID yang ramah menjadi panduan interaktif.'
-        : 'Harmonized proportions across 135+ components and turned calm layout habits and clear bilingual microcopy into interactive Do/Don’t lessons.',
+        ? 'Menyelaraskan proporsi lintas komponen inti & ekstensi, lalu menuangkan kebiasaan tata letak tenang serta bahasa antarmuka EN/ID yang ramah menjadi panduan interaktif.'
+        : 'Harmonized proportions across core and workspace components while turning calm layout habits and clear bilingual microcopy into interactive Do/Don’t lessons.',
     },
     {
       step: '06',
@@ -108,7 +112,7 @@ export function StudioInfoDialog({
         ? 'Jembatan Ekspor Lintas Platform'
         : '1-Click Cross-Stack Portability',
       desc: isId
-        ? 'Memastikan tema yang sama persis dapat diekspor dalam 1 klik ke Chat AI (Claude/Gemini), React & Tailwind v4, HTML/CSS murni, maupun token W3C Figma.'
+        ? 'Memastikan tema yang sama persis dapat diekspor dalam satu klik ke Chat AI (Claude/Gemini), React & Tailwind v4, HTML/CSS murni, maupun token W3C Figma.'
         : 'Bridged the exact same active theme in one click to AI Chat kits, React & Tailwind v4, standalone HTML/CSS, and W3C Figma tokens.',
     },
   ];
@@ -150,13 +154,13 @@ export function StudioInfoDialog({
                   <Stack gap={3}>
                     <Text weight="semibold">
                       {isId
-                        ? 'Design system hangat, rapi, dan siap pakai untuk aplikasi web maupun alur kerja AI.'
-                        : 'A warm, tactile design system crafted for modern web apps and AI workflows.'}
+                        ? 'Design system taktil, aksesibel, dan siap pakai untuk aplikasi web modern maupun alur kerja AI.'
+                        : 'A tactile, accessible design system crafted for modern web apps and AI workflows.'}
                     </Text>
                     <Text color="secondary">
                       {isId
-                        ? 'Mehan Design System memadukan fondasi komponen open-source Meta Astryx yang sudah matang dengan karakter permukaan hangat, puluhan komponen ruang kerja tambahan, serta panduan praktis UX & penulisan teks — sehingga desainer, developer, maupun pembuat produk berbantuan AI bisa merilis antarmuka yang berkarakter tanpa harus merakit komponen dasar dari nol.'
-                        : 'Mehan Design System pairs Meta Astryx’s proven open-source component foundation with warm tactile surfaces, extra workspace building blocks, and practical UX & copywriting guides — helping designers, developers, and AI builders ship distinctive interfaces without reinventing basic UI plumbing from scratch.'}
+                        ? 'Mehan Design System memadukan fondasi komponen open-source Meta Astryx yang sudah matang dengan kedalaman permukaan taktil, komponen ruang kerja siap pakai, serta panduan praktis UX & penulisan teks — sehingga desainer, developer, maupun pembuat produk berbantuan AI dapat merilis antarmuka berkarakter tanpa merakit komponen dasar dari nol.'
+                        : 'Mehan Design System pairs Meta Astryx’s proven open-source component foundation with precision tactile surfaces, workspace building blocks, and practical UX & copywriting guides — helping designers, developers, and AI builders ship distinctive interfaces without reinventing basic UI plumbing from scratch.'}
                     </Text>
 
                     <Divider variant="subtle" />
@@ -168,18 +172,18 @@ export function StudioInfoDialog({
                       <ol className="mh-info-steps">
                         <li>
                           {isId
-                            ? 'Klik salah satu dari 12 tema siap pakai langsung di bagian Hero (atau buka Theme Editor di kanan atas untuk meracik warna, huruf, dan sudut sendiri).'
-                            : 'Click any of the 12 ready-made moods right inside the Hero dock, or open Theme Editor in the top-right to customize colors, fonts, and corners live.'}
+                            ? `Klik salah satu dari ${presetCount} suasana visual siap pakai langsung di bagian Hero (atau buka Theme Editor di kanan atas untuk meracik warna, huruf, dan sudut sendiri).`
+                            : `Click any of the ${presetCount} ready-made moods right inside the Hero dock, or open Theme Editor in the top-right to customize colors, fonts, and corners live.`}
                         </li>
                         <li>
                           {isId
-                            ? 'Jelajahi tab Komponen, Pola & Templat, serta UX & Bahasa untuk mencoba 135+ elemen UI langsung beserta panduan tata letaknya.'
-                            : 'Browse Components, Patterns & Templates, and UX & Copy to test 135+ interactive components, page layouts, and clear interface writing rules.'}
+                            ? 'Jelajahi tab Komponen, Pola & Templat, serta UX & Bahasa untuk mencoba elemen UI interaktif langsung beserta panduan tata letaknya.'
+                            : 'Browse Components, Patterns & Templates, and UX & Copy to test live interactive components, page layouts, and clear interface writing rules.'}
                         </li>
                         <li>
                           {isId
-                            ? 'Salin hasil 1-klik di kartu Quickstart bawah: prompt tunggal untuk Chat AI (Claude/Gemini), setup React/Next.js, file CSS mandiri, atau token Figma.'
-                            : 'Copy your 1-click output from the Quickstart card: a single prompt for AI Chat (Claude/Gemini), React/Next.js setup, standalone CSS, or Figma tokens.'}
+                            ? 'Salin hasil satu klik di kartu Quickstart bawah: prompt tunggal untuk Chat AI (Claude/Gemini), setup React/Next.js, file CSS mandiri, atau token Figma.'
+                            : 'Copy your one-click output from the Quickstart card: a single prompt for AI Chat (Claude/Gemini), React/Next.js setup, standalone CSS, or Figma tokens.'}
                         </li>
                       </ol>
                     </Stack>
@@ -207,7 +211,7 @@ export function StudioInfoDialog({
                               <strong>Meta Astryx</strong>
                               <ExternalLink size={12} />
                             </a>{' '}
-                            (teruji 8 tahun di 13.000+ aplikasi Meta) untuk keandalan fondasi, sehingga 100% energi desain tercurah pada karakter taktil dan kemudahan lintas stack dalam 3 lapisan:
+                            (teruji 8 tahun di 13.000+ aplikasi Meta) untuk keandalan fondasi, sehingga 100% energi desain tercurah pada presisi taktil dan kemudahan lintas stack dalam 3 lapisan:
                           </>
                         ) : (
                           <>
@@ -221,7 +225,7 @@ export function StudioInfoDialog({
                               <strong>Meta Astryx</strong>
                               <ExternalLink size={12} />
                             </a>{' '}
-                            (battle-tested over 8 years across 13,000+ Meta apps) so 100% of design craft goes into tactile warmth and cross-stack portability across 3 clean layers:
+                            (battle-tested over 8 years across 13,000+ Meta apps) so 100% of design craft goes into tactile depth and cross-stack portability across 3 clean layers:
                           </>
                         )}
                       </Text>
@@ -245,8 +249,8 @@ export function StudioInfoDialog({
                             : '2. Components & Workspaces (@mehan/astryx): '}
                         </strong>
                         {isId
-                          ? 'Menjaga 100+ komponen inti Meta Astryx tetap utuh, lalu menambahkan 35+ komponen ruang kerja (5-in-1 app shells, grafik, pemilih warna, editor kode, hingga auto-draft).'
-                          : 'Keeps 100+ Meta Astryx core components intact while adding 35+ workspace blocks (5-in-1 app layouts, charts, color pickers, editors, and auto-saved drafts).'}
+                          ? 'Menjaga seluruh komponen inti Meta Astryx tetap utuh, lalu menambahkan puluhan blok ruang kerja (5-in-1 app shells, grafik, pemilih warna, editor kode, hingga auto-draft).'
+                          : 'Keeps Meta Astryx core primitives intact while adding rich workspace blocks (5-in-1 app layouts, charts, color pickers, editors, and auto-saved drafts).'}
                       </li>
                       <li>
                         <strong>
@@ -314,8 +318,8 @@ export function StudioInfoDialog({
                         <dt>{isId ? 'Data keluar' : 'External requests'}</dt>
                         <dd>
                           {isId
-                            ? 'Nol. Seluruh 10+ keluarga huruf (WOFF2), ikon, dan gaya visual sudah dibundel mandiri tanpa memanggil server pihak ketiga.'
-                            : 'None. All 10+ typeface families (WOFF2), icons, and stylesheets are bundled locally with zero third-party CDN or analytics requests.'}
+                            ? 'Nol. Seluruh keluarga huruf (WOFF2), ikon, dan gaya visual sudah dibundel mandiri tanpa memanggil server pihak ketiga.'
+                            : 'None. All bundled typeface families (WOFF2), icons, and stylesheets load locally with zero third-party CDN or analytics requests.'}
                         </dd>
                       </div>
                     </dl>
@@ -349,8 +353,8 @@ export function StudioInfoDialog({
                         </HStack>
                         <Text color="secondary">
                           {isId
-                            ? 'Dirancang dengan cinta, ketelitian desain produk, dan disiplin rekayasa sistem.'
-                            : 'Crafted with love, product design sensitivity, and systems engineering rigor.'}
+                            ? 'Dirancang dengan ketelitian desain produk, kedalaman taktil, dan disiplin rekayasa sistem.'
+                            : 'Crafted with product design sensitivity, tactile precision, and systems engineering rigor.'}
                         </Text>
                       </div>
                     </div>
@@ -378,8 +382,8 @@ export function StudioInfoDialog({
 
                         <Text color="secondary">
                           {isId
-                            ? 'Lahir dari pengalaman nyata merancang dan membangun berbagai platform SaaS enterprise, super-app, serta studio kerja berbasis AI dari hulu ke hilir. Mehan dibuat untuk menjembatani kepekaan seorang Product Designer (kehangatan warna, tipografi, tata letak yang tenang, dan bahasa yang ramah manusia) dengan ketangguhan rekayasa produksi yang siap dipakai lintas tim maupun agen AI.'
-                            : 'Born from hands-on experience designing and engineering enterprise SaaS suites, super-apps, and AI workspaces end-to-end. Mehan bridges a Product Designer’s eye for warmth, typography, calm spatial hierarchy, and human copy with production-grade accessibility and cross-stack engineering.'}
+                            ? 'Lahir dari pengalaman nyata merancang dan membangun berbagai platform SaaS enterprise, super-app, serta studio kerja berbasis AI dari hulu ke hilir. Mehan menjembatani kepekaan seorang Product Designer (kedalaman permukaan taktil, tipografi berkarakter, tata letak yang tenang, dan bahasa manusiawi) dengan ketangguhan rekayasa produksi lintas tim maupun agen AI.'
+                            : 'Born from hands-on experience designing and engineering enterprise SaaS suites, super-apps, and AI workspaces end-to-end. Mehan bridges a Product Designer’s eye for tactile depth, typography, calm spatial hierarchy, and human copy with production-grade accessibility and cross-stack engineering.'}
                         </Text>
 
                         <HStack gap={3} wrap="wrap" vAlign="center">
@@ -422,8 +426,8 @@ export function StudioInfoDialog({
                             style={{display: 'inline', verticalAlign: '-2px', marginRight: 5}}
                           />
                           {isId
-                            ? 'Fondasi perilaku komponen & CLI dibangun di atas Meta Astryx (@astryxdesign/core & @astryxdesign/cli oleh Meta Platforms, MIT). Percikan awal eksplorasi permukaan hangat terinspirasi dari antarmuka produk kreatif seperti Shotcandy, lalu dikembangkan mandiri menjadi sistem warna OKLCH, 12 arah tema, 35+ komponen ruang kerja, dan panduan UX utuh.'
-                            : 'Core behavioral primitives and CLI tooling stand on Meta Astryx (@astryxdesign/core & @astryxdesign/cli by Meta Platforms, MIT). Early tactile surface exploration was sparked by warm creative tools like Shotcandy and engineered from the ground up into Mehan’s own color math, 12 themes, 35+ workspace extensions, and bilingual UX playbook.'}
+                            ? `Fondasi perilaku komponen & CLI berdiri di atas Meta Astryx (@astryxdesign/core & @astryxdesign/cli oleh Meta Platforms, MIT). Eksplorasi kedalaman taktil Mehan dikembangkan mandiri menjadi mesin warna OKLCH 7-peran, ${presetCount} arah tema dipimpin Porcelain SaaS, komponen ruang kerja tambahan, dan panduan UX dua bahasa.`
+                            : `Core behavioral primitives and CLI tooling stand on Meta Astryx (@astryxdesign/core & @astryxdesign/cli by Meta Platforms, MIT). Mehan’s tactile material physics were engineered from the ground up into a 7-role OKLCH color engine, ${presetCount} signature moods led by Porcelain SaaS, workspace extensions, and a bilingual UX playbook.`}
                         </Text>
                         <Text type="supporting" color="secondary">
                           {isId

@@ -6,6 +6,18 @@ interface MehanLogoMarkProps {
 }
 
 /**
+ * Builds an encoded SVG data URI for `<link rel="icon">` matching the active
+ * Mehan 2.5D tactile keycap accent and 3D bottom lip.
+ */
+export function buildMehanFaviconDataUri(
+  accentHex = '#2563eb',
+  lipHex = '#1e40af',
+): string {
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='4 4 88 88'><rect x='4' y='8' width='88' height='84' rx='22' fill='${lipHex}'/><rect x='4' y='4' width='88' height='83' rx='22' fill='${accentHex}'/><rect x='11' y='11' width='74' height='69' rx='16' fill='#090d16' fill-opacity='.22'/><rect x='21.5' y='25' width='11.2' height='44.5' rx='5.6' fill='#fff'/><rect x='63.3' y='25' width='11.2' height='31.5' rx='5.6' fill='#fff'/><path d='M27.1 28L48 50.8L68.9 28' fill='none' stroke='#fff' stroke-width='10.8' stroke-linecap='round' stroke-linejoin='round'/><circle cx='68.9' cy='68.8' r='5.3' fill='#fbbf24'/></svg>`;
+  return `data:image/svg+xml,${svg.replace(/#/g, '%23')}`;
+}
+
+/**
  * Hand-crafted 2.5D kinetic brand emblem for Mehan Design System.
  * Sculpted tactile hardware keycap adapting live to the active Mehan accent,
  * framing 3 articulated 2.5D porcelain pillars & bridge arch ("M") plus the
@@ -62,7 +74,7 @@ export function MehanLogoMark({size = 32, className}: MehanLogoMarkProps) {
         width="88"
         height="84"
         rx="22"
-        style={{fill: 'var(--mehan-primary-lip, #881337)'}}
+        style={{fill: 'var(--mehan-primary-lip, #1e40af)'}}
       />
       <rect
         x="4"
@@ -70,7 +82,7 @@ export function MehanLogoMark({size = 32, className}: MehanLogoMarkProps) {
         width="88"
         height="83"
         rx="22"
-        style={{fill: 'var(--color-accent, #d42a5f)'}}
+        style={{fill: 'var(--color-accent, #2563eb)'}}
       />
       <rect x="4" y="4" width="88" height="83" rx="22" fill={`url(#${sheen})`} />
       <rect

@@ -942,8 +942,15 @@ body,
 /* ============================================================
    OVERVIEW, MAINTAIN & UX PLAYBOOK SURFACES
    ============================================================ */
+/* Calm 900px Editorial Column Exclusively for Overview (Components/Templates/UX keep 1240px) */
+.mh-overview-column {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .studio-hero {
-  padding: 28px;
+  padding: 26px 28px;
   border-radius: var(--radius-page, 22px);
   background-color: var(--color-background-card);
   border: 1px solid var(--mehan-card-hairline, var(--color-border));
@@ -1024,262 +1031,248 @@ body,
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 18px 12px 10px;
+  gap: 14px;
+  padding: 12px 6px 8px;
   text-align: center;
 }
 
-.mh-compare-stage {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
+/* ============================================================
+   SCENEFORGE (tfscene: 1) 2.5D KINETIC DIORAMA — 3.6s 4-BEAT LOOP
+   ============================================================ */
+.mh-sf-diorama {
   width: 100%;
-  max-width: 820px;
-}
-
-.mh-tilt-col {
-  flex: 1 1 250px;
-  max-width: 296px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.mh-mini-screen {
-  width: 100%;
-  padding: 14px 15px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  box-sizing: border-box;
-}
-
-.mh-mini-screen-raw {
-  transform: rotate(-1.6deg);
-  border-radius: 6px;
-  background-color: var(--color-background-surface);
-  border: 1px solid var(--color-border-emphasized);
-  font-family: system-ui, -apple-system, sans-serif;
-}
-
-.mh-mini-screen-crafted {
-  transform: rotate(1.6deg);
-  border-radius: var(--radius-container, 16px);
-  background-color: var(--color-background-card);
-  border: 1px solid var(--mehan-card-hairline, var(--color-border));
-  box-shadow: var(--shadow-med);
-}
-
-.mh-mini-head {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  min-width: 0;
-}
-
-.mh-mini-avatar {
-  width: 28px;
-  height: 28px;
-  display: inline-grid;
-  place-items: center;
-  font-size: 10.5px;
-  font-weight: 700;
-  flex: none;
-}
-
-.mh-mini-avatar.is-raw {
-  border-radius: 4px;
-  background-color: var(--color-border);
-  color: var(--color-text-secondary);
-}
-
-.mh-mini-avatar.is-crafted {
-  border-radius: 999px;
-  background-color: var(--color-accent-muted);
-  color: var(--color-text-accent);
-  font-family: var(--font-family-heading);
-}
-
-.mh-mini-titles {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.mh-mini-title-raw {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.mh-mini-title-crafted {
-  font-family: var(--font-family-heading);
-  font-size: 13.5px;
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  color: var(--color-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.mh-mini-sub {
-  font-size: 11px;
-  color: var(--color-text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.mh-mini-chip-raw {
-  font-size: 10.5px;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 3px;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-  flex: none;
-}
-
-.mh-mini-chip-crafted {
-  font-family: var(--font-family-code);
-  font-size: 10.5px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background-color: var(--color-success-muted);
-  color: var(--color-text-success);
-  flex: none;
-}
-
-.mh-mini-meter-raw {
-  height: 6px;
-  border-radius: 2px;
-  background-color: var(--color-border);
-  overflow: hidden;
-}
-
-.mh-mini-meter-raw span {
+  max-width: 680px;
+  height: auto;
   display: block;
-  height: 100%;
-  background-color: var(--color-text-secondary);
-  opacity: 0.55;
+  overflow: visible;
 }
 
-.mh-mini-meter-crafted {
-  height: 7px;
-  border-radius: 999px;
-  background-color: var(--mehan-well);
-  box-shadow: var(--mehan-shadow-well);
-  overflow: hidden;
+/* Beat 1 (0%–26%): Left Flat Unstyled Wireframe Shudder + Pill Bob + Stream 1 */
+.mhsf-raw-card {
+  transform-origin: 116px 86px;
+  animation: mhsf-raw-card 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-raw-card {
+  0%, 3% { transform: scale(1, 1) rotate(0deg); }
+  10% { transform: scale(1.06, 1.04) rotate(-5deg); }
+  17% { transform: scale(0.95, 0.97) rotate(4deg); }
+  23% { transform: scale(1.02, 1.01) rotate(-1.5deg); }
+  30%, 100% { transform: scale(1, 1) rotate(0deg); }
 }
 
-.mh-mini-meter-crafted span {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  background-color: var(--color-accent);
-  background-image: var(--mehan-primary-grad);
+.mhsf-raw-fragments {
+  transform-origin: 116px 86px;
+  animation: mhsf-raw-fragments 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-raw-fragments {
+  0%, 3% { transform: rotate(0deg) scale(1); }
+  11% { transform: rotate(10deg) scale(1.08); }
+  19% { transform: rotate(-7deg) scale(0.94); }
+  28%, 100% { transform: rotate(0deg) scale(1); }
 }
 
-.mh-mini-tags-raw,
-.mh-mini-tags-crafted {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
+.mhsf-pill-raw {
+  transform-origin: 116px 149px;
+  animation: mhsf-pill-raw 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-pill-raw {
+  0%, 3% { transform: translateY(0px) scale(1); }
+  11% { transform: translateY(-2.5px) scale(1.06); }
+  21% { transform: translateY(1px) scale(0.98); }
+  29%, 100% { transform: translateY(0px) scale(1); }
 }
 
-.mh-mini-tags-raw span {
-  font-size: 10.5px;
-  padding: 2px 6px;
-  border-radius: 3px;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
+.mhsf-stream-1 {
+  stroke-dasharray: 0.42 1.2;
+  animation: mhsf-stream-1 3.6s linear infinite;
+}
+@keyframes mhsf-stream-1 {
+  0%, 3% { stroke-dashoffset: 0.44; opacity: 0; }
+  6% { opacity: 1; }
+  12% { stroke-dashoffset: -0.28; opacity: 1; }
+  20% { opacity: 1; }
+  24%, 100% { stroke-dashoffset: -1.02; opacity: 0; }
 }
 
-.mh-mini-tags-crafted span {
-  font-family: var(--font-family-code);
-  font-size: 10.5px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 6px;
-  background-color: var(--mehan-well);
-  color: var(--color-text-primary);
+/* Beat 2 (20%–48%): Center Meta Astryx × Mehan Craft Forge Clamp + Shock-Ring + 6 Sparks */
+.mhsf-orbit-spin {
+  transform-origin: 340px 90px;
+  animation: mhsf-orbit-spin 7.2s linear infinite;
+}
+@keyframes mhsf-orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.mh-mini-btn-raw {
-  padding: 6px 10px;
-  border-radius: 4px;
-  border: 1px solid var(--color-border-emphasized);
-  background-color: var(--mehan-tray);
-  color: var(--color-text-secondary);
-  text-align: center;
-  font-size: 11.5px;
-  font-weight: 500;
+.mhsf-forge-group {
+  transform-origin: 340px 90px;
+  animation: mhsf-forge-group 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-forge-group {
+  0%, 26% { transform: scale(1, 1); }
+  32% { transform: scale(1.08, 0.94); }
+  37% { transform: scale(0.97, 1.04); }
+  44%, 100% { transform: scale(1, 1); }
 }
 
-.mh-mini-btn-crafted {
-  padding: 6px 10px 8px;
-  border-radius: var(--radius-element, 10px);
-  background-color: var(--color-accent);
-  background-image: var(--mehan-primary-grad);
-  box-shadow: var(--mehan-shadow-primary);
-  color: #ffffff;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 600;
+.mhsf-die-left {
+  transform-origin: 306px 88px;
+  animation: mhsf-die-left 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-die-left {
+  0%, 15% { transform: translateX(0px) rotate(0deg); }
+  23% { transform: translateX(-9px) rotate(-4deg); animation-timing-function: cubic-bezier(0.55, 0, 0.28, 1); }
+  31%, 36% { transform: translateX(0px) rotate(0deg); }
+  40% { transform: translateX(-1.5px) rotate(-0.6deg); }
+  46%, 100% { transform: translateX(0px) rotate(0deg); }
 }
 
-.mh-compare-caption {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
+.mhsf-die-right {
+  transform-origin: 374px 88px;
+  animation: mhsf-die-right 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-die-right {
+  0%, 15% { transform: translateX(0px) rotate(0deg); }
+  23% { transform: translateX(9px) rotate(4deg); animation-timing-function: cubic-bezier(0.55, 0, 0.28, 1); }
+  31%, 36% { transform: translateX(0px) rotate(0deg); }
+  40% { transform: translateX(1.5px) rotate(0.6deg); }
+  46%, 100% { transform: translateX(0px) rotate(0deg); }
 }
 
-.mh-compare-caption.is-accent {
-  color: var(--color-text-accent);
+.mhsf-keycap-core {
+  transform-origin: 340px 90px;
+  animation: mhsf-keycap-core 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-keycap-core {
+  0%, 22% { transform: scale(1); }
+  26% { transform: scale(0.92); }
+  32% { transform: scale(1.14); }
+  39% { transform: scale(0.97); }
+  46%, 100% { transform: scale(1); }
 }
 
-/* SceneForge 2.5D Animated Vector Bridge & Pulse Connectors */
-.mh-sf-bridge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  flex: none;
-  color: var(--color-text-secondary);
+.mhsf-sparks {
+  transform-origin: 340px 90px;
+  animation: mhsf-sparks 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-sparks {
+  0%, 20% { transform: scale(0.86); opacity: 0.42; }
+  25% { transform: scale(0.72); opacity: 0.22; }
+  31%, 34% { transform: scale(1.14); opacity: 1; }
+  41% { transform: scale(0.96); opacity: 0.72; }
+  48%, 100% { transform: scale(0.86); opacity: 0.42; }
 }
 
-.mh-sf-bridge-rail {
-  width: 46px;
-  height: 24px;
+.mhsf-press-ring {
+  transform-origin: 340px 90px;
+  animation: mhsf-press-ring 3.6s linear infinite;
+}
+@keyframes mhsf-press-ring {
+  0%, 29% { transform: scale(0.74); opacity: 0; animation-timing-function: step-end; }
+  30% { transform: scale(0.9); opacity: 0.95; animation-timing-function: cubic-bezier(0.16, 0.84, 0.3, 1); }
+  45% { transform: scale(1.44); opacity: 0; animation-timing-function: step-end; }
+  46%, 100% { transform: scale(0.74); opacity: 0; }
 }
 
-.mh-sf-keycap {
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
-  background-color: var(--color-background-card);
-  border: 1px solid var(--mehan-card-hairline, var(--color-border));
-  box-shadow: var(--shadow-med), inset 0 -2px 0 var(--color-border);
-  display: grid;
-  place-items: center;
-  flex: none;
+.mhsf-stream-2 {
+  stroke-dasharray: 0.42 1.2;
+  animation: mhsf-stream-2 3.6s linear infinite;
+}
+@keyframes mhsf-stream-2 {
+  0%, 31% { stroke-dashoffset: 0.44; opacity: 0; }
+  34% { opacity: 1; }
+  43% { stroke-dashoffset: -0.28; opacity: 1; }
+  51% { opacity: 1; }
+  54%, 100% { stroke-dashoffset: -1.02; opacity: 0; }
 }
 
-.mh-sf-converge {
-  width: 220px;
-  height: 42px;
-  color: var(--color-text-secondary);
-  margin-top: -2px;
+/* Beat 3 (46%–74%): Right 2.5D Tactile Live UI Card Float + Spring Pop + Shock-Ring */
+.mhsf-crafted-float {
+  animation: mhsf-crafted-float 3.6s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+}
+@keyframes mhsf-crafted-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+.mhsf-crafted-card {
+  transform-origin: 564px 86px;
+  animation: mhsf-crafted-card 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-crafted-card {
+  0%, 44% { transform: translateY(0px) scale(1, 1) rotate(0deg); }
+  49% { transform: translateY(2.5px) scale(0.9, 0.92) rotate(-2deg); animation-timing-function: cubic-bezier(0.2, 0.92, 0.24, 1); }
+  55% { transform: translateY(-4px) scale(1.09, 1.09) rotate(1.5deg); animation-timing-function: cubic-bezier(0.55, 0, 0.82, 0.38); }
+  62% { transform: translateY(1px) scale(0.98, 1.02) rotate(-0.5deg); }
+  70%, 100% { transform: translateY(0px) scale(1, 1) rotate(0deg); }
+}
+
+.mhsf-crafted-ring {
+  transform-origin: 564px 90px;
+  animation: mhsf-crafted-ring 3.6s linear infinite;
+}
+@keyframes mhsf-crafted-ring {
+  0%, 52% { transform: scale(0.76); opacity: 0; animation-timing-function: step-end; }
+  53% { transform: scale(0.92); opacity: 0.92; animation-timing-function: cubic-bezier(0.16, 0.84, 0.3, 1); }
+  69% { transform: scale(1.42); opacity: 0; animation-timing-function: step-end; }
+  70%, 100% { transform: scale(0.76); opacity: 0; }
+}
+
+.mhsf-pill-crafted {
+  transform-origin: 564px 149px;
+  animation: mhsf-pill-crafted 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-pill-crafted {
+  0%, 48% { transform: translateY(0px) scale(1); }
+  55% { transform: translateY(2px) scale(1.07); }
+  63% { transform: translateY(-1px) scale(0.98); }
+  70%, 100% { transform: translateY(0px) scale(1); }
+}
+
+/* Beat 4 (58%–92%): 5 Converging Funnel Arrows + Faceted Craft Gem */
+.mhsf-funnel-pulse {
+  stroke-dasharray: 0.42 1.2;
+  animation: mhsf-funnel-pulse 3.6s linear infinite;
+}
+@keyframes mhsf-funnel-pulse {
+  0%, 58% { stroke-dashoffset: 0.44; opacity: 0; }
+  62% { opacity: 1; }
+  74% { stroke-dashoffset: -0.32; opacity: 1; }
+  82% { opacity: 1; }
+  86%, 100% { stroke-dashoffset: -1.02; opacity: 0; }
+}
+
+.mhsf-gem {
+  transform-origin: 340px 274px;
+  animation: mhsf-gem 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-gem {
+  0%, 66% { transform: translateY(0px) scale(1) rotate(0deg); }
+  71% { transform: translateY(2px) scale(0.86) rotate(-5deg); }
+  76% { transform: translateY(-3.5px) scale(1.22) rotate(4deg); }
+  84% { transform: translateY(1px) scale(0.97) rotate(-1deg); }
+  92%, 100% { transform: translateY(0px) scale(1) rotate(0deg); }
+}
+
+.mhsf-gem-ring {
+  transform-origin: 340px 274px;
+  animation: mhsf-gem-ring 3.6s linear infinite;
+}
+@keyframes mhsf-gem-ring {
+  0%, 73% { transform: scale(0.75); opacity: 0; animation-timing-function: step-end; }
+  74% { transform: scale(0.95); opacity: 0.92; animation-timing-function: cubic-bezier(0.16, 0.84, 0.3, 1); }
+  90% { transform: scale(1.75); opacity: 0; animation-timing-function: step-end; }
+  91%, 100% { transform: scale(0.75); opacity: 0; }
+}
+
+.mhsf-gem-sparks {
+  transform-origin: 340px 274px;
+  animation: mhsf-gem-sparks 3.6s cubic-bezier(0.22, 0.86, 0.28, 1) infinite;
+}
+@keyframes mhsf-gem-sparks {
+  0%, 68% { transform: scale(0.86); opacity: 0.6; }
+  76% { transform: scale(1.25); opacity: 1; }
+  88%, 100% { transform: scale(0.86); opacity: 0.6; }
 }
 
 .mh-sf-tick {
@@ -1288,26 +1281,13 @@ body,
   color: var(--color-text-secondary);
 }
 
-.mh-sf-stream {
-  animation: mh-sf-flow-x 2.2s linear infinite;
-}
-
 .mh-sf-stream-down {
   animation: mh-sf-flow-y 2s linear infinite;
 }
 
-@keyframes mh-sf-flow-x {
-  from {
-    stroke-dashoffset: 28;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
 @keyframes mh-sf-flow-y {
   from {
-    stroke-dashoffset: 20;
+    stroke-dashoffset: 18;
   }
   to {
     stroke-dashoffset: 0;
@@ -1315,7 +1295,7 @@ body,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mh-sf-stream,
+  .mh-sf-diorama *,
   .mh-sf-stream-down {
     animation: none !important;
   }
@@ -1487,15 +1467,15 @@ body,
   box-shadow: var(--shadow-low);
 }
 
-/* Compact 2x6 Tactile Theme Strip + Quiet Active Summary Bar */
+/* Balanced 4x3 Tactile Theme Strip inside 900px Overview + Quiet Active Summary Bar */
 .mh-preset-strip {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
 .studio-workspace.has-docked-editor .mh-preset-strip {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .mh-preset-tile {
@@ -1602,8 +1582,16 @@ body,
   padding-top: 4px;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   gap: 12px;
   min-width: 0;
+  width: 100%;
+}
+
+.mh-quickstart-body > * {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .mh-author-pill {
@@ -2004,20 +1992,6 @@ body,
     padding: 2px 0;
   }
 
-  .mh-compare-stage {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .mh-mini-screen-raw,
-  .mh-mini-screen-crafted {
-    transform: none;
-  }
-
-  .mh-sf-bridge-rail {
-    display: none;
-  }
-
   .mh-distill-row {
     grid-template-columns: 1fr;
     gap: 6px;
@@ -2073,6 +2047,10 @@ body,
 
   .studio-hero {
     padding: 18px;
+  }
+
+  .studio-tray-panel {
+    padding: 14px;
   }
 
   .te-scale-controls {

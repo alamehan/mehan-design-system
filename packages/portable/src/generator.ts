@@ -490,7 +490,7 @@ export function generateAiPrototypeKit(options?: Partial<MehanThemeOptions>): st
 
   return `# Mehan Design System — Single-HTML Prototype Kit (${dna.atmosphere.name} · ${dna.accent.name})
 
-Use the embedded **Mehan Portable CSS + Runtime** below to build a warm, clear, accessible single-file HTML app (works offline and in AI chat previews with zero build step).
+Use the embedded **Mehan Portable CSS + Runtime** below to build a tactile, clear, accessible single-file HTML app (works offline and in AI chat previews with zero build step).
 
 ## 1. Visual Surfaces & Buttons
 1. **Calm Layered Surfaces:** Page background uses \`--mh-paper\`; main panels use \`.mh-card\`; inner boxes inside a card step down to \`.mh-tray\` or \`.mh-well\` (avoid stacking white bordered cards inside white bordered cards).

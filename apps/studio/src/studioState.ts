@@ -543,7 +543,14 @@ export function buildReactInstallSnippet(
     ? `'use client';
 
 import './mehan.css';
-import {LayerProvider, Button, Card, Heading, Stack, TextInput} from '@astryxdesign/core';
+import {
+  Button,
+  Card,
+  Heading,
+  LayerProvider,
+  Stack,
+  TextInput,
+} from '@astryxdesign/core';
 import {Theme} from '@astryxdesign/core/theme';
 import {${camel}} from '@mehan/astryx/themes/${slug}';
 
@@ -554,7 +561,11 @@ export function App() {
         <Card maxWidth={480}>
           <Stack gap={4}>
             <Heading level={2}>Workspace settings</Heading>
-            <TextInput label="Project name" value="Acme Studio" onChange={() => {}} />
+            <TextInput
+              label="Project name"
+              value="Porcelain Workspace"
+              onChange={() => {}}
+            />
             <Button variant="primary" label="Save changes" />
           </Stack>
         </Card>
@@ -566,7 +577,14 @@ export function App() {
 
 // src/App.tsx
 import './mehan.css';
-import {LayerProvider, Button, Card, Heading, Stack, TextInput} from '@astryxdesign/core';
+import {
+  Button,
+  Card,
+  Heading,
+  LayerProvider,
+  Stack,
+  TextInput,
+} from '@astryxdesign/core';
 import {Theme} from '@astryxdesign/core/theme';
 
 export function App() {
@@ -576,7 +594,11 @@ export function App() {
         <Card maxWidth={480}>
           <Stack gap={4}>
             <Heading level={2}>Workspace settings</Heading>
-            <TextInput label="Project name" value="Acme Studio" onChange={() => {}} />
+            <TextInput
+              label="Project name"
+              value="Porcelain Workspace"
+              onChange={() => {}}
+            />
             <Button variant="primary" label="Save changes" />
           </Stack>
         </Card>

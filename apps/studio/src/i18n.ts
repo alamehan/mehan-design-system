@@ -17,9 +17,9 @@ export const STUDIO_COPY = {
     overview: {
       eyebrow: 'Mehan Design System v1.0',
       heroTitle:
-        'Komponen UI hangat & aksesibel — siap untuk Web, AI, dan Figma.',
+        'Antarmuka taktil & aksesibel — dirancang siap rilis di Web, AI, dan Figma.',
       heroDesc:
-        'Dibangun di atas fondasi Meta Astryx dengan permukaan taktil yang hidup, 12 tema instan, dan ekspor 1-klik ke stack mana pun.',
+        'Berdiri di atas fondasi Meta Astryx dengan kedalaman permukaan yang presisi, ragam suasana visual instan, dan ekspor satu klik ke stack pilihanmu.',
       ctaCustomize: 'Ubah Tampilan',
       ctaCopyAiKit: 'Salin Kit AI',
       ctaExploreComponents: 'Jelajahi Komponen',
@@ -60,7 +60,7 @@ export const STUDIO_COPY = {
     ux: {
       title: 'Panduan praktis UX & penulisan teks antarmuka',
       subtitle:
-        '12 panduan interaktif agar tampilan tidak sumpek, form nyaman diisi, serta teks tombol dan pesan error mudah dipahami semua orang.',
+        'Panduan interaktif agar tata letak tidak sumpek, form nyaman diisi, serta teks tombol dan pesan error mudah dipahami semua orang.',
       doLabel: 'Anjuran Mehan (lakukan)',
       dontLabel: 'Hindari (anti-pola)',
     },
@@ -96,9 +96,9 @@ export const STUDIO_COPY = {
     overview: {
       eyebrow: 'Mehan Design System v1.0',
       heroTitle:
-        'Warm, accessible UI components — ready for Web, AI, and Figma.',
+        'Tactile, accessible UI — crafted to ship across Web, AI & Figma.',
       heroDesc:
-        'Built on Meta Astryx with tactile layered surfaces, 12 instant visual moods, and 1-click export to any stack.',
+        'Built on Meta Astryx with precision layered depth, instant visual moods, and one-click export to your stack.',
       ctaCustomize: 'Customize Theme',
       ctaCopyAiKit: 'Copy AI Kit',
       ctaExploreComponents: 'Explore Components',
@@ -139,7 +139,7 @@ export const STUDIO_COPY = {
     ux: {
       title: 'Practical UX & interface writing guide',
       subtitle:
-        '12 interactive chapters keeping screens uncluttered, forms forgiving to fill out, and button or error copy clear to everyone.',
+        'Interactive chapters keeping screens uncluttered, forms forgiving to fill out, and button or error copy clear to everyone.',
       doLabel: 'Mehan standard (do)',
       dontLabel: "Anti-pattern (don't)",
     },

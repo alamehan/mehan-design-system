@@ -7,8 +7,8 @@ export default {
   keywords: [
     'mehan',
     'tactile',
-    'confectionery',
     'porcelain',
+    'confectionery',
     'stone',
     'createMehanTheme',
     'material hierarchy',
@@ -48,13 +48,13 @@ export default {
       content: [
         {
           type: 'prose',
-          text: 'Load one of the 8 prebuilt stylesheets (`mehan-confectionery`, `mehan-porcelain`, `mehan-stone`, `mehan-butter`, `mehan-matcha`, `mehan-cacao`, `mehan-periwinkle`, `mehan-obsidian`) or configure `createMehanTheme()` from `@mehan/astryx/dna`. `createMehanTheme()` provides fast tactile seed options (`atmosphere`, `accent`, `depth`, `lipStyle`, `segmentedStyle`, `wellStyle`, `typeBase`, `typeRatio`, `spacingBase`, `radiusBase`, `sizeBase`, `motion`, `durationStep`) and accepts any raw Astryx `tokens` and `components` overrides on top without restriction. Pair these visual rules with {@link generic:mehan-ux-complexity}, {@link generic:mehan-copy-and-states}, and {@link generic:mehan-page-archetypes}.',
+          text: 'Load one of the 8 prebuilt stylesheets (`mehan-porcelain`, `mehan-confectionery`, `mehan-stone`, `mehan-butter`, `mehan-matcha`, `mehan-cacao`, `mehan-periwinkle`, `mehan-obsidian`) or configure `createMehanTheme()` from `@mehan/astryx/dna`. `createMehanTheme()` provides fast tactile seed options (`atmosphere`, `accent`, `depth`, `lipStyle`, `segmentedStyle`, `wellStyle`, `typeBase`, `typeRatio`, `spacingBase`, `radiusBase`, `sizeBase`, `motion`, `durationStep`) and accepts any raw Astryx `tokens` and `components` overrides on top without restriction. Pair these visual rules with {@link generic:mehan-ux-complexity}, {@link generic:mehan-copy-and-states}, and {@link generic:mehan-page-archetypes}.',
         },
         {
           type: 'code',
           lang: 'tsx',
           label: 'Custom Mehan theme with tactile seed and raw Astryx overrides',
-          code: "import {createMehanTheme} from '@mehan/astryx/dna';\n\nexport const workspaceTheme = createMehanTheme({\n  name: 'acme-workspace',\n  atmosphere: 'confectionery',\n  accent: '#d42a5f',\n  segmentedStyle: 'espresso',\n  lipStyle: 'candy',\n  typeBase: 13.5,\n  sizeBase: 32,\n  tokens: {\n    '--radius-chat': '22px',\n  },\n  components: {\n    card: {base: {padding: 'var(--spacing-4)'}},\n  },\n});",
+          code: "import {createMehanTheme} from '@mehan/astryx/dna';\n\nexport const workspaceTheme = createMehanTheme({\n  name: 'acme-workspace',\n  atmosphere: 'porcelain',\n  accent: '#2563eb',\n  segmentedStyle: 'raised',\n  lipStyle: 'candy',\n  typeBase: 14,\n  sizeBase: 36,\n  tokens: {\n    '--radius-chat': '22px',\n  },\n  components: {\n    card: {base: {padding: 'var(--spacing-4)'}},\n  },\n});",
         },
       ],
     },

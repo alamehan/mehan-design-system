@@ -67,18 +67,45 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     await page.keyboard.press('Escape');
     await page.waitForTimeout(100);
 
-    // Verify compact 2x6 tactile theme strip renders all 12 themes with distinct real WOFF2 fonts
-    const stripAudit = await page.locator('.mh-preset-tile').evaluateAll(els => {
+    // Verify calm 900px Overview column, 4x3 tactile theme strip (12 themes, >=5 real WOFF2 fonts),
+    // SceneForge 2.5D diorama, and zero horizontal scrollbar in Quickstart CodeBlock!
+    const overviewAudit = await page.evaluate(() => {
+      const col = document.querySelector<HTMLElement>('.mh-overview-column');
+      const diorama = document.querySelector<SVGSVGElement>('.mh-sf-diorama');
+      const faviconHref =
+        document.querySelector<HTMLLinkElement>('link[rel="icon"]')?.getAttribute('href') ?? '';
+      const tiles = Array.from(document.querySelectorAll('.mh-preset-tile'));
       const fonts = new Set(
-        els.map(el => {
+        tiles.map(el => {
           const nameEl = el.querySelector('.mh-preset-tile-name');
-          return nameEl ? getComputedStyle(nameEl).fontFamily.split(',')[0].replace(/"/g, '').trim() : '';
+          return nameEl
+            ? getComputedStyle(nameEl).fontFamily.split(',')[0].replace(/"/g, '').trim()
+            : '';
         }),
       );
-      return {count: els.length, fontCount: fonts.size};
+      const scrollables = Array.from(
+        document.querySelectorAll<HTMLElement>('.mh-quickstart-body pre, .mh-quickstart-body code'),
+      );
+      const maxHorizOverflow = Math.max(
+        0,
+        ...scrollables.map(el => el.scrollWidth - el.clientWidth),
+      );
+      return {
+        colWidth: col ? Math.round(col.getBoundingClientRect().width) : 0,
+        hasDiorama: Boolean(diorama),
+        faviconHref,
+        count: tiles.length,
+        fontCount: fonts.size,
+        maxHorizOverflow,
+      };
     });
-    expect(stripAudit.count).toBe(12);
-    expect(stripAudit.fontCount).toBeGreaterThanOrEqual(5);
+    expect(overviewAudit.colWidth).toBe(900);
+    expect(overviewAudit.hasDiorama).toBe(true);
+    expect(overviewAudit.faviconHref).toContain('data:image/svg+xml');
+    expect(overviewAudit.faviconHref).not.toContain('%23d42a5f');
+    expect(overviewAudit.count).toBe(12);
+    expect(overviewAudit.fontCount).toBeGreaterThanOrEqual(5);
+    expect(overviewAudit.maxHorizOverflow).toBeLessThanOrEqual(1);
 
     // 2. Components Catalog: Action -> verify cross-component height & font-size parity across Core + Mehan!
     await page.getByRole('tab', {name: 'Components'}).click();

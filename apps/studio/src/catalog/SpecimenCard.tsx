@@ -363,8 +363,8 @@ export const CATEGORY_DESC: Record<
     id: 'Bilah atas, menu samping lipat, laci layar ponsel, jejak halaman, daftar isi, penunjuk langkah, tab, dan nomor halaman.',
   },
   Container: {
-    en: 'Warm layered cards, clickable selection cards, carousels, and expandable sections.',
-    id: 'Kartu bertingkat yang hangat, kartu pilihan interaktif, karusel geser, dan bagian lipat.',
+    en: 'Layered tactile cards, clickable selection cards, carousels, and expandable sections.',
+    id: 'Kartu bertingkat yang taktil, kartu pilihan interaktif, karusel geser, dan bagian lipat.',
   },
   Action: {
     en: 'Balanced 3D buttons, `SplitButton`, `CopyButton`, `InlineConfirm`, `CanvasZoomBar`, menus, and toolbars — all sharing unified sizing.',

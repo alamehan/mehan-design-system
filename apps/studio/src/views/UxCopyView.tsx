@@ -134,6 +134,11 @@ const UX_DOMAINS: ReadonlyArray<{
   },
 ];
 
+export const UX_CHAPTER_COUNT = UX_DOMAINS.reduce(
+  (sum, domain) => sum + domain.chapters.length,
+  0,
+);
+
 export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
   const isId = lang === 'id';
   const showToast = useToast();
