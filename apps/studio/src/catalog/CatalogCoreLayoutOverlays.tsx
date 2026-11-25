@@ -9,6 +9,7 @@ import {
   Breadcrumbs,
   Button,
   Center,
+  Code,
   CodeBlock,
   CommandPalette,
   Dialog,
@@ -220,7 +221,7 @@ export function useCatalogCoreLayoutOverlays(): SpecimenDefinition[] {
           <VStack gap={1.5}>
             <Text weight="semibold">Main workspace viewport</Text>
             <Text type="supporting" color="secondary">
-              Bounded inside a 216px specimen sandbox (`minHeight: 0`) while full-screen apps fill `100dvh`.
+              Bounded inside a 216px specimen sandbox (<Code>minHeight: 0</Code>) while full-screen apps fill <Code>100dvh</Code>.
             </Text>
           </VStack>
         </AppShell>
@@ -260,7 +261,7 @@ export function useCatalogCoreLayoutOverlays(): SpecimenDefinition[] {
           >
             <LayoutContent padding={3}>
               <Text type="supporting" color="secondary">
-                Scrollable `LayoutContent` region sandwiched cleanly between sticky header and footer dividers.
+                Scrollable <Code>LayoutContent</Code> region sandwiched cleanly between sticky header and footer dividers.
               </Text>
             </LayoutContent>
           </Layout>
@@ -428,7 +429,7 @@ export function useCatalogCoreLayoutOverlays(): SpecimenDefinition[] {
       render: () => (
         <Section padding={3} variant="muted">
           <Text type="supporting" weight="semibold">
-            Muted Section container (`padding={3}`)
+            Muted Section container (<Code>padding=&#123;3&#125;</Code>)
           </Text>
         </Section>
       ),
@@ -942,9 +943,11 @@ export function useCatalogCoreLayoutOverlays(): SpecimenDefinition[] {
       summaryId: 'Keterangan teks singkat untuk memperjelas tombol ikon atau teks terpotong.',
       code: `<Tooltip content="Verified against WCAG 2.1 AA"><Button label="Hover me" /></Tooltip>`,
       render: () => (
-        <Tooltip content="Verified against WCAG 2.1 AA (4.89:1)">
-          <Button size="sm" variant="secondary" label="Hover for Tooltip" />
-        </Tooltip>
+        <HStack gap={2} vAlign="center">
+          <Tooltip content="Verified against WCAG 2.1 AA (4.89:1)">
+            <Button size="sm" variant="secondary" label="Hover for Tooltip" />
+          </Tooltip>
+        </HStack>
       ),
     },
     {

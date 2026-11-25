@@ -3,8 +3,8 @@
  * Mehan Design System Universal Helper CLI (`node bin/mehan.mjs`)
  * Works identically on Windows, macOS, and Linux:
  *   node bin/mehan.mjs init [target-dir] [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex]
- *        [--depth 1] [--radius 1] [--radius-base <px>] [--type-base 14] [--type-ratio 1.2] [--size-base 36]
- *        [--spacing-base 8] [--duration-step 50] [--density standard|compact] [--motion expressive|standard|crisp|calm]
+ *        [--depth 1] [--radius 1] [--radius-base <px>] [--type-base 14] [--type-ratio 1.22] [--size-base 36]
+ *        [--spacing-base 4] [--duration-step 1] [--density standard|compact] [--motion expressive|standard|crisp|calm]
  *        [--tailwind] [--local|--npm] [--portable]
  *   node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out prototype-kit.md]
  *   node bin/mehan.mjs tokens [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
@@ -78,8 +78,117 @@ function loadFromJsonSeed() {
   };
 }
 
+const COMPONENT_VAR_TO_OVERRIDE = {
+  '--button-radius': [
+    {component: 'button', cssProperty: 'borderRadius'},
+    {component: 'icon-button', cssProperty: 'borderRadius'},
+    {component: 'toggle-button', cssProperty: 'borderRadius'},
+  ],
+  '--card-radius': [
+    {component: 'card', cssProperty: 'borderRadius'},
+    {component: 'clickable-card', cssProperty: 'borderRadius'},
+    {component: 'selectable-card', cssProperty: 'borderRadius'},
+  ],
+  '--card-padding': [
+    {component: 'card', cssProperty: 'padding'},
+    {component: 'clickable-card', cssProperty: 'padding'},
+  ],
+  '--input-radius': [
+    {component: 'text-input', cssProperty: '--_field-radius'},
+    {component: 'text-area', cssProperty: '--_field-radius'},
+    {component: 'number-input', cssProperty: '--_field-radius'},
+    {component: 'date-input', cssProperty: '--_field-radius'},
+    {component: 'date-range-input', cssProperty: '--_field-radius'},
+    {component: 'date-time-input-date-segment', cssProperty: '--_field-radius'},
+    {component: 'date-time-input-time-segment', cssProperty: '--_field-radius'},
+    {component: 'time-input', cssProperty: '--_field-radius'},
+    {component: 'typeahead', cssProperty: '--_field-radius'},
+    {component: 'tokenizer', cssProperty: '--_field-radius'},
+    {component: 'power-search', cssProperty: '--_field-radius'},
+    {component: 'selector', cssProperty: '--_field-radius'},
+    {component: 'multi-selector', cssProperty: '--_field-radius'},
+    {component: 'file-input', cssProperty: 'borderRadius'},
+  ],
+  '--banner-radius': [{component: 'banner', cssProperty: 'borderRadius'}],
+  '--segmented-control-radius': [
+    {component: 'segmented-control', cssProperty: 'borderRadius'},
+  ],
+  '--segmented-control-padding': [
+    {component: 'segmented-control', cssProperty: 'padding'},
+  ],
+  '--dialog-radius': [
+    {component: 'dialog', cssProperty: 'borderRadius'},
+    {component: 'alert-dialog', cssProperty: 'borderRadius'},
+  ],
+  '--dialog-padding': [
+    {component: 'dialog', cssProperty: 'padding'},
+    {component: 'dialog', cssProperty: '--astryx-dialog-padding'},
+    {component: 'alert-dialog', cssProperty: 'padding'},
+  ],
+  '--dropdown-radius': [
+    {component: 'dropdown-menu', cssProperty: 'borderRadius'},
+    {component: 'dropdown-menu', cssProperty: '--_dropdown-menu-radius'},
+    {component: 'context-menu', cssProperty: 'borderRadius'},
+    {component: 'context-menu', cssProperty: '--_dropdown-menu-radius'},
+    {component: 'more-menu', cssProperty: 'borderRadius'},
+    {component: 'more-menu', cssProperty: '--_dropdown-menu-radius'},
+    {component: 'selector-popup', cssProperty: 'borderRadius'},
+    {component: 'multi-selector-popup', cssProperty: 'borderRadius'},
+    {component: 'complex-selector-popup', cssProperty: 'borderRadius'},
+  ],
+  '--dropdown-padding': [
+    {component: 'dropdown-menu', cssProperty: 'padding'},
+    {component: 'dropdown-menu', cssProperty: '--_dropdown-menu-padding'},
+    {component: 'context-menu', cssProperty: 'padding'},
+    {component: 'context-menu', cssProperty: '--_dropdown-menu-padding'},
+    {component: 'more-menu', cssProperty: 'padding'},
+    {component: 'more-menu', cssProperty: '--_dropdown-menu-padding'},
+  ],
+  '--section-padding': [{component: 'section', cssProperty: 'padding'}],
+  '--popover-radius': [{component: 'popover', cssProperty: 'borderRadius'}],
+  '--hovercard-radius': [{component: 'hover-card', cssProperty: 'borderRadius'}],
+  '--composer-radius': [
+    {component: 'chat-composer', cssProperty: '--_chat-composer-radius'},
+    {component: 'chat-composer', cssProperty: 'borderRadius'},
+  ],
+  '--composer-padding': [
+    {component: 'chat-composer', cssProperty: '--_chat-composer-padding'},
+  ],
+};
+
+function splitOverridesForTheme(tokenOverrides, customOverrides) {
+  const rawTokens = {};
+  const components = {};
+  if (tokenOverrides && typeof tokenOverrides === 'object') {
+    for (const [k, v] of Object.entries(tokenOverrides)) {
+      if (!v) continue;
+      const mappings = COMPONENT_VAR_TO_OVERRIDE[k];
+      if (mappings) {
+        for (const {component, cssProperty} of mappings) {
+          components[component] ??= {base: {}};
+          components[component].base[cssProperty] = String(v);
+        }
+      } else {
+        rawTokens[k] = String(v);
+      }
+    }
+  }
+  if (Array.isArray(customOverrides)) {
+    for (const item of customOverrides) {
+      if (!item || !item.component || !item.property || !item.value) continue;
+      components[item.component] ??= {base: {}};
+      components[item.component].base[item.property] = String(item.value);
+    }
+  }
+  return {
+    rawTokens: Object.keys(rawTokens).length > 0 ? rawTokens : undefined,
+    components: Object.keys(components).length > 0 ? components : undefined,
+  };
+}
+
 function resolveCliSeedOptions() {
-  const {seed: fromSeed, tokenOverrides} = loadFromJsonSeed();
+  const {seed: fromSeed, tokenOverrides, customOverrides} = loadFromJsonSeed();
+  const {rawTokens, components} = splitOverridesForTheme(tokenOverrides, customOverrides);
   const themeFlag = readFlag('--theme', null);
   const atmosphere =
     themeFlag?.replace(/^mehan-/, '') ??
@@ -143,7 +252,7 @@ function resolveCliSeedOptions() {
     codeFont,
   };
 
-  return {dnaOptions, tokenOverrides};
+  return {dnaOptions, tokenOverrides: rawTokens, components};
 }
 
 if (cmd === 'ai-kit') {
@@ -265,7 +374,7 @@ if (cmd === 'init') {
     }
   }
   const targetDir = path.resolve(process.cwd(), positional[0] ?? '.');
-  const {dnaOptions, tokenOverrides} = resolveCliSeedOptions();
+  const {dnaOptions, tokenOverrides, components} = resolveCliSeedOptions();
   const {
     atmosphere,
     accent,
@@ -340,11 +449,12 @@ if (cmd === 'init') {
   const hasExtraScaleOverrides =
     radiusBase !== undefined ||
     (typeBase !== undefined && typeBase !== 14) ||
-    (typeRatio !== undefined && typeRatio !== 1.2) ||
+    (typeRatio !== undefined && typeRatio !== 1.22) ||
     (sizeBase !== undefined && sizeBase !== 36) ||
-    (spacingBase !== undefined && spacingBase !== 8) ||
-    (durationStep !== undefined && durationStep !== 50) ||
-    (tokenOverrides && Object.keys(tokenOverrides).length > 0);
+    (spacingBase !== undefined && spacingBase !== 4) ||
+    (durationStep !== undefined && durationStep !== 1) ||
+    (tokenOverrides && Object.keys(tokenOverrides).length > 0) ||
+    (components && Object.keys(components).length > 0);
 
   const isDefaultPreset =
     !hasExtraScaleOverrides &&
@@ -396,6 +506,9 @@ if (cmd === 'init') {
     durationStep !== undefined ? `  durationStep: ${durationStep},` : null,
     tokenOverrides && Object.keys(tokenOverrides).length > 0
       ? `  tokens: ${JSON.stringify(tokenOverrides, null, 2).replaceAll('\n', '\n  ')},`
+      : null,
+    components && Object.keys(components).length > 0
+      ? `  components: ${JSON.stringify(components, null, 2).replaceAll('\n', '\n  ')},`
       : null,
   ].filter(Boolean);
 
@@ -499,7 +612,7 @@ export function MehanProvider({
 console.log(`Mehan Design System CLI (v1.0.0)
 Usage:
   • Double-click STUDIO.html (Windows / macOS / Linux) to open Interactive Studio offline!
-  • node bin/mehan.mjs init <project-folder> [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--lip candy|subtle|flat] [--segmented raised|espresso] [--well recessed|bordered] [--density standard|compact] [--motion expressive|standard|crisp|calm] [--type-base 14] [--type-ratio 1.2] [--size-base 36] [--spacing-base 8] [--radius-base 8] [--duration-step 50] [--tailwind] [--local|--npm] [--portable]
+  • node bin/mehan.mjs init <project-folder> [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--lip candy|subtle|flat] [--segmented raised|espresso] [--well recessed|bordered] [--density standard|compact] [--motion expressive|standard|crisp|calm] [--type-base 14] [--type-ratio 1.22] [--size-base 36] [--spacing-base 4] [--radius-base 8] [--duration-step 1] [--tailwind] [--local|--npm] [--portable]
   • node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--out kit.md]
   • node bin/mehan.mjs tokens [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
   • node bin/mehan.mjs set-scope @yourscope

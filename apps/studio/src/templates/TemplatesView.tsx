@@ -13,6 +13,7 @@ import {
   ChatMessageList,
   ChatSystemMessage,
   ChatToolCalls,
+  CodeBlock,
   Collapsible,
   Dialog,
   DialogHeader,
@@ -1135,6 +1136,10 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
   const [topoSelectedItem, setTopoSelectedItem] = useState('Edge Gateway');
   const [topoZoom, setTopoZoom] = useState(100);
   const [topoTime, setTopoTime] = useState(2.4);
+  const [topoEnvName, setTopoEnvName] = useState('prod-ap-southeast');
+  const [topoTier, setTopoTier] = useState('multi-region');
+  const [topoCanaryPct, setTopoCanaryPct] = useState(25);
+  const [topoBlend, setTopoBlend] = useState('normal');
 
   // SaaS Dashboard states
   const [deployFilter, setDeployFilter] = useState<string>('all');
@@ -1339,24 +1344,42 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
 
               <WorkspaceLayout
                 enableShortcuts={false}
-                desktopHeight={320}
+                scrollMode="page"
                 label="Interactive workspace topology preview"
                 toolbar={
                   topologyMode === 'form-result' ? undefined : (
-                    <HStack hAlign="between" vAlign="center" gap={2}>
-                      <Text weight="semibold">
-                        {topologyMode === 'collection'
-                          ? isId
-                            ? 'Koleksi Layanan & Filter'
-                            : 'Service Collection & Filters'
-                          : topologyMode === 'studio'
+                    <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                      <HStack gap={2} vAlign="center">
+                        <Text weight="semibold">
+                          {topologyMode === 'collection'
                             ? isId
-                              ? 'Kanvas Studio Interaktif'
-                              : 'Interactive Studio Workbench'
-                            : isId
-                              ? 'Ruang Kerja Multi-Panel'
-                              : 'Multi-Pane Workspace'}
-                      </Text>
+                              ? 'Koleksi Layanan & Filter'
+                              : 'Service Collection & Filters'
+                            : topologyMode === 'studio'
+                              ? isId
+                                ? 'Kanvas Studio Interaktif'
+                                : 'Interactive Studio Workbench'
+                              : topologyMode === 'workbench'
+                                ? isId
+                                  ? 'Editor Sumber & Pratinjau'
+                                  : 'Resizable Source Workbench'
+                                : isId
+                                  ? 'Penjelajah Layanan 3-Panel'
+                                  : '3-Pane Service Explorer'}
+                        </Text>
+                        <Badge
+                          variant="neutral"
+                          label={
+                            topologyMode === 'workbench'
+                              ? isId
+                                ? 'Tepi dapat digeser'
+                                : 'Resizable split'
+                              : topologyMode === 'collection'
+                                ? '4 services'
+                                : 'ap-southeast-1'
+                          }
+                        />
+                      </HStack>
                       {(topologyMode === 'explorer' ||
                         topologyMode === 'collection' ||
                         topologyMode === 'studio') && (
@@ -1385,39 +1408,93 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                         title:
                           topologyMode === 'form-result'
                             ? isId
-                              ? 'Input Parameter'
+                              ? 'Parameter Input'
                               : 'Input Parameters'
                             : topologyMode === 'studio'
                               ? isId
                                 ? 'Lapisan'
-                                : 'Layers'
-                              : isId
-                                ? 'Sumber Data'
-                                : 'Sources',
-                        defaultWidth: 210,
+                                : 'Scene Layers'
+                              : topologyMode === 'workbench'
+                                ? isId
+                                  ? 'Berkas Sumber'
+                                  : 'Source Files'
+                                : isId
+                                  ? 'Layanan Aktif'
+                                  : 'Services',
+                        defaultWidth: topologyMode === 'form-result' ? 284 : 228,
                         isResizable: topologyMode === 'workbench',
                         mobileMode:
                           topologyMode === 'form-result' ? 'stack' : 'collapsible',
-                        content: (
-                          <Stack gap={1.5}>
-                            {['Edge Gateway', 'Token Compiler', 'Billing Worker'].map(
-                              item => (
-                                <Button
-                                  key={item}
-                                  variant={
-                                    topoSelectedItem === item ? 'secondary' : 'ghost'
-                                  }
+                        content:
+                          topologyMode === 'form-result' ? (
+                            <Stack gap={3}>
+                              <TextInput
+                                label={isId ? 'Target klaster' : 'Cluster target'}
+                                size="sm"
+                                value={topoEnvName}
+                                onChange={setTopoEnvName}
+                              />
+                              <Stack gap={1}>
+                                <Text type="supporting" weight="semibold" color="secondary">
+                                  {isId ? 'Topologi replikasi' : 'Replication tier'}
+                                </Text>
+                                <SegmentedControl
+                                  label="Replication tier"
                                   size="sm"
-                                  label={item}
+                                  value={topoTier}
+                                  onChange={setTopoTier}
+                                >
+                                  <SegmentedControlItem value="single" label="Single AZ" />
+                                  <SegmentedControlItem value="multi-region" label="Multi-Region" />
+                                </SegmentedControl>
+                              </Stack>
+                              <PrecisionSlider
+                                label={isId ? 'Canary' : 'Canary'}
+                                value={topoCanaryPct}
+                                min={5}
+                                max={100}
+                                step={5}
+                                stops={[10, 25, 50, 100]}
+                                unit="%"
+                                onChange={setTopoCanaryPct}
+                              />
+                            </Stack>
+                          ) : (
+                            <div className="mehan-ws-nav-list">
+                              {(topologyMode === 'workbench'
+                                ? [
+                                    {name: 'Edge Gateway', meta: 'gateway.ts'},
+                                    {name: 'Token Compiler', meta: 'tokens.ts'},
+                                    {name: 'Billing Worker', meta: 'worker.ts'},
+                                  ]
+                                : topologyMode === 'studio'
+                                  ? [
+                                      {name: 'Edge Gateway', meta: '3D Card'},
+                                      {name: 'Token Compiler', meta: 'Key Light'},
+                                      {name: 'Billing Worker', meta: 'Backdrop'},
+                                    ]
+                                  : [
+                                      {name: 'Edge Gateway', meta: '14 ms'},
+                                      {name: 'Token Compiler', meta: '19 ms'},
+                                      {name: 'Billing Worker', meta: '24 ms'},
+                                    ]
+                              ).map(entry => (
+                                <button
+                                  key={entry.name}
+                                  type="button"
+                                  className="mehan-ws-nav-item"
+                                  data-active={String(topoSelectedItem === entry.name)}
                                   onClick={() => {
-                                    setTopoSelectedItem(item);
+                                    setTopoSelectedItem(entry.name);
                                     setTopoInspectorOpen(true);
                                   }}
-                                />
-                              ),
-                            )}
-                          </Stack>
-                        ),
+                                >
+                                  <span>{entry.name}</span>
+                                  <span className="studio-mono-pill">{entry.meta}</span>
+                                </button>
+                              ))}
+                            </div>
+                          ),
                       }
                 }
                 endPane={
@@ -1428,18 +1505,39 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                         title: isId ? 'Inspektur Detail' : 'Detail Inspector',
                         isOpen: topoInspectorOpen,
                         onOpenChange: setTopoInspectorOpen,
-                        defaultWidth: 240,
+                        defaultWidth: 268,
                         content: (
                           <Stack gap={2}>
-                            <Badge variant="success" label={topoSelectedItem} />
-                            <PropertyRow label={isId ? 'Wilayah' : 'Region'}>
-                              <Text type="supporting">ap-southeast-1</Text>
+                            <HStack hAlign="between" vAlign="center" gap={2}>
+                              <Badge variant="success" label={topoSelectedItem} />
+                              <Badge variant="neutral" label="Healthy" />
+                            </HStack>
+                            <PropertyRow label={isId ? 'Wilayah' : 'Region'} labelWidth={84}>
+                              <span className="studio-mono-pill">ap-southeast-1</span>
                             </PropertyRow>
-                            <PropertyRow label="SLO">
-                              <Text type="supporting" hasTabularNumbers>
+                            <PropertyRow label="SLO" labelWidth={84}>
+                              <Text type="supporting" weight="semibold" hasTabularNumbers>
                                 99.99%
                               </Text>
                             </PropertyRow>
+                            {topologyMode === 'studio' && (
+                              <PropertyRow
+                                label={isId ? 'Paduan' : 'Blend'}
+                                labelWidth={84}
+                                isModified={topoBlend !== 'normal'}
+                                onReset={() => setTopoBlend('normal')}
+                              >
+                                <SegmentedControl
+                                  label="Layer blend"
+                                  size="sm"
+                                  value={topoBlend}
+                                  onChange={setTopoBlend}
+                                >
+                                  <SegmentedControlItem value="normal" label="Normal" />
+                                  <SegmentedControlItem value="screen" label="Screen" />
+                                </SegmentedControl>
+                              </PropertyRow>
+                            )}
                           </Stack>
                         ),
                       }
@@ -1449,7 +1547,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                 {topologyMode === 'studio' ? (
                   <CanvasStage
                     backdrop="dots"
-                    minHeight={210}
+                    minHeight={228}
                     bottomEnd={
                       <CanvasZoomBar
                         zoom={topoZoom}
@@ -1467,19 +1565,129 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                     }
                   >
                     <Card padding={3} elevation="low">
-                      <Text weight="semibold">
-                        {topoSelectedItem} · {topoZoom}%
-                      </Text>
+                      <VStack gap={1} hAlign="center">
+                        <Badge variant="pink" label={topoBlend.toUpperCase()} />
+                        <Text weight="semibold">
+                          {topoSelectedItem} · {topoZoom}%
+                        </Text>
+                      </VStack>
                     </Card>
                   </CanvasStage>
-                ) : (
+                ) : topologyMode === 'form-result' ? (
+                  <Stack gap={3}>
+                    <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                      <Heading level={4}>
+                        {isId ? 'Pratinjau Rencana Rilis' : 'Computed Rollout Plan'}
+                      </Heading>
+                      <Badge
+                        variant="info"
+                        label={topoTier === 'multi-region' ? 'Active-Active HA' : 'Single-Zone'}
+                      />
+                    </HStack>
+                    <Grid columns={{minWidth: 160, max: 2, repeat: 'fit'}} gap={3}>
+                      <MetricCard
+                        label={isId ? 'Alokasi Canary' : 'Canary traffic'}
+                        value={`${topoCanaryPct}%`}
+                        caption={`Cluster: ${topoEnvName || 'default'}`}
+                      />
+                      <MetricCard
+                        label={isId ? 'Estimasi latensi p95' : 'Projected p95'}
+                        value={topoTier === 'multi-region' ? '16.4 ms' : '28.0 ms'}
+                        delta={{value: '-4.2 ms', direction: 'down'}}
+                        caption={isId ? 'Simulasi langsung' : 'Live parameter estimate'}
+                      />
+                    </Grid>
+                  </Stack>
+                ) : topologyMode === 'workbench' ? (
                   <Stack gap={2}>
-                    <Heading level={4}>{topoSelectedItem}</Heading>
-                    <Text color="secondary">
-                      {isId
-                        ? 'Panel samping menggunakan LayoutPanel + ResizeHandle milik Meta Astryx di layar lebar, dan otomatis berubah menjadi Drawer modal di bawah 768px.'
-                        : 'Side panels run on Meta Astryx LayoutPanel + ResizeHandle on desktop, and automatically morph into modal Drawers below 768px.'}
-                    </Text>
+                    <HStack hAlign="between" vAlign="center" gap={2}>
+                      <Text weight="semibold">{topoSelectedItem} · Source Preview</Text>
+                      <Text type="supporting" color="secondary">
+                        {isId
+                          ? 'Geser pembatas vertikal untuk mengubah lebar panel kiri'
+                          : 'Drag the vertical splitter to resize the file explorer'}
+                      </Text>
+                    </HStack>
+                    <CodeBlock
+                      language="ts"
+                      title={`${topoSelectedItem.toLowerCase().replace(/\s+/g, '-')}.ts`}
+                      hasCopyButton
+                      code={`export const service = '${topoSelectedItem}';\nexport const region = 'ap-southeast-1';\nexport const targetSlo = 0.9999;`}
+                    />
+                  </Stack>
+                ) : topologyMode === 'collection' ? (
+                  <div className="studio-table-frame">
+                    <Table
+                      aria-label="Workspace topology collection"
+                      density="compact"
+                      dividers="rows"
+                      hasHover
+                      data={[
+                        {id: '1', name: 'Edge Gateway', region: 'ap-southeast-1', p95: '14.2 ms'},
+                        {id: '2', name: 'Token Compiler', region: 'eu-central-1', p95: '19.0 ms'},
+                        {id: '3', name: 'Billing Worker', region: 'us-east-1', p95: '24.6 ms'},
+                      ]}
+                      columns={[
+                        {
+                          key: 'name',
+                          header: isId ? 'Layanan' : 'Service',
+                          width: proportional(1.5),
+                          renderCell: r => <Text weight="semibold">{String(r.name)}</Text>,
+                        },
+                        {
+                          key: 'region',
+                          header: isId ? 'Wilayah' : 'Region',
+                          width: proportional(1.2),
+                        },
+                        {
+                          key: 'p95',
+                          header: 'P95',
+                          width: pixel(92),
+                          align: 'end',
+                          renderCell: r => <Text hasTabularNumbers>{String(r.p95)}</Text>,
+                        },
+                        {
+                          key: 'inspect',
+                          header: '',
+                          width: pixel(92),
+                          align: 'end',
+                          renderCell: r => (
+                            <Button
+                              size="sm"
+                              variant={topoSelectedItem === r.name ? 'secondary' : 'ghost'}
+                              label={isId ? 'Inspeksi' : 'Inspect'}
+                              onClick={() => {
+                                setTopoSelectedItem(String(r.name));
+                                setTopoInspectorOpen(true);
+                              }}
+                            />
+                          ),
+                        },
+                      ]}
+                    />
+                  </div>
+                ) : (
+                  <Stack gap={3}>
+                    <Stack gap={1}>
+                      <Heading level={4}>{topoSelectedItem}</Heading>
+                      <Text color="secondary">
+                        {isId
+                          ? 'Panel samping menggunakan LayoutPanel + ResizeHandle milik Meta Astryx di layar lebar, dan otomatis berubah menjadi Drawer modal di bawah 768px.'
+                          : 'Side panels run on Meta Astryx LayoutPanel + ResizeHandle on desktop, and automatically morph into modal Drawers below 768px.'}
+                      </Text>
+                    </Stack>
+                    <Grid columns={{minWidth: 145, max: 2, repeat: 'fit'}} gap={3}>
+                      <MetricCard
+                        label={isId ? 'Throughput aktif' : 'Live throughput'}
+                        value="1,420 rps"
+                        delta={{value: '+6.8%', direction: 'up'}}
+                      />
+                      <MetricCard
+                        label={isId ? 'Anggaran galat' : 'Error budget'}
+                        value="99.98%"
+                        caption="30-day rolling window"
+                      />
+                    </Grid>
                   </Stack>
                 )}
               </WorkspaceLayout>

@@ -199,13 +199,19 @@ function ActionSpecimens(): SpecimenDefinition[] {
       summaryId: 'Tombol tekan dua kondisi (`aria-pressed`) dengan indikator aktif lembut.',
       code: `<ToggleButton isPressed={pinned} onPressedChange={setPinned} label="Bookmark" icon={<Bookmark size={14} />} />`,
       render: () => (
-        <HStack gap={2}>
+        <HStack gap={2} wrap="wrap">
           <ToggleButton
             size="sm"
             isPressed={pinned}
             onPressedChange={setPinned}
             label={pinned ? 'Bookmarked' : 'Bookmark'}
             icon={<Bookmark size={14} />}
+          />
+          <ToggleButton
+            size="sm"
+            isPressed={!pinned}
+            onPressedChange={next => setPinned(!next)}
+            label={!pinned ? 'Pinned' : 'Pin view'}
           />
         </HStack>
       ),
@@ -425,7 +431,9 @@ function ChatAndContainerAndContentSpecimens(): SpecimenDefinition[] {
           <VStack gap={2}>
             <Text weight="semibold">Elevated surface card</Text>
             <Card variant="pink" padding={2}>
-              <Text type="supporting">Nested pastel card (`variant="pink"`)</Text>
+              <Text type="supporting">
+                Nested pastel card (<Code>variant=&quot;pink&quot;</Code>)
+              </Text>
             </Card>
           </VStack>
         </Card>

@@ -87,8 +87,18 @@ const OWN_FILL_RULES: ReadonlyArray<readonly [string, string, string?]> = [
   ['layout-content', 'base'],
   ['code', 'base'],
   ['avatar', 'base'],
+  ['avatar-fallback', 'base'],
   ['avatar-group-overflow', 'base'],
   ['segmented-control-item', 'selected'],
+  ['top-nav-item', 'selected'],
+  ['side-nav-item', 'selected'],
+  ['pagination-item', 'selected'],
+  ['token', 'color:default'],
+  ['citation', 'variant:label'],
+  ['radio-list-item', 'base'],
+  ['radio-list-item', 'selected'],
+  ['calendar', 'mode:single'],
+  ['calendar', 'mode:range'],
   ['step-indicator', 'progress:not-started'],
   ['table-header-cell', 'base'],
   ['table-row', 'striped', STRIPED_ROW],
@@ -122,6 +132,8 @@ const OWN_FILL_RULES: ReadonlyArray<readonly [string, string, string?]> = [
   ['bottom-sheet', 'base'],
   ['chat-composer', 'base'],
   ['chat-composer-drawer', 'base'],
+  ['chat-message-bubble', 'sender:assistant+variant:filled'],
+  ['chat-tool-calls', 'base'],
 ];
 
 const COLOURED_CARDS = [
@@ -428,6 +440,15 @@ export function buildMehanThemeConfig(
         },
         'variant:secondary': {
           ...SECONDARY_RAISED,
+          ':where(.astryx-button-group *)': {
+            boxShadow: 'none',
+            transform: 'none',
+          },
+          ':where(.astryx-button-group *):not(:first-child)': {
+            borderInlineStartWidth: '1px',
+            borderInlineStartStyle: 'solid',
+            borderInlineStartColor: 'var(--color-border)',
+          },
           [`:active${ENABLED}${POPUP_CLOSED}`]: {
             transform: `translateY(${lipPx > 0 ? 1 : 0.5}px)`,
             boxShadow: 'var(--mehan-shadow-pressed)',
@@ -467,12 +488,29 @@ export function buildMehanThemeConfig(
         },
       },
 
-      // ToggleButton ('isPressed:true' boolean-string key!)
+      'button-group': {
+        base: {
+          borderRadius: 'var(--radius-element)',
+          boxShadow: 'var(--mehan-shadow-raised)',
+        },
+      },
+
+      // ToggleButton ('isPressed:true' / 'isPressed:false' boolean-string keys!)
       'toggle-button': {
+        'isPressed:false': {
+          ':not(.astryx-toolbar *, .astryx-button-group *)': {
+            backgroundColor: lightDark(L.surface, D.raisedBottom),
+            backgroundImage: 'var(--mehan-raised-grad)',
+            boxShadow: 'var(--mehan-shadow-raised)',
+            color: 'var(--color-text-primary)',
+          },
+        },
         'isPressed:true': {
           backgroundColor: lightDark(A.softSolidLight, A.softSolidDark),
+          backgroundImage: 'none',
           color: lightDark(A.textLight, A.textDark),
-          boxShadow: 'var(--shadow-inset-selected)',
+          boxShadow: `inset 0 1px 2px ${lightDark(`rgba(${sRgb}, 0.10)`, 'rgba(0, 0, 0, 0.35)')}, var(--shadow-inset-selected)`,
+          fontWeight: '600',
         },
       },
 
@@ -563,12 +601,45 @@ export function buildMehanThemeConfig(
         },
       },
 
-      // AI Chat Composer & Toolbar
+      // AI Chat Composer, Bubbles, Tool Calls & Toolbar
       'chat-composer': {
         base: {
-          backgroundColor: 'var(--mehan-surface)',
-          borderWidth: '0px',
-          borderStyle: 'none',
+          borderRadius: 'var(--radius-chat)',
+          '--color-background-popover':
+            dna.wellStyle === 'bordered'
+              ? 'var(--color-background-surface)'
+              : 'var(--mehan-well)',
+          '--shadow-low':
+            dna.wellStyle === 'bordered'
+              ? 'inset 0 0 0 1px var(--color-border-emphasized)'
+              : 'var(--mehan-shadow-well)',
+          '--shadow-med':
+            dna.wellStyle === 'bordered'
+              ? 'inset 0 0 0 1.5px var(--color-accent), 0 0 0 2px var(--color-accent-muted)'
+              : 'var(--mehan-shadow-well), 0 0 0 2px var(--color-accent)',
+        },
+      },
+      'chat-message-bubble': {
+        'sender:user+variant:filled': {
+          backgroundColor: lightDark(A.softSolidLight, A.softSolidDark),
+          color: 'var(--color-text-primary)',
+          boxShadow: `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.72)', 'rgba(255, 255, 255, 0.08)')}, inset 0 0 0 1px ${lightDark(withHexAlpha(A.accentLight, 0.22), withHexAlpha(A.accentDark, 0.28))}`,
+        },
+        'sender:assistant+variant:filled': {
+          backgroundColor: 'var(--mehan-tray)',
+          color: 'var(--color-text-primary)',
+          boxShadow: 'inset 0 0 0 1px var(--color-border)',
+        },
+      },
+      'chat-tool-calls': {
+        base: {
+          backgroundColor: 'var(--mehan-tray)',
+          borderRadius: 'var(--radius-element)',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'var(--color-border)',
+          paddingBlock: 'var(--spacing-1-5)',
+          paddingInline: 'var(--spacing-3)',
         },
       },
       'chat-send-button': {
@@ -707,8 +778,34 @@ export function buildMehanThemeConfig(
           borderStyle: 'solid',
           borderColor: 'var(--mehan-card-hairline)',
           padding: dna.density === 'compact' ? 'var(--spacing-3)' : 'var(--spacing-4)',
+          transitionProperty: 'box-shadow, border-color, transform',
+          transitionDuration: 'var(--duration-fast)',
+          [`:hover${ENABLED}`]: {
+            borderColor: 'var(--color-border-emphasized)',
+            boxShadow: 'var(--shadow-med)',
+          },
         },
         ...colouredCardRules,
+      },
+      collapsible: {
+        base: {
+          ':not([data-divided], .te-disclosure-box *)': {
+            backgroundColor: 'var(--mehan-tray)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'var(--color-border)',
+            borderRadius: 'var(--radius-element)',
+            paddingInline: 'var(--spacing-3)',
+          },
+        },
+      },
+      'collapsible-trigger': {
+        base: {
+          fontFamily: 'var(--font-family-heading)',
+          fontSize: 'var(--text-body-size)',
+          fontWeight: '600',
+          letterSpacing: '-0.01em',
+        },
       },
       'selectable-card': {
         base: {
@@ -796,17 +893,309 @@ export function buildMehanThemeConfig(
       badge: {
         base: {
           fontWeight: '600',
+          letterSpacing: '-0.005em',
+        },
+        'variant:neutral': {
+          ':not(.astryx-button *)': {
+            backgroundColor: 'var(--mehan-well)',
+            boxShadow: 'inset 0 0 0 1px var(--color-border)',
+          },
+        },
+      },
+      banner: {
+        'container:card+status:info': {
+          boxShadow: `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0.08)')}, inset 0 0 0 1px ${lightDark(withHexAlpha(S.info.solid[0], 0.24), withHexAlpha(S.info.solid[1], 0.28))}`,
+        },
+        'container:card+status:success': {
+          boxShadow: `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0.08)')}, inset 0 0 0 1px ${lightDark(withHexAlpha(S.success.solid[0], 0.24), withHexAlpha(S.success.solid[1], 0.28))}`,
+        },
+        'container:card+status:warning': {
+          boxShadow: `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0.08)')}, inset 0 0 0 1px ${lightDark(withHexAlpha(S.warning.solid[0], 0.28), withHexAlpha(S.warning.solid[1], 0.28))}`,
+        },
+        'container:card+status:error': {
+          boxShadow: `inset 0 1px 0 ${lightDark('rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0.08)')}, inset 0 0 0 1px ${lightDark(withHexAlpha(S.error.solid[0], 0.24), withHexAlpha(S.error.solid[1], 0.28))}`,
+        },
+      },
+      tooltip: {
+        base: {
+          boxShadow: 'var(--shadow-med)',
+          fontWeight: '500',
+        },
+      },
+      toast: {
+        base: {
+          boxShadow: 'var(--shadow-high)',
+        },
+      },
+
+      // Navigation & Wayfinding (TopNav, SideNav, TabList, Stepper, Outline, Pagination)
+      'top-nav': {
+        base: {
+          backgroundColor: 'var(--color-background-surface)',
+          borderBottomWidth: '1px',
+          borderBottomStyle: 'solid',
+          borderBottomColor: 'var(--color-border)',
+          paddingInline: 'var(--spacing-4)',
+        },
+      },
+      'top-nav-item': {
+        selected: {
+          ':not([data-mode="drawer"])': {
+            backgroundColor: lightDark(L.surface, D.raisedTop),
+            backgroundImage: 'var(--mehan-raised-grad)',
+            boxShadow: 'var(--mehan-shadow-raised)',
+            color: 'var(--color-text-primary)',
+            fontWeight: '600',
+          },
+        },
+      },
+      'side-nav': {
+        base: {
+          backgroundColor: 'var(--mehan-tray)',
+        },
+      },
+      'side-nav-item': {
+        base: {
+          borderRadius: 'var(--radius-element)',
+        },
+        selected: {
+          backgroundColor: lightDark(L.surface, D.raisedTop),
+          backgroundImage: 'var(--mehan-raised-grad)',
+          boxShadow: 'var(--mehan-shadow-raised)',
+          color: 'var(--color-text-primary)',
+          fontWeight: '600',
+        },
+      },
+      tab: {
+        selected: {
+          color: 'var(--color-text-primary)',
+          fontWeight: '600',
+        },
+      },
+      'tab-indicator': {
+        selected: {
+          height: '2.5px',
+          borderRadius: 'var(--radius-full)',
+          backgroundColor: 'var(--color-accent)',
+          backgroundImage: 'var(--mehan-primary-grad)',
+        },
+      },
+      'outline-indicator': {
+        base: {
+          width: '3px',
+          backgroundColor: 'var(--color-accent)',
+          backgroundImage: 'var(--mehan-primary-grad)',
+        },
+      },
+      'outline-item': {
+        active: {
+          backgroundColor: 'var(--color-accent-muted)',
+          color: 'var(--color-text-accent)',
+          fontWeight: '600',
+        },
+      },
+      'step-indicator': {
+        'progress:not-started': {
+          backgroundColor: 'var(--mehan-well)',
+          borderWidth: '0px',
+          boxShadow: 'var(--mehan-shadow-well)',
+          color: 'var(--color-text-secondary)',
+          fontWeight: '600',
+        },
+        'progress:in-progress': {
+          color: 'var(--color-accent)',
+        },
+        'progress:completed': {
+          color: 'var(--color-accent)',
+        },
+      },
+      'step-label': {
+        'progress:in-progress': {
+          color: 'var(--color-text-primary)',
+          fontWeight: '700',
+        },
+      },
+      'resize-handle': {
+        base: {
+          alignSelf: 'stretch',
+          height: 'auto',
+        },
+      },
+      'resize-handle-pill': {
+        base: {
+          backgroundColor: 'var(--color-border-emphasized)',
+        },
+      },
+      'step-connector': {
+        base: {
+          backgroundColor: 'var(--mehan-socket)',
+        },
+      },
+      'step-bar': {
+        base: {
+          backgroundColor: 'var(--mehan-socket)',
+        },
+      },
+      'pagination-item': {
+        selected: {
+          backgroundColor: lightDark(L.surface, D.raisedTop),
+          backgroundImage: 'var(--mehan-raised-grad)',
+          boxShadow: 'var(--mehan-shadow-raised)',
+          color: 'var(--color-text-primary)',
+          fontWeight: '700',
+        },
+      },
+      'pagination-dot': {
+        base: {
+          backgroundColor: 'var(--mehan-socket)',
+          boxShadow: 'var(--mehan-shadow-socket)',
+        },
+        active: {
+          backgroundColor: 'var(--color-accent)',
+          backgroundImage: 'var(--mehan-primary-grad)',
+          boxShadow: 'none',
+        },
+      },
+
+      // Calendar & Tactile RadioList Rows
+      calendar: {
+        base: {
+          ':not(:where(.astryx-popover *, .astryx-bottom-sheet *))': {
+            backgroundColor: 'var(--color-background-card)',
+            borderRadius: 'var(--radius-container)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'var(--mehan-card-hairline)',
+            boxShadow: 'var(--shadow-low)',
+            padding: 'var(--spacing-3)',
+          },
+        },
+      },
+      'calendar-day': {
+        selected: {
+          backgroundColor: A.accentLight,
+          backgroundImage: 'var(--mehan-primary-grad)',
+          color: '#ffffff',
+          boxShadow: 'var(--mehan-shadow-primary)',
+          fontWeight: '600',
+        },
+        today: {
+          ':not([data-selected])': {
+            fontWeight: '700',
+            boxShadow: 'inset 0 0 0 1.5px var(--color-accent)',
+          },
+        },
+      },
+      'radio-list-item': {
+        base: {
+          paddingBlock: 'var(--spacing-2)',
+          paddingInline: 'var(--spacing-3)',
+          borderRadius: 'var(--radius-element)',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'var(--color-border)',
+          backgroundColor: 'var(--mehan-tray)',
+        },
+        selected: {
+          backgroundColor: lightDark(A.softSolidLight, A.softSolidDark),
+          borderColor: 'var(--color-accent)',
+          boxShadow: '0 0 0 1px var(--color-accent)',
+        },
+      },
+
+      // Content Primitives (Code, CodeBlock, Blockquote, Citation, Token, Avatar, Thumbnail)
+      code: {
+        base: {
+          backgroundColor: 'var(--mehan-well)',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'var(--color-border)',
+          paddingInline: '6px',
+          paddingBlock: '1px',
+          fontWeight: '500',
+        },
+      },
+      'code-block': {
+        'container:card': {
+          borderRadius: 'var(--radius-container)',
+          borderColor: 'var(--color-border)',
+          boxShadow: 'var(--mehan-shadow-well)',
+        },
+      },
+      'code-block-header': {
+        'container:card': {
+          backgroundColor: 'var(--mehan-tray)',
+        },
+      },
+      blockquote: {
+        base: {
+          backgroundColor: 'var(--mehan-tray)',
+          borderInlineStartWidth: '3.5px',
+          borderInlineStartStyle: 'solid',
+          borderInlineStartColor: 'var(--color-accent)',
+          borderStartEndRadius: 'var(--radius-element)',
+          borderEndEndRadius: 'var(--radius-element)',
+          borderStartStartRadius: '4px',
+          borderEndStartRadius: '4px',
+          paddingBlock: 'var(--spacing-3)',
+          paddingInlineStart: 'var(--spacing-4)',
+          paddingInlineEnd: 'var(--spacing-3)',
+          color: 'var(--color-text-primary)',
+        },
+      },
+      citation: {
+        'variant:label': {
+          backgroundColor: lightDark(L.surface, D.raisedBottom),
+          backgroundImage: 'var(--mehan-raised-grad)',
+          borderWidth: '0px',
+          boxShadow: 'var(--mehan-shadow-raised)',
+          color: 'var(--color-text-primary)',
+          fontWeight: '600',
+        },
+        'variant:number': {
+          backgroundColor: lightDark(A.softSolidLight, A.softSolidDark),
+          color: lightDark(A.textLight, A.textDark),
+          fontWeight: '700',
         },
       },
       token: {
         base: {
-          fontWeight: '500',
+          fontWeight: '600',
+        },
+        'color:default': {
+          backgroundColor: lightDark(L.surface, D.raisedBottom),
+          backgroundImage: 'var(--mehan-raised-grad)',
+          boxShadow: 'var(--mehan-shadow-raised)',
+          color: 'var(--color-text-primary)',
+        },
+      },
+      'avatar-fallback': {
+        base: {
+          backgroundColor: lightDark(L.well, D.raisedTop),
+          backgroundImage: 'var(--mehan-raised-grad)',
+          boxShadow: 'inset 0 0 0 1px var(--color-border)',
+          fontFamily: 'var(--font-family-heading)',
+          fontWeight: '700',
+        },
+      },
+      'avatar-group-overflow': {
+        base: {
+          backgroundColor: lightDark(L.well, D.raisedTop),
+          backgroundImage: 'var(--mehan-raised-grad)',
+          boxShadow: 'inset 0 0 0 1px var(--color-border)',
+          fontWeight: '700',
+        },
+      },
+      thumbnail: {
+        base: {
+          boxShadow: 'var(--shadow-low)',
         },
       },
 
       // Nested secondary text contrast protection inside coloured cards
       item: {
         selected: {
+          fontWeight: '600',
           [IN_COLOURED_CARD]: {
             '--color-text-secondary': L.ink2,
           },
@@ -814,6 +1203,7 @@ export function buildMehanThemeConfig(
       },
       'tree-list-item': {
         selected: {
+          fontWeight: '600',
           [IN_COLOURED_CARD]: {
             '--color-text-secondary': L.ink2,
           },
@@ -907,7 +1297,7 @@ export function buildMehanThemeConfig(
                   },
                 },
                 'variant:secondary': {
-                  [`:hover${ENABLED}${POPUP_CLOSED}`]: {
+                  [`:hover${ENABLED}${POPUP_CLOSED}:not(.astryx-button-group *)`]: {
                     transform: 'translateY(-1px)',
                   },
                 },

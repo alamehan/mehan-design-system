@@ -28,4 +28,4 @@ import {resolveMehanDna, auditMehanThemeContrast} from '@mehan/astryx/dna';
    - `formatNumber`, `formatCompactNumber`, `formatCurrency`, `formatPercent`, `formatBytes`, `formatRelativeTime`, `parseLocalIsoDate`.
    - `validateFile`, `matchesAcceptedType` (MIME, wildcard `type/*`, `.ext`, and byte-size caps with structured issue codes).
 5. **Symmetric W3C DTCG Token Export (`exportW3cDesignTokens`)**
-   - Exports 1:1 symmetric `color.light` and `color.dark` (26 keys each), `dimension`, and `fontFamily` tokens for Figma Tokens Studio, Penpot, and Style Dictionary.
+   - Exports 1:1 symmetric `color.light` and `color.dark` (25 keys each), `dimension`, and `fontFamily` tokens for Figma Tokens Studio, Penpot, and Style Dictionary.

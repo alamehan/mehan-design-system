@@ -78,6 +78,7 @@ type UxChapterId =
 
 const UX_DOMAINS: ReadonlyArray<{
   id: string;
+  roman: string;
   en: string;
   idLabel: string;
   chapters: ReadonlyArray<{
@@ -89,8 +90,9 @@ const UX_DOMAINS: ReadonlyArray<{
 }> = [
   {
     id: 'cognitive-spatial',
-    en: 'I · Cognitive & Spatial',
-    idLabel: 'I · Kognitif & Ruang',
+    roman: 'I',
+    en: 'Cognitive & Spatial',
+    idLabel: 'Kognitif & Ruang',
     chapters: [
       {id: 'chunking', num: '01', en: 'Grouping & Chunking', idLabel: 'Grouping & Chunking'},
       {id: 'disclosure', num: '02', en: 'Progressive Disclosure', idLabel: 'Progressive Disclosure'},
@@ -99,8 +101,9 @@ const UX_DOMAINS: ReadonlyArray<{
   },
   {
     id: 'typography-intl',
-    en: 'II · Typography & Intl',
-    idLabel: 'II · Tipografi & Bahasa',
+    roman: 'II',
+    en: 'Typography & Intl',
+    idLabel: 'Tipografi & Bahasa',
     chapters: [
       {id: 'truncation', num: '04', en: 'Truncation & Numerals', idLabel: 'Truncate & Angka'},
       {id: 'linebudget', num: '05', en: 'Line Budget & Scroll', idLabel: 'Batas Baris & Scroll'},
@@ -109,8 +112,9 @@ const UX_DOMAINS: ReadonlyArray<{
   },
   {
     id: 'actions-keys-motion',
-    en: 'III · Actions, Keys & Motion',
-    idLabel: 'III · Aksi, Pintasan & Gerak',
+    roman: 'III',
+    en: 'Actions & Motion',
+    idLabel: 'Aksi, Pintasan & Gerak',
     chapters: [
       {id: 'hierarchy', num: '07', en: 'Actions & Control Roles', idLabel: 'Hierarki & Kontrol'},
       {id: 'keyboard', num: '08', en: 'Keyboard & Focus Laws', idLabel: 'Keyboard & Fokus'},
@@ -119,8 +123,9 @@ const UX_DOMAINS: ReadonlyArray<{
   },
   {
     id: 'forms-states-copy',
-    en: 'IV · Forms, States & Copy',
-    idLabel: 'IV · Form, State & Copy',
+    roman: 'IV',
+    en: 'Forms, States & Copy',
+    idLabel: 'Form, State & Copy',
     chapters: [
       {id: 'forms', num: '10', en: 'Form Timing & Confirm', idLabel: 'Form, Draf & Konfirmasi'},
       {id: 'states', num: '11', en: 'States & Recovery', idLabel: 'State & Pemulihan'},
@@ -333,22 +338,27 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
         {/* Sticky Left Chapter Rail (Practicing Chunking!) */}
         <nav className="ux-sidebar" aria-label="UX Playbook chapters">
           {UX_DOMAINS.map(domain => (
-            <React.Fragment key={domain.id}>
+            <div key={domain.id} className="cat-pillar-group">
               <div className="cat-pillar-label" aria-hidden="true">
-                {isId ? domain.idLabel : domain.en}
+                <span className="cat-pillar-num">{domain.roman}</span>
+                <span className="cat-pillar-text">
+                  {isId ? domain.idLabel : domain.en}
+                </span>
               </div>
-              {domain.chapters.map(ch => (
-                <button
-                  key={ch.id}
-                  type="button"
-                  className={`cat-nav-btn ${chapter === ch.id ? 'is-active' : ''}`}
-                  onClick={() => setChapter(ch.id)}
-                >
-                  <span>{isId ? ch.idLabel : ch.en}</span>
-                  <span className="cat-nav-count">{ch.num}</span>
-                </button>
-              ))}
-            </React.Fragment>
+              <div className="cat-pillar-items">
+                {domain.chapters.map(ch => (
+                  <button
+                    key={ch.id}
+                    type="button"
+                    className={`cat-nav-btn ${chapter === ch.id ? 'is-active' : ''}`}
+                    onClick={() => setChapter(ch.id)}
+                  >
+                    <span>{isId ? ch.idLabel : ch.en}</span>
+                    <span className="cat-nav-count">{ch.num}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
 
           <div className="cat-sidebar-divider" role="separator" />

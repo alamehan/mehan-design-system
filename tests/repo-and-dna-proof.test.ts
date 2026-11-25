@@ -60,7 +60,7 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
     }
   });
 
-  it('produces monotonic perceptual OKLCH shade ramps, clean Oklab midpoints, and symmetric 26-key W3C light/dark tokens', () => {
+  it('produces monotonic perceptual OKLCH shade ramps, clean Oklab midpoints, and symmetric 25-key W3C light/dark tokens', () => {
     const scale = generateOklchScale('#e0366b');
     const stops = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const;
     for (let i = 0; i < stops.length - 1; i += 1) {
@@ -76,7 +76,7 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
     expect(greyHarmonies.analogous).toHaveLength(2);
     expect(greyHarmonies.linearGradientCss).toContain('linear-gradient');
 
-    // W3C light/dark key parity lock (26/26 keys)
+    // W3C light/dark key parity lock (25/25 keys)
     const w3c = exportW3cDesignTokens({
       name: 'symmetry-check',
       atmosphere: 'confectionery',
@@ -271,7 +271,13 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
             radiusBase: 6,
             motion: 'calm',
           },
-          tokenOverrides: {'--color-accent': '#0d9488'},
+          tokenOverrides: {
+            '--color-accent': '#0d9488',
+            '--button-radius': '9999px',
+          },
+          customOverrides: [
+            {id: 'c1', component: 'badge', property: 'letterSpacing', value: '0.02em'},
+          ],
         }),
         'utf8',
       );
@@ -298,6 +304,11 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
       expect(providerOut).toContain("atmosphere: 'stone'");
       expect(providerOut).toContain('typeBase: 15');
       expect(providerOut).toContain('radiusBase: 6');
+      expect(providerOut).not.toContain("'--button-radius'");
+      expect(providerOut).not.toContain('"--button-radius"');
+      expect(providerOut).toContain('components:');
+      expect(providerOut).toContain('"borderRadius": "9999px"');
+      expect(providerOut).toContain('"letterSpacing": "0.02em"');
 
       // 2. Portable HTML/CSS init
       const htmlDir = path.join(tmpBase, 'vanilla-site');

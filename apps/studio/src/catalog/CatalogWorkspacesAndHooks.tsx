@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {
   Badge,
   Button,
+  Code,
   HStack,
   Kbd,
   SegmentedControl,
@@ -71,7 +72,7 @@ const MILLER_TREE: ColumnViewNode[] = [
           {id: 'atmospheres', label: 'atmospheres.ts', meta: '3 presets'},
           {id: 'accents', label: 'accents.ts', meta: 'OKLCH'},
           {id: 'audit', label: 'audit.ts', meta: 'WCAG 2.2'},
-          {id: 'w3c', label: 'w3c.ts', meta: '26/26 keys'},
+          {id: 'w3c', label: 'w3c.ts', meta: '25/25 keys'},
         ],
       },
       {
@@ -186,7 +187,7 @@ export function useCatalogWorkspacesAndHooks(): SpecimenDefinition[] {
       render: () => (
         <WorkspaceLayout
           enableShortcuts={false}
-          desktopHeight={248}
+          desktopHeight={280}
           label="Service explorer workspace specimen"
           toolbar={
             <HStack hAlign="between" vAlign="center" gap={2}>
@@ -201,29 +202,31 @@ export function useCatalogWorkspacesAndHooks(): SpecimenDefinition[] {
           }
           startPane={{
             title: 'Services',
-            defaultWidth: 176,
+            defaultWidth: 192,
             content: (
-              <Stack gap={1}>
+              <div className="mehan-ws-nav-list">
                 {['Edge Gateway', 'Billing Sync', 'Token Compiler'].map(svc => (
-                  <Button
+                  <button
                     key={svc}
-                    variant={wsService === svc ? 'secondary' : 'ghost'}
-                    size="sm"
-                    label={svc}
+                    type="button"
+                    className="mehan-ws-nav-item"
+                    data-active={String(wsService === svc)}
                     onClick={() => {
                       setWsService(svc);
                       setWsInspectorOpen(true);
                     }}
-                  />
+                  >
+                    <span>{svc}</span>
+                  </button>
                 ))}
-              </Stack>
+              </div>
             ),
           }}
           endPane={{
             title: 'Inspector',
             isOpen: wsInspectorOpen,
             onOpenChange: setWsInspectorOpen,
-            defaultWidth: 196,
+            defaultWidth: 204,
             content: (
               <Stack gap={1.5}>
                 <Badge variant="success" label="Healthy · 99.99%" />
@@ -529,7 +532,7 @@ export function useCatalogWorkspacesAndHooks(): SpecimenDefinition[] {
             <Kbd keys="?" />
           </HStack>
           <Text type="supporting" color="secondary">
-            Automatically skips active IME composition (`keyCode === 229`) and open modal `Escape` collisions.
+            Automatically skips active IME composition (<Code>keyCode === 229</Code>) and open modal <Code>Escape</Code> collisions.
           </Text>
         </Stack>
       ),

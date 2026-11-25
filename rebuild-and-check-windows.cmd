@@ -1,7 +1,7 @@
 @echo off
 cd /d "%~dp0"
 echo ============================================================
-echo  Mehan Design System — Full Rebuild ^& 6-Gate Verification
+echo  Mehan Design System -- Full Rebuild ^& 6-Gate Verification
 echo ============================================================
 if not exist "node_modules" (
   echo Installing workspace dependencies...

@@ -2440,7 +2440,26 @@
 
   /* 29. WorkspaceLayout (Level-1 Multi-Pane Workbench on Astryx Layout + Drawer) */
   .mehan-workspace-layout {
+    /* Reset inherited parent <Card>/<Section> container bleed vars so nested workspaces never clip */
+    --container-padding-inline-start: 0px;
+    --container-padding-inline-end: 0px;
+    --container-padding-block-start: 0px;
+    --container-padding-block-end: 0px;
+    --container-corner-start-start: 0px;
+    --container-corner-start-end: 0px;
+    --container-corner-end-start: 0px;
+    --container-corner-end-end: 0px;
+    --_container-bleed-block-start: 0px;
+    --_container-bleed-block-end: 0px;
+    --layout-padding-outer-x: initial;
+    --layout-padding-outer-y: initial;
+    --layout-padding-own-outer-x: initial;
+    --layout-padding-own-outer-y: initial;
+    --layout-padding-inner-x: initial;
+    --layout-padding-inner-y: initial;
+    --_section-padding-propagated: initial;
     width: 100%;
+    box-sizing: border-box;
     border-radius: var(--radius-container, 14px);
     background-color: var(--color-background-card);
     border: 1px solid var(--mehan-card-hairline, var(--color-border));
@@ -2449,7 +2468,6 @@
   }
   .mehan-workspace-layout[data-scroll-mode="auto"] {
     height: auto !important;
-    overflow: visible;
   }
   .mehan-ws-toolbar {
     display: flex;
@@ -2457,6 +2475,9 @@
     gap: 10px;
     width: 100%;
     min-width: 0;
+    box-sizing: border-box;
+    padding: 10px 16px;
+    background-color: var(--mehan-tray, var(--color-background-surface));
   }
   .mehan-ws-toolbar-main {
     flex: 1 1 auto;
@@ -2466,27 +2487,38 @@
     display: flex;
     flex-direction: column;
     min-height: 100%;
+    background-color: var(--mehan-tray, var(--color-background-surface));
   }
   .mehan-ws-pane-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    padding: 10px 14px;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 8px 14px;
     border-bottom: 1px solid var(--color-border);
     background-color: var(--mehan-tray, var(--color-background-surface));
   }
   .mehan-ws-pane-body {
-    padding: 14px;
+    padding: 12px 14px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
   .mehan-ws-main-wrap {
+    padding: 16px 18px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 14px;
     min-width: 0;
+  }
+  .mehan-ws-footer {
+    padding: 10px 16px;
+    box-sizing: border-box;
+    background-color: var(--mehan-tray, var(--color-background-surface));
   }
   .mehan-ws-mobile-start {
     border-radius: var(--radius-element, 10px);
@@ -2496,6 +2528,47 @@
   }
   .mehan-ws-main-content {
     min-width: 0;
+  }
+  .mehan-ws-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+  }
+  .mehan-ws-nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    min-height: 34px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: var(--radius-element, 9px);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: start;
+    cursor: pointer;
+    transition: background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+  }
+  .mehan-ws-nav-item:hover {
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+  }
+  .mehan-ws-nav-item[data-active="true"] {
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+  .mehan-ws-nav-item:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
   }
 
   /* 30. CanvasStage (Level-2 Recessed Interactive Viewport + Non-Blocking HUD) */
@@ -3135,7 +3208,8 @@
     .mehan-tour-prev,
     .mehan-tour-next,
     .mehan-cv-item,
-    .mehan-dc-legend-btn {
+    .mehan-dc-legend-btn,
+    .mehan-ws-nav-item {
       min-height: 44px;
     }
     .mehan-cp-eyedropper,

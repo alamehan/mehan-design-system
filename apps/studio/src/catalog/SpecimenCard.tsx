@@ -52,35 +52,58 @@ export type OfficialAstryxCategory = (typeof OFFICIAL_ASTRYX_CATEGORIES)[number]
 
 export const CATALOG_PILLARS: ReadonlyArray<{
   id: string;
+  roman: string;
   en: string;
   idLabel: string;
   categories: ReadonlyArray<OfficialAstryxCategory>;
 }> = [
   {
     id: 'structure',
-    en: 'I · Structure & Wayfinding',
-    idLabel: 'I · Struktur & Navigasi',
+    roman: 'I',
+    en: 'Structure & Wayfinding',
+    idLabel: 'Struktur & Navigasi',
     categories: ['Layout', 'Navigation', 'Container'],
   },
   {
     id: 'inputs',
-    en: 'II · Actions & Inputs',
-    idLabel: 'II · Aksi & Input',
+    roman: 'II',
+    en: 'Actions & Inputs',
+    idLabel: 'Aksi & Input',
     categories: ['Action', 'Form Controls'],
   },
   {
     id: 'data',
-    en: 'III · Data, Content & Viz',
-    idLabel: 'III · Data, Konten & Grafik',
+    roman: 'III',
+    en: 'Data, Content & Viz',
+    idLabel: 'Data, Konten & Grafik',
     categories: ['Content', 'Table & List', 'Data Visualization'],
   },
   {
     id: 'feedback',
-    en: 'IV · Feedback, Overlays & Runtime',
-    idLabel: 'IV · Status, Overlay & Runtime',
+    roman: 'IV',
+    en: 'Feedback & Runtime',
+    idLabel: 'Status, Overlay & Runtime',
     categories: ['Feedback & Status', 'Overlay', 'Chat', 'Utility'],
   },
 ];
+
+/**
+ * Formats inline backtick segments (`likeThis`) as crisp monospace pills
+ * so catalog descriptions and specimen summaries never render raw backticks.
+ */
+export function renderFormattedCopy(text: string): React.ReactNode {
+  if (!text.includes('`')) return text;
+  const parts = text.split(/`([^`]+)`/g);
+  return parts.map((part, idx) =>
+    idx % 2 === 1 ? (
+      <code key={idx} className="studio-inline-code">
+        {part}
+      </code>
+    ) : (
+      part
+    ),
+  );
+}
 
 export interface FormControlSubgroup {
   id: string;
@@ -459,7 +482,7 @@ export function SpecimenCard({
       </div>
 
       <Text type="supporting" color="secondary" maxLines={2}>
-        {isId ? item.summaryId : item.summaryEn}
+        {renderFormattedCopy(isId ? item.summaryId : item.summaryEn)}
       </Text>
 
       <div className={`cat-specimen-stage ${item.flush ? 'is-flush' : ''}`}>

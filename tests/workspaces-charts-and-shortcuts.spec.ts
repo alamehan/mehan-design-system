@@ -99,6 +99,8 @@ test.describe('Mehan Workspaces, DataChart, ColumnSettings, ColumnView, Property
     expect(await dcCard.locator('table.mehan-sr-only tbody tr').count()).toBe(6);
     await dcCard.getByRole('radio', {name: 'H-Bar'}).click();
     await expect(dcCard.locator('.mehan-dc-hbar-row')).toHaveCount(6);
+    // Allow SegmentedControl's 175ms sliding ::before lens to finish settling before screenshot
+    await page.waitForTimeout(260);
     await page.screenshot({
       path: path.join(shotDir, 'final-catalog-dataviz-light-1366.png'),
       fullPage: false,
@@ -111,7 +113,7 @@ test.describe('Mehan Workspaces, DataChart, ColumnSettings, ColumnView, Property
       ).violations,
     ).toEqual([]);
 
-    // 6. Patterns & Templates: 5-in-1 Workspace Topologies switcher
+    // 6. Patterns & Templates: 5-in-1 Workspace Topologies switcher + zero-clipping geometry lock
     await page.getByRole('tab', {name: 'Patterns & Templates'}).click();
     await page.getByRole('radio', {name: 'Workspace Topologies (5-in-1)'}).click();
     for (const modeLabel of [
@@ -122,7 +124,29 @@ test.describe('Mehan Workspaces, DataChart, ColumnSettings, ColumnView, Property
       '3-Pane Explorer',
     ]) {
       await page.getByRole('radio', {name: modeLabel}).click();
+      await page.waitForTimeout(80);
+      const clipIssues = await page.evaluate(mode => {
+        const ws = document.querySelector<HTMLElement>('.mehan-workspace-layout');
+        if (!ws) return [`${mode}: missing .mehan-workspace-layout`];
+        const wsBox = ws.getBoundingClientRect();
+        const problems: string[] = [];
+        const targets = ws.querySelectorAll<HTMLElement>(
+          '.mehan-ws-toolbar, .mehan-ws-pane-header, .mehan-ws-pane-body, .mehan-ws-main-wrap',
+        );
+        for (const el of targets) {
+          const r = el.getBoundingClientRect();
+          if (r.width === 0 || r.height === 0) continue;
+          if (r.left < wsBox.left - 1 || r.right > wsBox.right + 1) {
+            problems.push(
+              `${mode}: ${el.className} horizontally clipped (${Math.round(r.left)}..${Math.round(r.right)} vs ${Math.round(wsBox.left)}..${Math.round(wsBox.right)})`,
+            );
+          }
+        }
+        return problems;
+      }, modeLabel);
+      expect(clipIssues).toEqual([]);
     }
+    await page.waitForTimeout(260);
     await page.screenshot({
       path: path.join(shotDir, 'final-workspace-topologies-5in1-1366.png'),
       fullPage: false,

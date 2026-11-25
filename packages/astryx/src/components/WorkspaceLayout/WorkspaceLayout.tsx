@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Button,
   Drawer,
@@ -121,6 +121,16 @@ export function WorkspaceLayout({
   className,
 }: WorkspaceLayoutProps) {
   const {isMobile, shouldReleasePaneScroll} = useMehanViewport();
+  const endPaneRef = useRef(endPane);
+  endPaneRef.current = endPane;
+
+  // Never hijack <768px phone viewports with an auto-opened modal Drawer on mount/resize;
+  // mobile users explicitly open the contextual inspector via the header button or row action.
+  useEffect(() => {
+    if (isMobile && endPaneRef.current?.isOpen) {
+      endPaneRef.current.onOpenChange(false);
+    }
+  }, [isMobile]);
 
   const [uncontrolledCollapsed, setUncontrolledCollapsed] = useState<boolean>(
     startPane?.defaultIsCollapsed ?? false,
@@ -240,14 +250,18 @@ export function WorkspaceLayout({
             <div className="mehan-ws-pane-body">{startPane.content}</div>
           </div>
         </LayoutPanel>
-        {startPane.isResizable && <ResizeHandle resizable={startResizable} hasDivider />}
+        {startPane.isResizable && (
+          <ResizeHandle resizable={startResizable} hasDivider pillPlacement="center" />
+        )}
       </>
     ) : undefined;
 
   const desktopEndSlot =
     !isMobile && endPane && endPane.isOpen ? (
       <>
-        {endPane.isResizable && <ResizeHandle resizable={endResizable} hasDivider />}
+        {endPane.isResizable && (
+          <ResizeHandle resizable={endResizable} hasDivider pillPlacement="center" />
+        )}
         <LayoutPanel
           hasDivider={!endPane.isResizable}
           width={endPane.isResizable ? undefined : (endPane.defaultWidth ?? 312)}
@@ -284,8 +298,8 @@ export function WorkspaceLayout({
         padding={0}
         header={
           hasHeaderBar ? (
-            <LayoutHeader hasDivider>
-              <div className="mehan-ws-toolbar" style={{padding: '10px 14px'}}>
+            <LayoutHeader padding={0} hasDivider>
+              <div className="mehan-ws-toolbar">
                 {showStartToggleInBar && (
                   <IconButton
                     variant="secondary"
@@ -317,8 +331,8 @@ export function WorkspaceLayout({
         }
         start={desktopStartSlot}
         content={
-          <LayoutContent>
-            <div className="mehan-ws-main-wrap" style={{padding: 16}}>
+          <LayoutContent padding={0}>
+            <div className="mehan-ws-main-wrap">
               {isMobile &&
                 startPane &&
                 (startMobileMode === 'stack' ||
@@ -347,7 +361,11 @@ export function WorkspaceLayout({
         }
         end={desktopEndSlot}
         footer={
-          footer ? <LayoutFooter hasDivider>{footer}</LayoutFooter> : undefined
+          footer ? (
+            <LayoutFooter padding={0} hasDivider>
+              <div className="mehan-ws-footer">{footer}</div>
+            </LayoutFooter>
+          ) : undefined
         }
       />
 

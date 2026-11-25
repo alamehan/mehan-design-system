@@ -545,6 +545,17 @@
     box-shadow: var(--mehan-shadow-raised-hover);
   }
 
+  .astryx-button[data-variant="secondary"]:where(.astryx-button-group *) {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .astryx-button[data-variant="secondary"]:where(.astryx-button-group *):not(:first-child) {
+    border-inline-start-width: 1px;
+    border-inline-start-style: solid;
+    border-inline-start-color: var(--color-border);
+  }
+
   @media not all and (pointer: coarse) {
   .astryx-button[data-variant="secondary"]:active:not(:disabled, [aria-disabled="true"]):not([aria-expanded="true"][aria-haspopup]:not([aria-haspopup="false"])) {
     transform: translateY(1px);
@@ -602,10 +613,24 @@
     background-color: var(--color-overlay-hover);
   }
 
+  .astryx-button-group {
+    border-radius: var(--radius-element);
+    box-shadow: var(--mehan-shadow-raised);
+  }
+
+  .astryx-toggle-button[data-is-pressed="false"]:not(.astryx-toolbar *, .astryx-button-group *) {
+    background-color: light-dark(#fffcf7, #2b201b);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+  }
+
   .astryx-toggle-button[data-is-pressed="true"] {
     background-color: light-dark(#ffedef, #351219);
+    background-image: none;
     color: light-dark(#c41353, #ff92a5);
-    box-shadow: var(--shadow-inset-selected);
+    box-shadow: inset 0 1px 2px light-dark(rgba(74, 45, 20, 0.10), rgba(0, 0, 0, 0.35)), var(--shadow-inset-selected);
+    font-weight: 600;
   }
 
   .astryx-segmented-control {
@@ -1103,9 +1128,39 @@
     --color-text-primary: light-dark(#261b16, #fbf0e6);
     --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
     --color-text-accent: light-dark(#c41353, #ff92a5);
-    background-color: var(--mehan-surface);
-    border-width: 0px;
-    border-style: none;
+    border-radius: var(--radius-chat);
+    --color-background-popover: var(--mehan-well);
+    --shadow-low: var(--mehan-shadow-well);
+    --shadow-med: var(--mehan-shadow-well), 0 0 0 2px var(--color-accent);
+    --_chat-composer-radius: var(--radius-chat);
+  }
+
+  .astryx-chat-message-bubble[data-sender="user"][data-variant="filled"] {
+    background-color: light-dark(#ffedef, #351219);
+    color: var(--color-text-primary);
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.08)), inset 0 0 0 1px light-dark(#d42a5f38, #ff809947);
+  }
+
+  .astryx-chat-message-bubble[data-sender="assistant"][data-variant="filled"] {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: var(--mehan-tray);
+    color: var(--color-text-primary);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+
+  .astryx-chat-tool-calls {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: var(--mehan-tray);
+    border-radius: var(--radius-element);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-border);
+    padding-block: var(--spacing-1-5);
+    padding-inline: var(--spacing-3);
   }
 
   .astryx-chat-send-button {
@@ -1314,6 +1369,13 @@
     border-style: solid;
     border-color: var(--mehan-card-hairline);
     padding: var(--spacing-4);
+    transition-property: box-shadow, border-color, transform;
+    transition-duration: var(--duration-fast);
+  }
+
+  .astryx-clickable-card:hover:not(:disabled, [aria-disabled="true"]) {
+    border-color: var(--color-border-emphasized);
+    box-shadow: var(--shadow-med);
   }
 
   .astryx-clickable-card[data-variant="blue"] {
@@ -1386,6 +1448,22 @@
     --color-text-primary: light-dark(#261b16, #fbf0e6);
     --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
     --color-text-accent: light-dark(#c41353, #ff92a5);
+  }
+
+  .astryx-collapsible:not([data-divided], .te-disclosure-box *) {
+    background-color: var(--mehan-tray);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-border);
+    border-radius: var(--radius-element);
+    padding-inline: var(--spacing-3);
+  }
+
+  .astryx-collapsible-trigger {
+    font-family: var(--font-family-heading);
+    font-size: var(--text-body-size);
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   .astryx-selectable-card {
@@ -1593,17 +1671,332 @@
 
   .astryx-badge {
     font-weight: 600;
+    letter-spacing: -0.005em;
   }
 
-  .astryx-token {
+  .astryx-badge[data-variant="neutral"]:not(.astryx-button *) {
+    background-color: var(--mehan-well);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+
+  .astryx-banner[data-container="card"][data-status="info"] {
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.08)), inset 0 0 0 1px light-dark(#0076b33d, #38bdf847);
+  }
+
+  .astryx-banner[data-container="card"][data-status="success"] {
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.08)), inset 0 0 0 1px light-dark(#1580583d, #4ade8047);
+  }
+
+  .astryx-banner[data-container="card"][data-status="warning"] {
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.08)), inset 0 0 0 1px light-dark(#b4530947, #fbbf2447);
+  }
+
+  .astryx-banner[data-container="card"][data-status="error"] {
+    box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.08)), inset 0 0 0 1px light-dark(#dc26263d, #f8717147);
+  }
+
+  .astryx-tooltip {
+    box-shadow: var(--shadow-med);
     font-weight: 500;
   }
 
-  .astryx-item[data-selected="selected"]:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) *):not(:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) :is(.astryx-card[data-variant="default"], .astryx-card[data-variant="muted"], .astryx-clickable-card[data-variant="default"], .astryx-clickable-card[data-variant="muted"], .astryx-selectable-card[data-variant="default"], .astryx-selectable-card[data-variant="muted"], .astryx-section[data-variant="section"], .astryx-section[data-variant="muted"], .astryx-app-shell[data-variant="surface"], .astryx-app-shell[data-variant="section"], .astryx-app-shell-header[data-variant="surface"], .astryx-app-shell-sidenav[data-variant="surface"], .astryx-layout-panel, .astryx-layout-content, .astryx-code, .astryx-avatar, .astryx-avatar-group-overflow, .astryx-segmented-control-item[data-selected="selected"], .astryx-step-indicator[data-progress="not-started"], .astryx-table-header-cell, .astryx-banner-content, .astryx-input-group-text, .astryx-text-input, .astryx-text-area, .astryx-number-input, .astryx-date-input, .astryx-date-range-input, .astryx-date-time-input-date-segment, .astryx-date-time-input-time-segment, .astryx-time-input, .astryx-file-input, .astryx-typeahead, .astryx-tokenizer, .astryx-selector[data-variant="input"], .astryx-multi-selector[data-variant="input"], .astryx-selector-popup, .astryx-multi-selector-popup, .astryx-complex-selector-popup, .astryx-dropdown-menu, .astryx-dropdown-menu-radio, .astryx-context-menu, .astryx-more-menu, .astryx-popover, .astryx-hover-card, .astryx-dialog, .astryx-alert-dialog, .astryx-drawer, .astryx-bottom-sheet, .astryx-chat-composer, .astryx-chat-composer-drawer) *)) {
+  .astryx-toast {
+    box-shadow: var(--shadow-high);
+  }
+
+  .astryx-top-nav {
+    background-color: var(--color-background-surface);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--color-border);
+    padding-inline: var(--spacing-4);
+  }
+
+  .astryx-top-nav-item[data-selected="selected"] {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+  }
+
+  .astryx-top-nav-item[data-selected="selected"]:not([data-mode="drawer"]) {
+    background-color: light-dark(#fffcf7, #332721);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  .astryx-side-nav {
+    background-color: var(--mehan-tray);
+  }
+
+  .astryx-side-nav-item {
+    border-radius: var(--radius-element);
+  }
+
+  .astryx-side-nav-item[data-selected="selected"] {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: light-dark(#fffcf7, #332721);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  .astryx-tab[data-selected="selected"] {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  .astryx-tab-indicator[data-selected="selected"] {
+    height: 2.5px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-accent);
+    background-image: var(--mehan-primary-grad);
+  }
+
+  .astryx-outline-indicator {
+    width: 3px;
+    background-color: var(--color-accent);
+    background-image: var(--mehan-primary-grad);
+  }
+
+  .astryx-outline-item[data-active="active"] {
+    background-color: var(--color-accent-muted);
+    color: var(--color-text-accent);
+    font-weight: 600;
+  }
+
+  .astryx-step-indicator[data-progress="not-started"] {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: var(--mehan-well);
+    border-width: 0px;
+    box-shadow: var(--mehan-shadow-well);
+    color: var(--color-text-secondary);
+    font-weight: 600;
+  }
+
+  .astryx-step-indicator[data-progress="in-progress"] {
+    color: var(--color-accent);
+  }
+
+  .astryx-step-indicator[data-progress="completed"] {
+    color: var(--color-accent);
+  }
+
+  .astryx-step-label[data-progress="in-progress"] {
+    color: var(--color-text-primary);
+    font-weight: 700;
+  }
+
+  .astryx-resize-handle {
+    align-self: stretch;
+    height: auto;
+  }
+
+  .astryx-resize-handle-pill {
+    background-color: var(--color-border-emphasized);
+  }
+
+  .astryx-step-connector {
+    background-color: var(--mehan-socket);
+  }
+
+  .astryx-step-bar {
+    background-color: var(--mehan-socket);
+  }
+
+  .astryx-pagination-item[data-selected="selected"] {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: light-dark(#fffcf7, #332721);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+    font-weight: 700;
+  }
+
+  .astryx-pagination-dot {
+    background-color: var(--mehan-socket);
+    box-shadow: var(--mehan-shadow-socket);
+  }
+
+  .astryx-pagination-dot[data-active="active"] {
+    background-color: var(--color-accent);
+    background-image: var(--mehan-primary-grad);
+    box-shadow: none;
+  }
+
+  .astryx-calendar:not(:where(.astryx-popover *, .astryx-bottom-sheet *)) {
+    background-color: var(--color-background-card);
+    border-radius: var(--radius-container);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--mehan-card-hairline);
+    box-shadow: var(--shadow-low);
+    padding: var(--spacing-3);
+  }
+
+  .astryx-calendar[data-mode="single"] {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+  }
+
+  .astryx-calendar[data-mode="range"] {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+  }
+
+  .astryx-calendar-day[data-selected="selected"] {
+    background-color: #d42a5f;
+    background-image: var(--mehan-primary-grad);
+    color: #ffffff;
+    box-shadow: var(--mehan-shadow-primary);
+    font-weight: 600;
+  }
+
+  .astryx-calendar-day[data-today="today"]:not([data-selected]) {
+    font-weight: 700;
+    box-shadow: inset 0 0 0 1.5px var(--color-accent);
+  }
+
+  .astryx-radio-list-item {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    padding-block: var(--spacing-2);
+    padding-inline: var(--spacing-3);
+    border-radius: var(--radius-element);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-border);
+    background-color: var(--mehan-tray);
+  }
+
+  .astryx-radio-list-item[data-selected="selected"] {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: light-dark(#ffedef, #351219);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+
+  .astryx-code {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: var(--mehan-well);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-border);
+    padding-inline: 6px;
+    padding-block: 1px;
+    font-weight: 500;
+  }
+
+  .astryx-code-block[data-container="card"] {
+    border-radius: var(--radius-container);
+    border-color: var(--color-border);
+    box-shadow: var(--mehan-shadow-well);
+  }
+
+  .astryx-code-block-header[data-container="card"] {
+    background-color: var(--mehan-tray);
+  }
+
+  .astryx-blockquote {
+    background-color: var(--mehan-tray);
+    border-inline-start-width: 3.5px;
+    border-inline-start-style: solid;
+    border-inline-start-color: var(--color-accent);
+    border-start-end-radius: var(--radius-element);
+    border-end-end-radius: var(--radius-element);
+    border-start-start-radius: 4px;
+    border-end-start-radius: 4px;
+    padding-block: var(--spacing-3);
+    padding-inline-start: var(--spacing-4);
+    padding-inline-end: var(--spacing-3);
+    color: var(--color-text-primary);
+  }
+
+  .astryx-citation[data-variant="label"] {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: light-dark(#fffcf7, #2b201b);
+    background-image: var(--mehan-raised-grad);
+    border-width: 0px;
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  .astryx-citation[data-variant="number"] {
+    background-color: light-dark(#ffedef, #351219);
+    color: light-dark(#c41353, #ff92a5);
+    font-weight: 700;
+  }
+
+  .astryx-token {
+    font-weight: 600;
+  }
+
+  .astryx-token[data-color="default"] {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: light-dark(#fffcf7, #2b201b);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+  }
+
+  .astryx-avatar-fallback {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: light-dark(#f2e8d9, #332721);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    font-family: var(--font-family-heading);
+    font-weight: 700;
+  }
+
+  .astryx-avatar-group-overflow {
+    --color-text-primary: light-dark(#261b16, #fbf0e6);
+    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
+    --color-text-accent: light-dark(#c41353, #ff92a5);
+    background-color: light-dark(#f2e8d9, #332721);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    font-weight: 700;
+  }
+
+  .astryx-thumbnail {
+    box-shadow: var(--shadow-low);
+  }
+
+  .astryx-item[data-selected="selected"] {
+    font-weight: 600;
+  }
+
+  .astryx-item[data-selected="selected"]:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) *):not(:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) :is(.astryx-card[data-variant="default"], .astryx-card[data-variant="muted"], .astryx-clickable-card[data-variant="default"], .astryx-clickable-card[data-variant="muted"], .astryx-selectable-card[data-variant="default"], .astryx-selectable-card[data-variant="muted"], .astryx-section[data-variant="section"], .astryx-section[data-variant="muted"], .astryx-app-shell[data-variant="surface"], .astryx-app-shell[data-variant="section"], .astryx-app-shell-header[data-variant="surface"], .astryx-app-shell-sidenav[data-variant="surface"], .astryx-layout-panel, .astryx-layout-content, .astryx-code, .astryx-avatar, .astryx-avatar-fallback, .astryx-avatar-group-overflow, .astryx-segmented-control-item[data-selected="selected"], .astryx-top-nav-item[data-selected="selected"], .astryx-side-nav-item[data-selected="selected"], .astryx-pagination-item[data-selected="selected"], .astryx-token[data-color="default"], .astryx-citation[data-variant="label"], .astryx-radio-list-item, .astryx-radio-list-item[data-selected="selected"], .astryx-calendar[data-mode="single"], .astryx-calendar[data-mode="range"], .astryx-step-indicator[data-progress="not-started"], .astryx-table-header-cell, .astryx-banner-content, .astryx-input-group-text, .astryx-text-input, .astryx-text-area, .astryx-number-input, .astryx-date-input, .astryx-date-range-input, .astryx-date-time-input-date-segment, .astryx-date-time-input-time-segment, .astryx-time-input, .astryx-file-input, .astryx-typeahead, .astryx-tokenizer, .astryx-selector[data-variant="input"], .astryx-multi-selector[data-variant="input"], .astryx-selector-popup, .astryx-multi-selector-popup, .astryx-complex-selector-popup, .astryx-dropdown-menu, .astryx-dropdown-menu-radio, .astryx-context-menu, .astryx-more-menu, .astryx-popover, .astryx-hover-card, .astryx-dialog, .astryx-alert-dialog, .astryx-drawer, .astryx-bottom-sheet, .astryx-chat-composer, .astryx-chat-composer-drawer, .astryx-chat-message-bubble[data-sender="assistant"][data-variant="filled"], .astryx-chat-tool-calls) *)) {
     --color-text-secondary: #5c4a3e;
   }
 
-  .astryx-tree-list-item[data-selected="selected"]:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) *):not(:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) :is(.astryx-card[data-variant="default"], .astryx-card[data-variant="muted"], .astryx-clickable-card[data-variant="default"], .astryx-clickable-card[data-variant="muted"], .astryx-selectable-card[data-variant="default"], .astryx-selectable-card[data-variant="muted"], .astryx-section[data-variant="section"], .astryx-section[data-variant="muted"], .astryx-app-shell[data-variant="surface"], .astryx-app-shell[data-variant="section"], .astryx-app-shell-header[data-variant="surface"], .astryx-app-shell-sidenav[data-variant="surface"], .astryx-layout-panel, .astryx-layout-content, .astryx-code, .astryx-avatar, .astryx-avatar-group-overflow, .astryx-segmented-control-item[data-selected="selected"], .astryx-step-indicator[data-progress="not-started"], .astryx-table-header-cell, .astryx-banner-content, .astryx-input-group-text, .astryx-text-input, .astryx-text-area, .astryx-number-input, .astryx-date-input, .astryx-date-range-input, .astryx-date-time-input-date-segment, .astryx-date-time-input-time-segment, .astryx-time-input, .astryx-file-input, .astryx-typeahead, .astryx-tokenizer, .astryx-selector[data-variant="input"], .astryx-multi-selector[data-variant="input"], .astryx-selector-popup, .astryx-multi-selector-popup, .astryx-complex-selector-popup, .astryx-dropdown-menu, .astryx-dropdown-menu-radio, .astryx-context-menu, .astryx-more-menu, .astryx-popover, .astryx-hover-card, .astryx-dialog, .astryx-alert-dialog, .astryx-drawer, .astryx-bottom-sheet, .astryx-chat-composer, .astryx-chat-composer-drawer) *)) {
+  .astryx-tree-list-item[data-selected="selected"] {
+    font-weight: 600;
+  }
+
+  .astryx-tree-list-item[data-selected="selected"]:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) *):not(:where(:is(.astryx-card[data-variant="blue"], .astryx-clickable-card[data-variant="blue"], .astryx-card[data-variant="cyan"], .astryx-clickable-card[data-variant="cyan"], .astryx-card[data-variant="gray"], .astryx-clickable-card[data-variant="gray"], .astryx-card[data-variant="green"], .astryx-clickable-card[data-variant="green"], .astryx-card[data-variant="orange"], .astryx-clickable-card[data-variant="orange"], .astryx-card[data-variant="pink"], .astryx-clickable-card[data-variant="pink"], .astryx-card[data-variant="purple"], .astryx-clickable-card[data-variant="purple"], .astryx-card[data-variant="red"], .astryx-clickable-card[data-variant="red"], .astryx-card[data-variant="teal"], .astryx-clickable-card[data-variant="teal"], .astryx-card[data-variant="yellow"], .astryx-clickable-card[data-variant="yellow"]) :is(.astryx-card[data-variant="default"], .astryx-card[data-variant="muted"], .astryx-clickable-card[data-variant="default"], .astryx-clickable-card[data-variant="muted"], .astryx-selectable-card[data-variant="default"], .astryx-selectable-card[data-variant="muted"], .astryx-section[data-variant="section"], .astryx-section[data-variant="muted"], .astryx-app-shell[data-variant="surface"], .astryx-app-shell[data-variant="section"], .astryx-app-shell-header[data-variant="surface"], .astryx-app-shell-sidenav[data-variant="surface"], .astryx-layout-panel, .astryx-layout-content, .astryx-code, .astryx-avatar, .astryx-avatar-fallback, .astryx-avatar-group-overflow, .astryx-segmented-control-item[data-selected="selected"], .astryx-top-nav-item[data-selected="selected"], .astryx-side-nav-item[data-selected="selected"], .astryx-pagination-item[data-selected="selected"], .astryx-token[data-color="default"], .astryx-citation[data-variant="label"], .astryx-radio-list-item, .astryx-radio-list-item[data-selected="selected"], .astryx-calendar[data-mode="single"], .astryx-calendar[data-mode="range"], .astryx-step-indicator[data-progress="not-started"], .astryx-table-header-cell, .astryx-banner-content, .astryx-input-group-text, .astryx-text-input, .astryx-text-area, .astryx-number-input, .astryx-date-input, .astryx-date-range-input, .astryx-date-time-input-date-segment, .astryx-date-time-input-time-segment, .astryx-time-input, .astryx-file-input, .astryx-typeahead, .astryx-tokenizer, .astryx-selector[data-variant="input"], .astryx-multi-selector[data-variant="input"], .astryx-selector-popup, .astryx-multi-selector-popup, .astryx-complex-selector-popup, .astryx-dropdown-menu, .astryx-dropdown-menu-radio, .astryx-context-menu, .astryx-more-menu, .astryx-popover, .astryx-hover-card, .astryx-dialog, .astryx-alert-dialog, .astryx-drawer, .astryx-bottom-sheet, .astryx-chat-composer, .astryx-chat-composer-drawer, .astryx-chat-message-bubble[data-sender="assistant"][data-variant="filled"], .astryx-chat-tool-calls) *)) {
     --color-text-secondary: #5c4a3e;
   }
 
@@ -1643,25 +2036,7 @@
     --color-text-accent: light-dark(#c41353, #ff92a5);
   }
 
-  .astryx-code {
-    --color-text-primary: light-dark(#261b16, #fbf0e6);
-    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
-    --color-text-accent: light-dark(#c41353, #ff92a5);
-  }
-
   .astryx-avatar {
-    --color-text-primary: light-dark(#261b16, #fbf0e6);
-    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
-    --color-text-accent: light-dark(#c41353, #ff92a5);
-  }
-
-  .astryx-avatar-group-overflow {
-    --color-text-primary: light-dark(#261b16, #fbf0e6);
-    --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
-    --color-text-accent: light-dark(#c41353, #ff92a5);
-  }
-
-  .astryx-step-indicator[data-progress="not-started"] {
     --color-text-primary: light-dark(#261b16, #fbf0e6);
     --color-text-secondary: light-dark(#5c4a3e, #d8c5b6);
     --color-text-accent: light-dark(#c41353, #ff92a5);
@@ -1834,7 +2209,7 @@
     transform: translateY(-1px);
   }
 
-    .astryx-button[data-variant="secondary"]:hover:not(:disabled, [aria-disabled="true"]):not([aria-expanded="true"][aria-haspopup]:not([aria-haspopup="false"])) {
+    .astryx-button[data-variant="secondary"]:hover:not(:disabled, [aria-disabled="true"]):not([aria-expanded="true"][aria-haspopup]:not([aria-haspopup="false"])):not(.astryx-button-group *) {
     transform: translateY(-1px);
   }
 
@@ -4330,7 +4705,26 @@
 
   /* 29. WorkspaceLayout (Level-1 Multi-Pane Workbench on Astryx Layout + Drawer) */
   .mehan-workspace-layout {
+    /* Reset inherited parent <Card>/<Section> container bleed vars so nested workspaces never clip */
+    --container-padding-inline-start: 0px;
+    --container-padding-inline-end: 0px;
+    --container-padding-block-start: 0px;
+    --container-padding-block-end: 0px;
+    --container-corner-start-start: 0px;
+    --container-corner-start-end: 0px;
+    --container-corner-end-start: 0px;
+    --container-corner-end-end: 0px;
+    --_container-bleed-block-start: 0px;
+    --_container-bleed-block-end: 0px;
+    --layout-padding-outer-x: initial;
+    --layout-padding-outer-y: initial;
+    --layout-padding-own-outer-x: initial;
+    --layout-padding-own-outer-y: initial;
+    --layout-padding-inner-x: initial;
+    --layout-padding-inner-y: initial;
+    --_section-padding-propagated: initial;
     width: 100%;
+    box-sizing: border-box;
     border-radius: var(--radius-container, 14px);
     background-color: var(--color-background-card);
     border: 1px solid var(--mehan-card-hairline, var(--color-border));
@@ -4339,7 +4733,6 @@
   }
   .mehan-workspace-layout[data-scroll-mode="auto"] {
     height: auto !important;
-    overflow: visible;
   }
   .mehan-ws-toolbar {
     display: flex;
@@ -4347,6 +4740,9 @@
     gap: 10px;
     width: 100%;
     min-width: 0;
+    box-sizing: border-box;
+    padding: 10px 16px;
+    background-color: var(--mehan-tray, var(--color-background-surface));
   }
   .mehan-ws-toolbar-main {
     flex: 1 1 auto;
@@ -4356,27 +4752,38 @@
     display: flex;
     flex-direction: column;
     min-height: 100%;
+    background-color: var(--mehan-tray, var(--color-background-surface));
   }
   .mehan-ws-pane-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    padding: 10px 14px;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 8px 14px;
     border-bottom: 1px solid var(--color-border);
     background-color: var(--mehan-tray, var(--color-background-surface));
   }
   .mehan-ws-pane-body {
-    padding: 14px;
+    padding: 12px 14px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
   .mehan-ws-main-wrap {
+    padding: 16px 18px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 14px;
     min-width: 0;
+  }
+  .mehan-ws-footer {
+    padding: 10px 16px;
+    box-sizing: border-box;
+    background-color: var(--mehan-tray, var(--color-background-surface));
   }
   .mehan-ws-mobile-start {
     border-radius: var(--radius-element, 10px);
@@ -4386,6 +4793,47 @@
   }
   .mehan-ws-main-content {
     min-width: 0;
+  }
+  .mehan-ws-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+  }
+  .mehan-ws-nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    min-height: 34px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: var(--radius-element, 9px);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: start;
+    cursor: pointer;
+    transition: background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+  }
+  .mehan-ws-nav-item:hover {
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+  }
+  .mehan-ws-nav-item[data-active="true"] {
+    background-color: var(--color-background-surface);
+    background-image: var(--mehan-raised-grad);
+    box-shadow: var(--mehan-shadow-raised);
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+  .mehan-ws-nav-item:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
   }
 
   /* 30. CanvasStage (Level-2 Recessed Interactive Viewport + Non-Blocking HUD) */
@@ -5025,7 +5473,8 @@
     .mehan-tour-prev,
     .mehan-tour-next,
     .mehan-cv-item,
-    .mehan-dc-legend-btn {
+    .mehan-dc-legend-btn,
+    .mehan-ws-nav-item {
       min-height: 44px;
     }
     .mehan-cp-eyedropper,

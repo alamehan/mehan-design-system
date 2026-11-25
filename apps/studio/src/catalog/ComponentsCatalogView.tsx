@@ -29,6 +29,7 @@ import {
   OFFICIAL_ASTRYX_CATEGORIES,
   SpecimenCard,
   getSpecimenRank,
+  renderFormattedCopy,
   type OfficialAstryxCategory,
 } from './SpecimenCard';
 
@@ -204,32 +205,37 @@ export function ComponentsCatalogView({
           aria-label="Official Astryx component categories"
         >
           {CATALOG_PILLARS.map(pillar => (
-            <React.Fragment key={pillar.id}>
+            <div key={pillar.id} className="cat-pillar-group">
               <div className="cat-pillar-label" aria-hidden="true">
-                {isId ? pillar.idLabel : pillar.en}
+                <span className="cat-pillar-num">{pillar.roman}</span>
+                <span className="cat-pillar-text">
+                  {isId ? pillar.idLabel : pillar.en}
+                </span>
               </div>
-              {pillar.categories.map(cat => {
-                const isActive =
-                  !isGlobalSearchActive && selectedCategory === cat;
-                return (
-                  <button
-                    key={cat}
-                    type="button"
-                    className={`cat-nav-btn ${isActive ? 'is-active' : ''}`}
-                    onClick={() => {
-                      setSelectedCategory(cat);
-                      if (pkgFilter === 'mehan') setPkgFilter('all');
-                      if (query) setQuery('');
-                    }}
-                  >
-                    <span>{cat}</span>
-                    <span className="cat-nav-count">
-                      {countsByCategory[cat] ?? 0}
-                    </span>
-                  </button>
-                );
-              })}
-            </React.Fragment>
+              <div className="cat-pillar-items">
+                {pillar.categories.map(cat => {
+                  const isActive =
+                    !isGlobalSearchActive && selectedCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      className={`cat-nav-btn ${isActive ? 'is-active' : ''}`}
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        if (pkgFilter === 'mehan') setPkgFilter('all');
+                        if (query) setQuery('');
+                      }}
+                    >
+                      <span>{cat}</span>
+                      <span className="cat-nav-count">
+                        {countsByCategory[cat] ?? 0}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           ))}
 
           <div className="cat-sidebar-divider" role="separator" />
@@ -299,7 +305,7 @@ export function ComponentsCatalogView({
                       />
                     </HStack>
                     <Text type="supporting" color="secondary">
-                      {isId ? desc.id : desc.en}
+                      {renderFormattedCopy(isId ? desc.id : desc.en)}
                     </Text>
                   </Stack>
 
