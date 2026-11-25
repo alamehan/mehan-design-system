@@ -1450,13 +1450,12 @@
     --color-text-accent: light-dark(#c41353, #ff92a5);
   }
 
-  .astryx-collapsible:not([data-divided], .te-disclosure-box *) {
+  .astryx-collapsible:not([data-divided]) {
     background-color: var(--mehan-tray);
     border-width: 1px;
     border-style: solid;
     border-color: var(--color-border);
-    border-radius: var(--radius-element);
-    padding-inline: var(--spacing-3);
+    border-radius: var(--radius-container);
   }
 
   .astryx-collapsible-trigger {
@@ -1464,6 +1463,19 @@
     font-size: var(--text-body-size);
     font-weight: 600;
     letter-spacing: -0.01em;
+  }
+
+  .astryx-collapsible-trigger:not([data-density]) {
+    min-height: 40px;
+    padding-block: 10px;
+    padding-inline: 14px;
+    border-radius: var(--radius-container);
+  }
+
+  .astryx-collapsible-content:not([data-density]) {
+    padding-inline: 14px;
+    padding-block-start: 2px;
+    padding-block-end: 14px;
   }
 
   .astryx-selectable-card {
@@ -1897,7 +1909,10 @@
     border-width: 1px;
     border-style: solid;
     border-color: var(--color-border);
-    padding-inline: 6px;
+    border-radius: 5px;
+    font-size: 0.88em;
+    line-height: 1.25;
+    padding-inline: 5px;
     padding-block: 1px;
     font-weight: 500;
   }

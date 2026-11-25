@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 880" width="960" height="880" role="img" aria-labelledby="mhTitle mhDesc">
   <title id="mhTitle">Why Mehan Design System Exists — Architectural Leverage on Meta Astryx</title>
-  <desc id="mhDesc">Visual comparison between reinventing fragile UI primitives from scratch versus layering Mehan's OKLCH tactile soul, 5-in-1 workspaces, and 12 UX chapters on top of Meta Astryx's 103 WAI-ARIA primitives.</desc>
+  <desc id="mhDesc">Visual comparison between reinventing fragile UI primitives from scratch versus layering Mehan's OKLCH tactile soul, universal 5-in-1 workspaces, and executable UX laws cleanly on top of Meta Astryx's WAI-ARIA foundation.</desc>
   <defs>
     <linearGradient id="bgPaper" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#fdf9f3"/>
@@ -40,7 +40,7 @@
     <rect x="18" y="99" width="102" height="20" rx="5" fill="#fee2e2"/>
     <text x="69" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#b91c1c">✗ 0 WAI-ARIA</text>
     <rect x="126" y="99" width="124" height="20" rx="5" fill="#fee2e2"/>
-    <text x="188" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#b91c1c">✗ 6+ mos wasted</text>
+    <text x="188" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#b91c1c">✗ Months wasted</text>
     <rect x="18" y="131" width="254" height="31" rx="5" fill="#e5e2dc" stroke="#a8a29e"/>
     <text x="145" y="151" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="600" fill="#57534e">Generic flat button</text>
   </g>
@@ -65,7 +65,7 @@
     <rect x="18" y="99" width="106" height="20" rx="6" fill="#f2e8d9"/>
     <text x="71" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#261b16">✓ WCAG 2.2 AA</text>
     <rect x="130" y="99" width="118" height="20" rx="6" fill="#f2e8d9"/>
-    <text x="189" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#261b16">✓ 8×12 Presets</text>
+    <text x="189" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#261b16">✓ Zero Fork</text>
     <!-- 3D Candy Lip Primary Button -->
     <rect x="18" y="130" width="254" height="33" rx="10" fill="#8f163b"/>
     <rect x="18" y="128" width="254" height="32" rx="10" fill="url(#ctaBerry)"/>
@@ -90,44 +90,44 @@
     Keep Meta Astryx's battle-tested accessibility 100% untouched; layer OKLCH materials, universal workspaces &amp; UX laws cleanly above it.
   </text>
 
-  <!-- VERTICAL DISTILLATION FUNNEL SPINE -->
-  <!-- Step 1: 103 -->
-  <text x="480" y="472" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="36" font-weight="900" fill="#1d5bbf">103</text>
-  <text x="480" y="491" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Meta Astryx WAI-ARIA Primitives</text>
-  <path d="M615 478 C 629 476, 639 467, 654 462 M645 459 L 655 462 L 649 470" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="664" y="464" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">Focus traps, roving tabindex, RTL</text>
-  <text x="664" y="479" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">&amp; 200% zoom already battle-tested</text>
+  <!-- EVERGREEN ARCHITECTURAL DISTILLATION SPINE -->
+  <!-- Layer 1 -->
+  <text x="480" y="472" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="900" fill="#1d5bbf">Layer 1</text>
+  <text x="480" y="492" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Meta Astryx WAI-ARIA Foundation</text>
+  <path d="M626 478 C 640 476, 650 467, 665 462 M656 459 L 666 462 L 660 470" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="674" y="464" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">Focus traps, roving tabindex, RTL</text>
+  <text x="674" y="479" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">&amp; 200% zoom untouched — zero forks</text>
 
-  <path d="M480 502 C 476 510, 484 518, 480 526" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M480 503 C 476 511, 484 519, 480 527" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
 
-  <!-- Step 2: + 35 -->
-  <text x="480" y="562" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="36" font-weight="900" fill="#14704e">+ 35</text>
-  <text x="480" y="581" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Universal Extensions &amp; 5-in-1 Workspaces</text>
+  <!-- Layer 2 -->
+  <text x="480" y="562" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="900" fill="#9a5206">Layer 2</text>
+  <text x="480" y="582" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Perceptual OKLCH Materials &amp; Presets</text>
   <path d="M628 568 C 642 566, 652 557, 667 552 M658 549 L 668 552 L 662 560" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="676" y="554" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">WorkspaceLayout, CanvasStage, Charts,</text>
-  <text x="676" y="569" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">ColorPicker + 4 Runtime Hook suites</text>
+  <text x="676" y="554" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">7-role surface depth, 3D candy lips,</text>
+  <text x="676" y="569" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">offline WOFF2 fonts &amp; live Theme Editor</text>
 
-  <path d="M480 592 C 476 600, 484 608, 480 616" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M480 593 C 476 601, 484 609, 480 617" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
 
-  <!-- Step 3: 8 x 12 -->
-  <text x="480" y="652" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="36" font-weight="900" fill="#9a5206">8 × 12</text>
-  <text x="480" y="671" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">OKLCH Atmospheres &amp; Signature Presets</text>
-  <path d="M626 658 C 640 656, 650 647, 665 642 M656 639 L 666 642 L 660 650" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="674" y="644" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">10 self-hosted OFL WOFF2 fonts</text>
-  <text x="674" y="659" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">+ live 3-tier Theme Editor</text>
+  <!-- Layer 3 -->
+  <text x="480" y="652" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="900" fill="#14704e">5-in-1</text>
+  <text x="480" y="672" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Universal Workspaces &amp; Runtime Suites</text>
+  <path d="M628 658 C 642 656, 652 647, 667 642 M658 639 L 668 642 L 662 650" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="676" y="644" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">WorkspaceLayout, CanvasStage, Charts,</text>
+  <text x="676" y="659" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">ColorPicker &amp; universal state hooks</text>
 
-  <path d="M480 682 C 476 690, 484 698, 480 706" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M480 683 C 476 691, 484 699, 480 707" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
 
-  <!-- Step 4: 12 -->
-  <text x="480" y="742" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="36" font-weight="900" fill="#6d28d9">12</text>
-  <text x="480" y="761" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">UX Playbook Chapters &amp; 80 AI Agent Docs</text>
+  <!-- Layer 4 -->
+  <text x="480" y="742" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="900" fill="#6d28d9">UX + AI</text>
+  <text x="480" y="762" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Evergreen UX Playbook &amp; Agent Docs</text>
   <path d="M628 748 C 642 746, 652 737, 667 732 M658 729 L 668 732 L 662 740" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="676" y="734" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">Cognitive load, Fitts's Law &amp;</text>
-  <text x="676" y="749" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">bilingual ID / EN microcopy clarity</text>
+  <text x="676" y="734" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">Cognitive load, Fitts's Law, Intl</text>
+  <text x="676" y="749" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">&amp; bilingual ID / EN microcopy laws</text>
 
-  <path d="M480 772 C 476 780, 484 788, 480 796" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M480 773 C 476 781, 484 789, 480 797" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
 
   <!-- Step 5: = 1 -->
-  <text x="480" y="832" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="38" font-weight="900" fill="#c81e51">= 1</text>
-  <text x="480" y="852" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13.5" font-weight="800" fill="#261b16">Unified Tactile System · React · Tailwind v4 · Claude/Gemini · HTML · Figma W3C</text>
+  <text x="480" y="833" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="38" font-weight="900" fill="#c81e51">= 1</text>
+  <text x="480" y="853" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13.5" font-weight="800" fill="#261b16">Unified Tactile System · React · Tailwind v4 · Claude/Gemini · HTML · Figma W3C</text>
 </svg>

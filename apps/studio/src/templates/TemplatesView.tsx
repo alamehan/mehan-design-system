@@ -686,6 +686,7 @@ function OfficialThemeShowcase() {
                   </Grid>
                   <Selector
                     label="Country"
+                    placement="below"
                     value={country}
                     onChange={setCountry}
                     options={[
@@ -895,6 +896,7 @@ function OfficialThemeShowcase() {
                     isLabelHidden
                     placeholder="Category"
                     size="sm"
+                    placement="below"
                     hasClear
                     startIcon={<Folder size={14} />}
                     value={invCategory}
@@ -906,6 +908,7 @@ function OfficialThemeShowcase() {
                     isLabelHidden
                     placeholder="Location"
                     size="sm"
+                    placement="below"
                     hasClear
                     startIcon={<MapPin size={14} />}
                     value={invLocation}

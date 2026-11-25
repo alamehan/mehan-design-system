@@ -17,6 +17,9 @@ Use the embedded **Mehan Portable CSS + Runtime** below to build a tactile, acce
    - **Reward early, punish late:** Never show red errors while typing the first entry into an untouched field; validate `onBlur`/`onSubmit`, then clear immediately `onInput` once valid.
    - **Proportional confirmation:** Immediate execution + Undo toast for reversible actions; inline row confirmation for local deletes; `<dialog class="mh-modal">` strictly for irreversible destruction naming the exact noun (`Cancel` + `Delete API key`).
    - **Sentence case & +30–40% expansion resilience:** Never shout in ALL CAPS or hardcode narrow pixel widths on buttons/tabs so Indonesian/localized strings (`Save` -> `Simpan perubahan`) grow naturally.
+7. **Evergreen Copy, Pure Domain Identity & Extension Discipline:**
+   - Describe concrete user inputs and domain outcomes in titles/taglines — never leak internal plumbing ("zero API keys", "via localStorage") or hardcode brittle item tallies in static prose (compute `{items.length}` dynamically from data).
+   - Enforce card boundary containment (`min-width:0; max-width:100%` on flex/grid children and wrapping action bars) and reuse canonical `.mh-*` primitives before inventing custom classes.
 
 ## 3. Auto-Wired Interactive Markup
 - **Theme toggle:** `<button type="button" class="mh-btn mh-btn-secondary mh-btn-sm" data-mh-theme-toggle>Light / Dark</button>`
@@ -68,7 +71,7 @@ button>svg,a>svg{flex-shrink:0}
 .mh-h3{font-size:15px;line-height:1.34;font-weight:600}
 .mh-muted{color:var(--mh-ink-3);font-size:13px}
 .mh-mono{font-family:var(--mh-font-mono,"Geist Mono"),ui-monospace,"SFMono-Regular",Menlo,monospace;font-variant-numeric:tabular-nums;font-size:12px}
-.mh-code{font:500 12px/1.35 var(--mh-font-mono,"Geist Mono"),monospace;padding:1px 6px;border-radius:var(--mh-r-sm);background:var(--mh-well);border:1px solid var(--mh-line);color:var(--mh-ink)}
+.mh-code{font:500 0.88em/1.25 var(--mh-font-mono,"Geist Mono"),monospace;padding:1px 5px;border-radius:5px;background:var(--mh-well);border:1px solid var(--mh-line);color:var(--mh-ink)}
 .mh-blockquote{margin:0;padding:12px 14px 12px 16px;border-left:3.5px solid var(--mh-accent);border-radius:4px var(--mh-r-md) var(--mh-r-md) 4px;background:var(--mh-tray);color:var(--mh-ink)}
 details.mh-disclosure{border-radius:var(--mh-r-md);border:1px solid var(--mh-line);background:var(--mh-tray);padding:10px 14px}
 details.mh-disclosure>summary{cursor:pointer;font-family:var(--mh-font-display,"Bricolage Grotesque"),sans-serif;font-weight:600;list-style:none}

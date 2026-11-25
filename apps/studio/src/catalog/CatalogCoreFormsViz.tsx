@@ -367,11 +367,12 @@ export function useCatalogCoreFormsViz(): SpecimenDefinition[] {
       pkg: 'core',
       summaryEn: 'Accessible listbox field (`Select`) retaining a chosen value inside forms.',
       summaryId: 'Kotak pilih nilai form (`Select`) dengan dukungan navigasi papan ketik penuh.',
-      code: `<Selector label="Primary edge region" options={options} value={region} onChange={setRegion} />`,
+      code: `<Selector label="Primary edge region" placement="below" options={options} value={region} onChange={setRegion} />`,
       render: () => (
         <Selector
           label="Primary edge region"
           size="sm"
+          placement="below"
           options={[
             {value: 'ap-southeast-1', label: 'Singapore (ap-southeast-1)'},
             {value: 'ap-northeast-1', label: 'Tokyo (ap-northeast-1)'},

@@ -464,6 +464,7 @@ export function DockedThemeEditor({
               label={isId ? 'Preset tema' : 'Theme preset'}
               isLabelHidden
               size="sm"
+              placement="below"
               value={activePresetId}
               options={[
                 ...presets.map(p => ({value: p.id, label: `Preset: ${p.name}`})),
@@ -848,6 +849,7 @@ export function DockedThemeEditor({
                 <Selector
                   label={isId ? 'Font judul (Heading)' : 'Heading font'}
                   size="sm"
+                  placement="below"
                   value={seed.headingFont}
                   options={HEADING_FONT_OPTIONS}
                   onChange={v =>
@@ -857,6 +859,7 @@ export function DockedThemeEditor({
                 <Selector
                   label={isId ? 'Font isi (Body)' : 'Body font'}
                   size="sm"
+                  placement="below"
                   value={seed.bodyFont}
                   options={BODY_FONT_OPTIONS}
                   onChange={v =>
@@ -866,6 +869,7 @@ export function DockedThemeEditor({
                 <Selector
                   label={isId ? 'Font kode (Monospace)' : 'Code font'}
                   size="sm"
+                  placement="below"
                   value={seed.codeFont}
                   options={CODE_FONT_OPTIONS}
                   onChange={v =>
@@ -875,6 +879,7 @@ export function DockedThemeEditor({
                 <Selector
                   label={isId ? 'Rasio skala huruf' : 'Type scale ratio'}
                   size="sm"
+                  placement="below"
                   value={String(seed.typeRatio)}
                   options={RATIO_OPTIONS.map(r => ({
                     value: String(r.value),
@@ -942,15 +947,14 @@ export function DockedThemeEditor({
             </section>
 
             {/* Group 3 (Progressive Disclosure): Shape, Scale & Density */}
-            <div className="te-disclosure-box">
-              <Collapsible
-                defaultIsOpen={false}
-                trigger={
-                  isId
-                    ? '3. Skala Kepadatan, Sudut & Spasi'
-                    : '3. Scale Presets, Radius & Spacing'
-                }
-              >
+            <Collapsible
+              defaultIsOpen={false}
+              trigger={
+                isId
+                  ? '3. Skala Kepadatan, Sudut & Spasi'
+                  : '3. Scale Presets, Radius & Spacing'
+              }
+            >
                 <Stack gap={3}>
                   <div className="te-unified-grid">
                     {(
@@ -1161,86 +1165,81 @@ export function DockedThemeEditor({
                     </div>
                   </div>
                 </Stack>
-              </Collapsible>
-            </div>
+            </Collapsible>
 
             {/* Group 4 (Progressive Disclosure): Core Semantic Color Overrides */}
-            <div className="te-disclosure-box">
-              <Collapsible
-                defaultIsOpen={false}
-                trigger={
-                  isId
-                    ? `4. Override Warna Inti (${mode === 'dark' ? 'Gelap' : 'Terang'})`
-                    : `4. Core Semantic Colors (${mode === 'dark' ? 'Dark' : 'Light'})`
-                }
-              >
-                <div className="te-token-list">
-                  {BASE_CORE_COLOR_TOKENS.map(({token, en, id}) => (
-                    <TokenColorRow
-                      key={token}
-                      tokenName={token}
-                      label={isId ? id : en}
-                      effectiveValue={effectiveTokens[token] ?? ''}
-                      isOverridden={token in tokenOverrides}
-                      mode={mode}
-                      swatches={PRESET_HEX_SWATCHES}
-                      onChange={val =>
-                        setTokenOverride(token, val, `color:${token}`)
-                      }
-                      onReset={() => removeTokenOverride(token)}
-                    />
-                  ))}
-                </div>
-              </Collapsible>
-            </div>
+            <Collapsible
+              defaultIsOpen={false}
+              trigger={
+                isId
+                  ? `4. Override Warna Inti (${mode === 'dark' ? 'Gelap' : 'Terang'})`
+                  : `4. Core Semantic Colors (${mode === 'dark' ? 'Dark' : 'Light'})`
+              }
+            >
+              <div className="te-token-list">
+                {BASE_CORE_COLOR_TOKENS.map(({token, en, id}) => (
+                  <TokenColorRow
+                    key={token}
+                    tokenName={token}
+                    label={isId ? id : en}
+                    effectiveValue={effectiveTokens[token] ?? ''}
+                    isOverridden={token in tokenOverrides}
+                    mode={mode}
+                    swatches={PRESET_HEX_SWATCHES}
+                    onChange={val =>
+                      setTokenOverride(token, val, `color:${token}`)
+                    }
+                    onReset={() => removeTokenOverride(token)}
+                  />
+                ))}
+              </div>
+            </Collapsible>
 
             {/* Group 5 (Progressive Disclosure): Motion & Tempo */}
-            <div className="te-disclosure-box">
-              <Collapsible
-                defaultIsOpen={false}
-                trigger={isId ? '5. Karakter Gerak & Durasi' : '5. Motion & Tempo'}
-              >
-                <Stack gap={2}>
-                  <SegmentedControl
-                    label="Motion character"
-                    size="sm"
-                    value={seed.motion}
-                    onChange={v =>
-                      updateSeed(
-                        {motion: v as MehanMotion},
-                        [],
-                        ['--duration-', '--ease-'],
-                      )
-                    }
-                  >
-                    <SegmentedControlItem value="expressive" label="Expressive" />
-                    <SegmentedControlItem value="standard" label="Standard" />
-                    <SegmentedControlItem value="crisp" label="Crisp" />
-                    <SegmentedControlItem value="calm" label="Calm" />
-                  </SegmentedControl>
+            <Collapsible
+              defaultIsOpen={false}
+              trigger={isId ? '5. Karakter Gerak & Durasi' : '5. Motion & Tempo'}
+            >
+              <Stack gap={2}>
+                <SegmentedControl
+                  label="Motion character"
+                  size="sm"
+                  value={seed.motion}
+                  onChange={v =>
+                    updateSeed(
+                      {motion: v as MehanMotion},
+                      [],
+                      ['--duration-', '--ease-'],
+                    )
+                  }
+                >
+                  <SegmentedControlItem value="expressive" label="Expressive" />
+                  <SegmentedControlItem value="standard" label="Standard" />
+                  <SegmentedControlItem value="crisp" label="Crisp" />
+                  <SegmentedControlItem value="calm" label="Calm" />
+                </SegmentedControl>
 
-                  <SegmentedControl
-                    label="Duration speed multiplier"
-                    size="sm"
-                    value={String(seed.durationStep)}
-                    onChange={v =>
-                      updateSeed(
-                        {durationStep: Number(v)},
-                        [],
-                        ['--duration-'],
-                      )
-                    }
-                  >
-                    <SegmentedControlItem value="0.5" label="0.5×" />
-                    <SegmentedControlItem value="0.75" label="0.75×" />
-                    <SegmentedControlItem value="1" label="1×" />
-                    <SegmentedControlItem value="1.25" label="1.25×" />
-                    <SegmentedControlItem value="1.5" label="1.5×" />
-                    <SegmentedControlItem value="2" label="2×" />
-                  </SegmentedControl>
-                </Stack>
-              </Collapsible>
-            </div>
+                <SegmentedControl
+                  label="Duration speed multiplier"
+                  size="sm"
+                  value={String(seed.durationStep)}
+                  onChange={v =>
+                    updateSeed(
+                      {durationStep: Number(v)},
+                      [],
+                      ['--duration-'],
+                    )
+                  }
+                >
+                  <SegmentedControlItem value="0.5" label="0.5×" />
+                  <SegmentedControlItem value="0.75" label="0.75×" />
+                  <SegmentedControlItem value="1" label="1×" />
+                  <SegmentedControlItem value="1.25" label="1.25×" />
+                  <SegmentedControlItem value="1.5" label="1.5×" />
+                  <SegmentedControlItem value="2" label="2×" />
+                </SegmentedControl>
+              </Stack>
+            </Collapsible>
           </Stack>
         )}
 
@@ -1310,6 +1309,7 @@ export function DockedThemeEditor({
                                   label={`${group.label} ${slot.description}`}
                                   isLabelHidden
                                   size="sm"
+                                  placement="below"
                                   value={
                                     isCustomMode
                                       ? '__custom__'
@@ -1387,13 +1387,14 @@ export function DockedThemeEditor({
             <section className="te-section">
               <div className="te-section-title">
                 {isId
-                  ? 'Override CSS Komponen Bebas (65+ Target)'
-                  : 'Custom Component CSS Overrides (65+ Targets)'}
+                  ? 'Override CSS Komponen Bebas'
+                  : 'Custom Component CSS Overrides'}
               </div>
               <Stack gap={2}>
                 <Selector
                   label={isId ? 'Target komponen Astryx' : 'Component target'}
                   size="sm"
+                  placement="below"
                   value={customTarget}
                   options={ALL_COMPONENT_TARGETS.map(t => ({value: t, label: t}))}
                   onChange={v => v && setCustomTarget(v)}
@@ -1527,31 +1528,30 @@ export function DockedThemeEditor({
                   );
                   if (filtered.length === 0) return null;
                   return (
-                    <div key={catName} className="te-disclosure-box">
-                      <Collapsible
-                        defaultIsOpen={
-                          catName === 'Core Semantic' || Boolean(qLower)
-                        }
-                        trigger={`${catName} (${filtered.length})`}
-                      >
-                        <div className="te-token-list">
-                          {filtered.map(token => (
-                            <TokenColorRow
-                              key={token}
-                              tokenName={token}
-                              effectiveValue={effectiveTokens[token] ?? ''}
-                              isOverridden={token in tokenOverrides}
-                              mode={mode}
-                              swatches={PRESET_HEX_SWATCHES}
-                              onChange={val =>
-                        setTokenOverride(token, val, `color:${token}`)
+                    <Collapsible
+                      key={catName}
+                      defaultIsOpen={
+                        catName === 'Core Semantic' || Boolean(qLower)
                       }
-                              onReset={() => removeTokenOverride(token)}
-                            />
-                          ))}
-                        </div>
-                      </Collapsible>
-                    </div>
+                      trigger={`${catName} (${filtered.length})`}
+                    >
+                      <div className="te-token-list">
+                        {filtered.map(token => (
+                          <TokenColorRow
+                            key={token}
+                            tokenName={token}
+                            effectiveValue={effectiveTokens[token] ?? ''}
+                            isOverridden={token in tokenOverrides}
+                            mode={mode}
+                            swatches={PRESET_HEX_SWATCHES}
+                            onChange={val =>
+                              setTokenOverride(token, val, `color:${token}`)
+                            }
+                            onReset={() => removeTokenOverride(token)}
+                          />
+                        ))}
+                      </div>
+                    </Collapsible>
                   );
                 })}
               </Stack>

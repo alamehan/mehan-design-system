@@ -789,13 +789,12 @@ export function buildMehanThemeConfig(
       },
       collapsible: {
         base: {
-          ':not([data-divided], .te-disclosure-box *)': {
+          ':not([data-divided])': {
             backgroundColor: 'var(--mehan-tray)',
             borderWidth: '1px',
             borderStyle: 'solid',
             borderColor: 'var(--color-border)',
-            borderRadius: 'var(--radius-element)',
-            paddingInline: 'var(--spacing-3)',
+            borderRadius: 'var(--radius-container)',
           },
         },
       },
@@ -805,6 +804,21 @@ export function buildMehanThemeConfig(
           fontSize: 'var(--text-body-size)',
           fontWeight: '600',
           letterSpacing: '-0.01em',
+          ':not([data-density])': {
+            minHeight: '40px',
+            paddingBlock: '10px',
+            paddingInline: '14px',
+            borderRadius: 'var(--radius-container)',
+          },
+        },
+      },
+      'collapsible-content': {
+        base: {
+          ':not([data-density])': {
+            paddingInline: '14px',
+            paddingBlockStart: '2px',
+            paddingBlockEnd: '14px',
+          },
         },
       },
       'selectable-card': {
@@ -1110,7 +1124,10 @@ export function buildMehanThemeConfig(
           borderWidth: '1px',
           borderStyle: 'solid',
           borderColor: 'var(--color-border)',
-          paddingInline: '6px',
+          borderRadius: '5px',
+          fontSize: '0.88em',
+          lineHeight: '1.25',
+          paddingInline: '5px',
           paddingBlock: '1px',
           fontWeight: '500',
         },

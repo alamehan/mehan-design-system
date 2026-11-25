@@ -693,7 +693,8 @@ body,
 
 .studio-inline-code {
   font-family: var(--font-family-code);
-  font-size: 0.91em;
+  font-size: 0.88em;
+  line-height: 1.25;
   font-weight: 500;
   padding: 1px 5px;
   border-radius: 5px;
@@ -1246,24 +1247,45 @@ body,
 
 .mh-preset-swatch-paper {
   flex: 1 1 auto;
-  height: 30px;
+  height: 32px;
   border-radius: 8px;
   border: 1px solid;
   display: flex;
   align-items: center;
-  padding: 0 7px;
+  gap: 6px;
+  padding: 0 6px;
+  min-width: 0;
 }
 
 .mh-preset-swatch-cta {
-  width: 36px;
-  height: 15px;
-  border-radius: 999px;
-  display: inline-block;
+  padding: 2px 8px 3px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  flex: none;
+}
+
+.mh-preset-swatch-seg {
+  padding: 2px 6px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  flex: none;
 }
 
 .mh-preset-swatch-dark {
   width: 34px;
-  height: 30px;
+  height: 32px;
   flex: none;
   border-radius: 8px;
   border: 1px solid;
@@ -1341,51 +1363,13 @@ body,
   margin-top: 2px;
 }
 
-/* 3-Step 60-Second User Journey Strip */
-.mh-journey-strip {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.mh-journey-step {
+/* Tabbed Quickstart Body */
+.mh-quickstart-body {
+  padding-top: 4px;
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: var(--radius-container, 13px);
-  background-color: var(--color-background-surface);
-  border: 1px solid var(--color-border);
-}
-
-.mh-journey-num {
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  flex: none;
-  display: grid;
-  place-items: center;
-  background-color: var(--color-accent);
-  color: var(--color-on-accent);
-  font-family: var(--font-family-heading);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.mh-journey-step strong {
-  display: block;
-  font-family: var(--font-family-heading);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin-bottom: 3px;
-}
-
-.mh-journey-step p {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.45;
-  color: var(--color-text-secondary);
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
 }
 
 /* 6-Stage Iteration Chronicle Cards */

@@ -469,5 +469,47 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
       }
     }
     assertNoLocalDrivePaths(repoRoot);
+
+    // Lock 5: Governance convergence (README.md <-> AGENTS.md <-> CLAUDE.md), valid relative links,
+    // Evergreen static SVG (zero brittle inventory tallies), and explicit Selector placement="below" across Studio
+    for (const docName of ['README.md', 'AGENTS.md', 'CLAUDE.md']) {
+      const docPath = path.join(repoRoot, docName);
+      expect(fs.existsSync(docPath), `Missing governance doc ${docName}`).toBe(true);
+      const docContent = fs.readFileSync(docPath, 'utf8');
+      const relLinks = [...docContent.matchAll(/\]\((\.[^)#]+)\)/g)].map(m => m[1]);
+      expect(relLinks.length).toBeGreaterThan(0);
+      for (const rel of relLinks) {
+        const resolved = path.resolve(repoRoot, rel);
+        expect(
+          fs.existsSync(resolved),
+          `Broken relative link ${rel} in ${docName}`,
+        ).toBe(true);
+      }
+    }
+
+    const svgSource = fs.readFileSync(
+      path.join(repoRoot, 'assets/why-mehan-architecture.svg'),
+      'utf8',
+    );
+    expect(svgSource).not.toMatch(/\+\s*35\b|80 AI Agent Docs|8\s*×\s*12|142\b/);
+
+    function assertSelectorPlacementBelow(dir: string) {
+      for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          assertSelectorPlacementBelow(full);
+        } else if (entry.name.endsWith('.tsx')) {
+          const src = fs.readFileSync(full, 'utf8');
+          const tags = [...src.matchAll(/<Selector\b[\s\S]*?\/>/g)].map(m => m[0]);
+          for (const tag of tags) {
+            expect(
+              tag,
+              `<Selector> missing placement="below" in ${full}:\n${tag}`,
+            ).toContain('placement="below"');
+          }
+        }
+      }
+    }
+    assertSelectorPlacementBelow(path.join(repoRoot, 'apps/studio/src'));
   });
 });

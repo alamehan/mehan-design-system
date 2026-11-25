@@ -319,7 +319,21 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
       idGood: 'Label: Nama proyek · Placeholder: mis. Rilis Q4',
       avoid: 'Unlabeled input relying only on placeholder',
     },
+    {
+      id: 'c6',
+      context: isId
+        ? 'Tagline murni & Evergreen Copy'
+        : 'Pure domain & Evergreen copy',
+      enGood: 'Turn raw notes into structured briefs ({items.length} templates)',
+      idGood: 'Ubah catatan mentah menjadi dokumen terstruktur ({items.length} templat)',
+      avoid: '"142 items · zero API keys · via localStorage" hardcoded in prose',
+    },
   ];
+
+  const totalUxChapters = UX_DOMAINS.reduce(
+    (sum, d) => sum + d.chapters.length,
+    0,
+  );
 
   return (
     <Stack gap={4}>
@@ -328,7 +342,11 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
           <Heading level={2}>{copy.ux.title}</Heading>
           <Badge
             variant="info"
-            label={isId ? '12 Bab · Terindeks AI' : '12 Chapters · AI-Indexed'}
+            label={
+              isId
+                ? `${totalUxChapters} Bab · Terindeks AI`
+                : `${totalUxChapters} Chapters · AI-Indexed`
+            }
           />
         </HStack>
         <Text color="secondary">{copy.ux.subtitle}</Text>
@@ -566,6 +584,7 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
                     <Selector
                       label={isId ? '1. Wilayah utama' : '1. Primary region'}
                       size="sm"
+                      placement="below"
                       options={[
                         'Singapore (ap-southeast-1)',
                         'Tokyo (ap-northeast-1)',
@@ -1840,6 +1859,39 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
                   dividers="rows"
                   hasHover
                 />
+
+                <Grid columns={{minWidth: 280, max: 2, repeat: 'fit'}} gap={3}>
+                  <div className="studio-ux-box studio-ux-do">
+                    <div className="studio-ux-tag studio-ux-tag-do">
+                      <CheckCircle2 size={15} />
+                      <span>
+                        {isId
+                          ? '3-Bucket Evergreen Copy & Tangga Ekstensi'
+                          : '3-Bucket Evergreen Copy & Extension Ladder'}
+                      </span>
+                    </div>
+                    <Text type="supporting" color="secondary">
+                      {isId
+                        ? '1) Ikat angka dinamis langsung dari data ({items.length}), 2) Tulis narasi lintas-file & SVG yang tahan waktu tanpa deretan angka inventaris rapuh, dan 3) Ikuti tangga komponen: Reuse Core -> Compose -> Theme Override -> Extend hanya bila perilaku ARIA berbeda.'
+                        : '1) Bind counts dynamically from runtime arrays ({items.length}), 2) Keep cross-file prose & SVGs evergreen without brittle inventory tallies, and 3) Follow Reuse Core -> Compose -> Theme Override -> Extend only when WAI-ARIA semantics differ.'}
+                    </Text>
+                  </div>
+                  <div className="studio-ux-box studio-ux-dont">
+                    <div className="studio-ux-tag studio-ux-tag-dont">
+                      <XCircle size={15} />
+                      <span>
+                        {isId
+                          ? 'Anti-pola pemeliharaan tinggi'
+                          : 'High-maintenance drift anti-patterns'}
+                      </span>
+                    </div>
+                    <Text type="supporting" color="secondary">
+                      {isId
+                        ? 'Menebar angka statis ("142 item, 12 preset") di puluhan paragraf atau membocorkan jargon pipa teknis ("zero API keys, via localStorage") pada tagline produk.'
+                        : 'Scattering hardcoded counts across prose/SVGs that go stale on every release, or leaking internal plumbing ("zero API keys, via localStorage") into user taglines.'}
+                    </Text>
+                  </div>
+                </Grid>
               </Stack>
             </Card>
           )}

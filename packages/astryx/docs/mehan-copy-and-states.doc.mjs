@@ -12,9 +12,11 @@ export default {
     'empty state',
     'loading state',
     'destructive confirmation',
+    'evergreen copy',
+    'pure domain identity',
   ],
   description:
-    'Sentence-case microcopy standards, verb-plus-noun button labels, diagnostic error formulas, and non-destructive async/recovery state patterns.',
+    'Sentence-case microcopy standards, 3-Bucket Evergreen Copywriting, verb-plus-noun button labels, diagnostic error formulas, and non-destructive recovery states.',
   sections: [
     {
       id: 'microcopy-contract',
@@ -50,6 +52,22 @@ export default {
         {
           type: 'prose',
           text: 'Combine these state rules with {@link generic:mehan-ux-complexity} and {@link generic:mehan-page-archetypes}.',
+        },
+      ],
+    },
+    {
+      id: 'evergreen-copy-architecture',
+      title: '3-Bucket Evergreen Copywriting and Pure Domain Identity',
+      content: [
+        {
+          type: 'list',
+          style: 'unordered',
+          items: [
+            'Pure domain taglines: product titles, subtitles, and card summaries describe concrete user inputs and domain outcomes — never leaking internal delivery plumbing ("via REST API", "zero API keys", "powered by localStorage", or model-provider mechanics).',
+            'Bucket 1 — Dynamic `{count}` bindings: in UI components, read live counts directly from runtime arrays (`items.length`, `Object.keys(presets).length`) rather than hardcoding static numbers in translation dictionaries.',
+            'Bucket 2 — Cross-file evergreen prose: cross-boundary documentation, hero leads, and SVG diagrams describe structural architecture and lasting capabilities rather than brittle inventory tallies that rot whenever a preset, route, or module is added; introduce open-ended examples with "including A, B, and C".',
+            'Bucket 3 — Single-source ledgers: keep exact inventory counts exclusively inside machine-verified manifests or automated test suites.',
+          ],
         },
       ],
     },

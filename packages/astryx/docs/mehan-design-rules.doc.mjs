@@ -58,5 +58,21 @@ export default {
         },
       ],
     },
+    {
+      id: 'extension-and-adaptation-ladder',
+      title: '4-Step Extension Ladder, Boundary Containment, and Style Adaptation',
+      content: [
+        {
+          type: 'list',
+          style: 'unordered',
+          items: [
+            'Follow the strict 4-step derivation ladder before creating custom UI: (1) Reuse an `@astryxdesign/core` or `@mehan/astryx` primitive, (2) Compose existing primitives without altering foundation tokens, (3) Customize visuals via `createMehanTheme({ components })`, and (4) Author a new component only when WAI-ARIA keyboard/focus semantics genuinely differ.',
+            'Preserve Select/Listbox vs. Menu semantics: use `Selector` (`placement="below"`) for form value selection, `SegmentedControl` for 2-5 immediate mode switches, `TabList` for peer views, and `DropdownMenu` strictly for action commands.',
+            'Enforce Card Boundary Containment: flex and grid children inside cards, headers, and toolbars must keep `min-width: 0; max-width: 100%; box-sizing: border-box` with wrapping action clusters so controls never bleed past card borders.',
+            'Style Adaptation discipline: when adapting Mehan to a new brand atmosphere, replace the style layer systematically (tokens, typography, radius scale, lip/well physics) while keeping the experience core (WAI-ARIA semantics, focus-vs-selection separation, coarse-pointer 44px hit targets, and WCAG 2.2 AA contrast) untouched.',
+          ],
+        },
+      ],
+    },
   ],
 };

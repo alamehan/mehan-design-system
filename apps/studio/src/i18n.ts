@@ -15,30 +15,15 @@ export const STUDIO_COPY = {
     },
     overview: {
       eyebrow: 'Mehan Design System v1.0',
-      heroTitle: 'Permukaan taktil yang tenang, kustomisasi penuh di atas Meta Astryx.',
+      heroTitle: 'Mesin aksesibilitas Meta Astryx. Jiwa taktil & ergonomi ruang Mehan.',
       heroDesc:
-        'Memadukan 142 spesimen aktif lintas 4 pilar & 12 kategori resmi Meta Astryx (103 Core + 35 ekstensi Mehan + 4 suite Runtime Hooks) dengan fisika material OKLCH, 10 font bundel offline, Theme Editor 3-tingkat, serta 12 bab standar UX & microcopy.',
+        'Memadukan primitif WAI-ARIA kelas produksi milik Meta dengan fisika permukaan OKLCH 7-lapis, topologi workspace universal, font WOFF2 offline, serta standar UX & microcopy — tanpa satu pun fork komponen inti.',
       ctaCustomize: 'Buka Theme Editor',
       ctaCopyAiKit: 'Salin kit AI',
       ctaExploreComponents: 'Jelajahi katalog komponen',
-      mapTitle: 'Arsitektur 3 lapis di atas Meta Astryx',
-      mapSub:
-        'Perilaku WAI-ARIA & fondasi inti tetap 100% milik Meta Astryx, sementara jiwa visual taktil, layout workspace, ergonomi UX, dan portabilitas dikendalikan satu sumber DNA.',
-      layer1Tag: 'Lapis 1 · Fondasi aksesibilitas',
-      layer1Title: 'Meta Astryx (~0.7.17)',
-      layer1Desc:
-        'Menyediakan 103 primitif WAI-ARIA lintas 12 kategori resmi, sistem <Theme>, fokus modal, navigasi keyboard, ukuran sentuh otomatis, dan validator CLI.',
-      layer2Tag: 'Lapis 2 · Ekstensi taktil & ergonomi',
-      layer2Title: 'Mehan DNA + @mehan/astryx',
-      layer2Desc:
-        'Menambahkan 8 atmosfer taktil, 12 preset kurasi, bibir tombol 3D OKLCH, WorkspaceLayout & CanvasStage, 35 ekstensi universal, 4 suite runtime hooks, 10 font WOFF2, dan 80 dokumen AI.',
-      layer3Tag: 'Lapis 3 · Portabilitas instan',
-      layer3Title: 'Mehan Portable + Token W3C',
-      layer3Desc:
-        'Menghasilkan CSS/JS mandiri untuk Claude Artifacts, Gemini Canvas, HTML murni, Vue, Svelte, serta JSON token W3C simetris untuk Figma.',
-      installTitle: 'Cara memakai Mehan dalam 60 detik (untuk siapa saja)',
+      installTitle: 'Mulai dalam 60 detik di stack mana pun',
       installSub:
-        'Tidak perlu bingung mulai dari mana: buka Studio via web atau STUDIO.html, pilih preset di atas, lalu salin ke stack proyekmu dengan 1 klik.',
+        '1) Buka Studio via link web atau STUDIO.html -> 2) Pilih preset di atas -> 3) Salin jalur instalasi sesuai target proyekmu:',
       sourceGithub: 'GitHub',
       sourceLocal: 'Clone lokal',
       sourceNpm: 'Publik npm (Segera)',
@@ -70,9 +55,9 @@ export const STUDIO_COPY = {
       searchPlaceholder: 'Cari komponen atau hook (WorkspaceLayout, DataChart, ColumnView, useAutoDraft)...',
     },
     ux: {
-      title: 'Panduan standar UX & microcopy (4 Domain · 12 Bab)',
+      title: 'Panduan standar UX & microcopy',
       subtitle:
-        'Dua belas bab interaktif terstruktur dalam 4 pilar: Beban Kognitif & Ergonomi Ruang, Tipografi & Lokalisasi, Interaksi/Keyboard/Gerak, serta Form, State & Microcopy.',
+        'Standar interaktif terstruktur lintas 4 domain: Beban Kognitif & Ergonomi Ruang, Tipografi & Lokalisasi, Interaksi/Keyboard/Gerak, serta Form, State & Evergreen Microcopy.',
       doLabel: 'Standar Mehan (lakukan)',
       dontLabel: 'Anti-pola (hindari)',
     },
@@ -106,30 +91,15 @@ export const STUDIO_COPY = {
     },
     overview: {
       eyebrow: 'Mehan Design System v1.0',
-      heroTitle: 'Calm tactile surfaces, unrestricted theming on Meta Astryx.',
+      heroTitle: 'Meta Astryx’s accessibility engine. Mehan’s tactile soul & ergonomics.',
       heroDesc:
-        'Unifies 142 live specimens across 4 architectural pillars & all 12 official Meta Astryx categories (103 Core + 35 Mehan extensions + 4 Runtime Hook suites) with perceptual OKLCH materials, 10 offline WOFF2 fonts, a 3-tier Theme Editor, and a 12-chapter UX playbook.',
+        'Pairs Meta’s battle-tested WAI-ARIA primitives with 7-layer OKLCH tactile physics, universal workspace topologies, self-hosted WOFF2 fonts, and executable UX & microcopy laws — with zero component forks.',
       ctaCustomize: 'Open Theme Editor',
       ctaCopyAiKit: 'Copy AI kit',
       ctaExploreComponents: 'Explore component catalog',
-      mapTitle: 'Zero-fork three-layer architecture on Meta Astryx',
-      mapSub:
-        'Core WAI-ARIA behavior & theming stay 100% native to Meta Astryx while tactile materials, adaptive workspaces, UX laws, and portable outputs share one DNA source.',
-      layer1Tag: 'Layer 1 · Foundation & ARIA',
-      layer1Title: 'Meta Astryx (~0.7.17)',
-      layer1Desc:
-        'Delivers 103 WAI-ARIA primitives across 12 categories, <Theme>, focus traps, keyboard navigation, coarse-pointer adaptation, and strict CLI checks.',
-      layer2Tag: 'Layer 2 · Tactile extensions & UX',
-      layer2Title: 'Mehan DNA + @mehan/astryx',
-      layer2Desc:
-        'Adds 8 tactile atmospheres, 12 signature presets, OKLCH 3D button lips, WorkspaceLayout & CanvasStage, 35 universal extensions, 4 runtime hook suites, 10 WOFF2 fonts, and 80 agent docs.',
-      layer3Tag: 'Layer 3 · Zero-setup bridge',
-      layer3Title: 'Mehan Portable + W3C tokens',
-      layer3Desc:
-        'Emits standalone CSS/JS for Claude Artifacts, Gemini Canvas, Vanilla HTML, Vue, Svelte, plus symmetric W3C DTCG JSON tokens for Figma.',
-      installTitle: 'How anyone uses Mehan in 60 seconds',
+      installTitle: 'Start in 60 seconds in any stack',
       installSub:
-        'Zero guesswork: open the live web Studio or offline STUDIO.html, pick or tune a theme preset above, and copy straight into your stack.',
+        '1) Open Studio on the web or via STUDIO.html -> 2) Pick or tune a preset above -> 3) Copy your stack output below:',
       sourceGithub: 'GitHub',
       sourceLocal: 'Local clone',
       sourceNpm: 'Public npm (Soon)',
@@ -161,9 +131,9 @@ export const STUDIO_COPY = {
       searchPlaceholder: 'Search components or hooks (WorkspaceLayout, DataChart, ColumnView, useAutoDraft)...',
     },
     ux: {
-      title: 'UX architecture & microcopy playbook (4 Domains · 12 Chapters)',
+      title: 'UX architecture & microcopy playbook',
       subtitle:
-        'Twelve interactive chapters organized across 4 domains: Cognitive Load & Spatial Ergonomics, Typography & Localization, Actions/Keyboard/Motion, and Forms, States & Microcopy.',
+        'Interactive human-factors standards across 4 domains: Cognitive Load & Spatial Ergonomics, Typography & Localization, Actions/Keyboard/Motion, and Forms, States & Evergreen Microcopy.',
       doLabel: 'Mehan standard (do)',
       dontLabel: "Anti-pattern (don't)",
     },

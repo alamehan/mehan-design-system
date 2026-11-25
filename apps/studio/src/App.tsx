@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   CodeBlock,
-  Collapsible,
   Grid,
   HStack,
   Heading,
@@ -33,6 +32,7 @@ import {
   MEHAN_ATMOSPHERES,
   contrastRatio,
   createHistoryStore,
+  exportW3cDesignTokens,
   resolveMehanDna,
   type HistoryUpdateOptions,
 } from '@mehan/astryx/dna';
@@ -42,7 +42,6 @@ import {
   generatePortableCss,
 } from '@mehan/portable';
 import {
-  ArrowRight,
   Copy,
   Download,
   Keyboard,
@@ -125,6 +124,7 @@ function StudioInner({
   const isId = lang === 'id';
 
   const [activeTab, setActiveTab] = useState<string>('overview');
+  const [quickstartTab, setQuickstartTab] = useState<string>('ai');
   const [sourceMode, setSourceMode] = useState<InstallSourceMode>('github');
   const [cssMode, setCssMode] = useState<InstallCssMode>('plain');
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -293,6 +293,25 @@ function StudioInner({
       body: isId
         ? 'mehan-portable.css berhasil disalin.'
         : 'Copied standalone mehan-portable.css.',
+    });
+  };
+
+  const handleDownloadW3cTokens = () => {
+    const w3c = exportW3cDesignTokens({
+      name: `mehan-${seed.atmosphere}`,
+      ...seed,
+      radiusBase: seed.radiusBase ?? undefined,
+    });
+    downloadTextFile(
+      `mehan-${seed.atmosphere}-tokens.w3c.json`,
+      JSON.stringify(w3c, null, 2),
+      'application/json',
+    );
+    showToast({
+      type: 'info',
+      body: isId
+        ? `Token W3C (mehan-${seed.atmosphere}-tokens.w3c.json) diunduh.`
+        : `Downloaded mehan-${seed.atmosphere}-tokens.w3c.json.`,
     });
   };
 
@@ -492,106 +511,39 @@ function StudioInner({
                 onOpenEditor={() => setEditorOpen(true)}
               />
 
-              {/* 30-Second Visual Architecture Map */}
+              {/* Beat 4: Concise Tabbed 60-Second Quickstart (Docs-Grade Clarity) */}
               <Card elevation="low">
-                <Stack gap={4}>
+                <Stack gap={3}>
                   <Stack gap={1}>
-                    <Heading level={2}>{copy.overview.mapTitle}</Heading>
-                    <Text color="secondary">{copy.overview.mapSub}</Text>
-                  </Stack>
-
-                  <div className="studio-arch-grid">
-                    <div className="studio-arch-step">
-                      <Badge variant="neutral" label={copy.overview.layer1Tag} />
-                      <Heading level={4}>{copy.overview.layer1Title}</Heading>
-                      <Text color="secondary">{copy.overview.layer1Desc}</Text>
-                    </div>
-
-                    <div className="studio-arch-arrow" aria-hidden="true">
-                      <ArrowRight size={18} />
-                    </div>
-
-                    <div className="studio-arch-step studio-arch-step-highlight">
-                      <Badge variant="info" label={copy.overview.layer2Tag} />
-                      <Heading level={4}>{copy.overview.layer2Title}</Heading>
-                      <Text color="secondary">{copy.overview.layer2Desc}</Text>
-                    </div>
-
-                    <div className="studio-arch-arrow" aria-hidden="true">
-                      <ArrowRight size={18} />
-                    </div>
-
-                    <div className="studio-arch-step">
-                      <Badge variant="success" label={copy.overview.layer3Tag} />
-                      <Heading level={4}>{copy.overview.layer3Title}</Heading>
-                      <Text color="secondary">{copy.overview.layer3Desc}</Text>
-                    </div>
-                  </div>
-                </Stack>
-              </Card>
-
-              {/* 3 Practical Start Paths + Clear 60-Second User Journey */}
-              <Card elevation="low">
-                <Stack gap={4}>
-                  <Stack gap={1}>
+                    <HStack gap={2} vAlign="center" wrap="wrap">
+                      <Badge
+                        variant="teal"
+                        label={
+                          isId
+                            ? `Tema Aktif · ${atmosphereName} × ${accentName}`
+                            : `Active Theme · ${atmosphereName} × ${accentName}`
+                        }
+                      />
+                    </HStack>
                     <Heading level={2}>{copy.overview.installTitle}</Heading>
                     <Text color="secondary">{copy.overview.installSub}</Text>
                   </Stack>
 
-                  {/* Explicit 3-Step User Flow Answering "How Do People Use This?" */}
-                  <div className="mh-journey-strip" role="list" aria-label="60-second workflow">
-                    <div className="mh-journey-step" role="listitem">
-                      <span className="mh-journey-num">1</span>
-                      <div>
-                        <strong>
-                          {isId
-                            ? 'Buka Studio Web atau STUDIO.html'
-                            : 'Open Web Studio or STUDIO.html'}
-                        </strong>
-                        <p>
-                          {isId
-                            ? 'Akses langsung via link GitHub Pages tanpa instalasi (atau klik 2x STUDIO.html secara offline).'
-                            : 'Visit the live GitHub Pages URL with zero setup (or double-click STUDIO.html offline).'}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mh-journey-step" role="listitem">
-                      <span className="mh-journey-num">2</span>
-                      <div>
-                        <strong>
-                          {isId
-                            ? 'Pilih 1 dari 12 Preset atau Racik Tema'
-                            : 'Pick a Preset or Tune in Theme Editor'}
-                        </strong>
-                        <p>
-                          {isId
-                            ? 'Klik kartu preset di atas atau sesuaikan atmosfer, aksen OKLCH, font, dan radius secara live.'
-                            : 'Click any preset card above or customize atmosphere, OKLCH accent, fonts, and radii live.'}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mh-journey-step" role="listitem">
-                      <span className="mh-journey-num">3</span>
-                      <div>
-                        <strong>
-                          {isId
-                            ? 'Salin 1-Klik Sesuai Target Proyekmu'
-                            : 'Copy 1-Click Output for Your Stack'}
-                        </strong>
-                        <p>
-                          {isId
-                            ? 'Semua tombol salin/unduh di bawah otomatis membawa tema aktif pilihanmu — siap tempel!'
-                            : 'Every copy/download button below automatically embeds your active theme — paste and ship!'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <TabList
+                    role="tablist"
+                    aria-label="Quickstart stack"
+                    value={quickstartTab}
+                    onChange={setQuickstartTab}
+                    overflow="auto"
+                  >
+                    <Tab value="ai" label={copy.overview.cardAiTitle} />
+                    <Tab value="react" label={copy.overview.cardReactTitle} />
+                    <Tab value="html" label={copy.overview.cardHtmlTitle} />
+                  </TabList>
 
-                  <Grid columns={{minWidth: 280, max: 3, repeat: 'fit'}} gap={3}>
-                    <div className="studio-tray-panel">
-                      <Stack gap={2}>
-                        <Badge variant="pink" label={copy.overview.cardAiBadge} />
-                        <Heading level={4}>{copy.overview.cardAiTitle}</Heading>
+                  {quickstartTab === 'ai' && (
+                    <div className="mh-quickstart-body">
+                      <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
                         <Text color="secondary">{copy.overview.cardAiDesc}</Text>
                         <HStack gap={2} wrap="wrap">
                           <Button
@@ -609,84 +561,20 @@ function StudioInner({
                             onClick={handleDownloadStarterHtml}
                           />
                         </HStack>
-                      </Stack>
+                      </HStack>
+                      <CodeBlock
+                        code={aiKitMarkdown.slice(0, 760) + '\n/* ...full kit copied via button above */'}
+                        language="markdown"
+                        title={`MEHAN-AI-PROTOTYPE-KIT.md (${atmosphereName} · ${accentName})`}
+                        hasCopyButton
+                        maxHeight={180}
+                      />
                     </div>
+                  )}
 
-                    <div className="studio-tray-panel">
-                      <Stack gap={2}>
-                        <Badge variant="blue" label={copy.overview.cardReactBadge} />
-                        <Heading level={4}>{copy.overview.cardReactTitle}</Heading>
-                        <Text color="secondary">{copy.overview.cardReactDesc}</Text>
-                        <HStack gap={2} wrap="wrap">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            label={copy.overview.cardReactAgentBtn}
-                            icon={<Copy size={14} />}
-                            onClick={async () => {
-                              await copyText(agentSetupPrompt);
-                              showToast({
-                                type: 'info',
-                                body: isId
-                                  ? 'Prompt Setup disalin ke clipboard.'
-                                  : 'Copied Agent Setup Prompt to clipboard.',
-                              });
-                            }}
-                          />
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            label={copy.overview.cardReactCmdBtn}
-                            icon={<Terminal size={14} />}
-                            onClick={async () => {
-                              await copyText(reactSnippets.installCmd);
-                              showToast({
-                                type: 'info',
-                                body: isId
-                                  ? 'Perintah CLI disalin.'
-                                  : 'Copied CLI install command.',
-                              });
-                            }}
-                          />
-                        </HStack>
-                      </Stack>
-                    </div>
-
-                    <div className="studio-tray-panel">
-                      <Stack gap={2}>
-                        <Badge variant="teal" label={copy.overview.cardHtmlBadge} />
-                        <Heading level={4}>{copy.overview.cardHtmlTitle}</Heading>
-                        <Text color="secondary">{copy.overview.cardHtmlDesc}</Text>
-                        <HStack gap={2} wrap="wrap">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            label={copy.overview.cardHtmlCssBtn}
-                            icon={<Copy size={14} />}
-                            onClick={() => void handleCopyPortableCss()}
-                          />
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            label={copy.overview.cardHtmlCdnBtn}
-                            icon={<Download size={14} />}
-                            onClick={handleDownloadStarterHtml}
-                          />
-                        </HStack>
-                      </Stack>
-                    </div>
-                  </Grid>
-
-                  <div className="te-disclosure-box">
-                    <Collapsible
-                      defaultIsOpen={false}
-                      trigger={
-                        isId
-                          ? 'Lihat kode setup lengkap (React, Next.js & Tailwind CSS v4)'
-                          : 'Show full setup snippets (React, Next.js & Tailwind CSS v4)'
-                      }
-                    >
-                      <Stack gap={3}>
+                  {quickstartTab === 'react' && (
+                    <div className="mh-quickstart-body">
+                      <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
                         <HStack gap={2} wrap="wrap" vAlign="center">
                           <SegmentedControl
                             label="Package source"
@@ -726,30 +614,101 @@ function StudioInner({
                           </SegmentedControl>
                         </HStack>
 
-                        <Grid columns={{minWidth: 320, max: 2, repeat: 'fit'}} gap={3}>
-                          <CodeBlock
-                            code={`${reactSnippets.installCmd}\n\n${reactSnippets.cssCode}`}
-                            language="bash"
-                            title={
-                              cssMode === 'tailwind'
-                                ? 'Terminal + src/mehan.css (Tailwind v4)'
-                                : 'Terminal + src/mehan.css'
-                            }
-                            hasCopyButton
-                            maxHeight={220}
+                        <HStack gap={2} wrap="wrap">
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            label={copy.overview.cardReactAgentBtn}
+                            icon={<Copy size={14} />}
+                            onClick={async () => {
+                              await copyText(agentSetupPrompt);
+                              showToast({
+                                type: 'info',
+                                body: isId
+                                  ? 'Prompt Setup disalin ke clipboard.'
+                                  : 'Copied Agent Setup Prompt to clipboard.',
+                              });
+                            }}
                           />
-                          <CodeBlock
-                            code={reactSnippets.tsxCode}
-                            language="tsx"
-                            title="src/App.tsx"
-                            hasCopyButton
-                            hasLineNumbers
-                            maxHeight={220}
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            label={copy.overview.cardReactCmdBtn}
+                            icon={<Terminal size={14} />}
+                            onClick={async () => {
+                              await copyText(reactSnippets.installCmd);
+                              showToast({
+                                type: 'info',
+                                body: isId
+                                  ? 'Perintah CLI disalin.'
+                                  : 'Copied CLI install command.',
+                              });
+                            }}
                           />
-                        </Grid>
-                      </Stack>
-                    </Collapsible>
-                  </div>
+                        </HStack>
+                      </HStack>
+
+                      <Grid columns={{minWidth: 320, max: 2, repeat: 'fit'}} gap={3}>
+                        <CodeBlock
+                          code={`${reactSnippets.installCmd}\n\n${reactSnippets.cssCode}`}
+                          language="bash"
+                          title={
+                            cssMode === 'tailwind'
+                              ? 'Terminal + src/mehan.css (Tailwind v4)'
+                              : 'Terminal + src/mehan.css'
+                          }
+                          hasCopyButton
+                          maxHeight={200}
+                        />
+                        <CodeBlock
+                          code={reactSnippets.tsxCode}
+                          language="tsx"
+                          title="src/App.tsx"
+                          hasCopyButton
+                          hasLineNumbers
+                          maxHeight={200}
+                        />
+                      </Grid>
+                    </div>
+                  )}
+
+                  {quickstartTab === 'html' && (
+                    <div className="mh-quickstart-body">
+                      <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                        <Text color="secondary">{copy.overview.cardHtmlDesc}</Text>
+                        <HStack gap={2} wrap="wrap">
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            label={copy.overview.cardHtmlCssBtn}
+                            icon={<Copy size={14} />}
+                            onClick={() => void handleCopyPortableCss()}
+                          />
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            label={copy.overview.cardHtmlCdnBtn}
+                            icon={<Download size={14} />}
+                            onClick={handleDownloadStarterHtml}
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            label={isId ? 'Token Figma W3C' : 'Figma W3C tokens'}
+                            icon={<Download size={14} />}
+                            onClick={handleDownloadW3cTokens}
+                          />
+                        </HStack>
+                      </HStack>
+                      <CodeBlock
+                        code={`<html lang="${lang}" data-theme="${mode}" data-motion="${seed.motion}">\n  <link rel="stylesheet" href="./mehan-portable.css" />\n  <body class="mh-container">\n    <section class="mh-card mh-stack">\n      <h1 class="mh-h1">${atmosphereName} · ${accentName}</h1>\n      <button type="button" class="mh-btn mh-btn-primary">Ship tactile UI</button>\n    </section>\n    <script src="./mehan-portable.js"></script>\n  </body>\n</html>`}
+                        language="html"
+                        title="index.html (Vanilla HTML / Vue / Svelte / Astro)"
+                        hasCopyButton
+                        maxHeight={180}
+                      />
+                    </div>
+                  )}
                 </Stack>
               </Card>
             </Stack>
