@@ -503,6 +503,18 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
       }
     }
 
+    for (const readmeRel of ['README.md', 'README.id.md']) {
+      const rm = fs.readFileSync(path.join(repoRoot, readmeRel), 'utf8');
+      expect(rm).toContain('— crafted by @alamehan');
+      const topicLine = rm.split(/\r?\n/).find(l => l.startsWith('> `'));
+      expect(topicLine, `Missing GitHub Topics blockquote line in ${readmeRel}`).toBeDefined();
+      const slugs = [...(topicLine ?? '').matchAll(/`([^`]+)`/g)].map(m => m[1]);
+      expect(slugs.length).toBeGreaterThanOrEqual(6);
+      for (const s of slugs) {
+        expect(s).toMatch(/^[a-z0-9][a-z0-9-]{0,49}$/);
+      }
+    }
+
     for (const svgRel of [
       'assets/readme-header-dark.svg',
       'assets/readme-header-light.svg',

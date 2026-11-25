@@ -15,6 +15,8 @@
 </div>
 
 > 🎨 Accessible, tactile UI & UX design system built on Meta Astryx — 12 live themes & 1-click export to React, HTML, AI & Figma — crafted by @alamehan
+>
+> `design-system` `ui-components` `design-tokens` `react` `tailwindcss` `wcag` `figma` `ai-ready`
 
 ---
 

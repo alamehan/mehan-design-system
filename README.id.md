@@ -15,6 +15,8 @@
 </div>
 
 > 🎨 Design system UI & UX yang aksesibel dan taktil di atas Meta Astryx — 12 tema hidup & ekspor 1-klik ke React, HTML, AI & Figma — crafted by @alamehan
+>
+> `design-system` `ui-components` `design-tokens` `react` `tailwindcss` `wcag` `figma` `ai-ready`
 
 ---
 
