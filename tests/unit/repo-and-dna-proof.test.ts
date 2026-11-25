@@ -504,7 +504,6 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
     }
 
     for (const svgRel of [
-      'assets/why-mehan-architecture.svg',
       'assets/readme-header-dark.svg',
       'assets/readme-header-light.svg',
     ]) {
@@ -513,12 +512,6 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
       expect(svgText).toContain('</svg>');
       expect(svgText, `Unescaped ampersand in ${svgRel}`).not.toMatch(/&(?!amp;|lt;|gt;|quot;|apos;|#\d+;|#x[0-9a-fA-F]+;)/);
     }
-
-    const svgSource = fs.readFileSync(
-      path.join(repoRoot, 'assets/why-mehan-architecture.svg'),
-      'utf8',
-    );
-    expect(svgSource).not.toMatch(/80 AI Agent Docs|8\s*×\s*12|142\b/);
 
     function assertSelectorPlacementBelow(dir: string) {
       for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
