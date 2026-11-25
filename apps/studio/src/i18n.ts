@@ -17,12 +17,12 @@ export const STUDIO_COPY = {
     overview: {
       eyebrow: 'Mehan Design System v1.0',
       heroTitle:
-        'Design system hangat, rapi, dan siap pakai untuk aplikasi web maupun alur kerja AI.',
+        'Komponen UI hangat & aksesibel — siap untuk Web, AI, dan Figma.',
       heroDesc:
-        'Dirancang dengan kepekaan Product Design di atas fondasi komponen open-source Meta Astryx — menghadirkan permukaan hangat yang terasa hidup, puluhan komponen ruang kerja tambahan, serta panduan UX yang membumi. Siap dipakai dalam 1 klik di Chat AI, React, HTML biasa, maupun Figma.',
+        'Dibangun di atas fondasi Meta Astryx dengan permukaan taktil yang hidup, 12 tema instan, dan ekspor 1-klik ke stack mana pun.',
       ctaCustomize: 'Ubah Tampilan',
-      ctaCopyAiKit: 'Salin untuk Chat AI',
-      ctaExploreComponents: 'Lihat Komponen',
+      ctaCopyAiKit: 'Salin Kit AI',
+      ctaExploreComponents: 'Jelajahi Komponen',
       installTitle: 'Mulai pakai dalam 1 menit di platform mana pun',
       installSub:
         'Setiap tombol salin & unduh di bawah otomatis menyertakan tema yang sedang aktif di layar ini:',
@@ -96,12 +96,12 @@ export const STUDIO_COPY = {
     overview: {
       eyebrow: 'Mehan Design System v1.0',
       heroTitle:
-        'A warm, tactile design system crafted for modern apps and AI workflows.',
+        'Warm, accessible UI components — ready for Web, AI, and Figma.',
       heroDesc:
-        'Built with Product Design care on top of Meta Astryx’s open-source component foundation — combining warm layered surfaces, extra workspace building blocks, and clear UX guidelines. Ready in one click for AI Chat, React, plain HTML, or Figma.',
+        'Built on Meta Astryx with tactile layered surfaces, 12 instant visual moods, and 1-click export to any stack.',
       ctaCustomize: 'Customize Theme',
-      ctaCopyAiKit: 'Copy for AI Chat',
-      ctaExploreComponents: 'Browse Components',
+      ctaCopyAiKit: 'Copy AI Kit',
+      ctaExploreComponents: 'Explore Components',
       installTitle: 'Start in 60 seconds in any stack',
       installSub:
         'Every copy and download button below automatically embeds the theme currently active on your screen:',

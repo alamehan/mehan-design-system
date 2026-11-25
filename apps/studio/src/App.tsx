@@ -40,6 +40,7 @@ import {
   generatePortableCss,
 } from '@mehan/portable';
 import {
+  Check,
   Copy,
   Download,
   Heart,
@@ -194,6 +195,27 @@ function StudioInner({
   const accentName = dna.accent.name;
 
   const builtInPresets = useMemo(() => getBuiltInPresets(), []);
+
+  const activePreset = useMemo(
+    () =>
+      builtInPresets.find(preset => {
+        const pSeed = preset.state.seed;
+        return (
+          seed.atmosphere === pSeed.atmosphere &&
+          seed.accent === pSeed.accent &&
+          seed.headingFont === pSeed.headingFont &&
+          seed.bodyFont === pSeed.bodyFont &&
+          seed.sizeBase === pSeed.sizeBase &&
+          seed.segmentedStyle === pSeed.segmentedStyle
+        );
+      }),
+    [builtInPresets, seed],
+  );
+
+  const activeFontSummary =
+    seed.headingFont === seed.bodyFont
+      ? `${seed.headingFont} · ${seed.codeFont}`
+      : `${seed.headingFont} + ${seed.bodyFont}`;
 
   const accentTextContrast = useMemo(() => {
     const S = mode === 'light' ? dna.atmosphere.light : dna.atmosphere.dark;
@@ -405,162 +427,280 @@ function StudioInner({
       <div className={`studio-workspace ${editorOpen ? 'has-docked-editor' : ''}`}>
         <main className="studio-main">
           {activeTab === 'overview' && (
-            <Stack gap={5}>
+            <Stack gap={6}>
+              {/* Beat 1: Unified Above-the-Fold Playground + Integrated 12-Mood Tactile Switcher */}
               <section className="studio-hero">
-                <Grid
-                  columns={{minWidth: 320, max: 2, repeat: 'fit'}}
-                  gap={6}
-                  align="center"
-                >
-                  <Stack gap={3}>
-                    <HStack gap={2} vAlign="center" wrap="wrap">
-                      <Badge variant="info" label={copy.overview.eyebrow} />
-                      <Badge
-                        variant="success"
-                        label={
-                          isId
-                            ? `Kontras Aman · ${accentTextContrast}:1`
-                            : `WCAG AA Contrast · ${accentTextContrast}:1`
-                        }
-                      />
-                    </HStack>
-                    <Heading level={1}>{copy.overview.heroTitle}</Heading>
-                    <Text color="secondary">{copy.overview.heroDesc}</Text>
-                    <HStack gap={2} wrap="wrap" vAlign="center">
-                      <Button
-                        variant="primary"
-                        label={copy.overview.ctaCustomize}
-                        icon={<SlidersHorizontal size={15} />}
-                        onClick={() => setEditorOpen(true)}
-                      />
-                      <Button
-                        variant="secondary"
-                        label={copy.overview.ctaExploreComponents}
-                        onClick={() => setActiveTab('components')}
-                      />
-                      <Button
-                        variant="ghost"
-                        label={copy.overview.ctaCopyAiKit}
-                        icon={<Sparkles size={15} />}
-                        onClick={() => void handleCopyAiKit()}
-                      />
-                    </HStack>
-
-                    <div>
-                      <button
-                        type="button"
-                        className="mh-author-pill"
-                        onClick={() => openCreatorModal('about')}
-                      >
-                        <Heart size={12} aria-hidden="true" />
-                        <span>
-                          {isId
-                            ? 'Dirancang penuh dedikasi oleh Raihan Allaam (@alamehan) · Lihat profil & cerita'
-                            : 'Crafted with dedication by Raihan Allaam (@alamehan) · Story & credits'}
-                        </span>
-                      </button>
-                    </div>
-                  </Stack>
-
-                  {/* Calm, Proportional Live UI Preview (Default md Controls) */}
-                  <div className="studio-tray-panel">
+                <Stack gap={4}>
+                  <Grid
+                    columns={{minWidth: 320, max: 2, repeat: 'fit'}}
+                    gap={6}
+                    align="center"
+                  >
                     <Stack gap={3}>
-                      <HStack hAlign="between" vAlign="center" gap={2} wrap="wrap">
-                        <div style={{minWidth: 0, flex: 1}}>
-                          <Stack gap={0.5}>
-                            <Text weight="semibold">
-                              {isId
-                                ? 'Coba langsung rasa komponennya'
-                                : 'Feel the live components right here'}
-                            </Text>
-                            <Text type="supporting" color="secondary" maxLines={1}>
-                              {atmosphereName} · {accentName} · {seed.headingFont}
-                            </Text>
-                          </Stack>
-                        </div>
+                      <HStack gap={2} vAlign="center" wrap="wrap">
+                        <Badge variant="info" label={copy.overview.eyebrow} />
                         <Badge
                           variant="success"
-                          label={isId ? 'Interaktif' : 'Live UI'}
+                          label={
+                            isId
+                              ? `Kontras Aman · ${accentTextContrast}:1`
+                              : `WCAG AA · ${accentTextContrast}:1`
+                          }
+                        />
+                      </HStack>
+                      <Heading level={1}>{copy.overview.heroTitle}</Heading>
+                      <Text color="secondary">{copy.overview.heroDesc}</Text>
+                      <HStack gap={2} wrap="wrap" vAlign="center">
+                        <Button
+                          variant="primary"
+                          label={copy.overview.ctaExploreComponents}
+                          onClick={() => setActiveTab('components')}
+                        />
+                        <Button
+                          variant="secondary"
+                          label={copy.overview.ctaCopyAiKit}
+                          icon={<Sparkles size={15} />}
+                          onClick={() => void handleCopyAiKit()}
                         />
                       </HStack>
 
-                      <SegmentedControl
-                        label={isId ? 'Tahap proyek' : 'Project stage'}
-                        value={heroStage}
-                        onChange={setHeroStage}
-                      >
-                        <SegmentedControlItem
-                          value="design"
-                          label={isId ? 'Desain' : 'Design'}
-                        />
-                        <SegmentedControlItem
-                          value="review"
-                          label={isId ? 'Ulasan Tim' : 'Team Review'}
-                        />
-                        <SegmentedControlItem
-                          value="ship"
-                          label={isId ? 'Siap Rilis' : 'Ready to Ship'}
-                        />
-                      </SegmentedControl>
+                      <div>
+                        <button
+                          type="button"
+                          className="mh-author-pill"
+                          onClick={() => openCreatorModal('about')}
+                        >
+                          <Heart size={12} aria-hidden="true" />
+                          <span>
+                            {isId
+                              ? 'Oleh Raihan Allaam (@alamehan) · Cerita, arsitektur & profil'
+                              : 'By Raihan Allaam (@alamehan) · Story, architecture & credits'}
+                          </span>
+                        </button>
+                      </div>
+                    </Stack>
 
-                      <TextInput
-                        label={isId ? 'Nama ruang kerja proyek' : 'Project workspace name'}
-                        value={heroProjectName}
-                        onChange={setHeroProjectName}
-                      />
-
-                      <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
-                        <Switch
-                          label={
-                            isId ? 'Mode fokus tenang' : 'Calm focus mode'
-                          }
-                          value={heroCalmMode}
-                          onChange={setHeroCalmMode}
-                        />
-                        <HStack gap={2} wrap="wrap">
-                          <Button
-                            variant="secondary"
-                            label={isId ? 'Contoh Halaman' : 'See Templates'}
-                            onClick={() => setActiveTab('templates')}
-                          />
-                          <Button
-                            variant="primary"
-                            label={
-                              heroStage === 'ship'
-                                ? isId
-                                  ? 'Terbitkan sekarang'
-                                  : 'Publish now'
-                                : isId
-                                  ? 'Simpan draf'
-                                  : 'Save draft'
-                            }
-                            onClick={() =>
-                              showToast({
-                                type: 'info',
-                                body: isId
-                                  ? `Tersimpan di pratinjau "${heroProjectName}".`
-                                  : `Saved in "${heroProjectName}" preview.`,
-                              })
-                            }
+                    {/* Calm, Proportional Live UI Preview (Default md Controls) */}
+                    <div className="studio-tray-panel">
+                      <Stack gap={3}>
+                        <HStack hAlign="between" vAlign="center" gap={2} wrap="wrap">
+                          <div style={{minWidth: 0, flex: 1}}>
+                            <Stack gap={0.5}>
+                              <Text weight="semibold">
+                                {isId
+                                  ? 'Coba langsung rasa komponennya'
+                                  : 'Feel the live components right here'}
+                              </Text>
+                              <Text type="supporting" color="secondary" maxLines={1}>
+                                {atmosphereName} · {accentName} · {seed.headingFont}
+                              </Text>
+                            </Stack>
+                          </div>
+                          <Badge
+                            variant="success"
+                            label={isId ? 'Interaktif' : 'Live UI'}
                           />
                         </HStack>
-                      </HStack>
-                    </Stack>
+
+                        <SegmentedControl
+                          label={isId ? 'Tahap proyek' : 'Project stage'}
+                          value={heroStage}
+                          onChange={setHeroStage}
+                        >
+                          <SegmentedControlItem
+                            value="design"
+                            label={isId ? 'Desain' : 'Design'}
+                          />
+                          <SegmentedControlItem
+                            value="review"
+                            label={isId ? 'Ulasan Tim' : 'Team Review'}
+                          />
+                          <SegmentedControlItem
+                            value="ship"
+                            label={isId ? 'Siap Rilis' : 'Ready to Ship'}
+                          />
+                        </SegmentedControl>
+
+                        <TextInput
+                          label={isId ? 'Nama ruang kerja proyek' : 'Project workspace name'}
+                          value={heroProjectName}
+                          onChange={setHeroProjectName}
+                        />
+
+                        <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                          <Switch
+                            label={
+                              isId ? 'Mode fokus tenang' : 'Calm focus mode'
+                            }
+                            value={heroCalmMode}
+                            onChange={setHeroCalmMode}
+                          />
+                          <HStack gap={2} wrap="wrap">
+                            <Button
+                              variant="secondary"
+                              label={isId ? 'Contoh Halaman' : 'Templates'}
+                              onClick={() => setActiveTab('templates')}
+                            />
+                            <Button
+                              variant="primary"
+                              label={
+                                heroStage === 'ship'
+                                  ? isId
+                                    ? 'Terbitkan sekarang'
+                                    : 'Publish now'
+                                  : isId
+                                    ? 'Simpan draf'
+                                    : 'Save draft'
+                              }
+                              onClick={() =>
+                                showToast({
+                                  type: 'info',
+                                  body: isId
+                                    ? `Tersimpan di pratinjau "${heroProjectName}".`
+                                    : `Saved in "${heroProjectName}" preview.`,
+                                })
+                              }
+                            />
+                          </HStack>
+                        </HStack>
+                      </Stack>
+                    </div>
+                  </Grid>
+
+                  <div className="mh-hero-preset-dock">
+                    <div className="mh-hero-preset-head">
+                      <span className="mh-hero-preset-title">
+                        {isId
+                          ? 'Pilih suasana tampilan dalam 1 klik'
+                          : 'Switch visual mood in one click'}
+                      </span>
+                      <span className="mh-hero-preset-count">
+                        {isId
+                          ? `${builtInPresets.length} tema siap pakai · WOFF2 offline`
+                          : `${builtInPresets.length} instant moods · offline WOFF2`}
+                      </span>
+                    </div>
+
+                    <div
+                      className="mh-preset-strip"
+                      role="radiogroup"
+                      aria-label={isId ? 'Galeri preset tema Mehan' : 'Mehan signature theme presets'}
+                    >
+                      {builtInPresets.map(preset => {
+                        const pSeed = preset.state.seed;
+                        const pAtm =
+                          MEHAN_ATMOSPHERES[pSeed.atmosphere] ??
+                          MEHAN_ATMOSPHERES.porcelain;
+                        const pDna = resolveMehanDna({
+                          name: preset.id,
+                          ...pSeed,
+                          radiusBase: pSeed.radiusBase ?? undefined,
+                        });
+                        const isCurrent = activePreset?.id === preset.id;
+                        const tileRadius = `${Math.max(8, Math.round(10 * pSeed.radiusScale))}px`;
+                        const chipRadius = `${Math.max(5, Math.round(6 * pSeed.radiusScale))}px`;
+                        const lipShadow =
+                          pDna.lipPx > 0
+                            ? `inset 0 -${Math.min(2, pDna.lipPx)}px 0 ${pDna.accent.buttonLip}, 0 1px 2px rgba(0,0,0,0.14)`
+                            : '0 1px 2px rgba(0,0,0,0.12)';
+                        const tileBg =
+                          mode === 'dark' ? pAtm.dark.surface : pAtm.light.paper;
+                        const tileInk =
+                          mode === 'dark' ? pAtm.dark.ink : pAtm.light.ink;
+                        const tileBorder = isCurrent
+                          ? mode === 'dark'
+                            ? pDna.accent.accentDark
+                            : pDna.accent.accentLight
+                          : mode === 'dark'
+                            ? pAtm.dark.line
+                            : pAtm.light.line;
+
+                        return (
+                          <button
+                            key={preset.id}
+                            type="button"
+                            role="radio"
+                            aria-checked={isCurrent}
+                            className={`mh-preset-tile ${isCurrent ? 'is-active' : ''}`}
+                            style={{
+                              borderRadius: tileRadius,
+                              backgroundColor: tileBg,
+                              color: tileInk,
+                              borderColor: tileBorder,
+                            }}
+                            onClick={() => setThemeState(preset.state)}
+                          >
+                            <span
+                              className="mh-preset-cap"
+                              aria-hidden="true"
+                              style={{
+                                borderRadius: chipRadius,
+                                backgroundColor: pDna.accent.accentLight,
+                                backgroundImage: pDna.accent.buttonGradient,
+                                boxShadow: lipShadow,
+                              }}
+                            />
+                            <span
+                              className="mh-preset-tile-name"
+                              style={{
+                                fontFamily: `"${pSeed.headingFont}", var(--font-family-heading), sans-serif`,
+                              }}
+                            >
+                              {preset.name}
+                            </span>
+                            {isCurrent && (
+                              <span className="mh-preset-tile-check" aria-hidden="true">
+                                <Check size={12} />
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="mh-preset-active-bar">
+                      <div className="mh-preset-active-copy">
+                        <strong className="mh-preset-active-title">
+                          {activePreset
+                            ? activePreset.name
+                            : isId
+                              ? 'Tema Kustom'
+                              : 'Custom Theme'}
+                        </strong>
+                        <span className="mh-preset-active-sep" aria-hidden="true">
+                          ·
+                        </span>
+                        <span className="mh-preset-active-desc">
+                          {activePreset
+                            ? isId
+                              ? activePreset.taglineId ?? activePreset.taglineEn
+                              : activePreset.taglineEn
+                            : isId
+                              ? `${dna.atmosphere.name} berpadu aksen ${dna.accent.name}`
+                              : `${dna.atmosphere.name} paired with ${dna.accent.name} accent`}
+                        </span>
+                        <span className="mh-preset-active-font">{activeFontSummary}</span>
+                      </div>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        label={isId ? 'Racik di Theme Editor' : 'Open Theme Editor'}
+                        icon={<SlidersHorizontal size={14} />}
+                        onClick={() => setEditorOpen(true)}
+                      />
+                    </div>
                   </div>
-                </Grid>
+                </Stack>
               </section>
 
-              {/* Beat 2 (Compact 2x6 Theme Strip) & Beat 3 (Why Mehan Exists + 6-Stage Story) */}
+              {/* Beat 2: Open-Canvas Visual Effort Story (SceneForge 2.5D Bridge + Clean 13,000+ -> 1 Spine) */}
               <OverviewManifesto
                 lang={lang}
-                mode={mode}
                 dna={dna}
-                themeState={themeState}
-                builtInPresets={builtInPresets}
-                onApplyPreset={preset => {
-                  setThemeState(preset.state);
-                }}
-                onOpenEditor={() => setEditorOpen(true)}
+                activePresetName={activePreset?.name}
+                presetCount={builtInPresets.length}
+                onNavigateTab={setActiveTab}
+                onOpenStory={() => openCreatorModal('how')}
               />
 
               {/* Beat 4: Concise Tabbed 60-Second Quickstart */}
