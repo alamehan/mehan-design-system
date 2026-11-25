@@ -93,6 +93,9 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       return {
         colWidth: col ? Math.round(col.getBoundingClientRect().width) : 0,
         hasDiorama: Boolean(diorama),
+        hasHero3dStage: Boolean(document.querySelector('.mh-hero-shot-frame')),
+        orphanSideChipCount: document.querySelectorAll('.mh-distill-side-pill').length,
+        capstonePillCount: document.querySelectorAll('.mh-distill-stack-pills span').length,
         faviconHref,
         count: tiles.length,
         fontCount: fonts.size,
@@ -101,6 +104,9 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     });
     expect(overviewAudit.colWidth).toBe(900);
     expect(overviewAudit.hasDiorama).toBe(true);
+    expect(overviewAudit.hasHero3dStage).toBe(true);
+    expect(overviewAudit.orphanSideChipCount).toBe(0);
+    expect(overviewAudit.capstonePillCount).toBe(5);
     expect(overviewAudit.faviconHref).toContain('data:image/svg+xml');
     expect(overviewAudit.faviconHref).not.toContain('%23d42a5f');
     expect(overviewAudit.count).toBe(12);

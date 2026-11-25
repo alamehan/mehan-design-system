@@ -1,7 +1,7 @@
 import React, {useId} from 'react';
 import {Badge} from '@astryxdesign/core';
 import type {ResolvedMehanDna} from '@mehan/astryx/dna';
-import {ArrowUpRight, Sparkles} from 'lucide-react';
+import {ArrowUpRight} from 'lucide-react';
 import type {StudioLang} from '../studioState';
 
 interface OverviewManifestoProps {
@@ -898,7 +898,7 @@ export function OverviewManifesto({
 
         <SpineConnector accentHex={accentHex} />
 
-        <div className="mh-distill-row has-side-note" role="listitem">
+        <div className="mh-distill-row" role="listitem">
           <button
             type="button"
             className="mh-distill-center mh-distill-jump"
@@ -912,15 +912,6 @@ export function OverviewManifesto({
               <ArrowUpRight size={13} aria-hidden="true" />
             </div>
           </button>
-
-          <div className="mh-distill-side-pill">
-            <Sparkles size={12} aria-hidden="true" />
-            <span>
-              {isId
-                ? 'Font WOFF2 berlisensi siap offline'
-                : 'Licensed offline WOFF2 fonts'}
-            </span>
-          </div>
         </div>
 
         <SpineConnector accentHex={accentHex} />
@@ -936,6 +927,7 @@ export function OverviewManifesto({
               <span>React</span>
               <span>HTML</span>
               <span>Figma</span>
+              <span>{isId ? 'WOFF2 Offline' : 'Offline WOFF2'}</span>
             </div>
           </div>
         </div>

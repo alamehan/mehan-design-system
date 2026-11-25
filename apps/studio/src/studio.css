@@ -964,6 +964,144 @@ body,
   border: 1px solid var(--color-border);
 }
 
+/* Compact Live 3D Product Studio Stage Inside Overview Hero */
+.mh-hero-stage {
+  padding: 12px 14px 16px;
+  border-radius: var(--radius-container, 18px);
+  background-color: var(--mehan-well);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-border-emphasized) 52%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 14px 14px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--mehan-shadow-well);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mh-hero-stage-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mh-hero-stage-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background-color: var(--color-background-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.mh-hero-stage-pill i {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 999px;
+  background-color: #16a34a;
+  display: inline-block;
+  flex: none;
+}
+
+.mh-hero-stage-meta {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: var(--color-background-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-code);
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.mh-hero-shot-frame {
+  padding: 12px;
+  transition:
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 200ms ease,
+    border-radius 160ms ease;
+  will-change: transform;
+}
+
+.mh-hero-shot-window {
+  padding: 13px 14px;
+  background-color: var(--color-background-card);
+  border: 1px solid var(--mehan-card-hairline, var(--color-border));
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.mh-hero-window-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+  min-width: 0;
+}
+
+.mh-hero-window-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.mh-hero-window-badge {
+  flex: none;
+  display: inline-flex;
+}
+
+.mh-hero-window-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+}
+
+.mh-hero-window-dots span {
+  width: 8.5px;
+  height: 8.5px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.mh-hero-window-title {
+  font-family: var(--font-family-heading);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mh-hero-shot-frame {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
 .studio-arch-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
@@ -1331,15 +1469,13 @@ body,
 }
 
 .mh-distill-row {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
   width: 100%;
 }
 
 .mh-distill-center {
-  grid-column: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1402,27 +1538,6 @@ body,
 
 .mh-funnel-label svg {
   color: var(--color-text-secondary);
-}
-
-.mh-distill-side-pill {
-  grid-column: 3;
-  justify-self: start;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background-color: var(--mehan-tray);
-  border: 1px solid var(--color-border);
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  white-space: nowrap;
-}
-
-.mh-distill-side-pill svg {
-  color: var(--color-text-accent);
-  flex: none;
 }
 
 .mh-distill-stack-pills {
@@ -1992,18 +2107,6 @@ body,
     padding: 2px 0;
   }
 
-  .mh-distill-row {
-    grid-template-columns: 1fr;
-    gap: 6px;
-    justify-items: center;
-  }
-
-  .mh-distill-center,
-  .mh-distill-side-pill {
-    grid-column: 1;
-    justify-self: center;
-  }
-
   .mh-journey-strip {
     grid-template-columns: 1fr;
   }
@@ -2051,6 +2154,19 @@ body,
 
   .studio-tray-panel {
     padding: 14px;
+  }
+
+  .mh-hero-stage {
+    padding: 10px;
+  }
+
+  .mh-hero-shot-frame {
+    padding: 9px;
+    transform: none !important;
+  }
+
+  .mh-hero-shot-window {
+    padding: 12px;
   }
 
   .te-scale-controls {

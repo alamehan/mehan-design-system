@@ -93,16 +93,16 @@ import type {StudioLang} from '../studioState';
 
 const BACKDROP_PRESETS = [
   {
-    id: 'berry-cream',
-    label: 'Strawberry Cream',
-    swatch: '#e0366b',
-    gradient: 'linear-gradient(135deg, #ff7597 0%, #d42a5f 52%, #7a1236 100%)',
-  },
-  {
     id: 'cobalt-sky',
     label: 'Porcelain Cobalt',
     swatch: '#2563eb',
     gradient: 'linear-gradient(135deg, #60a5fa 0%, #2563eb 52%, #1e3a8a 100%)',
+  },
+  {
+    id: 'berry-cream',
+    label: 'Strawberry Cream',
+    swatch: '#e0366b',
+    gradient: 'linear-gradient(135deg, #ff7597 0%, #d42a5f 52%, #7a1236 100%)',
   },
   {
     id: 'mint-jade',
@@ -1182,7 +1182,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
   const [shotTilt, setShotTilt] = useState(-4);
   const [shotZoom, setShotZoom] = useState(100);
   const [shotPlayhead, setShotPlayhead] = useState(1.2);
-  const [backdropId, setBackdropId] = useState<string>('berry-cream');
+  const [backdropId, setBackdropId] = useState<string>('cobalt-sky');
   const activeBackdrop =
     BACKDROP_PRESETS.find(b => b.id === backdropId) ?? BACKDROP_PRESETS[0];
 
@@ -1970,7 +1970,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
             content: (
               <Stack gap={3}>
                 <Stack gap={1}>
-                  <Badge variant="pink" label="Shotcandy × Astryx" />
+                  <Badge variant="info" label="Mehan × Meta Astryx" />
                   <Text type="supporting" color="secondary">
                     {isId
                       ? 'Geser slider presisi atau klik 2x angka untuk kembali ke nilai bawaan.'
@@ -2071,14 +2071,14 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                   <span style={{background: '#10b981'}} />
                 </div>
                 <Stack gap={2}>
-                  <Badge variant="info" label="Shotcandy × Astryx" />
+                  <Badge variant="info" label="Mehan × Meta Astryx" />
                   <Heading level={4}>
                     {isId ? 'Render permukaan taktil' : 'Tactile surface render'}
                   </Heading>
                   <Text type="supporting" color="secondary">
                     {isId
-                      ? 'Kertas hangat Confectionery, sumur input cekung, dan bibir tombol 3D terkalibrasi penuh.'
-                      : 'Warm confectionery paper, recessed wells, and boiled-sweet CTA lips rendered at 60fps.'}
+                      ? 'Permukaan berlapis presisi, kolom input cekung, dan bibir tombol 3D taktil pada 60fps.'
+                      : 'Precision layered surfaces, recessed input wells, and tactile 3D button lips rendered at 60fps.'}
                   </Text>
                   <Button
                     variant="primary"

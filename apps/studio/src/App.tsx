@@ -31,6 +31,7 @@ import {
   contrastRatio,
   createHistoryStore,
   exportW3cDesignTokens,
+  generateOklchScale,
   resolveMehanDna,
   type HistoryUpdateOptions,
 } from '@mehan/astryx/dna';
@@ -232,6 +233,14 @@ function StudioInner({
     const text = mode === 'light' ? dna.accent.textLight : dna.accent.textDark;
     return contrastRatio(text, S.surface).toFixed(2);
   }, [dna, mode]);
+
+  const heroTiltDeg =
+    heroStage === 'design' ? -4 : heroStage === 'ship' ? 4 : 0;
+
+  const heroCushionGradient = useMemo(() => {
+    const ramp = generateOklchScale(dna.accent.accentLight);
+    return `linear-gradient(135deg, ${ramp[400]} 0%, ${dna.accent.accentLight} 52%, ${dna.accent.buttonLip} 100%)`;
+  }, [dna.accent.accentLight, dna.accent.buttonLip]);
 
   const exportedThemeTs = useMemo(
     () => exportCreateMehanThemeTs(themeState, 'customMehan'),
@@ -491,83 +500,115 @@ function StudioInner({
                         </div>
                       </Stack>
 
-                      {/* Calm, Proportional Live UI Preview (Single-Row Switch + Primary CTA) */}
-                      <div className="studio-tray-panel">
-                        <Stack gap={3}>
-                          <HStack hAlign="between" vAlign="center" gap={2} wrap="wrap">
-                            <div style={{minWidth: 0, flex: 1}}>
-                              <Stack gap={0.5}>
-                                <Text weight="semibold">
-                                  {isId
-                                    ? 'Coba langsung rasa komponennya'
-                                    : 'Feel the live components right here'}
-                                </Text>
-                                <Text type="supporting" color="secondary" maxLines={1}>
-                                  {atmosphereName} · {accentName} · {seed.headingFont}
-                                </Text>
-                              </Stack>
-                            </div>
-                            <Badge
-                              variant="success"
-                              label={isId ? 'Interaktif' : 'Live UI'}
-                            />
-                          </HStack>
+                      {/* Compact Live 3D Product Studio Stage (Reactive to Active Theme & Stage Tab) */}
+                      <div className="mh-hero-stage">
+                        <div className="mh-hero-stage-hud">
+                          <span className="mh-hero-stage-pill">
+                            <i aria-hidden="true" />
+                            {isId ? 'Panggung 3D Interaktif' : 'Live 3D Stage'}
+                          </span>
+                          <span className="mh-hero-stage-meta">
+                            {atmosphereName} · {heroTiltDeg > 0 ? `+${heroTiltDeg}°` : `${heroTiltDeg}°`}
+                          </span>
+                        </div>
 
-                          <SegmentedControl
-                            label={isId ? 'Tahap proyek' : 'Project stage'}
-                            value={heroStage}
-                            onChange={setHeroStage}
+                        <div
+                          className="mh-hero-shot-frame"
+                          style={{
+                            borderRadius: `${Math.max(14, Math.round(18 * seed.radiusScale))}px`,
+                            backgroundImage: heroCushionGradient,
+                            boxShadow: `0 3px 0 ${dna.accent.buttonLip}, 0 16px 28px -10px rgba(15, 23, 42, 0.28), inset 0 1.5px 0 rgba(255, 255, 255, 0.36)`,
+                            transform: `perspective(940px) rotateY(${heroTiltDeg}deg) rotateX(2deg)`,
+                          }}
+                        >
+                          <div
+                            className="mh-hero-shot-window"
+                            style={{
+                              borderRadius: `${Math.max(10, Math.round(13 * seed.radiusScale))}px`,
+                            }}
                           >
-                            <SegmentedControlItem
-                              value="design"
-                              label={isId ? 'Desain' : 'Design'}
-                            />
-                            <SegmentedControlItem
-                              value="review"
-                              label={isId ? 'Ulasan' : 'Review'}
-                            />
-                            <SegmentedControlItem
-                              value="ship"
-                              label={isId ? 'Rilis' : 'Ship'}
-                            />
-                          </SegmentedControl>
+                            <div className="mh-hero-window-bar">
+                              <div className="mh-hero-window-left">
+                                <div className="mh-hero-window-dots" aria-hidden="true">
+                                  <span style={{backgroundColor: '#f43f5e'}} />
+                                  <span style={{backgroundColor: '#f59e0b'}} />
+                                  <span style={{backgroundColor: '#10b981'}} />
+                                </div>
+                                <span className="mh-hero-window-title">
+                                  {isId
+                                    ? 'Pratinjau komponen'
+                                    : 'Interactive UI'}
+                                </span>
+                              </div>
+                              <span className="mh-hero-window-badge">
+                                <Badge
+                                  variant="success"
+                                  label={isId ? 'Aktif' : 'Live UI'}
+                                />
+                              </span>
+                            </div>
 
-                          <TextInput
-                            label={isId ? 'Nama ruang kerja proyek' : 'Project workspace name'}
-                            value={heroProjectName}
-                            onChange={setHeroProjectName}
-                          />
+                            <Stack gap={2}>
+                              <SegmentedControl
+                                label={isId ? 'Tahap proyek' : 'Project stage'}
+                                size="sm"
+                                value={heroStage}
+                                onChange={setHeroStage}
+                              >
+                                <SegmentedControlItem
+                                  value="design"
+                                  label={isId ? 'Desain' : 'Design'}
+                                />
+                                <SegmentedControlItem
+                                  value="review"
+                                  label={isId ? 'Ulasan' : 'Review'}
+                                />
+                                <SegmentedControlItem
+                                  value="ship"
+                                  label={isId ? 'Rilis' : 'Ship'}
+                                />
+                              </SegmentedControl>
 
-                          <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
-                            <Switch
-                              label={
-                                isId ? 'Mode fokus tenang' : 'Calm focus mode'
-                              }
-                              value={heroCalmMode}
-                              onChange={setHeroCalmMode}
-                            />
-                            <Button
-                              variant="primary"
-                              label={
-                                heroStage === 'ship'
-                                  ? isId
-                                    ? 'Terbitkan'
-                                    : 'Publish now'
-                                  : isId
-                                    ? 'Simpan draf'
-                                    : 'Save draft'
-                              }
-                              onClick={() =>
-                                showToast({
-                                  type: 'info',
-                                  body: isId
-                                    ? `Tersimpan di pratinjau "${heroProjectName}".`
-                                    : `Saved in "${heroProjectName}" preview.`,
-                                })
-                              }
-                            />
-                          </HStack>
-                        </Stack>
+                              <TextInput
+                                label={isId ? 'Nama ruang kerja proyek' : 'Project workspace name'}
+                                size="sm"
+                                value={heroProjectName}
+                                onChange={setHeroProjectName}
+                              />
+
+                              <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                                <Switch
+                                  label={
+                                    isId ? 'Fokus tenang' : 'Calm focus mode'
+                                  }
+                                  value={heroCalmMode}
+                                  onChange={setHeroCalmMode}
+                                />
+                                <Button
+                                  variant="primary"
+                                  size="sm"
+                                  label={
+                                    heroStage === 'ship'
+                                      ? isId
+                                        ? 'Terbitkan'
+                                        : 'Publish now'
+                                      : isId
+                                        ? 'Simpan draf'
+                                        : 'Save draft'
+                                  }
+                                  onClick={() =>
+                                    showToast({
+                                      type: 'info',
+                                      body: isId
+                                        ? `Tersimpan di pratinjau "${heroProjectName}".`
+                                        : `Saved in "${heroProjectName}" preview.`,
+                                    })
+                                  }
+                                />
+                              </HStack>
+                            </Stack>
+                          </div>
+                        </div>
                       </div>
                     </Grid>
 
