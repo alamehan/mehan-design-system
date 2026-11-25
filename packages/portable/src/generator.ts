@@ -307,8 +307,8 @@ export function generatePortableCss(customOptions?: MehanThemeOptions): string {
 
   const def = resolveMehanDna({
     name: 'mehan-default',
-    atmosphere: 'confectionery',
-    accent: 'strawberry',
+    atmosphere: 'porcelain',
+    accent: 'blueberry',
   });
   lines.push(`:root{color-scheme:light;${varsBlock(def, 'light')}}`);
   lines.push(`:root[data-theme="dark"]{color-scheme:dark;${varsBlock(def, 'dark')}}`);
@@ -478,7 +478,7 @@ export function generateAiPrototypeKit(options?: Partial<MehanThemeOptions>): st
   const fullOptions: MehanThemeOptions = {
     ...options,
     name: options?.name ?? 'mehan-prototype',
-    atmosphere: options?.atmosphere ?? 'confectionery',
+    atmosphere: options?.atmosphere ?? 'porcelain',
   };
   const dna = resolveMehanDna(fullOptions);
   const compactCss = generatePortableCss({

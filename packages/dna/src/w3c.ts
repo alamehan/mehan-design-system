@@ -77,7 +77,7 @@ function colorLeaf(hex: string, description: string, bgForContrast?: string): W3
 }
 
 export function exportW3cDesignTokens(
-  options: MehanThemeOptions = {name: 'mehan-confectionery'},
+  options: MehanThemeOptions = {name: 'mehan-porcelain'},
 ): W3cTokenDocument {
   const dna = resolveMehanDna(options);
   const L = dna.atmosphere.light;

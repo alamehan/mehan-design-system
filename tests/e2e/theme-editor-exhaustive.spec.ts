@@ -54,20 +54,20 @@ test.describe('Stage 1 Exhaustive Proof — Every Theme Editor Knob, Slot, Font,
     expect(headerFits).toBe(true);
 
     // =========================================================================
-    // 1. BASE STYLES — ATMOSPHERES (Confectionery -> Porcelain -> Stone)
+    // 1. BASE STYLES — ATMOSPHERES (Porcelain -> Confectionery -> Stone)
     // =========================================================================
     const readShellBg = () =>
       page
         .locator('.studio-shell')
         .evaluate(el => getComputedStyle(el).backgroundColor);
 
-    const bgConfectionery = await readShellBg();
+    const bgPorcelain = await readShellBg();
     await editor
       .getByRole('radiogroup', {name: 'Neutral atmosphere'})
-      .getByRole('radio', {name: 'Porcelain'})
+      .getByRole('radio', {name: 'Confectionery'})
       .click();
-    const bgPorcelain = await readShellBg();
-    expect(bgPorcelain).not.toBe(bgConfectionery);
+    const bgConfectionery = await readShellBg();
+    expect(bgConfectionery).not.toBe(bgPorcelain);
 
     await editor
       .getByRole('radiogroup', {name: 'Neutral atmosphere'})

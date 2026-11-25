@@ -56,8 +56,8 @@ function readGithubRepoUrl() {
 
 function defaultAccentForAtmosphere(atm) {
   switch (atm) {
-    case 'porcelain':
-      return 'blueberry';
+    case 'confectionery':
+      return 'strawberry';
     case 'stone':
       return 'teal';
     case 'butter':
@@ -70,8 +70,9 @@ function defaultAccentForAtmosphere(atm) {
       return 'grape';
     case 'obsidian':
       return 'cobalt';
+    case 'porcelain':
     default:
-      return 'strawberry';
+      return 'blueberry';
   }
 }
 
@@ -220,7 +221,7 @@ function resolveCliSeedOptions() {
   const themeFlag = readFlag('--theme', null);
   const atmosphere =
     themeFlag?.replace(/^mehan-/, '') ??
-    readFlag('--atmosphere', fromSeed.atmosphere ?? 'confectionery');
+    readFlag('--atmosphere', fromSeed.atmosphere ?? 'porcelain');
   const accent = readFlag(
     '--accent',
     fromSeed.accent ?? defaultAccentForAtmosphere(atmosphere),

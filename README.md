@@ -14,13 +14,15 @@
   </p>
 </div>
 
+> 🎨 Accessible, tactile UI & UX design system built on Meta Astryx — 12 live themes & 1-click export to React, HTML, AI & Figma — crafted by @alamehan
+
 ---
 
 ## Why Mehan Design System Exists
 
 Teams building modern digital products often get stuck between two painful choices: spend months building basic buttons, dropdowns, and dialogs from scratch — which look fine in static mockups yet break on keyboard focus, mobile screens, or dark mode — or adopt a generic component kit that feels cold, flat, and identical to everything else.
 
-**Mehan Design System** takes a smarter, craft-driven path. Underneath, it stands directly on **[Meta Astryx](https://astryx.atmeta.com)** — Meta's proven open-source component foundation — so reliability and keyboard accessibility work out of the box from day one. On top of that rock-solid engine, **100% of original Product Design and Engineering care** goes into *how a product actually feels to humans*: warm paper-like surfaces, satisfying tactile buttons, harmonious sizing across every control, 12 ready-made visual moods, and clear bilingual (`EN`/`ID`) UX writing guidance.
+**Mehan Design System** takes a smarter, craft-driven path. Underneath, it stands directly on **[Meta Astryx](https://astryx.atmeta.com)** — Meta's proven open-source component foundation — so reliability and keyboard accessibility work out of the box from day one. On top of that rock-solid engine, **100% of original Product Design and Engineering care** goes into *how a product actually feels to humans*: crisp architectural porcelain surfaces, satisfying tactile buttons, harmonious sizing across every control, 12 ready-made visual moods, and clear bilingual (`EN`/`ID`) UX writing guidance.
 
 ---
 
@@ -37,7 +39,7 @@ Teams building modern digital products often get stuck between two painful choic
 
 ## Highlights
 
-- **12 Ready-Made Visual Moods with Automatic Readability:** Switch effortlessly from warm cream *Confectionery* and calm *Kyoto Matcha* to crisp *Porcelain SaaS* or *Obsidian Linear* — every light and dark surface pair is automatically balanced for comfortable reading.
+- **12 Ready-Made Visual Moods with Automatic Readability:** Starts with crisp *Porcelain SaaS* (`Bricolage Grotesque` + `Figtree` + `Geist Mono`, aligned with Portfolio V5) and switches in one click to warm *Confectionery*, calm *Kyoto Matcha*, or sleek *Obsidian Linear* — balanced automatically in both Light and Dark modes.
 - **Consistent Proportions Across Every Control:** Buttons, inputs, dropdowns, segmented tabs, and custom creative controls share unified heights, corner curves, and text sizes so screens always look calm and aligned.
 - **Real Workspace & Creative Building Blocks:** Beyond everyday forms and tables, Mehan includes multi-panel app layouts, interactive stages, charts, color & gradient pickers, code/markdown editors, and auto-saved form drafts.
 - **Tune Live, Use Anywhere:** Customize colors, bundled open-source fonts, and corner roundness right inside the live **`Theme Editor`**, then export in one click to **React / Tailwind**, **Vanilla HTML**, **AI Chats**, or **Figma**.
@@ -61,7 +63,7 @@ pnpm add -D @astryxdesign/cli@~0.7.17 && pnpm exec astryx init --features agents
 Or scaffold `src/mehan.css` and `src/MehanProvider.tsx` automatically from any Studio JSON export:
 
 ```bash
-node ./bin/mehan.mjs init ./my-app --from mehan-confectionery-theme.json --github
+node ./bin/mehan.mjs init ./my-app --from mehan-porcelain-theme.json --github
 ```
 
 ### 2. Vanilla HTML, Vue, Svelte, Astro, or Figma (No React Required)
@@ -79,14 +81,14 @@ Grab prebuilt standalone files directly from [`release/`](./release) (or export 
 
 | Theme | Character | Atmosphere | Heading / Body Font | Visual Feel |
 |---|---|---|---|---|
-| **Confectionery** *(Default)* | Signature Default | `confectionery` | `Bricolage Grotesque` / `Figtree` | Warm cream paper & friendly berry-pink 3D buttons |
+| **Porcelain SaaS** *(Default)* | Signature Default | `porcelain` | `Bricolage Grotesque` / `Figtree` | Crisp porcelain white & classic blue 3D buttons |
+| **Confectionery** | Warm Creative | `confectionery` | `Bricolage Grotesque` / `Figtree` | Warm cream paper & friendly berry-pink 3D buttons |
 | **Espresso Berry** | Tactile Compact | `confectionery` | `Bricolage Grotesque` / `Figtree` | Compact `32px` sizing & bold espresso active tabs |
 | **Sunlit Butter** | Warm & Bright | `butter` | `Outfit` / `Outfit` | Sunny buttercream canvas & crisp cobalt buttons |
 | **Kyoto Matcha** | Calm & Organic | `matcha` | `Bricolage Grotesque` / `Figtree` | Soft sage-tea paper & deep moss dark mode |
 | **Artisanal Cacao** | Editorial Serif | `cacao` | `Fraunces` / `Albert Sans` | Warm oat-latte canvas, roasted cacao & literary serif |
 | **Cloud Y2K Pop** | Playful & Soft | `periwinkle` | `Poppins` / `Poppins` | Airy lavender-ice & playful rounded geometry |
 | **Obsidian Linear** | Sleek Engineering | `obsidian` | `Albert Sans` / `JetBrains Mono` | Titanium mist & carbon black with crisp corners |
-| **Porcelain SaaS** | Clean Enterprise | `porcelain` | `Albert Sans` / `Figtree` | Crisp white & classic blue for data-heavy apps |
 | **Stone Editorial** | Quiet Workspace | `stone` | `Fraunces` / `Figtree` | Warm sandstone & calm teal for reading and AI tools |
 | **Solar Citrus** | Creative Studio | `butter` | `Bricolage Grotesque` / `Outfit` | Golden warmth paired with vibrant tangerine energy |
 | **Nordic Fjord** | Crisp Analytics | `porcelain` | `Montserrat` / `Figtree` | High-clarity porcelain & cool fjord teal for fintech |
@@ -126,7 +128,7 @@ Run `pnpm install && pnpm verify` *(or double-click [`scripts/verify-windows.cmd
 
 - **Pinned Core Stability (`@astryxdesign/core ~0.7.17`):** Versions are pinned intentionally so upstream updates never unexpectedly shift focus behavior or styling; upgrades are tested explicitly via `pnpm verify`.
 - **Zero Forked Core Primitives:** Standard controls (`Button`, `Dialog`, `Selector`, `Table`, `Tabs`) stay 100% native Meta Astryx primitives styled through official theme slots (`createMehanTheme.ts`).
-- **Separate Sibling Systems for Distinct Domains:** Mehan is crafted for warm web apps, creative studios, and AI workspaces. To standardize high-density enterprise systems with different visual DNA and domain widgets (such as **HRIS**, **Project Management**, or **ERP**), follow **[`docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md`](./docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md)** alongside [`AGENTS.md`](./AGENTS.md) and [`CLAUDE.md`](./CLAUDE.md).
+- **Separate Sibling Systems for Distinct Domains:** Mehan is crafted for modern SaaS apps, creative studios, and AI workspaces. To standardize high-density enterprise systems with distinct domain widgets (such as **HRIS**, **Project Management**, or **ERP**), follow **[`docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md`](./docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md)** alongside [`AGENTS.md`](./AGENTS.md) and [`CLAUDE.md`](./CLAUDE.md).
 
 </details>
 

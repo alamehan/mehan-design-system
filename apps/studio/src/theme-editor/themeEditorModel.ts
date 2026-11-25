@@ -65,8 +65,8 @@ export interface FullThemeEditorState {
 }
 
 export const DEFAULT_SEED_CONFIG: StudioSeedConfig = {
-  atmosphere: 'confectionery',
-  accent: 'strawberry',
+  atmosphere: 'porcelain',
+  accent: 'blueberry',
   depth: 1,
   radiusScale: 1,
   radiusBase: null,

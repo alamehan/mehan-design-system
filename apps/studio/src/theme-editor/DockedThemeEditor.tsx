@@ -261,7 +261,7 @@ export function DockedThemeEditor({
   );
 
   const activePresetId = useMemo(() => {
-    const match = presets.find(
+    const match = [...presets].reverse().find(
       p =>
         p.state.seed.atmosphere === seed.atmosphere &&
         p.state.seed.accent === seed.accent &&

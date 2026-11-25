@@ -27,14 +27,14 @@ const {
 
 const fullCss = generatePortableCss();
 const aiKitMd = generateAiPrototypeKit({
-  atmosphere: 'confectionery',
-  accent: 'strawberry',
+  atmosphere: 'porcelain',
+  accent: 'blueberry',
 });
 const w3cJson = `${JSON.stringify(
   exportW3cDesignTokens({
-    name: 'mehan-confectionery',
-    atmosphere: 'confectionery',
-    accent: 'strawberry',
+    name: 'mehan-porcelain',
+    atmosphere: 'porcelain',
+    accent: 'blueberry',
   }),
   null,
   2,
@@ -56,7 +56,7 @@ fs.writeFileSync(path.join(distDir, 'mehan-tokens.w3c.json'), w3cJson, 'utf8');
 // Emit a zero-bundler Astryx + Mehan CDN single-HTML starter (`mehan-astryx-cdn.html`)
 const astryxThemeCssPath = path.resolve(
   astryxDir,
-  'dist/themes/mehan-confectionery.css',
+  'dist/themes/mehan-porcelain.css',
 );
 const astryxStylesCssPath = path.resolve(astryxDir, 'dist/styles.css');
 const inlinedThemeCss = fs.existsSync(astryxThemeCssPath)
@@ -97,7 +97,7 @@ ${inlinedStylesCss}
       }
     </script>
   </head>
-  <body data-astryx-theme="mehan-confectionery">
+  <body data-astryx-theme="mehan-porcelain">
     <div id="root"></div>
     <script type="module">
       import * as React from 'react';
@@ -108,14 +108,14 @@ ${inlinedStylesCss}
 
       const h = htm.bind(React.createElement);
       const mehanCdnTheme = Object.assign(
-        defineTheme({ name: 'mehan-confectionery' }),
+        defineTheme({ name: 'mehan-porcelain' }),
         { __built: true }
       );
 
       function DemoApp() {
         const [mode, setMode] = React.useState('light');
         const [view, setView] = React.useState('studio');
-        const [projectName, setProjectName] = React.useState('Confectionery Launchpad');
+        const [projectName, setProjectName] = React.useState('Porcelain Launchpad');
         return h\`
           <\${Theme} theme=\${mehanCdnTheme} mode=\${mode}>
             <\${LayerProvider}>

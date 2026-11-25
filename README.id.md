@@ -14,13 +14,15 @@
   </p>
 </div>
 
+> 🎨 Design system UI & UX yang aksesibel dan taktil di atas Meta Astryx — 12 tema hidup & ekspor 1-klik ke React, HTML, AI & Figma — crafted by @alamehan
+
 ---
 
 ## Kenapa Mehan Design System Dibuat
 
 Saat membangun aplikasi digital modern, banyak tim terjebak di antara dua pilihan sulit: menghabiskan berbulan-bulan merakit tombol, menu dropdown, dan jendela dialog dari nol — yang tampak cantik di gambar desain tetapi sering bermasalah saat dipakai lewat keyboard, layar HP, atau mode gelap — atau memakai komponen instan yang terasa kaku, dingin, dan seragam dengan produk lain.
 
-**Mehan Design System** mengambil langkah yang jauh lebih cerdas dan penuh dedikasi. Di balik layar, Mehan berdiri di atas **[Meta Astryx](https://astryx.atmeta.com)** — mesin komponen open-source milik Meta yang sudah teruji — sehingga keandalan fungsi dan aksesibilitasnya langsung beres sejak hari pertama. Di atas fondasi kokoh itu, **100% sentuhan Product Design dan Engineering** dicurahkan pada *bagaimana produk terasa saat disentuh manusia*: permukaan sehangat kertas, tombol taktil yang mantap ditekan, ukuran yang selaras di semua komponen, 12 suasana warna siap pakai, serta panduan penulisan UX 2 bahasa (`ID`/`EN`) yang membumi.
+**Mehan Design System** mengambil langkah yang jauh lebih cerdas dan penuh dedikasi. Di balik layar, Mehan berdiri di atas **[Meta Astryx](https://astryx.atmeta.com)** — mesin komponen open-source milik Meta yang sudah teruji — sehingga keandalan fungsi dan aksesibilitasnya langsung beres sejak hari pertama. Di atas fondasi kokoh itu, **100% sentuhan Product Design dan Engineering** dicurahkan pada *bagaimana produk terasa saat disentuh manusia*: permukaan porselen yang jernih dan taktil, tombol 3D yang mantap ditekan, ukuran yang selaras di semua komponen, 12 suasana warna siap pakai, serta panduan penulisan UX 2 bahasa (`ID`/`EN`) yang membumi.
 
 ---
 
@@ -37,7 +39,7 @@ Saat membangun aplikasi digital modern, banyak tim terjebak di antara dua piliha
 
 ## Keunggulan Utama
 
-- **12 Suasana Visual Siap Pakai & Nyaman Dibaca:** Ganti nuansa dengan mudah mulai dari *Confectionery* yang hangat dan *Kyoto Matcha* yang teduh hingga *Porcelain SaaS* atau *Obsidian Linear* yang tegas — setiap perpaduan warna terang dan gelapnya dijaga otomatis agar teks selalu jernih terbaca.
+- **12 Suasana Visual Siap Pakai & Nyaman Dibaca:** Dimulai dari *Porcelain SaaS* yang jernih dan sejalan dengan Portfolio V5 (`Bricolage Grotesque` + `Figtree` + `Geist Mono`), serta bisa berpindah satu klik ke *Confectionery* yang hangat, *Kyoto Matcha* yang teduh, hingga *Obsidian Linear* — otomatis terjaga kontrasnya di mode Terang maupun Gelap.
 - **Proporsi Rapi & Seragam di Semua Kontrol:** Tombol, kolom input, pilihan dropdown, tab segmen, hingga kontrol kustom memiliki tinggi, lengkung sudut, dan ukuran huruf yang selaras sehingga antarmuka selalu terlihat tenang dan presisi.
 - **Komponen Ruang Kerja & Alat Kreatif Siap Pakai:** Selain komponen dasar, tersedia tata letak aplikasi multi-panel, kanvas kerja interaktif, grafik data, pemilih warna & gradasi, editor kode/markdown, serta penyimpan draf formulir otomatis.
 - **Racik Langsung, Pakai di Mana Saja:** Sesuaikan warna merek, koleksi font open-source bawaan, dan kelengkungan sudut langsung di **`Theme Editor`**, lalu ekspor dalam satu klik ke **React / Tailwind**, **HTML Murni**, **Chat AI**, maupun **Figma**.
@@ -61,7 +63,7 @@ pnpm add -D @astryxdesign/cli@~0.7.17 && pnpm exec astryx init --features agents
 Atau buat otomatis file `src/mehan.css` dan `src/MehanProvider.tsx` dari JSON tema hasil ekspor Studio:
 
 ```bash
-node ./bin/mehan.mjs init ./my-app --from mehan-confectionery-theme.json --github
+node ./bin/mehan.mjs init ./my-app --from mehan-porcelain-theme.json --github
 ```
 
 ### 2. Vanilla HTML, Vue, Svelte, Astro, atau Figma (Tanpa React)
@@ -79,14 +81,14 @@ Ambil langsung file mandiri siap pakai dari folder [`release/`](./release) (atau
 
 | Tema | Karakter | Atmosfer | Font Judul / Isi | Nuansa Visual |
 |---|---|---|---|---|
-| **Confectionery** *(Bawaan)* | Identitas Utama | `confectionery` | `Bricolage Grotesque` / `Figtree` | Kertas krem hangat & tombol 3D merah beri yang ramah |
+| **Porcelain SaaS** *(Bawaan)* | Identitas Utama | `porcelain` | `Bricolage Grotesque` / `Figtree` | Putih porselen jernih & tombol 3D biru tegas |
+| **Confectionery** | Kreatif Hangat | `confectionery` | `Bricolage Grotesque` / `Figtree` | Kertas krem hangat & tombol 3D merah beri yang ramah |
 | **Espresso Berry** | Taktil Ringkas | `confectionery` | `Bricolage Grotesque` / `Figtree` | Ukuran padat `32px` & penanda tab espresso tegas |
 | **Sunlit Butter** | Cerah & Hangat | `butter` | `Outfit` / `Outfit` | Kanvas kuning mentega lembut & aksen biru kobalt tajam |
 | **Kyoto Matcha** | Tenang & Organik | `matcha` | `Bricolage Grotesque` / `Figtree` | Permukaan hijau teh lembut & mode gelap lumut teduh |
 | **Artisanal Cacao** | Editorial Serif | `cacao` | `Fraunces` / `Albert Sans` | Nuansa oat hangat, cokelat sangrai & tipografi serif |
 | **Cloud Y2K Pop** | Ekspresif & Lembut | `periwinkle` | `Poppins` / `Poppins` | Ungu pastel sejuk dengan sudut membulat yang ceria |
 | **Obsidian Linear** | Presisi Teknis | `obsidian` | `Albert Sans` / `JetBrains Mono` | Abu titanium & hitam karbon dengan sudut tegas |
-| **Porcelain SaaS** | Bisnis Bersih | `porcelain` | `Albert Sans` / `Figtree` | Putih porselen jernih & biru klasik untuk aplikasi data |
 | **Stone Editorial** | Ruang Baca Tenang | `stone` | `Fraunces` / `Figtree` | Batu pasir hangat & hijau toska teduh untuk alat AI/tulis |
 | **Solar Citrus** | Studio Kreatif | `butter` | `Bricolage Grotesque` / `Outfit` | Kanvas keemasan berpadu aksen jeruk mandarin segar |
 | **Nordic Fjord** | Analitik Tajam | `porcelain` | `Montserrat` / `Figtree` | Kejernihan tinggi berpadu biru kehijauan fjord |
@@ -126,7 +128,7 @@ Jalankan `pnpm install && pnpm verify` *(atau klik dua kali [`scripts/verify-win
 
 - **Versi Mesin Dikunci Aman (`@astryxdesign/core ~0.7.17`):** Versi dikunci sengaja agar pembaruan luar tidak pernah mengubah perilaku fokus keyboard atau tampilan secara diam-diam; pembaruan diuji terukur lewat `pnpm verify`.
 - **Komponen Inti Tetap Murni:** Komponen dasar (`Button`, `Dialog`, `Selector`, `Table`, `Tabs`) tetap menggunakan komponen asli Meta Astryx yang diatur lewat jalur tema resmi (`createMehanTheme.ts`).
-- **Pisahkan Repo untuk Karakter Industri yang Berbeda:** Mehan dirancang untuk aplikasi web hangat, studio kreatif, dan ruang kerja AI. Untuk sistem perusahaan padat data seperti **HRIS**, **Project Management**, atau **ERP**, ikuti panduan langkah demi langkah di **[`docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md`](./docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md)** bersama [`AGENTS.md`](./AGENTS.md) dan [`CLAUDE.md`](./CLAUDE.md).
+- **Pisahkan Repo untuk Karakter Industri yang Berbeda:** Mehan dirancang untuk aplikasi SaaS modern, studio kreatif, dan ruang kerja AI. Untuk sistem perusahaan padat data seperti **HRIS**, **Project Management**, atau **ERP**, ikuti panduan langkah demi langkah di **[`docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md`](./docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md)** bersama [`AGENTS.md`](./AGENTS.md) dan [`CLAUDE.md`](./CLAUDE.md).
 
 </details>
 

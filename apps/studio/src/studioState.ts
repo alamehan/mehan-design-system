@@ -29,7 +29,7 @@ export const DEFAULT_EDITOR_STATE: FullThemeEditorState = {
   customOverrides: [],
 };
 
-const STORAGE_KEY = 'mehan-studio-state-v2';
+const STORAGE_KEY = 'mehan-studio-state-v3';
 
 interface PersistedStudioState {
   lang?: StudioLang;
@@ -42,13 +42,29 @@ interface PersistedStudioState {
 export function getBuiltInPresets(): NamedStudioPreset[] {
   return [
     {
+      id: 'preset-porcelain',
+      name: 'Porcelain SaaS',
+      badge: 'Signature Default',
+      taglineEn: 'Crisp porcelain white, classic blue 3D buttons, and Bricolage Grotesque + Figtree type.',
+      taglineId: 'Putih porselen jernih, tombol 3D biru tegas, dan huruf Bricolage Grotesque + Figtree.',
+      state: {
+        seed: {...DEFAULT_SEED_CONFIG},
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
       id: 'preset-confectionery',
       name: 'Confectionery',
-      badge: 'Signature Default',
+      badge: 'Warm Creative',
       taglineEn: 'Warm cream paper with friendly berry-pink 3D buttons and soft recessed inputs.',
       taglineId: 'Krem hangat dengan tombol 3D merah beri yang empuk dan kolom input lembut.',
       state: {
-        seed: {...DEFAULT_SEED_CONFIG},
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'confectionery',
+          accent: 'strawberry',
+        },
         tokenOverrides: {},
         customOverrides: [],
       },
@@ -167,27 +183,6 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
       },
     },
     {
-      id: 'preset-porcelain',
-      name: 'Porcelain SaaS',
-      badge: 'Clean Enterprise',
-      taglineEn: 'Crisp white and classic blue built for clear dashboards and business apps.',
-      taglineId: 'Putih bersih dan biru tegas untuk aplikasi bisnis serta dashboard modern.',
-      state: {
-        seed: {
-          ...DEFAULT_SEED_CONFIG,
-          atmosphere: 'porcelain',
-          accent: 'blueberry',
-          depth: 0.95,
-          sizeBase: 36,
-          headingFont: 'Albert Sans',
-          bodyFont: 'Figtree',
-          motion: 'standard',
-        },
-        tokenOverrides: {},
-        customOverrides: [],
-      },
-    },
-    {
       id: 'preset-stone',
       name: 'Stone Editorial',
       badge: 'Quiet Workspace',
@@ -277,8 +272,8 @@ function sanitizeSeed(raw?: Partial<StudioSeedConfig>): StudioSeedConfig {
   return {
     atmosphere: isMehanAtmosphereId(raw.atmosphere)
       ? raw.atmosphere
-      : 'confectionery',
-    accent: typeof raw.accent === 'string' && raw.accent ? raw.accent : 'strawberry',
+      : 'porcelain',
+    accent: typeof raw.accent === 'string' && raw.accent ? raw.accent : 'blueberry',
     depth: typeof raw.depth === 'number' ? raw.depth : DEFAULT_SEED_CONFIG.depth,
     radiusScale:
       typeof raw.radiusScale === 'number'

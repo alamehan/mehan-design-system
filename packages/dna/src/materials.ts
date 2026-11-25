@@ -219,14 +219,15 @@ export function defaultAccentForAtmosphere(
     case 'obsidian':
       return 'cobalt';
     case 'confectionery':
-    default:
       return 'strawberry';
+    default:
+      return 'blueberry';
   }
 }
 
 export function resolveMehanDna(options: MehanThemeOptions): ResolvedMehanDna {
-  const atmosphereId = options.atmosphere ?? 'confectionery';
-  const atmosphere = MEHAN_ATMOSPHERES[atmosphereId] ?? MEHAN_ATMOSPHERES.confectionery;
+  const atmosphereId = options.atmosphere ?? 'porcelain';
+  const atmosphere = MEHAN_ATMOSPHERES[atmosphereId] ?? MEHAN_ATMOSPHERES.porcelain;
   const defaultAccent = defaultAccentForAtmosphere(atmosphere.id);
   const accent = resolveMehanAccent(options.accent ?? defaultAccent, atmosphere);
   const depth = Math.min(2, Math.max(0, options.depth ?? 1));

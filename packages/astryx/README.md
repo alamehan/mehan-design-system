@@ -8,16 +8,16 @@ Official provider and tactile extension layer on top of **Meta Astryx (`@astryxd
 import '@astryxdesign/core/reset.css';
 import '@astryxdesign/core/astryx.css';
 import '@mehan/astryx/fonts.css';
-import '@mehan/astryx/themes/mehan-confectionery.css';
+import '@mehan/astryx/themes/mehan-porcelain.css';
 import '@mehan/astryx/styles.css';
 
 import {LayerProvider} from '@astryxdesign/core';
 import {Theme} from '@astryxdesign/core/theme';
-import {mehanConfectioneryTheme} from '@mehan/astryx/themes/mehan-confectionery';
+import {mehanPorcelainTheme} from '@mehan/astryx/themes/mehan-porcelain';
 
 export function AppProviders({children}: {children: React.ReactNode}) {
   return (
-    <Theme theme={mehanConfectioneryTheme} mode="system">
+    <Theme theme={mehanPorcelainTheme} mode="system">
       <LayerProvider>{children}</LayerProvider>
     </Theme>
   );

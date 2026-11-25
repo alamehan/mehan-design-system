@@ -2,9 +2,9 @@
   "$schema": "https://tr.designtokens.org/format/",
   "$metadata": {
     "generator": "@mehan/dna@1.0.0",
-    "name": "mehan-confectionery",
-    "atmosphere": "confectionery",
-    "accent": "#d42a5f",
+    "name": "mehan-porcelain",
+    "atmosphere": "porcelain",
+    "accent": "#2563eb",
     "depth": 1,
     "radiusScale": 1,
     "spacingBase": 4,
@@ -21,249 +21,249 @@
   "color": {
     "light": {
       "paper": {
-        "$value": "#fbf5ec",
+        "$value": "#f5f8fc",
         "$type": "color",
         "$description": "Page body background",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.9723,
-              "c": 0.0136,
-              "h": 78.3
+              "l": 0.978,
+              "c": 0.0062,
+              "h": 255.5
             }
           }
         }
       },
       "tray": {
-        "$value": "#f6eee2",
+        "$value": "#f8fafc",
         "$type": "color",
         "$description": "Flat subtle grouping tray",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.9521,
-              "c": 0.0181,
-              "h": 78.2
+              "l": 0.9842,
+              "c": 0.0034,
+              "h": 247.9
             }
           }
         }
       },
       "surface": {
-        "$value": "#fffcf7",
+        "$value": "#ffffff",
         "$type": "color",
         "$description": "Default card and panel surface",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.992,
-              "c": 0.0073,
-              "h": 80.7
+              "l": 1,
+              "c": 0,
+              "h": 0
             }
           }
         }
       },
       "float": {
-        "$value": "#fffdf9",
+        "$value": "#ffffff",
         "$type": "color",
         "$description": "Floating popover and dialog surface",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.9945,
-              "c": 0.0057,
-              "h": 84.6
+              "l": 1,
+              "c": 0,
+              "h": 0
             }
           }
         }
       },
       "well": {
-        "$value": "#f2e8d9",
+        "$value": "#edf2f7",
         "$type": "color",
         "$description": "Recessed input and track well",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.9348,
-              "c": 0.0227,
-              "h": 78.2
+              "l": 0.9588,
+              "c": 0.0086,
+              "h": 247.9
             }
           }
         }
       },
       "socket": {
-        "$value": "#e4d5c1",
+        "$value": "#dbe3ee",
         "$type": "color",
         "$description": "Deep groove for switches and checkboxes",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.8798,
-              "c": 0.0316,
-              "h": 75.2
+              "l": 0.913,
+              "c": 0.0173,
+              "h": 256.3
             }
           }
         }
       },
       "inverted": {
-        "$value": "#261b16",
+        "$value": "#0f172a",
         "$type": "color",
         "$description": "Inverted espresso/ink surface",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.234,
-              "c": 0.0199,
-              "h": 45.6
+              "l": 0.2077,
+              "c": 0.0398,
+              "h": 265.8
             }
           }
         }
       },
       "onInverted": {
-        "$value": "#fbf5ec",
+        "$value": "#f8fafc",
         "$type": "color",
         "$description": "Foreground on inverted surface",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.9723,
-              "c": 0.0136,
-              "h": 78.3
+              "l": 0.9842,
+              "c": 0.0034,
+              "h": 247.9
             },
-            "contrastRatio": 15.49,
+            "contrastRatio": 17.06,
             "wcagAA": true
           }
         }
       },
       "line": {
-        "$value": "#e5d7c4",
+        "$value": "#e2e8f0",
         "$type": "color",
         "$description": "Divider and subtle edge tone",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.8854,
-              "c": 0.0299,
-              "h": 75.7
+              "l": 0.9288,
+              "c": 0.0126,
+              "h": 255.5
             }
           }
         }
       },
       "inkPrimary": {
-        "$value": "#261b16",
+        "$value": "#0f172a",
         "$type": "color",
         "$description": "Primary body and heading ink",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.234,
-              "c": 0.0199,
-              "h": 45.6
+              "l": 0.2077,
+              "c": 0.0398,
+              "h": 265.8
             },
-            "contrastRatio": 16.41,
+            "contrastRatio": 17.85,
             "wcagAA": true
           }
         }
       },
       "inkSecondary": {
-        "$value": "#5c4a3e",
+        "$value": "#334155",
         "$type": "color",
         "$description": "Secondary UI label ink",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.4242,
-              "c": 0.0312,
-              "h": 55.4
+              "l": 0.3717,
+              "c": 0.0392,
+              "h": 257.3
             },
-            "contrastRatio": 8.19,
+            "contrastRatio": 10.35,
             "wcagAA": true
           }
         }
       },
       "inkSupporting": {
-        "$value": "#6f5b4d",
+        "$value": "#475569",
         "$type": "color",
         "$description": "Helper and caption ink",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.4871,
-              "c": 0.0341,
-              "h": 56.8
+              "l": 0.4455,
+              "c": 0.0374,
+              "h": 257.3
             },
-            "contrastRatio": 5.28,
+            "contrastRatio": 6.73,
             "wcagAA": true
           }
         }
       },
       "accentSolid": {
-        "$value": "#d42a5f",
+        "$value": "#2563eb",
         "$type": "color",
         "$description": "Primary brand solid fill",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.5747,
-              "c": 0.2046,
-              "h": 9
+              "l": 0.5461,
+              "c": 0.2152,
+              "h": 262.9
             }
           }
         }
       },
       "accentTop": {
-        "$value": "#d93866",
+        "$value": "#3471f3",
         "$type": "color",
         "$description": "Primary button top stop (500)",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.5957,
-              "c": 0.1978,
-              "h": 9
+              "l": 0.5842,
+              "c": 0.2057,
+              "h": 262.8
             }
           }
         }
       },
       "accentBottom": {
-        "$value": "#c00e50",
+        "$value": "#1552d7",
         "$type": "color",
         "$description": "Primary button bottom stop (700)",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.5209,
-              "c": 0.2026,
-              "h": 9.1
+              "l": 0.4929,
+              "c": 0.2127,
+              "h": 262.8
             }
           }
         }
       },
       "accentLip": {
-        "$value": "#a11644",
+        "$value": "#1445b2",
         "$type": "color",
         "$description": "Primary button 3D bottom lip (800)",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.4631,
-              "c": 0.1718,
-              "h": 9.2
+              "l": 0.434,
+              "c": 0.1809,
+              "h": 262.9
             }
           }
         }
       },
       "accentText": {
-        "$value": "#c41353",
+        "$value": "#215fe6",
         "$type": "color",
         "$description": "Readable brand link/accent text",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.5308,
-              "c": 0.2041,
-              "h": 8.9
+              "l": 0.5333,
+              "c": 0.2143,
+              "h": 262.8
             },
-            "contrastRatio": 5.76,
+            "contrastRatio": 5.46,
             "wcagAA": true
           }
         }
@@ -283,17 +283,17 @@
         }
       },
       "infoText": {
-        "$value": "#1252b5",
+        "$value": "#1957bb",
         "$type": "color",
         "$description": "Info status text",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.4629,
-              "c": 0.1692,
-              "h": 259.8
+              "l": 0.4799,
+              "c": 0.1698,
+              "h": 260
             },
-            "contrastRatio": 7.08,
+            "contrastRatio": 6.73,
             "wcagAA": true
           }
         }
@@ -313,17 +313,17 @@
         }
       },
       "successText": {
-        "$value": "#006544",
+        "$value": "#056947",
         "$type": "color",
         "$description": "Success status text",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.448,
-              "c": 0.0977,
-              "h": 162.4
+              "l": 0.4611,
+              "c": 0.0993,
+              "h": 162.1
             },
-            "contrastRatio": 6.97,
+            "contrastRatio": 6.73,
             "wcagAA": true
           }
         }
@@ -343,17 +343,17 @@
         }
       },
       "warningText": {
-        "$value": "#8b4800",
+        "$value": "#904b00",
         "$type": "color",
         "$description": "Warning status text",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.4751,
-              "c": 0.115,
-              "h": 57
+              "l": 0.4878,
+              "c": 0.1178,
+              "h": 57.2
             },
-            "contrastRatio": 6.78,
+            "contrastRatio": 6.58,
             "wcagAA": true
           }
         }
@@ -373,17 +373,17 @@
         }
       },
       "dangerText": {
-        "$value": "#ae0610",
+        "$value": "#b21115",
         "$type": "color",
         "$description": "Danger status text",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.4741,
-              "c": 0.1907,
+              "l": 0.486,
+              "c": 0.1902,
               "h": 27.5
             },
-            "contrastRatio": 7.24,
+            "contrastRatio": 7.04,
             "wcagAA": true
           }
         }
@@ -391,249 +391,249 @@
     },
     "dark": {
       "paper": {
-        "$value": "#1a1310",
+        "$value": "#0e1525",
         "$type": "color",
         "$description": "Dark page body background",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.1945,
-              "c": 0.0131,
-              "h": 44.4
+              "l": 0.1977,
+              "c": 0.0341,
+              "h": 265.4
             }
           }
         }
       },
       "tray": {
-        "$value": "#1f1713",
+        "$value": "#121b2f",
         "$type": "color",
         "$description": "Dark flat grouping tray",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.2131,
-              "c": 0.0151,
-              "h": 48
+              "l": 0.2246,
+              "c": 0.0414,
+              "h": 264.9
             }
           }
         }
       },
       "surface": {
-        "$value": "#251c18",
+        "$value": "#162138",
         "$type": "color",
         "$description": "Dark card and panel surface",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.2359,
-              "c": 0.0161,
-              "h": 45.2
+              "l": 0.2501,
+              "c": 0.0466,
+              "h": 263.9
             }
           }
         }
       },
       "float": {
-        "$value": "#2f241e",
+        "$value": "#1e2c48",
         "$type": "color",
         "$description": "Dark floating popover and dialog surface",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.2712,
-              "c": 0.02,
-              "h": 50.1
+              "l": 0.2953,
+              "c": 0.0547,
+              "h": 263.2
             }
           }
         }
       },
       "well": {
-        "$value": "#150f0c",
+        "$value": "#0a101d",
         "$type": "color",
         "$description": "Dark recessed input well (strictly darker than surface)",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.175,
-              "c": 0.0119,
-              "h": 48
+              "l": 0.1743,
+              "c": 0.0288,
+              "h": 264.7
             }
           }
         }
       },
       "socket": {
-        "$value": "#0f0b09",
+        "$value": "#060a12",
         "$type": "color",
         "$description": "Dark deepest control socket",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.154,
-              "c": 0.0082,
-              "h": 48.5
+              "l": 0.1443,
+              "c": 0.0191,
+              "h": 261.2
             }
           }
         }
       },
       "inverted": {
-        "$value": "#fbf0e6",
+        "$value": "#f8fafc",
         "$type": "color",
         "$description": "Dark inverted cream/alabaster surface",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.961,
-              "c": 0.0179,
-              "h": 64.9
+              "l": 0.9842,
+              "c": 0.0034,
+              "h": 247.9
             }
           }
         }
       },
       "onInverted": {
-        "$value": "#1a1310",
+        "$value": "#0e1525",
         "$type": "color",
         "$description": "Foreground on dark inverted surface",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.1945,
-              "c": 0.0131,
-              "h": 44.4
+              "l": 0.1977,
+              "c": 0.0341,
+              "h": 265.4
             },
-            "contrastRatio": 16.35,
+            "contrastRatio": 17.41,
             "wcagAA": true
           }
         }
       },
       "line": {
-        "$value": "#3d3029",
+        "$value": "#283856",
         "$type": "color",
         "$description": "Dark divider line",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.3214,
-              "c": 0.0226,
-              "h": 49.8
+              "l": 0.3415,
+              "c": 0.0571,
+              "h": 262.3
             }
           }
         }
       },
       "inkPrimary": {
-        "$value": "#fbf0e6",
+        "$value": "#f8fafc",
         "$type": "color",
         "$description": "Dark primary ink",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.961,
-              "c": 0.0179,
-              "h": 64.9
+              "l": 0.9842,
+              "c": 0.0034,
+              "h": 247.9
             },
-            "contrastRatio": 14.87,
+            "contrastRatio": 15.34,
             "wcagAA": true
           }
         }
       },
       "inkSecondary": {
-        "$value": "#d8c5b6",
+        "$value": "#cbd5e1",
         "$type": "color",
         "$description": "Dark secondary ink",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.8351,
-              "c": 0.0298,
-              "h": 60.7
+              "l": 0.869,
+              "c": 0.0198,
+              "h": 252.9
             },
-            "contrastRatio": 10,
+            "contrastRatio": 10.81,
             "wcagAA": true
           }
         }
       },
       "inkSupporting": {
-        "$value": "#b8a291",
+        "$value": "#a3b4cc",
         "$type": "color",
         "$description": "Dark supporting ink",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.7268,
-              "c": 0.0353,
-              "h": 59.9
+              "l": 0.7647,
+              "c": 0.0393,
+              "h": 257
             },
-            "contrastRatio": 6.85,
+            "contrastRatio": 7.61,
             "wcagAA": true
           }
         }
       },
       "accentSolid": {
-        "$value": "#ff8099",
+        "$value": "#82adff",
         "$type": "color",
         "$description": "Dark brand accent token",
         "$extensions": {
           "design.mehan": {
             "oklch": {
               "l": 0.7503,
-              "c": 0.1556,
-              "h": 9.2
+              "c": 0.1279,
+              "h": 262.6
             }
           }
         }
       },
       "accentTop": {
-        "$value": "#d93866",
+        "$value": "#3471f3",
         "$type": "color",
         "$description": "Dark primary button top stop (500)",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.5957,
-              "c": 0.1978,
-              "h": 9
+              "l": 0.5842,
+              "c": 0.2057,
+              "h": 262.8
             }
           }
         }
       },
       "accentBottom": {
-        "$value": "#c00e50",
+        "$value": "#1552d7",
         "$type": "color",
         "$description": "Dark primary button bottom stop (700)",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.5209,
-              "c": 0.2026,
-              "h": 9.1
+              "l": 0.4929,
+              "c": 0.2127,
+              "h": 262.8
             }
           }
         }
       },
       "accentLip": {
-        "$value": "#a11644",
+        "$value": "#1445b2",
         "$type": "color",
         "$description": "Dark primary button 3D bottom lip (800)",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.4631,
-              "c": 0.1718,
-              "h": 9.2
+              "l": 0.434,
+              "c": 0.1809,
+              "h": 262.9
             }
           }
         }
       },
       "accentText": {
-        "$value": "#ff92a5",
+        "$value": "#91b7ff",
         "$type": "color",
         "$description": "Dark readable brand accent text",
         "$extensions": {
           "design.mehan": {
             "oklch": {
-              "l": 0.7803,
-              "c": 0.1323,
-              "h": 9.4
+              "l": 0.7797,
+              "c": 0.1115,
+              "h": 262.7
             },
-            "contrastRatio": 7.88,
+            "contrastRatio": 7.96,
             "wcagAA": true
           }
         }
@@ -663,7 +663,7 @@
               "c": 0.1245,
               "h": 256.7
             },
-            "contrastRatio": 7.75,
+            "contrastRatio": 7.45,
             "wcagAA": true
           }
         }
@@ -693,7 +693,7 @@
               "c": 0.1282,
               "h": 166
             },
-            "contrastRatio": 9.26,
+            "contrastRatio": 8.9,
             "wcagAA": true
           }
         }
@@ -723,7 +723,7 @@
               "c": 0.1314,
               "h": 67.3
             },
-            "contrastRatio": 9.57,
+            "contrastRatio": 9.2,
             "wcagAA": true
           }
         }
@@ -753,7 +753,7 @@
               "c": 0.142,
               "h": 25.6
             },
-            "contrastRatio": 7.37,
+            "contrastRatio": 7.08,
             "wcagAA": true
           }
         }
