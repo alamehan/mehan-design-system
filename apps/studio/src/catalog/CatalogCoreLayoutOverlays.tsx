@@ -150,7 +150,7 @@ const CATALOG_TABLE_ROWS: CatalogServiceRow[] = [
   },
 ];
 
-export function useCatalogGroupC(): SpecimenDefinition[] {
+export function useCatalogCoreLayoutOverlays(): SpecimenDefinition[] {
   const showToast = useToast();
   const resizable = useResizable({defaultSize: 180, minSize: 120, maxSize: 320});
 

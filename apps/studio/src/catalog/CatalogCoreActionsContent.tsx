@@ -813,6 +813,6 @@ function ChatAndContainerAndContentSpecimens(): SpecimenDefinition[] {
   ];
 }
 
-export function useCatalogGroupA(): SpecimenDefinition[] {
+export function useCatalogCoreActionsContent(): SpecimenDefinition[] {
   return [...ActionSpecimens(), ...ChatAndContainerAndContentSpecimens()];
 }

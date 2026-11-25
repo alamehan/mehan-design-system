@@ -24,11 +24,11 @@ test.describe('Stage 2C Interactive Proof — All 10 Tier 3 Data Viz, Editors & 
 
     await page.getByText('EN', {exact: true}).click();
     await page.getByRole('tab', {name: 'Components'}).click();
-    await expect(page.getByText('131 live specimens')).toBeVisible();
+    await expect(page.getByText('142 live specimens')).toBeVisible();
 
     await page
       .getByRole('radiogroup', {name: 'Filter by package'})
-      .getByRole('radio', {name: 'Mehan extensions (28)'})
+      .getByRole('radio', {name: 'Mehan extensions (39)'})
       .click();
 
     // 1. CanvasZoomBar: Zoom in (100% -> 125%), preset menu -> 150%, Fit to screen -> 100%

@@ -14,52 +14,81 @@ import {
 import {Search} from 'lucide-react';
 import type {StudioCopy} from '../i18n';
 import type {StudioLang} from '../studioState';
-import {useCatalogGroupA} from './CatalogGroupA';
-import {useCatalogGroupB} from './CatalogGroupB';
-import {useCatalogGroupC} from './CatalogGroupC';
-import {useCatalogMehanTier1} from './CatalogMehanTier1';
-import {useCatalogMehanTier2} from './CatalogMehanTier2';
-import {useCatalogMehanTier3} from './CatalogMehanTier3';
+import {useCatalogCoreActionsContent} from './CatalogCoreActionsContent';
+import {useCatalogCoreFormsViz} from './CatalogCoreFormsViz';
+import {useCatalogCoreLayoutOverlays} from './CatalogCoreLayoutOverlays';
+import {useCatalogMehanControls} from './CatalogMehanControls';
+import {useCatalogMehanFormsFeedback} from './CatalogMehanFormsFeedback';
+import {useCatalogMehanDataOverlays} from './CatalogMehanDataOverlays';
+import {useCatalogWorkspacesAndHooks} from './CatalogWorkspacesAndHooks';
 import {
+  CATALOG_PILLARS,
   CATEGORY_DESC,
   CATEGORY_LABELS_ID,
+  FORM_CONTROL_SUBGROUPS,
   OFFICIAL_ASTRYX_CATEGORIES,
   SpecimenCard,
+  getSpecimenRank,
   type OfficialAstryxCategory,
 } from './SpecimenCard';
 
 interface ComponentsCatalogViewProps {
   lang: StudioLang;
   copy: StudioCopy;
+  searchInputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
-export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) {
+export function ComponentsCatalogView({
+  lang,
+  copy,
+  searchInputRef,
+}: ComponentsCatalogViewProps) {
   const isId = lang === 'id';
-  // Focused by default: start on 'Action' (10 specimens) instead of dumping 107 cards at once!
+  // Start focused on 'Layout' (Pillar I · Structure & Wayfinding)
   const [selectedCategory, setSelectedCategory] = useState<
     OfficialAstryxCategory | 'all'
-  >('Action');
+  >('Layout');
   const [pkgFilter, setPkgFilter] = useState<'all' | 'core' | 'mehan'>('all');
   const [query, setQuery] = useState('');
 
-  const groupA = useCatalogGroupA();
-  const groupB = useCatalogGroupB();
-  const groupC = useCatalogGroupC();
-  const mehanTier1 = useCatalogMehanTier1();
-  const mehanTier2 = useCatalogMehanTier2();
-  const mehanTier3 = useCatalogMehanTier3();
+  const groupA = useCatalogCoreActionsContent();
+  const groupB = useCatalogCoreFormsViz();
+  const groupC = useCatalogCoreLayoutOverlays();
+  const mehanTier1 = useCatalogMehanControls();
+  const mehanTier2 = useCatalogMehanFormsFeedback();
+  const mehanTier3 = useCatalogMehanDataOverlays();
+  const workspacesAndHooks = useCatalogWorkspacesAndHooks();
 
-  const allSpecimens = useMemo(
-    () => [
+  const allSpecimens = useMemo(() => {
+    const raw = [
       ...groupA,
       ...groupB,
       ...groupC,
       ...mehanTier1,
       ...mehanTier2,
       ...mehanTier3,
-    ],
-    [groupA, groupB, groupC, mehanTier1, mehanTier2, mehanTier3],
-  );
+      ...workspacesAndHooks,
+    ];
+    return [...raw].sort((a, b) => {
+      if (a.category !== b.category) {
+        return (
+          OFFICIAL_ASTRYX_CATEGORIES.indexOf(a.category) -
+          OFFICIAL_ASTRYX_CATEGORIES.indexOf(b.category)
+        );
+      }
+      return (
+        getSpecimenRank(a.category, a.id) - getSpecimenRank(b.category, b.id)
+      );
+    });
+  }, [
+    groupA,
+    groupB,
+    groupC,
+    mehanTier1,
+    mehanTier2,
+    mehanTier3,
+    workspacesAndHooks,
+  ]);
 
   const coreCount = useMemo(
     () => allSpecimens.filter(s => s.pkg === 'core').length,
@@ -132,7 +161,8 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
       <HStack hAlign="between" vAlign="center" wrap="wrap" gap={3}>
         <div style={{flex: '1 1 300px', maxWidth: 520}}>
           <TextInput
-            label="Search components"
+            ref={searchInputRef}
+            label={isId ? 'Cari komponen' : 'Search components'}
             isLabelHidden
             hasClear
             startIcon={<Search size={15} />}
@@ -167,31 +197,40 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
         </SegmentedControl>
       </HStack>
 
-      {/* Sticky 12-Category Sidebar + Adaptive Specimen Grid */}
+      {/* Sticky 4-Pillar, 12-Category Sidebar + Adaptive Specimen Grid */}
       <div className="cat-layout">
         <nav
           className="cat-sidebar"
           aria-label="Official Astryx component categories"
         >
-          {OFFICIAL_ASTRYX_CATEGORIES.map(cat => {
-            const isActive =
-              !isGlobalSearchActive && selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                type="button"
-                className={`cat-nav-btn ${isActive ? 'is-active' : ''}`}
-                onClick={() => {
-                  setSelectedCategory(cat);
-                  if (pkgFilter === 'mehan') setPkgFilter('all');
-                  if (query) setQuery('');
-                }}
-              >
-                <span>{cat}</span>
-                <span className="cat-nav-count">{countsByCategory[cat] ?? 0}</span>
-              </button>
-            );
-          })}
+          {CATALOG_PILLARS.map(pillar => (
+            <React.Fragment key={pillar.id}>
+              <div className="cat-pillar-label" aria-hidden="true">
+                {isId ? pillar.idLabel : pillar.en}
+              </div>
+              {pillar.categories.map(cat => {
+                const isActive =
+                  !isGlobalSearchActive && selectedCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    className={`cat-nav-btn ${isActive ? 'is-active' : ''}`}
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      if (pkgFilter === 'mehan') setPkgFilter('all');
+                      if (query) setQuery('');
+                    }}
+                  >
+                    <span>{cat}</span>
+                    <span className="cat-nav-count">
+                      {countsByCategory[cat] ?? 0}
+                    </span>
+                  </button>
+                );
+              })}
+            </React.Fragment>
+          ))}
 
           <div className="cat-sidebar-divider" role="separator" />
 
@@ -238,6 +277,9 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
             visibleCategories.map(cat => {
               const items = filteredSpecimens.filter(s => s.category === cat);
               const desc = CATEGORY_DESC[cat];
+              const showFormSubgroups =
+                cat === 'Form Controls' && !qLower && pkgFilter === 'all';
+
               return (
                 <section key={cat} className="cat-category-section">
                   <Stack gap={0.5}>
@@ -249,7 +291,7 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
                         variant="neutral"
                         label={
                           isId
-                            ? `${items.length} komponen`
+                            ? `${items.length} spesimen`
                             : items.length === 1
                               ? '1 specimen'
                               : `${items.length} specimens`
@@ -261,11 +303,37 @@ export function ComponentsCatalogView({lang, copy}: ComponentsCatalogViewProps) 
                     </Text>
                   </Stack>
 
-                  <div className="cat-grid">
-                    {items.map(item => (
-                      <SpecimenCard key={item.id} item={item} isId={isId} />
-                    ))}
-                  </div>
+                  {showFormSubgroups ? (
+                    <Stack gap={4}>
+                      {FORM_CONTROL_SUBGROUPS.map(sub => {
+                        const subIdSet = new Set(sub.specimenIds);
+                        const subItems = items.filter(it => subIdSet.has(it.id));
+                        if (subItems.length === 0) return null;
+                        return (
+                          <div key={sub.id} className="cat-subgroup-block">
+                            <h4 className="cat-subgroup-title">
+                              {isId ? sub.idLabel : sub.en}
+                            </h4>
+                            <div className="cat-grid">
+                              {subItems.map(item => (
+                                <SpecimenCard
+                                  key={item.id}
+                                  item={item}
+                                  isId={isId}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </Stack>
+                  ) : (
+                    <div className="cat-grid">
+                      {items.map(item => (
+                        <SpecimenCard key={item.id} item={item} isId={isId} />
+                      ))}
+                    </div>
+                  )}
                 </section>
               );
             })

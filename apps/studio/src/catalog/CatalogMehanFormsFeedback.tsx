@@ -16,7 +16,7 @@ const DEMO_ART_SVG =
     `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="120" viewBox="0 0 240 120"><rect width="240" height="120" rx="14" fill="#fce7f3"/><circle cx="84" cy="60" r="28" fill="#d42a5f"/><rect x="128" y="42" width="76" height="14" rx="7" fill="#9d174d"/><rect x="128" y="64" width="52" height="12" rx="6" fill="#f472b6"/></svg>`,
   );
 
-export function useCatalogMehanTier2(): SpecimenDefinition[] {
+export function useCatalogMehanFormsFeedback(): SpecimenDefinition[] {
   const showToast = useToast();
   const [otp, setOtp] = useState('482');
   const [score, setScore] = useState(4.5);

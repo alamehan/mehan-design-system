@@ -1,9 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="id" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Mehan Design System Studio (v1.0)</title>
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem('mehan-studio-state-v2');
+          var parsed = raw ? JSON.parse(raw) : null;
+          var mode =
+            parsed && (parsed.mode === 'dark' || parsed.mode === 'light')
+              ? parsed.mode
+              : matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          var lang = parsed && parsed.lang === 'en' ? 'en' : 'id';
+          document.documentElement.lang = lang;
+          document.documentElement.dataset.theme = mode;
+          document.documentElement.style.colorScheme = mode;
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

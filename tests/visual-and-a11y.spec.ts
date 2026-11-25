@@ -118,7 +118,7 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     ).toEqual([]);
 
     // 3. Official Theme Showcase + Docked Chunked Theme Editor + Live Font Switching Proof!
-    await page.getByRole('tab', {name: 'Templates'}).click();
+    await page.getByRole('tab', {name: 'Patterns & Templates'}).click();
     await page.getByText('Little joys, everywhere you go').waitFor();
     await page.getByRole('button', {name: 'Theme Editor', exact: true}).click();
     await expect(
@@ -236,11 +236,12 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     }
 
     await page.getByRole('button', {name: 'Close Theme Editor'}).click();
-    await page.getByRole('tab', {name: 'Templates'}).click();
+    await page.getByRole('tab', {name: 'Patterns & Templates'}).click();
     for (const tplLabel of [
-      'SaaS dashboard',
-      'Progressive settings',
-      'Shotcandy 3D studio',
+      'Workspace Topologies (5-in-1)',
+      'SaaS Analytics Dashboard',
+      'Governance & Settings',
+      '3D Product Studio',
     ]) {
       await page.getByText(tplLabel, {exact: true}).click();
       await page.waitForTimeout(100);

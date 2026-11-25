@@ -14,7 +14,7 @@ import {
 } from '@mehan/astryx';
 import type {SpecimenDefinition} from './SpecimenCard';
 
-export function useCatalogMehanTier1(): SpecimenDefinition[] {
+export function useCatalogMehanControls(): SpecimenDefinition[] {
   const showToast = useToast();
   const [themePref, setThemePref] = useState<'light' | 'dark' | 'system'>('system');
   const [wellHex, setWellHex] = useState('#2563eb');
@@ -108,7 +108,7 @@ export function useCatalogMehanTier1(): SpecimenDefinition[] {
     {
       id: 'theme-switch',
       name: 'ThemeSwitch',
-      category: 'Action',
+      category: 'Utility',
       pkg: 'mehan',
       summaryEn:
         'Recessed 3-way appearance radiogroup (Light, Dark, Auto) with roving arrow-key navigation.',

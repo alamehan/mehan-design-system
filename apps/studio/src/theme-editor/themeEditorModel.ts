@@ -1067,7 +1067,86 @@ export function parseImportedThemeText(
     const parsed = JSON.parse(trimmed) as Partial<FullThemeEditorState> & {
       config?: Partial<StudioSeedConfig>;
     };
-    const nextSeed = {...fallback.seed, ...(parsed.seed ?? parsed.config ?? {})};
+    const rawSeed = parsed.seed ?? parsed.config ?? {};
+    const nextSeed: StudioSeedConfig = {
+      atmosphere:
+        rawSeed.atmosphere === 'porcelain' || rawSeed.atmosphere === 'stone'
+          ? rawSeed.atmosphere
+          : rawSeed.atmosphere === 'confectionery'
+            ? 'confectionery'
+            : fallback.seed.atmosphere,
+      accent:
+        typeof rawSeed.accent === 'string' && rawSeed.accent
+          ? rawSeed.accent
+          : fallback.seed.accent,
+      depth:
+        typeof rawSeed.depth === 'number' && Number.isFinite(rawSeed.depth)
+          ? rawSeed.depth
+          : fallback.seed.depth,
+      radiusScale:
+        typeof rawSeed.radiusScale === 'number' && Number.isFinite(rawSeed.radiusScale)
+          ? rawSeed.radiusScale
+          : fallback.seed.radiusScale,
+      radiusBase:
+        typeof rawSeed.radiusBase === 'number' && Number.isFinite(rawSeed.radiusBase)
+          ? rawSeed.radiusBase
+          : rawSeed.radiusBase === null
+            ? null
+            : fallback.seed.radiusBase,
+      spacingBase:
+        typeof rawSeed.spacingBase === 'number' && Number.isFinite(rawSeed.spacingBase)
+          ? rawSeed.spacingBase
+          : fallback.seed.spacingBase,
+      sizeBase:
+        typeof rawSeed.sizeBase === 'number' && Number.isFinite(rawSeed.sizeBase)
+          ? rawSeed.sizeBase
+          : fallback.seed.sizeBase,
+      typeBase:
+        typeof rawSeed.typeBase === 'number' && Number.isFinite(rawSeed.typeBase)
+          ? rawSeed.typeBase
+          : fallback.seed.typeBase,
+      typeRatio:
+        typeof rawSeed.typeRatio === 'number' && Number.isFinite(rawSeed.typeRatio)
+          ? rawSeed.typeRatio
+          : fallback.seed.typeRatio,
+      headingFont:
+        typeof rawSeed.headingFont === 'string' && rawSeed.headingFont
+          ? rawSeed.headingFont
+          : fallback.seed.headingFont,
+      bodyFont:
+        typeof rawSeed.bodyFont === 'string' && rawSeed.bodyFont
+          ? rawSeed.bodyFont
+          : fallback.seed.bodyFont,
+      codeFont:
+        typeof rawSeed.codeFont === 'string' && rawSeed.codeFont
+          ? rawSeed.codeFont
+          : fallback.seed.codeFont,
+      motion:
+        rawSeed.motion === 'calm' ||
+        rawSeed.motion === 'standard' ||
+        rawSeed.motion === 'crisp' ||
+        rawSeed.motion === 'expressive'
+          ? rawSeed.motion
+          : fallback.seed.motion,
+      durationStep:
+        typeof rawSeed.durationStep === 'number' && Number.isFinite(rawSeed.durationStep)
+          ? rawSeed.durationStep
+          : fallback.seed.durationStep,
+      lipStyle:
+        rawSeed.lipStyle === 'subtle' ||
+        rawSeed.lipStyle === 'flat' ||
+        rawSeed.lipStyle === 'candy'
+          ? rawSeed.lipStyle
+          : fallback.seed.lipStyle,
+      segmentedStyle:
+        rawSeed.segmentedStyle === 'espresso' || rawSeed.segmentedStyle === 'raised'
+          ? rawSeed.segmentedStyle
+          : fallback.seed.segmentedStyle,
+      wellStyle:
+        rawSeed.wellStyle === 'bordered' || rawSeed.wellStyle === 'recessed'
+          ? rawSeed.wellStyle
+          : fallback.seed.wellStyle,
+    };
     return {
       seed: nextSeed,
       tokenOverrides:
@@ -1213,10 +1292,27 @@ export function parseImportedThemeText(
           string,
           {base?: Record<string, string>}
         >;
+        const consumedPairs = new Set<string>();
+        for (const [varName, targets] of Object.entries(COMPONENT_VAR_TO_OVERRIDE)) {
+          if (targets.length === 0) continue;
+          const firstVal =
+            parsedComp[targets[0].component]?.base?.[targets[0].cssProperty];
+          if (typeof firstVal !== 'string' || !firstVal) continue;
+          const allMatch = targets.every(
+            t => parsedComp[t.component]?.base?.[t.cssProperty] === firstVal,
+          );
+          if (allMatch) {
+            extractedTokens[varName] = firstVal;
+            for (const t of targets) {
+              consumedPairs.add(`${t.component}::${t.cssProperty}`);
+            }
+          }
+        }
         let idx = 0;
         for (const [compName, slots] of Object.entries(parsedComp)) {
           if (!slots?.base) continue;
           for (const [prop, val] of Object.entries(slots.base)) {
+            if (consumedPairs.has(`${compName}::${prop}`)) continue;
             if (typeof val === 'string') {
               idx += 1;
               nextCustomOverrides.push({

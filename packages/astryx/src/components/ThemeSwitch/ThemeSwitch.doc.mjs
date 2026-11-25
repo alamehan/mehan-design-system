@@ -4,7 +4,7 @@ export default {
   name: 'ThemeSwitch',
   displayName: 'Theme Switch',
   import: '@mehan/astryx',
-  category: 'Action',
+  category: 'Utility',
   keywords: ['theme switch', 'dark mode', 'light mode', 'color scheme', 'system mode'],
   props: [
     {

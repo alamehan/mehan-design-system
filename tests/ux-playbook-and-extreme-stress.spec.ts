@@ -31,9 +31,9 @@ test.describe('Stage 4 — Expanded 12-Chapter UX Playbook (U1-U6), Bilingual ID
 
     // 1. Default language is ID: verify localized Components badge ("131 spesimen aktif") & UX & Bahasa ("12 Bab · Terindeks AI")
     await page.getByRole('tab', {name: 'Komponen'}).click();
-    await expect(page.getByText('131 spesimen aktif')).toBeVisible();
+    await expect(page.getByText('142 spesimen aktif')).toBeVisible();
     await expect(
-      page.getByRole('radio', {name: 'Ekstensi Mehan (28)'}),
+      page.getByRole('radio', {name: 'Ekstensi Mehan (39)'}),
     ).toBeVisible();
 
     await page.getByRole('tab', {name: 'UX & Bahasa'}).click();
@@ -186,7 +186,12 @@ test.describe('Stage 4 — Expanded 12-Chapter UX Playbook (U1-U6), Bilingual ID
     await editor.getByRole('button', {name: 'Close Theme Editor'}).click();
     await page.waitForTimeout(120);
 
-    for (const tabName of ['Overview', 'Components', 'Templates', 'UX & Copy'] as const) {
+    for (const tabName of [
+      'Overview',
+      'Components',
+      'Patterns & Templates',
+      'UX & Copy',
+    ] as const) {
       await page.getByRole('tab', {name: tabName}).click();
       await page.waitForTimeout(100);
       const desktopOverflow = await page.evaluate(

@@ -488,6 +488,22 @@
           }
         }
       },
+      "onInverted": {
+        "$value": "#1a1310",
+        "$type": "color",
+        "$description": "Foreground on dark inverted surface",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.1945,
+              "c": 0.0131,
+              "h": 44.4
+            },
+            "contrastRatio": 16.35,
+            "wcagAA": true
+          }
+        }
+      },
       "line": {
         "$value": "#3d3029",
         "$type": "color",
@@ -559,6 +575,48 @@
             "oklch": {
               "l": 0.7503,
               "c": 0.1556,
+              "h": 9.2
+            }
+          }
+        }
+      },
+      "accentTop": {
+        "$value": "#d93866",
+        "$type": "color",
+        "$description": "Dark primary button top stop (500)",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.5957,
+              "c": 0.1978,
+              "h": 9
+            }
+          }
+        }
+      },
+      "accentBottom": {
+        "$value": "#c00e50",
+        "$type": "color",
+        "$description": "Dark primary button bottom stop (700)",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.5209,
+              "c": 0.2026,
+              "h": 9.1
+            }
+          }
+        }
+      },
+      "accentLip": {
+        "$value": "#a11644",
+        "$type": "color",
+        "$description": "Dark primary button 3D bottom lip (800)",
+        "$extensions": {
+          "design.mehan": {
+            "oklch": {
+              "l": 0.4631,
+              "c": 0.1718,
               "h": 9.2
             }
           }

@@ -11,8 +11,8 @@ export default {
   },
   agentDocs: {
     append: [
-      'Mehan (@mehan/astryx) provides 3 tactile themes (`mehan-confectionery`, `mehan-porcelain`, `mehan-stone`), 28 universal components, and `createMehanTheme()` (OKLCH tactile seed + open `tokens` and `components` overrides).',
-      'Read Mehan UX, copy, ergonomics, and layout rules before building screens: `astryx docs mehan-design-rules`, `mehan-ux-complexity`, `mehan-copy-and-states`, `mehan-ergonomics-and-motion`, `mehan-forms-and-i18n`, `mehan-page-archetypes`.',
+      'Mehan (@mehan/astryx) extends Meta Astryx with 3 tactile atmospheres, createMehanTheme(), 35 universal components & WorkspaceLayout/CanvasStage, and runtime hooks (useMehanShortcuts, useAutoDraft, useMehanViewport).',
+      'Read Mehan guides before building UIs: `astryx docs mehan-design-rules`, `mehan-ux-complexity`, `mehan-copy-and-states`, `mehan-ergonomics-and-motion`, `mehan-forms-and-i18n`, `mehan-page-archetypes`, `mehan-runtime-hooks`.',
     ],
   },
 };

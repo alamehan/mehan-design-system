@@ -88,14 +88,25 @@ const PRESET_ACCENT_LIST = Object.values(MEHAN_ACCENT_PRESETS);
 const PRESET_HEX_SWATCHES = PRESET_ACCENT_LIST.map(p => p.seed);
 
 const BASE_CORE_COLOR_TOKENS = [
-  {token: '--color-accent', label: 'Accent (Primary)'},
-  {token: '--color-neutral', label: 'Neutral'},
-  {token: '--color-background-card', label: 'Card surface'},
-  {token: '--color-background-surface', label: 'Surface'},
-  {token: '--color-background-body', label: 'Page body'},
-  {token: '--color-background-muted', label: 'Muted tray'},
-  {token: '--color-text-primary', label: 'Text primary'},
+  {token: '--color-accent', en: 'Accent (Primary)', id: 'Aksen utama (Primary)'},
+  {token: '--color-neutral', en: 'Neutral', id: 'Netral'},
+  {token: '--color-background-card', en: 'Card surface', id: 'Permukaan kartu'},
+  {token: '--color-background-surface', en: 'Surface', id: 'Permukaan dasar'},
+  {token: '--color-background-body', en: 'Page body', id: 'Kanvas halaman'},
+  {token: '--color-background-muted', en: 'Muted tray', id: 'Baki redup'},
+  {token: '--color-text-primary', en: 'Text primary', id: 'Teks utama'},
 ] as const;
+
+const ADV_GROUP_LABELS_ID: Record<AdvancedTokenGroupKey, string> = {
+  colors: 'Warna',
+  typography: 'Tipografi',
+  spacing: 'Spasi',
+  radius: 'Sudut',
+  size: 'Ukuran',
+  shadow: 'Bayangan',
+  duration: 'Durasi',
+  easing: 'Kurva Gerak',
+};
 
 interface DockedThemeEditorProps {
   isOpen: boolean;
@@ -469,7 +480,7 @@ export function DockedThemeEditor({
             <IconButton
               variant="ghost"
               size="sm"
-              label="Delete active preset"
+              label={isId ? 'Hapus preset aktif' : 'Delete active preset'}
               icon={<Trash2 size={13} />}
               onClick={() =>
                 setPresets(prev => prev.filter(item => item.id !== activePresetId))
@@ -479,7 +490,7 @@ export function DockedThemeEditor({
           <Popover
             isOpen={presetSaveOpen}
             onOpenChange={setPresetSaveOpen}
-            label="Save named theme preset"
+            label={isId ? 'Simpan preset tema bernama' : 'Save named theme preset'}
             placement="below"
             alignment="end"
             content={
@@ -488,7 +499,7 @@ export function DockedThemeEditor({
                   <TextInput
                     label={isId ? 'Nama preset' : 'Preset name'}
                     size="sm"
-                    placeholder="For example: Editorial Dark"
+                    placeholder={isId ? 'Contoh: Editorial Gelap' : 'For example: Editorial Dark'}
                     value={newPresetName}
                     onChange={setNewPresetName}
                   />
@@ -533,7 +544,10 @@ export function DockedThemeEditor({
                 onClick: () => {
                   const ts = exportCreateMehanThemeTs(themeState, 'customMehan');
                   downloadTextFile('mehan-theme.ts', ts, 'text/typescript');
-                  showToast({type: 'info', body: 'Downloaded mehan-theme.ts'});
+                  showToast({
+                    type: 'info',
+                    body: isId ? 'mehan-theme.ts diunduh.' : 'Downloaded mehan-theme.ts',
+                  });
                 },
               },
               {
@@ -546,19 +560,24 @@ export function DockedThemeEditor({
                   downloadTextFile('astryx-theme.ts', ts, 'text/typescript');
                   showToast({
                     type: 'info',
-                    body: 'Downloaded pure Astryx astryx-theme.ts',
+                    body: isId
+                      ? 'astryx-theme.ts murni diunduh.'
+                      : 'Downloaded pure Astryx astryx-theme.ts',
                   });
                 },
               },
               {
-                label: 'Studio state (.json)',
+                label: isId ? 'Status Studio (.json)' : 'Studio state (.json)',
                 onClick: () => {
                   downloadTextFile(
                     `mehan-${seed.atmosphere}-theme.json`,
                     `${JSON.stringify(themeState, null, 2)}\n`,
                     'application/json',
                   );
-                  showToast({type: 'info', body: 'Downloaded Studio JSON'});
+                  showToast({
+                    type: 'info',
+                    body: isId ? 'JSON Studio diunduh.' : 'Downloaded Studio JSON',
+                  });
                 },
               },
               {type: 'divider'},
@@ -573,7 +592,9 @@ export function DockedThemeEditor({
                   await copyText(css);
                   showToast({
                     type: 'info',
-                    body: 'Copied standalone mehan-portable.css',
+                    body: isId
+                      ? 'mehan-portable.css disalin.'
+                      : 'Copied standalone mehan-portable.css',
                   });
                 },
               },
@@ -585,11 +606,16 @@ export function DockedThemeEditor({
                     radiusBase: seed.radiusBase ?? undefined,
                   });
                   await copyText(md);
-                  showToast({type: 'info', body: 'Copied AI Prototype Kit'});
+                  showToast({
+                    type: 'info',
+                    body: isId
+                      ? 'Kit Prototipe AI disalin.'
+                      : 'Copied AI Prototype Kit',
+                  });
                 },
               },
               {
-                label: 'W3C Figma tokens (.w3c.json)',
+                label: isId ? 'Token Figma W3C (.w3c.json)' : 'W3C Figma tokens (.w3c.json)',
                 onClick: () => {
                   const w3c = exportW3cDesignTokens({
                     name: `mehan-${seed.atmosphere}`,
@@ -603,7 +629,9 @@ export function DockedThemeEditor({
                   );
                   showToast({
                     type: 'info',
-                    body: 'Downloaded mehan-tokens.w3c.json',
+                    body: isId
+                      ? 'mehan-tokens.w3c.json diunduh.'
+                      : 'Downloaded mehan-tokens.w3c.json',
                   });
                 },
               },
@@ -1129,11 +1157,11 @@ export function DockedThemeEditor({
                 }
               >
                 <div className="te-token-list">
-                  {BASE_CORE_COLOR_TOKENS.map(({token, label}) => (
+                  {BASE_CORE_COLOR_TOKENS.map(({token, en, id}) => (
                     <TokenColorRow
                       key={token}
                       tokenName={token}
-                      label={label}
+                      label={isId ? id : en}
                       effectiveValue={effectiveTokens[token] ?? ''}
                       isOverridden={token in tokenOverrides}
                       mode={mode}
@@ -1279,7 +1307,10 @@ export function DockedThemeEditor({
                                         effectiveTokens,
                                       ),
                                     })),
-                                    {value: '__custom__', label: 'Custom CSS value...'},
+                                    {
+        value: '__custom__',
+        label: isId ? 'Nilai CSS kustom...' : 'Custom CSS value...',
+      },
                                   ]}
                                   onChange={v => {
                                     if (!v) return;
@@ -1446,7 +1477,7 @@ export function DockedThemeEditor({
                   className={`te-adv-pill ${advGroup === key ? 'is-active' : ''}`}
                   onClick={() => setAdvGroup(key)}
                 >
-                  {grp.label}
+                  {isId ? ADV_GROUP_LABELS_ID[key] : grp.label}
                 </button>
               ))}
             </div>
@@ -1581,7 +1612,7 @@ export function DockedThemeEditor({
             {advGroup !== 'colors' && advGroup !== 'typography' && (
               <div className="te-section">
                 <div className="te-section-title">
-                  {ADVANCED_TOKEN_GROUPS[advGroup].label}
+                  {isId ? ADV_GROUP_LABELS_ID[advGroup] : ADVANCED_TOKEN_GROUPS[advGroup].label}
                 </div>
                 <div className="te-token-list">
                   {ADVANCED_TOKEN_GROUPS[advGroup].keys

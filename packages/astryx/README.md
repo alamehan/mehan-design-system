@@ -1,8 +1,8 @@
 # `@mehan/astryx` (`v1.0.0`)
 
-Mehan Design System integration package for Meta Astryx (`@astryxdesign/core ~0.7.17`) — combining 3 prebuilt OKLCH tactile themes, unrestricted parametric + raw Astryx theming (`createMehanTheme`), **10 self-hosted WOFF2 font families**, **28 universal extension components**, runtime/history/locale utilities, and **65 AI-indexed Astryx docs**.
+Official provider and tactile extension layer on top of **Meta Astryx (`@astryxdesign/core ~0.7.17`)** — keeping all 103 Meta Astryx WAI-ARIA primitives as the untouched foundation while adding 3 prebuilt OKLCH tactile atmospheres, unrestricted parametric + raw Astryx theming (`createMehanTheme`), **10 self-hosted OFL WOFF2 font families**, **35 universal extension components & workspace layouts**, **4 ergonomic runtime hook suites**, and **80 AI-indexed Astryx docs**.
 
-## Quick Setup (Zero Bundler Plugins)
+## Quick Setup
 
 ```tsx
 import '@astryxdesign/core/reset.css';
@@ -24,24 +24,22 @@ export function AppProviders({children}: {children: React.ReactNode}) {
 }
 ```
 
-## 28 Universal Extension Components (`@mehan/astryx`)
+## 35 Universal Extension Components & Workspaces (`@mehan/astryx`)
 
-- **Action & Shell:** `SplitButton`, `CopyButton`, `ThemeSwitch`, `InlineConfirm`, `CanvasZoomBar`
-- **Color, Spatial & Precision Controls:** `ColorSwatch`, `ColorPicker` (with `hasAlpha` opacity rail), `ColorWell`, `PrecisionSlider`, `AngleDial`, `GradientPicker` (`formatGradientCss`), `AnchorMatrix`, `TimelineScrubber`
-- **Application Inputs & Feedback:** `MiddleTruncate`, `DigitEntry` (`OtpInput`), `Rating`, `ImageWell`, `ErrorSummary`, `InlineMessage`
-- **Data Visualization & Feeds:** `MetricCard`, `Sparkline` (with companion screen-reader `<table>`), `Gauge`, `ActivityRing`, `Timeline`
-- **Editors & Guided Surfaces:** `CodeEditor` (WCAG 2.1.2 `Esc -> Tab` focus exit), `MarkdownEditor`, `NotificationCenter`, `Tour`
+1. **Workspace, Stage & Inspector Layouts (`3`):** `WorkspaceLayout` (Level-1 adaptive workbench on Astryx `Layout` + `LayoutPanel` + `ResizeHandle` + `Drawer`), `CanvasStage` (Level-2 recessed interactive viewport + HUD + transport), `PropertyRow` (narrow-panel inspector row with `InfoTip` & 1-click reset)
+2. **Actions & Viewport Triggers (`4`):** `SplitButton`, `CopyButton`, `InlineConfirm`, `CanvasZoomBar`
+3. **Form, Color, Spatial & Rich Editors (`13`):** `DigitEntry` (`OtpInput`), `Rating`, `PrecisionSlider`, `AngleDial`, `AnchorMatrix`, `TimelineScrubber`, `ColorSwatch`, `ColorWell`, `ColorPicker` (with `hasAlpha`), `GradientPicker` (`formatGradientCss`), `ImageWell`, `CodeEditor` (WCAG 2.1.2 `Esc -> Tab`), `MarkdownEditor`
+4. **Content, Tables, Hierarchy & Data Viz (`9`):** `MiddleTruncate`, `ColumnSettingsMenu` (paired with Astryx `useTableColumnSettingsState`), `ColumnView` (2D-keyboard Miller columns), `Timeline`, `MetricCard`, `DataChart` (`line | area | bar | horizontal-bar` + SR `<table>`), `Sparkline`, `Gauge`, `ActivityRing`
+5. **Feedback, Overlays & Theme Utilities (`6`):** `InlineMessage`, `ErrorSummary`, `ShortcutSheet` (`?` modal wired to `useMehanShortcuts`), `NotificationCenter`, `Tour`, `ThemeSwitch`
 
-## Runtime Hooks & `@mehan/astryx/dna` Utilities
+## Ergonomic Runtime Hooks & `@mehan/astryx/dna`
 
-- **Runtime (`@mehan/astryx`):** `MEHAN_THEME_INIT_SCRIPT`, `useMehanThemeMode`, `useHistoryStore`, `copyTextSafe`, `isTypingTarget`, `formatShortcutKeys`
-- **DNA & Locale (`@mehan/astryx/dna`):** `createMehanTheme`, `resolveMehanDna`, `auditMehanThemeContrast`, `generateOklchScale`, `suggestOklchHarmonies`, `mixOklab`, `createHistoryStore`, `exportW3cDesignTokens`, `formatNumber`, `formatCompactNumber`, `formatCurrency`, `formatPercent`, `formatBytes`, `formatRelativeTime`, `parseLocalIsoDate`
+- **Shortcuts (Law U1):** `useMehanShortcuts`, `usePrimaryAction`, `useRegisteredShortcuts`, `formatShortcutKeys`, `isTypingTarget`
+- **Viewport & Motion (Laws U2 & U5):** `useMehanViewport`, `MEHAN_MEDIA_QUERIES`
+- **Form Resilience (Law U3):** `useAutoDraft`, `useUnsavedGuard`
+- **Theme, History & File I/O:** `MEHAN_THEME_INIT_SCRIPT`, `useMehanThemeMode`, `useHistoryStore`, `copyTextSafe`, `readFileText`, `pickFiles`, `downloadBlob`, `downloadJson`
+- **DNA (`@mehan/astryx/dna`):** `createMehanTheme`, `resolveMehanDna`, `auditMehanThemeContrast`, `createHistoryStore`, `validateFile`, `exportW3cDesignTokens`, `formatNumber`, `formatCurrency`, `formatBytes`, `formatRelativeTime`
 
-## AI Agent Documentation (`astryx docs`)
+## AI Agent Guides (`astryx docs`)
 
-- `mehan-design-rules` — 7-role material hierarchy, 80/15/5 color budget & open theming
-- `mehan-ux-complexity` — One primary CTA, 4-tier progressive disclosure & semantic control roles
-- `mehan-copy-and-states` — Sentence-case microcopy & 5 humane recovery states
-- `mehan-ergonomics-and-motion` — Keyboard shortcuts, layered `Esc`, coarse pointer `44px`, 9-tier line budget & motion choreography (`U1`, `U2`, `U4`, `U5`)
-- `mehan-forms-and-i18n` — *Reward early, punish late* validation timing, 3-tier confirmation & `Intl` formatting (`U3`, `U6`)
-- `mehan-page-archetypes` — Production dashboard, progressive settings & studio canvas layouts
+- `mehan-design-rules` · `mehan-ux-complexity` · `mehan-copy-and-states` · `mehan-ergonomics-and-motion` · `mehan-forms-and-i18n` · `mehan-page-archetypes` · `mehan-runtime-hooks`

@@ -25,89 +25,359 @@ export interface SpecimenDefinition {
   render: () => React.ReactNode;
 }
 
+/**
+ * All 12 official Meta Astryx component categories, ordered architecturally
+ * across 4 pillars: Structure -> Actions & Inputs -> Data & Content -> Feedback & Runtime.
+ */
 export const OFFICIAL_ASTRYX_CATEGORIES = [
-  'Action',
-  'Chat',
-  'Container',
-  'Content',
-  'Data Visualization',
-  'Feedback & Status',
-  'Form Controls',
+  // Pillar I — Structure & Wayfinding
   'Layout',
   'Navigation',
-  'Overlay',
+  'Container',
+  // Pillar II — Actions & Inputs
+  'Action',
+  'Form Controls',
+  // Pillar III — Data, Content & Visualization
+  'Content',
   'Table & List',
+  'Data Visualization',
+  // Pillar IV — Feedback, Overlays & Runtime
+  'Feedback & Status',
+  'Overlay',
+  'Chat',
   'Utility',
 ] as const;
 
 export type OfficialAstryxCategory = (typeof OFFICIAL_ASTRYX_CATEGORIES)[number];
 
+export const CATALOG_PILLARS: ReadonlyArray<{
+  id: string;
+  en: string;
+  idLabel: string;
+  categories: ReadonlyArray<OfficialAstryxCategory>;
+}> = [
+  {
+    id: 'structure',
+    en: 'I · Structure & Wayfinding',
+    idLabel: 'I · Struktur & Navigasi',
+    categories: ['Layout', 'Navigation', 'Container'],
+  },
+  {
+    id: 'inputs',
+    en: 'II · Actions & Inputs',
+    idLabel: 'II · Aksi & Input',
+    categories: ['Action', 'Form Controls'],
+  },
+  {
+    id: 'data',
+    en: 'III · Data, Content & Viz',
+    idLabel: 'III · Data, Konten & Grafik',
+    categories: ['Content', 'Table & List', 'Data Visualization'],
+  },
+  {
+    id: 'feedback',
+    en: 'IV · Feedback, Overlays & Runtime',
+    idLabel: 'IV · Status, Overlay & Runtime',
+    categories: ['Feedback & Status', 'Overlay', 'Chat', 'Utility'],
+  },
+];
+
+export interface FormControlSubgroup {
+  id: string;
+  en: string;
+  idLabel: string;
+  specimenIds: ReadonlyArray<string>;
+}
+
+/**
+ * Semantic sub-clusters inside `Form Controls` so 35 controls scan effortlessly
+ * instead of rendering as an undifferentiated wall.
+ */
+export const FORM_CONTROL_SUBGROUPS: ReadonlyArray<FormControlSubgroup> = [
+  {
+    id: 'text-editors',
+    en: 'Text, Verification & Rich Editors',
+    idLabel: 'Teks, Verifikasi OTP & Editor Kaya',
+    specimenIds: [
+      'field',
+      'text-input',
+      'input-group',
+      'digit-entry',
+      'text-area',
+      'markdown-editor',
+      'code-editor',
+    ],
+  },
+  {
+    id: 'selection-search',
+    en: 'Selection, Toggles & Search',
+    idLabel: 'Pilihan, Sakelar & Pencarian',
+    specimenIds: [
+      'selector',
+      'multi-selector',
+      'complex-selector',
+      'typeahead',
+      'tokenizer',
+      'power-search',
+      'switch',
+      'checkbox-input',
+      'checkbox-list',
+      'radio-list',
+      'rating',
+    ],
+  },
+  {
+    id: 'numeric-spatial',
+    en: 'Numbers, Sliders, Dials & Scrubbers',
+    idLabel: 'Angka, Slider, Kenop & Penggeser Waktu',
+    specimenIds: [
+      'number-input',
+      'slider',
+      'precision-slider',
+      'angle-dial',
+      'anchor-matrix',
+      'timeline-scrubber',
+    ],
+  },
+  {
+    id: 'dates-time',
+    en: 'Dates, Ranges & Calendars',
+    idLabel: 'Tanggal, Rentang Waktu & Kalender',
+    specimenIds: [
+      'date-input',
+      'time-input',
+      'date-time-input',
+      'date-range-input',
+      'calendar',
+    ],
+  },
+  {
+    id: 'color-media',
+    en: 'Color, Gradients & Media Dropzones',
+    idLabel: 'Warna, Gradien & Unggah Media',
+    specimenIds: [
+      'color-swatch',
+      'color-well',
+      'color-picker',
+      'gradient-picker',
+      'image-well',
+      'file-input',
+    ],
+  },
+];
+
+/**
+ * Canonical semantic family order within each of the 12 official categories
+ * (Core + Mehan unified side-by-side, zero chronological build-order artifacts).
+ */
+export const CANONICAL_CATEGORY_SPECIMEN_IDS: Record<
+  OfficialAstryxCategory,
+  ReadonlyArray<string>
+> = {
+  Layout: [
+    'app-shell',
+    'workspace-layout',
+    'canvas-stage',
+    'layout',
+    'resizable',
+    'section',
+    'grid',
+    'stack',
+    'form-layout',
+    'property-row',
+    'scrollable-area',
+    'center',
+    'aspect-ratio',
+    'divider',
+  ],
+  Navigation: [
+    'top-nav',
+    'side-nav',
+    'mobile-nav',
+    'nav-heading-menu',
+    'tab-list',
+    'breadcrumbs',
+    'stepper',
+    'outline',
+    'pagination',
+  ],
+  Container: [
+    'card',
+    'selectable-card',
+    'clickable-card',
+    'collapsible',
+    'carousel',
+  ],
+  Action: [
+    'button',
+    'split-button',
+    'icon-button',
+    'toggle-button',
+    'button-group',
+    'segmented-control',
+    'copy-button',
+    'inline-confirm',
+    'dropdown-menu',
+    'more-menu',
+    'context-menu',
+    'toolbar',
+    'canvas-zoom-bar',
+    'link',
+  ],
+  'Form Controls': FORM_CONTROL_SUBGROUPS.flatMap(g => g.specimenIds),
+  Content: [
+    'heading',
+    'text',
+    'middle-truncate',
+    'markdown',
+    'blockquote',
+    'citation',
+    'code',
+    'code-block',
+    'kbd',
+    'token',
+    'avatar',
+    'avatar-group',
+    'thumbnail',
+    'icon',
+    'timestamp',
+    'timer',
+    'empty-state',
+  ],
+  'Table & List': [
+    'table',
+    'column-settings-menu',
+    'list',
+    'item',
+    'metadata-list',
+    'tree-list',
+    'column-view',
+    'timeline',
+    'overflow-list',
+  ],
+  'Data Visualization': [
+    'metric-card',
+    'data-chart',
+    'sparkline',
+    'gauge',
+    'activity-ring',
+    'data-categorical-palette',
+  ],
+  'Feedback & Status': [
+    'badge',
+    'status-dot',
+    'banner',
+    'inline-message',
+    'error-summary',
+    'progress-bar',
+    'spinner',
+    'skeleton',
+    'info-tip',
+  ],
+  Overlay: [
+    'dialog',
+    'alert-dialog',
+    'drawer',
+    'bottom-sheet',
+    'popover',
+    'hover-card',
+    'tooltip',
+    'toast',
+    'command-palette',
+    'shortcut-sheet',
+    'notification-center',
+    'tour',
+    'lightbox',
+    'overlay',
+  ],
+  Chat: ['chat-thread', 'chat-tool-calls'],
+  Utility: [
+    'theme-switch',
+    'media-theme',
+    'syntax-theme',
+    'visually-hidden',
+    'hook-shortcuts',
+    'hook-autodraft',
+    'hook-viewport',
+    'hook-file-io',
+  ],
+};
+
+export function getSpecimenRank(
+  category: OfficialAstryxCategory,
+  id: string,
+): number {
+  const list = CANONICAL_CATEGORY_SPECIMEN_IDS[category];
+  const idx = list.indexOf(id);
+  return idx === -1 ? 999 : idx;
+}
+
 export const CATEGORY_LABELS_ID: Record<OfficialAstryxCategory, string> = {
-  Action: 'Action · Tombol & Perintah',
-  Chat: 'Chat · Percakapan AI',
+  Layout: 'Layout · Struktur & Workspace',
+  Navigation: 'Navigation · Navigasi & Alur',
   Container: 'Container · Wadah & Kartu',
+  Action: 'Action · Tombol & Perintah',
+  'Form Controls': 'Form Controls · Input & Studio',
   Content: 'Content · Tipografi & Media',
+  'Table & List': 'Table & List · Tabel & Hierarki',
   'Data Visualization': 'Data Visualization · Metrik & Grafik',
   'Feedback & Status': 'Feedback & Status · Indikator',
-  'Form Controls': 'Form Controls · Input & Presisi',
-  Layout: 'Layout · Struktur Halaman',
-  Navigation: 'Navigation · Navigasi',
-  Overlay: 'Overlay · Dialog & Popover',
-  'Table & List': 'Table & List · Tabel & Daftar',
-  Utility: 'Utility · Utilitas Tema',
+  Overlay: 'Overlay · Dialog, Drawer & Pintasan',
+  Chat: 'Chat · Percakapan AI',
+  Utility: 'Utility · Tema & Runtime Hooks',
 };
 
 export const CATEGORY_DESC: Record<
   OfficialAstryxCategory,
   {en: string; id: string}
 > = {
+  Layout: {
+    en: '3-level spatial hierarchy (`AppShell` -> `WorkspaceLayout` -> `CanvasStage`), `PropertyRow` inspector rows, draggable split-panes, grids, and stacks.',
+    id: 'Hierarki spasial 3-tingkat (`AppShell` -> `WorkspaceLayout` -> `CanvasStage`), baris inspektur `PropertyRow`, panel geser, grid, dan stack.',
+  },
+  Navigation: {
+    en: 'Top bars, collapsible side rails, mobile drawers, breadcrumbs, scroll-spy outlines, steppers, tabs, and pagination.',
+    id: 'Bilah navigasi atas, rel samping lipat, laci mobile, jejak halaman, daftar isi aktif, penunjuk tahap, tab, dan paginasi.',
+  },
+  Container: {
+    en: 'Elevated tactile cards, interactive selection cards, snap carousels, and progressive disclosures.',
+    id: 'Permukaan kartu bertingkat, kartu pilihan interaktif, rel geser, dan laci lipat bertahap.',
+  },
   Action: {
-    en: 'Tactile triggers, SplitButton, CopyButton, ThemeSwitch, InlineConfirm, CanvasZoomBar, and toolbars.',
-    id: 'Pemicu aksi taktil, SplitButton, CopyButton, ThemeSwitch, InlineConfirm, CanvasZoomBar, dan bilah alat.',
+    en: 'Tactile 3D push buttons, `SplitButton`, `CopyButton`, `InlineConfirm`, `CanvasZoomBar`, menus, and toolbars.',
+    id: 'Tombol tekan 3D taktil, `SplitButton`, `CopyButton`, `InlineConfirm`, `CanvasZoomBar`, menu, dan bilah alat.',
+  },
+  'Form Controls': {
+    en: 'Sub-clustered across Text & Rich Editors, Selection & Search, Sliders & Spatial Dials, Dates & Time, and Color & Media dropzones.',
+    id: 'Dikelompokkan rapi ke dalam Teks & Editor Kaya, Pilihan & Pencarian, Slider & Kenop Spasial, Tanggal & Waktu, serta Warna & Media.',
+  },
+  Content: {
+    en: 'Calibrated typography, `MiddleTruncate` paths/keys, Markdown, code blocks, `Kbd`, avatars, citations, and empty states.',
+    id: 'Tipografi terkalibrasi, pemotong tengah `MiddleTruncate`, Markdown, blok kode, `Kbd`, avatar, kutipan, dan tampilan kosong.',
+  },
+  'Table & List': {
+    en: 'Data tables paired with `ColumnSettingsMenu`, hierarchical `TreeList` & Miller `ColumnView` browsers, chronological `Timeline` rails, and metadata lists.',
+    id: 'Tabel data berpasangan dengan `ColumnSettingsMenu`, pohon vertikal `TreeList` & penjelajah kolom `ColumnView`, lini masa `Timeline`, dan daftar metadata.',
+  },
+  'Data Visualization': {
+    en: 'Tabular KPI `MetricCard`s, multi-series OKLCH `DataChart` (`line`, `area`, `bar`, `horizontal-bar`), `Sparkline`s, `Gauge`s, and `ActivityRing`s.',
+    id: 'Kartu KPI `MetricCard`, grafik multi-seri OKLCH `DataChart` (`line`, `area`, `bar`, `horizontal-bar`), `Sparkline`, `Gauge`, dan `ActivityRing`.',
+  },
+  'Feedback & Status': {
+    en: 'WCAG 2.2 AA badges, banners, `InlineMessage` lines, `ErrorSummary` focus jumps, progress tracks, spinners, and skeletons.',
+    id: 'Lencana WCAG 2.2 AA, kotak info, baris `InlineMessage`, lompatan fokus `ErrorSummary`, bilah progres, dan kerangka muat.',
+  },
+  Overlay: {
+    en: 'Modal dialogs, named destructive alerts, drawers, popovers, `CommandPalette`, `?` `ShortcutSheet`, `NotificationCenter`, and non-coercive `Tour`.',
+    id: 'Dialog modal, konfirmasi hapus bernama, laci samping, popover, `CommandPalette`, lembar pintasan `ShortcutSheet`, `NotificationCenter`, dan `Tour`.',
   },
   Chat: {
     en: 'Conversational AI threads, tool-execution disclosures, and multi-action message composers.',
     id: 'Utas percakapan AI, rincian eksekusi alat, dan kolom ketik pesan terpadu.',
   },
-  Container: {
-    en: 'Elevated surfaces, interactive selection cards, snap carousels, and progressive disclosures.',
-    id: 'Permukaan kartu bertingkat, kartu pilihan interaktif, rel geser, dan laci lipat.',
-  },
-  Content: {
-    en: 'Calibrated typography, MiddleTruncate paths/keys, code blocks, avatars, citations, and empty states.',
-    id: 'Tipografi terkalibrasi, MiddleTruncate path/kunci, blok kode, avatar, kutipan, dan tampilan kosong.',
-  },
-  'Data Visualization': {
-    en: 'Tabular KPI MetricCards, Sparklines, 240° Gauges, concentric ActivityRings, and OKLCH chart palettes.',
-    id: 'MetricCard KPI berangka sejajar, Sparkline, Gauge 240°, ActivityRing konsentris, dan palet OKLCH.',
-  },
-  'Feedback & Status': {
-    en: 'WCAG badges, banners, ErrorSummary focus jumps, InlineMessages, progress tracks, and shimmers.',
-    id: 'Lencana status, kotak info, lompatan fokus ErrorSummary, InlineMessage, bilah progres, dan kerangka muat.',
-  },
-  'Form Controls': {
-    en: 'Recessed-well fields, DigitEntry OTP, Rating, ImageWell, ColorWell, GradientPicker, AngleDial, AnchorMatrix, TimelineScrubber, and Code/Markdown editors.',
-    id: 'Kolom input cekung, DigitEntry OTP, Rating, ImageWell, ColorWell, GradientPicker, AngleDial, AnchorMatrix, TimelineScrubber, serta editor Kode/Markdown.',
-  },
-  Layout: {
-    en: 'Bounded application shells, structured panels, draggable split-panes, and token-stepped stacks.',
-    id: 'Kerangka aplikasi, panel terstruktur, pembatas geser interaktif, dan penyusun jarak konsisten.',
-  },
-  Navigation: {
-    en: 'Top bars, collapsible side rails, breadcrumbs, scroll-spy outlines, steppers, and tabs.',
-    id: 'Bilah atas, navigasi samping, jejak halaman, daftar isi aktif, penunjuk tahap, dan tab.',
-  },
-  Overlay: {
-    en: 'Modal dialogs, named destructive alerts, drawers, bottom sheets, NotificationCenter, Tour, and command palettes.',
-    id: 'Dialog modal, konfirmasi hapus bernama, laci samping, NotificationCenter, Tour, dan palet perintah.',
-  },
-  'Table & List': {
-    en: 'Row-first data tables with shaded headers and tabular numerals, chronological Timelines, lists, and treeviews.',
-    id: 'Tabel data rapi berheader tegas dengan angka sejajar, lini masa Timeline, daftar terstruktur, dan pohon hierarki.',
-  },
   Utility: {
-    en: 'Scoped media contrast zones, local syntax-highlighting themes, and screen-reader helpers.',
-    id: 'Zona kontras di atas media gelap, tema sintaks kode lokal, dan utilitas pembaca layar.',
+    en: '`ThemeSwitch`, scoped media & syntax themes, screen-reader helpers, and Mehan Runtime Hooks (`useMehanShortcuts`, `useAutoDraft`, `useMehanViewport`, File I/O).',
+    id: '`ThemeSwitch`, zona kontras media & tema sintaks, pembaca layar, serta Runtime Hooks Mehan (`useMehanShortcuts`, `useAutoDraft`, `useMehanViewport`, File I/O).',
   },
 };
 

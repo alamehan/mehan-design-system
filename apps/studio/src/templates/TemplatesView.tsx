@@ -49,9 +49,24 @@ import {
   VisuallyHidden,
   pixel,
   proportional,
+  useTableColumnSettings,
+  useTableColumnSettingsState,
   useToast,
 } from '@astryxdesign/core';
-import {ColorSwatch, MetricCard, PrecisionSlider} from '@mehan/astryx';
+import {
+  CanvasStage,
+  CanvasZoomBar,
+  ColorSwatch,
+  ColumnSettingsMenu,
+  CopyButton,
+  DataChart,
+  MetricCard,
+  PrecisionSlider,
+  PropertyRow,
+  TimelineScrubber,
+  WorkspaceLayout,
+  useAutoDraft,
+} from '@mehan/astryx';
 import {
   CreditCard,
   DollarSign,
@@ -1112,20 +1127,53 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
   const showToast = useToast();
   const [templateTab, setTemplateTab] = useState<string>('showcase');
 
+  // Tier 1: 5-in-1 Workspace Topology Explorer states
+  const [topologyMode, setTopologyMode] = useState<
+    'form-result' | 'workbench' | 'explorer' | 'collection' | 'studio'
+  >('explorer');
+  const [topoInspectorOpen, setTopoInspectorOpen] = useState(true);
+  const [topoSelectedItem, setTopoSelectedItem] = useState('Edge Gateway');
+  const [topoZoom, setTopoZoom] = useState(100);
+  const [topoTime, setTopoTime] = useState(2.4);
+
   // SaaS Dashboard states
   const [deployFilter, setDeployFilter] = useState<string>('all');
   const [deployQuery, setDeployQuery] = useState<string>('');
+  const [dashActiveCols, setDashActiveCols] = useState<ReadonlyArray<string>>([
+    'service',
+    'env',
+    'latency',
+    'status',
+  ]);
+  const dashColState = useTableColumnSettingsState({
+    columns: [
+      {key: 'service', label: isId ? 'Layanan' : 'Service', isAlwaysVisible: true},
+      {key: 'env', label: isId ? 'Lingkungan' : 'Environment'},
+      {key: 'latency', label: isId ? 'Latensi P50' : 'P50 latency'},
+      {key: 'status', label: 'Status'},
+    ],
+    activeColumnKeys: dashActiveCols,
+    onChangeActiveColumnKeys: setDashActiveCols,
+    defaultColumnKeys: ['service', 'env', 'latency', 'status'],
+  });
 
-  // Settings states
-  const [orgName, setOrgName] = useState('Mehan Labs');
+  // Settings states (with useAutoDraft dogfooding)
+  const orgDraft = useAutoDraft({
+    key: 'mehan-template-org-name',
+    initialValue: 'Mehan Labs',
+    version: 1,
+  });
   const [billingEmail, setBillingEmail] = useState('ops@mehan.design');
   const [webhookSecret, setWebhookSecret] = useState('whsec_94fa82c10e');
   const [ssoEnforced, setSsoEnforced] = useState(true);
+  const [sessionTtl, setSessionTtl] = useState('24h');
 
   // Shotcandy 3D Canvas states
   const [shotPadding, setShotPadding] = useState(36);
   const [shotRadius, setShotRadius] = useState(18);
   const [shotTilt, setShotTilt] = useState(-4);
+  const [shotZoom, setShotZoom] = useState(100);
+  const [shotPlayhead, setShotPlayhead] = useState(1.2);
   const [backdropId, setBackdropId] = useState<string>('berry-cream');
   const activeBackdrop =
     BACKDROP_PRESETS.find(b => b.id === backdropId) ?? BACKDROP_PRESETS[0];
@@ -1137,7 +1185,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
         service: 'Design Token API',
         env: 'Production',
         latency: '18 ms',
-        status: 'Healthy',
+        status: isId ? 'Sehat' : 'Healthy',
         variant: 'success' as const,
       },
       {
@@ -1145,7 +1193,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
         service: 'Billing Checkout UI',
         env: 'Production',
         latency: '24 ms',
-        status: 'Healthy',
+        status: isId ? 'Sehat' : 'Healthy',
         variant: 'success' as const,
       },
       {
@@ -1153,7 +1201,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
         service: 'Preview Sandbox',
         env: 'Staging',
         latency: '41 ms',
-        status: 'Syncing',
+        status: isId ? 'Sinkronisasi' : 'Syncing',
         variant: 'info' as const,
       },
       {
@@ -1161,7 +1209,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
         service: 'Webhook Dispatcher',
         env: 'Production',
         latency: '112 ms',
-        status: 'Review',
+        status: isId ? 'Tinjau' : 'Review',
         variant: 'warning' as const,
       },
     ];
@@ -1176,7 +1224,27 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
       }
       return true;
     });
-  }, [deployFilter, deployQuery]);
+  }, [deployFilter, deployQuery, isId]);
+
+  const dashColPlugin = useTableColumnSettings<(typeof deploymentRows)[number]>(
+    dashColState.columnSettingsConfig,
+  );
+
+  const topologyJsxSnippet = useMemo(() => {
+    if (topologyMode === 'form-result') {
+      return `<WorkspaceLayout\n  startPane={{title: 'Parameters', mobileMode: 'stack', content: <FormFields />}}\n>\n  <LiveResultPreview />\n</WorkspaceLayout>`;
+    }
+    if (topologyMode === 'workbench') {
+      return `<WorkspaceLayout\n  toolbar={<Toolbar ... />}\n  startPane={{title: 'Sources', isResizable: true, content: <TreeList />}}\n>\n  <MainEditor />\n</WorkspaceLayout>`;
+    }
+    if (topologyMode === 'collection') {
+      return `<WorkspaceLayout\n  toolbar={<FilterToolbar />}\n  endPane={{title: 'Row Details', isOpen, onOpenChange: setIsOpen, content: <Inspector />}}\n>\n  <Table ... />\n</WorkspaceLayout>`;
+    }
+    if (topologyMode === 'studio') {
+      return `<WorkspaceLayout\n  startPane={{title: 'Layers', content: <LayerList />}}\n  endPane={{title: 'Properties', isOpen: true, onOpenChange: setOpen, content: <PropertyRows />}}\n>\n  <CanvasStage backdrop="dots" bottomEnd={<CanvasZoomBar ... />} transport={<TimelineScrubber ... />}>\n    <Viewport />\n  </CanvasStage>\n</WorkspaceLayout>`;
+    }
+    return `<WorkspaceLayout\n  toolbar={<Toolbar ... />}\n  startPane={{title: 'Navigation', isCollapsible: true, content: <NavList />}}\n  endPane={{title: 'Inspector', isOpen, onOpenChange: setIsOpen, content: <Details />}}\n>\n  <MainView />\n</WorkspaceLayout>`;
+  }, [topologyMode]);
 
   return (
     <Stack gap={4}>
@@ -1203,6 +1271,10 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
             label={copy.templates.tabShowcase}
           />
           <SegmentedControlItem
+            value="topologies"
+            label={copy.templates.tabTopologies}
+          />
+          <SegmentedControlItem
             value="dashboard"
             label={copy.templates.tabDashboard}
           />
@@ -1216,34 +1288,254 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
 
       {templateTab === 'showcase' && <OfficialThemeShowcase />}
 
+      {templateTab === 'topologies' && (
+        <Stack gap={3}>
+          <Card elevation="low" padding={4}>
+            <Stack gap={3}>
+              <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+                <Stack gap={0.5}>
+                  <Badge
+                    variant="info"
+                    label={
+                      isId
+                        ? '1 Primitif · 5 Topologi Universal'
+                        : '1 Primitive · 5 Universal Topologies'
+                    }
+                  />
+                  <Heading level={3}>
+                    {isId
+                      ? 'WorkspaceLayout + CanvasStage di atas Meta Astryx'
+                      : 'WorkspaceLayout + CanvasStage on Meta Astryx'}
+                  </Heading>
+                </Stack>
+                <CopyButton
+                  value={topologyJsxSnippet}
+                  label={isId ? 'Salin JSX topologi' : 'Copy topology JSX'}
+                  copiedLabel={isId ? 'Tersalin' : 'Copied'}
+                />
+              </HStack>
+
+              <SegmentedControl
+                label="Workspace topology mode"
+                size="sm"
+                value={topologyMode}
+                onChange={v =>
+                  setTopologyMode(
+                    v as
+                      | 'form-result'
+                      | 'workbench'
+                      | 'explorer'
+                      | 'collection'
+                      | 'studio',
+                  )
+                }
+              >
+                <SegmentedControlItem value="explorer" label="3-Pane Explorer" />
+                <SegmentedControlItem value="form-result" label="Form + Result" />
+                <SegmentedControlItem value="workbench" label="2-Pane Workbench" />
+                <SegmentedControlItem value="collection" label="Collection + Inspector" />
+                <SegmentedControlItem value="studio" label="Canvas Studio" />
+              </SegmentedControl>
+
+              <WorkspaceLayout
+                enableShortcuts={false}
+                desktopHeight={320}
+                label="Interactive workspace topology preview"
+                toolbar={
+                  topologyMode === 'form-result' ? undefined : (
+                    <HStack hAlign="between" vAlign="center" gap={2}>
+                      <Text weight="semibold">
+                        {topologyMode === 'collection'
+                          ? isId
+                            ? 'Koleksi Layanan & Filter'
+                            : 'Service Collection & Filters'
+                          : topologyMode === 'studio'
+                            ? isId
+                              ? 'Kanvas Studio Interaktif'
+                              : 'Interactive Studio Workbench'
+                            : isId
+                              ? 'Ruang Kerja Multi-Panel'
+                              : 'Multi-Pane Workspace'}
+                      </Text>
+                      {(topologyMode === 'explorer' ||
+                        topologyMode === 'collection' ||
+                        topologyMode === 'studio') && (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          label={
+                            topoInspectorOpen
+                              ? isId
+                                ? 'Tutup Inspector'
+                                : 'Hide Inspector'
+                              : isId
+                                ? 'Buka Inspector'
+                                : 'Open Inspector'
+                          }
+                          onClick={() => setTopoInspectorOpen(prev => !prev)}
+                        />
+                      )}
+                    </HStack>
+                  )
+                }
+                startPane={
+                  topologyMode === 'collection'
+                    ? undefined
+                    : {
+                        title:
+                          topologyMode === 'form-result'
+                            ? isId
+                              ? 'Input Parameter'
+                              : 'Input Parameters'
+                            : topologyMode === 'studio'
+                              ? isId
+                                ? 'Lapisan'
+                                : 'Layers'
+                              : isId
+                                ? 'Sumber Data'
+                                : 'Sources',
+                        defaultWidth: 210,
+                        isResizable: topologyMode === 'workbench',
+                        mobileMode:
+                          topologyMode === 'form-result' ? 'stack' : 'collapsible',
+                        content: (
+                          <Stack gap={1.5}>
+                            {['Edge Gateway', 'Token Compiler', 'Billing Worker'].map(
+                              item => (
+                                <Button
+                                  key={item}
+                                  variant={
+                                    topoSelectedItem === item ? 'secondary' : 'ghost'
+                                  }
+                                  size="sm"
+                                  label={item}
+                                  onClick={() => {
+                                    setTopoSelectedItem(item);
+                                    setTopoInspectorOpen(true);
+                                  }}
+                                />
+                              ),
+                            )}
+                          </Stack>
+                        ),
+                      }
+                }
+                endPane={
+                  topologyMode === 'explorer' ||
+                  topologyMode === 'collection' ||
+                  topologyMode === 'studio'
+                    ? {
+                        title: isId ? 'Inspektur Detail' : 'Detail Inspector',
+                        isOpen: topoInspectorOpen,
+                        onOpenChange: setTopoInspectorOpen,
+                        defaultWidth: 240,
+                        content: (
+                          <Stack gap={2}>
+                            <Badge variant="success" label={topoSelectedItem} />
+                            <PropertyRow label={isId ? 'Wilayah' : 'Region'}>
+                              <Text type="supporting">ap-southeast-1</Text>
+                            </PropertyRow>
+                            <PropertyRow label="SLO">
+                              <Text type="supporting" hasTabularNumbers>
+                                99.99%
+                              </Text>
+                            </PropertyRow>
+                          </Stack>
+                        ),
+                      }
+                    : undefined
+                }
+              >
+                {topologyMode === 'studio' ? (
+                  <CanvasStage
+                    backdrop="dots"
+                    minHeight={210}
+                    bottomEnd={
+                      <CanvasZoomBar
+                        zoom={topoZoom}
+                        onZoomChange={setTopoZoom}
+                        onFitToScreen={() => setTopoZoom(100)}
+                        menuPlacement="top"
+                      />
+                    }
+                    transport={
+                      <TimelineScrubber
+                        currentTime={topoTime}
+                        duration={8}
+                        onSeek={setTopoTime}
+                      />
+                    }
+                  >
+                    <Card padding={3} elevation="low">
+                      <Text weight="semibold">
+                        {topoSelectedItem} · {topoZoom}%
+                      </Text>
+                    </Card>
+                  </CanvasStage>
+                ) : (
+                  <Stack gap={2}>
+                    <Heading level={4}>{topoSelectedItem}</Heading>
+                    <Text color="secondary">
+                      {isId
+                        ? 'Panel samping menggunakan LayoutPanel + ResizeHandle milik Meta Astryx di layar lebar, dan otomatis berubah menjadi Drawer modal di bawah 768px.'
+                        : 'Side panels run on Meta Astryx LayoutPanel + ResizeHandle on desktop, and automatically morph into modal Drawers below 768px.'}
+                    </Text>
+                  </Stack>
+                )}
+              </WorkspaceLayout>
+            </Stack>
+          </Card>
+        </Stack>
+      )}
+
       {templateTab === 'dashboard' && (
         <Stack gap={4}>
           <Grid columns={{minWidth: 210, max: 4, repeat: 'fit'}} gap={3}>
             <MetricCard
-              label="Active workspaces"
+              label={isId ? 'Ruang kerja aktif' : 'Active workspaces'}
               value="2,840"
               delta={{value: '+14.2%', direction: 'up'}}
-              caption="Last 30 days"
+              caption={isId ? '30 hari terakhir' : 'Last 30 days'}
             />
             <MetricCard
-              label="Median latency"
+              label={isId ? 'Latensi median' : 'Median latency'}
               value="21 ms"
               delta={{value: '-4 ms', direction: 'up', sentiment: 'positive'}}
-              caption="Global edge p50"
+              caption={isId ? 'Edge global p50' : 'Global edge p50'}
             />
             <MetricCard
-              label="Error rate"
+              label={isId ? 'Rasio galat' : 'Error rate'}
               value="0.02%"
               delta={{value: '0.00%', direction: 'flat'}}
-              caption="Within SLO budget"
+              caption={isId ? 'Dalam batas SLO' : 'Within SLO budget'}
             />
             <MetricCard
-              label="WCAG AA pass"
+              label={isId ? 'Lulus WCAG 2.2 AA' : 'WCAG 2.2 AA pass'}
               value="100%"
-              delta={{value: 'Locked', direction: 'up'}}
-              caption="Light & Dark modes"
+              delta={{value: isId ? 'Terkunci' : 'Locked', direction: 'up'}}
+              caption={isId ? 'Mode Terang & Gelap' : 'Light & Dark modes'}
             />
           </Grid>
+
+          <DataChart
+            title={isId ? 'Trafik Edge & Permintaan Origin' : 'Edge Traffic & Origin Requests'}
+            subtitle={isId ? 'Permintaan per detik (6 jam terakhir)' : 'Requests per second (last 6 hours)'}
+            kind="area"
+            height={190}
+            categories={['08:00', '10:00', '12:00', '14:00', '16:00', '18:00']}
+            series={[
+              {
+                id: 'edge',
+                label: isId ? 'Cache Edge' : 'Edge Cache',
+                values: [540, 690, 880, 920, 1040, 990],
+              },
+              {
+                id: 'origin',
+                label: isId ? 'Origin Langsung' : 'Origin Fetch',
+                values: [140, 165, 190, 175, 160, 148],
+              },
+            ]}
+          />
 
           <Card elevation="low" padding={4}>
             <Stack gap={3}>
@@ -1257,14 +1549,14 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                 <Heading level={3}>
                   {isId ? 'Deployment layanan' : 'Service deployments'}
                 </Heading>
-                <Stack direction="horizontal" gap={2} wrap="wrap">
+                <Stack direction="horizontal" gap={2} wrap="wrap" align="center">
                   <SegmentedControl
                     label="Filter environment"
                     size="sm"
                     value={deployFilter}
                     onChange={setDeployFilter}
                   >
-                    <SegmentedControlItem value="all" label="All" />
+                    <SegmentedControlItem value="all" label={isId ? 'Semua' : 'All'} />
                     <SegmentedControlItem value="prod" label="Production" />
                     <SegmentedControlItem value="staging" label="Staging" />
                   </SegmentedControl>
@@ -1277,26 +1569,33 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                     value={deployQuery}
                     onChange={setDeployQuery}
                   />
+                  <ColumnSettingsMenu
+                    triggerLabel={isId ? 'Kolom' : 'Columns'}
+                    columns={dashColState.columnSettingsConfig.columns}
+                    state={dashColState}
+                  />
                 </Stack>
               </Stack>
 
               <Table
                 aria-label="Service deployments"
                 data={deploymentRows}
+                idKey="id"
+                plugins={{columnSettings: dashColPlugin}}
                 columns={[
                   {
                     key: 'service',
-                    header: 'Service',
+                    header: isId ? 'Layanan' : 'Service',
                     width: proportional(1.6),
                   },
                   {
                     key: 'env',
-                    header: 'Environment',
+                    header: isId ? 'Lingkungan' : 'Environment',
                     width: proportional(1),
                   },
                   {
                     key: 'latency',
-                    header: 'P50 latency',
+                    header: isId ? 'Latensi P50' : 'P50 latency',
                     width: proportional(0.9),
                     align: 'end',
                     renderCell: row => (
@@ -1327,39 +1626,88 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
       )}
 
       {templateTab === 'settings' && (
-        <Card elevation="low" padding={4} maxWidth={680}>
+        <Card elevation="low" padding={4} maxWidth={720}>
           <Stack gap={4}>
-            <Stack gap={1}>
-              <Badge variant="info" label="Progressive disclosure" />
-              <Heading level={3}>
-                {isId ? 'Pengaturan organisasi' : 'Organization settings'}
-              </Heading>
-              <Text color="secondary">
-                {isId
-                  ? 'Hanya menampilkan kontrol inti di awal; parameter teknis disimpan rapi di bagian lanjutan.'
-                  : 'Surfaces essential controls upfront while keeping webhook secrets inside an expandable section.'}
-              </Text>
-            </Stack>
+            <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+              <Stack gap={1}>
+                <HStack gap={2} vAlign="center" wrap="wrap">
+                  <Badge
+                    variant="info"
+                    label={isId ? 'Pengungkapan bertahap' : 'Progressive disclosure'}
+                  />
+                  <Badge
+                    variant={orgDraft.isDirty ? 'warning' : 'success'}
+                    label={
+                      orgDraft.isDirty
+                        ? isId
+                          ? 'Draf tersimpan otomatis'
+                          : 'Draft auto-saved'
+                        : isId
+                          ? 'Tersinkronisasi'
+                          : 'Synced'
+                    }
+                  />
+                </HStack>
+                <Heading level={3}>
+                  {isId ? 'Pengaturan organisasi' : 'Organization settings'}
+                </Heading>
+                <Text color="secondary">
+                  {isId
+                    ? 'Menampilkan kontrol utama secara tenang; parameter keamanan & webhook disimpan rapi di bagian lanjutan.'
+                    : 'Surfaces essential controls upfront while keeping security policies & webhook secrets tucked cleanly.'}
+                </Text>
+              </Stack>
+            </HStack>
 
             <TextInput
               label={isId ? 'Nama organisasi' : 'Organization name'}
-              value={orgName}
-              onChange={setOrgName}
+              value={orgDraft.value}
+              onChange={orgDraft.setValue}
             />
             <TextInput
               label={isId ? 'Email tagihan' : 'Billing email'}
               value={billingEmail}
               onChange={setBillingEmail}
             />
-            <Switch
-              label={
-                isId
-                  ? 'Wajibkan Single Sign-On (SAML SSO)'
-                  : 'Enforce Single Sign-On (SAML SSO)'
-              }
-              value={ssoEnforced}
-              onChange={setSsoEnforced}
-            />
+
+            <Stack gap={2}>
+              <PropertyRow
+                label={isId ? 'Wajibkan SAML SSO' : 'Enforce SAML SSO'}
+                labelWidth={160}
+                hint={
+                  isId
+                    ? 'Mewajibkan seluruh anggota masuk melalui penyedia identitas perusahaan.'
+                    : 'Requires all workspace members to authenticate via your identity provider.'
+                }
+                isModified={!ssoEnforced}
+                onReset={() => setSsoEnforced(true)}
+              >
+                <Switch
+                  label="Enforce SAML SSO"
+                  isLabelHidden
+                  value={ssoEnforced}
+                  onChange={setSsoEnforced}
+                />
+              </PropertyRow>
+
+              <PropertyRow
+                label={isId ? 'Masa aktif sesi' : 'Session TTL'}
+                labelWidth={160}
+                isModified={sessionTtl !== '24h'}
+                onReset={() => setSessionTtl('24h')}
+              >
+                <SegmentedControl
+                  label="Session duration"
+                  size="sm"
+                  value={sessionTtl}
+                  onChange={setSessionTtl}
+                >
+                  <SegmentedControlItem value="8h" label="8h" />
+                  <SegmentedControlItem value="24h" label="24h" />
+                  <SegmentedControlItem value="7d" label="7d" />
+                </SegmentedControl>
+              </PropertyRow>
+            </Stack>
 
             <Collapsible
               defaultIsOpen={false}
@@ -1371,7 +1719,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
             >
               <Stack gap={3}>
                 <TextInput
-                  label="Signing secret"
+                  label={isId ? 'Kunci tanda tangan webhook' : 'Webhook signing secret'}
                   value={webhookSecret}
                   onChange={setWebhookSecret}
                 />
@@ -1379,16 +1727,21 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
             </Collapsible>
 
             <HStack gap={2} hAlign="end">
-              <Button variant="ghost" label={isId ? 'Batal' : 'Cancel'} />
+              <Button
+                variant="ghost"
+                label={isId ? 'Reset' : 'Reset'}
+                onClick={() => orgDraft.resetToInitial()}
+              />
               <Button
                 variant="primary"
                 label={isId ? 'Simpan perubahan' : 'Save changes'}
-                onClick={() =>
+                onClick={() => {
+                  orgDraft.clearDraft();
                   showToast({
                     type: 'info',
                     body: isId ? 'Pengaturan disimpan.' : 'Settings saved.',
-                  })
-                }
+                  });
+                }}
               />
             </HStack>
           </Stack>
@@ -1396,72 +1749,104 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
       )}
 
       {templateTab === 'canvas' && (
-        <Grid columns={{minWidth: 300, max: 2, repeat: 'fit'}} gap={4} align="start">
-          <Card elevation="low" padding={4}>
-            <Stack gap={3}>
-              <Stack gap={1}>
-                <Badge variant="pink" label="Shotcandy DNA archetype" />
-                <Heading level={3}>
-                  {isId ? 'Inspektur kanvas 3D' : '3D canvas inspector'}
-                </Heading>
-                <Text color="secondary">
-                  {isId
-                    ? 'Geser slider presisi atau klik 2x angka untuk mereset ke nilai bawaan.'
-                    : 'Drag precision sliders or double-click readouts to reset to default.'}
-                </Text>
+        <WorkspaceLayout
+          enableShortcuts={false}
+          label="3D product studio workspace"
+          startPane={{
+            title: isId ? 'Inspektur Kanvas 3D' : '3D Canvas Inspector',
+            defaultWidth: 320,
+            mobileMode: 'stack',
+            content: (
+              <Stack gap={3}>
+                <Stack gap={1}>
+                  <Badge variant="pink" label="Shotcandy × Astryx" />
+                  <Text type="supporting" color="secondary">
+                    {isId
+                      ? 'Geser slider presisi atau klik 2x angka untuk kembali ke nilai bawaan.'
+                      : 'Drag precision sliders or double-click readouts to reset to default.'}
+                  </Text>
+                </Stack>
+
+                <Stack direction="horizontal" gap={1.5} wrap="wrap">
+                  {BACKDROP_PRESETS.map(b => (
+                    <ColorSwatch
+                      key={b.id}
+                      color={b.swatch}
+                      label={b.label}
+                      isSelected={backdropId === b.id}
+                      onSelect={() => setBackdropId(b.id)}
+                    />
+                  ))}
+                </Stack>
+
+                <PrecisionSlider
+                  label={isId ? 'Padding latar' : 'Backdrop padding'}
+                  value={shotPadding}
+                  min={16}
+                  max={72}
+                  stops={[24, 36, 48]}
+                  unit="px"
+                  onChange={setShotPadding}
+                />
+                <PrecisionSlider
+                  label={isId ? 'Radius sudut' : 'Corner radius'}
+                  value={shotRadius}
+                  min={0}
+                  max={32}
+                  stops={[12, 18, 24]}
+                  unit="px"
+                  onChange={setShotRadius}
+                />
+                <PrecisionSlider
+                  label={isId ? 'Kemiringan 3D' : 'Perspective tilt'}
+                  value={shotTilt}
+                  min={-16}
+                  max={16}
+                  stops={[-8, 0, 8]}
+                  isCentered
+                  unit="°"
+                  onChange={setShotTilt}
+                />
               </Stack>
-
-              <Stack direction="horizontal" gap={1.5} wrap="wrap">
-                {BACKDROP_PRESETS.map(b => (
-                  <ColorSwatch
-                    key={b.id}
-                    color={b.swatch}
-                    label={b.label}
-                    isSelected={backdropId === b.id}
-                    onSelect={() => setBackdropId(b.id)}
-                  />
-                ))}
-              </Stack>
-
-              <PrecisionSlider
-                label={isId ? 'Padding latar' : 'Backdrop padding'}
-                value={shotPadding}
-                min={16}
-                max={72}
-                stops={[24, 36, 48]}
-                unit="px"
-                onChange={setShotPadding}
+            ),
+          }}
+        >
+          <CanvasStage
+            backdrop="dots"
+            minHeight={340}
+            topStart={
+              <Badge
+                variant="neutral"
+                label={isId ? 'Pratinjau 60fps' : '60fps Live Stage'}
               />
-              <PrecisionSlider
-                label={isId ? 'Radius sudut' : 'Corner radius'}
-                value={shotRadius}
-                min={0}
-                max={32}
-                stops={[12, 18, 24]}
-                unit="px"
-                onChange={setShotRadius}
+            }
+            bottomEnd={
+              <CanvasZoomBar
+                zoom={shotZoom}
+                onZoomChange={setShotZoom}
+                onFitToScreen={() => setShotZoom(100)}
+                menuPlacement="top"
               />
-              <PrecisionSlider
-                label={isId ? 'Kemiringan 3D' : 'Perspective tilt'}
-                value={shotTilt}
-                min={-16}
-                max={16}
-                stops={[-8, 0, 8]}
-                isCentered
-                unit="°"
-                onChange={setShotTilt}
+            }
+            transport={
+              <TimelineScrubber
+                currentTime={shotPlayhead}
+                duration={5}
+                onSeek={setShotPlayhead}
+                markers={[
+                  {id: 'k1', time: 1.2, label: 'Key light'},
+                  {id: 'k2', time: 3.6, label: 'Tilt reveal'},
+                ]}
               />
-            </Stack>
-          </Card>
-
-          <div className="studio-canvas-stage">
+            }
+          >
             <div
               className="studio-shot-frame"
               style={{
                 padding: shotPadding,
                 borderRadius: shotRadius + 10,
                 backgroundImage: activeBackdrop.gradient,
-                transform: `perspective(900px) rotateY(${shotTilt}deg) rotateX(${Math.abs(shotTilt) * 0.35}deg)`,
+                transform: `scale(${shotZoom / 100}) perspective(900px) rotateY(${shotTilt}deg) rotateX(${Math.abs(shotTilt) * 0.35}deg)`,
                 boxShadow: 'var(--shadow-high)',
               }}
             >
@@ -1476,22 +1861,25 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                 </div>
                 <Stack gap={2}>
                   <Badge variant="info" label="Shotcandy × Astryx" />
-                  <Heading level={4}>Tactile surface render</Heading>
+                  <Heading level={4}>
+                    {isId ? 'Render permukaan taktil' : 'Tactile surface render'}
+                  </Heading>
                   <Text type="supporting" color="secondary">
-                    Warm confectionery paper, recessed wells, and boiled-sweet CTA
-                    lips rendered at 60fps.
+                    {isId
+                      ? 'Kertas hangat Confectionery, sumur input cekung, dan bibir tombol 3D terkalibrasi penuh.'
+                      : 'Warm confectionery paper, recessed wells, and boiled-sweet CTA lips rendered at 60fps.'}
                   </Text>
                   <Button
                     variant="primary"
                     size="sm"
-                    label="Export 4K PNG"
+                    label={isId ? 'Ekspor PNG 4K' : 'Export 4K PNG'}
                     icon={<Sparkles size={14} />}
                   />
                 </Stack>
               </div>
             </div>
-          </div>
-        </Grid>
+          </CanvasStage>
+        </WorkspaceLayout>
       )}
     </Stack>
   );

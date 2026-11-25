@@ -9,17 +9,17 @@ const studioFileUrl = pathToFileURL(studioHtmlPath).href;
 const shotDir = process.env.MEHAN_SHOT_DIR ?? path.join(repoRoot, 'test-results');
 
 const OFFICIAL_CATEGORIES = [
-  'Action',
-  'Chat',
-  'Container',
-  'Content',
-  'Data Visualization',
-  'Feedback & Status',
-  'Form Controls',
   'Layout',
   'Navigation',
-  'Overlay',
+  'Container',
+  'Action',
+  'Form Controls',
+  'Content',
   'Table & List',
+  'Data Visualization',
+  'Feedback & Status',
+  'Overlay',
+  'Chat',
   'Utility',
 ] as const;
 
@@ -111,7 +111,7 @@ test.describe('Stage 3 — Exhaustive 12-Category Catalog Audit (Light & Dark, D
 
     await page.getByText('EN', {exact: true}).click();
     await page.getByRole('tab', {name: 'Components'}).click();
-    await expect(page.getByText('131 live specimens')).toBeVisible();
+    await expect(page.getByText('142 live specimens')).toBeVisible();
 
     // 1. Audit all 12 categories in Light mode AND Dark mode (24 category passes!)
     let totalCountLight = 0;
@@ -160,7 +160,7 @@ test.describe('Stage 3 — Exhaustive 12-Category Catalog Audit (Light & Dark, D
       }
     }
 
-    expect(totalCountLight).toBe(131);
+    expect(totalCountLight).toBe(142);
 
     // Switch back to Light mode for Keyboard Tab Focus-Ring Reachability Sweep
     await page.getByRole('button', {name: 'Light mode'}).click();

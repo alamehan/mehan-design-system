@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   AlertDialog,
   Badge,
@@ -25,8 +25,9 @@ import {
   ColorSwatch,
   MetricCard,
   PrecisionSlider,
-  isTypingTarget,
+  ShortcutSheet,
   useHistoryStore,
+  useMehanShortcuts,
 } from '@mehan/astryx';
 import {
   MEHAN_ATMOSPHERES,
@@ -44,6 +45,7 @@ import {
   ArrowRight,
   Copy,
   Download,
+  Keyboard,
   Moon,
   SlidersHorizontal,
   Sparkles,
@@ -124,6 +126,44 @@ function StudioInner({
   const [sourceMode, setSourceMode] = useState<InstallSourceMode>('local');
   const [cssMode, setCssMode] = useState<InstallCssMode>('plain');
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const catalogSearchRef = useRef<HTMLInputElement | null>(null);
+
+  useMehanShortcuts([
+    {
+      keys: '?',
+      label: isId ? 'Buka referensi pintasan keyboard' : 'Open keyboard shortcuts sheet',
+      group: 'Studio',
+      onPress: () => setShortcutsOpen(true),
+    },
+    {
+      keys: '/',
+      label: isId ? 'Cari komponen di katalog' : 'Focus component catalog search',
+      group: 'Studio',
+      onPress: () => {
+        setActiveTab('components');
+        requestAnimationFrame(() => catalogSearchRef.current?.focus());
+      },
+    },
+    {
+      keys: 'mod+.',
+      label: isId ? 'Buka / tutup Theme Editor' : 'Toggle Docked Theme Editor',
+      group: 'Studio',
+      onPress: () => setEditorOpen(prev => !prev),
+    },
+    {
+      keys: 'mod+z',
+      label: isId ? 'Urungkan perubahan tema' : 'Undo theme change',
+      group: 'History',
+      onPress: () => onUndo(),
+    },
+    {
+      keys: 'mod+shift+z',
+      label: isId ? 'Ulangi perubahan tema' : 'Redo theme change',
+      group: 'History',
+      onPress: () => onRedo(),
+    },
+  ]);
 
   // Live Hero Demo Widget state (real product surface, not duplicate theme knobs)
   const [heroChannel, setHeroChannel] = useState<string>('production');
@@ -293,6 +333,14 @@ function StudioInner({
             </SegmentedControl>
 
             <IconButton
+              variant="ghost"
+              size="sm"
+              label={copy.nav.shortcuts}
+              icon={<Keyboard size={15} />}
+              onClick={() => setShortcutsOpen(true)}
+            />
+
+            <IconButton
               variant="secondary"
               size="sm"
               label={mode === 'light' ? copy.nav.dark : copy.nav.light}
@@ -327,7 +375,7 @@ function StudioInner({
                       <Badge variant="info" label={copy.overview.eyebrow} />
                       <Badge
                         variant="success"
-                        label={`WCAG AA · ${accentTextContrast}:1`}
+                        label={`WCAG 2.2 AA · ${accentTextContrast}:1`}
                       />
                     </HStack>
                     <Heading level={1}>{copy.overview.heroTitle}</Heading>
@@ -638,7 +686,11 @@ function StudioInner({
           )}
 
           {activeTab === 'components' && (
-            <ComponentsCatalogView lang={lang} copy={copy} />
+            <ComponentsCatalogView
+              lang={lang}
+              copy={copy}
+              searchInputRef={catalogSearchRef}
+            />
           )}
 
           {activeTab === 'templates' && (
@@ -708,6 +760,13 @@ function StudioInner({
           });
         }}
       />
+
+      <ShortcutSheet
+        isOpen={shortcutsOpen}
+        onOpenChange={setShortcutsOpen}
+        title={isId ? 'Pintasan keyboard Studio' : 'Studio keyboard shortcuts'}
+        searchPlaceholder={isId ? 'Saring pintasan…' : 'Filter shortcuts…'}
+      />
     </div>
   );
 }
@@ -741,23 +800,6 @@ export function App() {
     document.documentElement.dataset.theme = mode;
     document.documentElement.style.colorScheme = mode;
   }, [lang, mode]);
-
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.isComposing || e.keyCode === 229) return;
-      if (isTypingTarget(e.target)) return;
-      const mod = e.metaKey || e.ctrlKey;
-      if (!mod) return;
-      const key = e.key.toLowerCase();
-      if (key === 'z' && !e.shiftKey) {
-        if (historyStore.undo()) e.preventDefault();
-      } else if ((key === 'z' && e.shiftKey) || (key === 'y' && !e.metaKey)) {
-        if (historyStore.redo()) e.preventDefault();
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [historyStore]);
 
   const {theme: liveTheme, effectiveTokens, baseComponents} = useMemo(
     () => composeStudioTheme(themeState),

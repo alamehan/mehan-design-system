@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Mehan × Meta Astryx — Single-HTML CDN Starter</title>
+    <script>(function(){try{var m=localStorage.getItem('mehan-mode');var d=m==='dark'||((!m||m==='system')&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();</script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -4323,6 +4324,674 @@
     color: #ffffff;
   }
 
+  /* ==========================================================================
+     UNIVERSAL WORKSPACE, STAGE & EXTENSION PRIMITIVES (29–35)
+     ========================================================================== */
+
+  /* 29. WorkspaceLayout (Level-1 Multi-Pane Workbench on Astryx Layout + Drawer) */
+  .mehan-workspace-layout {
+    width: 100%;
+    border-radius: var(--radius-container, 14px);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--mehan-card-hairline, var(--color-border));
+    box-shadow: var(--shadow-low);
+    overflow: hidden;
+  }
+  .mehan-workspace-layout[data-scroll-mode="auto"] {
+    height: auto !important;
+    overflow: visible;
+  }
+  .mehan-ws-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+  }
+  .mehan-ws-toolbar-main {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .mehan-ws-pane-inner {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+  .mehan-ws-pane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--mehan-tray, var(--color-background-surface));
+  }
+  .mehan-ws-pane-body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mehan-ws-main-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+  }
+  .mehan-ws-mobile-start {
+    border-radius: var(--radius-element, 10px);
+    border: 1px solid var(--color-border);
+    background-color: var(--mehan-tray, var(--color-background-surface));
+    overflow: hidden;
+  }
+  .mehan-ws-main-content {
+    min-width: 0;
+  }
+
+  /* 30. CanvasStage (Level-2 Recessed Interactive Viewport + Non-Blocking HUD) */
+  .mehan-canvas-stage {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: var(--radius-container, 14px);
+    border: 1px solid var(--color-border);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    box-shadow: var(--mehan-shadow-well);
+    overflow: hidden;
+  }
+  .mehan-cs-viewport {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    padding: 20px;
+    overflow: hidden;
+  }
+  .mehan-canvas-stage[data-backdrop="dots"] .mehan-cs-viewport {
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--color-text-secondary) 24%, transparent) 1.1px,
+      transparent 1.1px
+    );
+    background-size: 18px 18px;
+  }
+  .mehan-canvas-stage[data-backdrop="grid"] .mehan-cs-viewport {
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--color-border) 65%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 65%, transparent) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .mehan-canvas-stage[data-backdrop="checkerboard"] .mehan-cs-viewport {
+    background-image: repeating-conic-gradient(
+      color-mix(in srgb, var(--color-border) 55%, transparent) 0% 25%,
+      transparent 0% 50%
+    );
+    background-size: 16px 16px;
+  }
+  .mehan-cs-content {
+    position: relative;
+    z-index: 1;
+    max-width: 100%;
+    display: grid;
+    place-items: center;
+  }
+  .mehan-cs-hud-layer {
+    position: absolute;
+    inset: 12px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .mehan-cs-hud-slot {
+    position: absolute;
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mehan-cs-hud-slot[data-corner="top-start"] {
+    top: 0;
+    inset-inline-start: 0;
+  }
+  .mehan-cs-hud-slot[data-corner="top-end"] {
+    top: 0;
+    inset-inline-end: 0;
+  }
+  .mehan-cs-hud-slot[data-corner="bottom-start"] {
+    bottom: 0;
+    inset-inline-start: 0;
+  }
+  .mehan-cs-hud-slot[data-corner="bottom-end"] {
+    bottom: 0;
+    inset-inline-end: 0;
+  }
+  .mehan-cs-transport {
+    padding: 8px 12px;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-background-surface);
+  }
+
+  /* 31. DataChart (Multi-Series OKLCH Line / Area / Bar / Horizontal-Bar + SR Table) */
+  .mehan-data-chart {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: var(--radius-container, 14px);
+    background-color: var(--color-background-card);
+    border: 1px solid var(--mehan-card-hairline, var(--color-border));
+    box-shadow: var(--shadow-low);
+  }
+  .mehan-dc-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px 12px;
+  }
+  .mehan-dc-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .mehan-dc-title {
+    margin: 0;
+    font-family: var(--font-family-heading, sans-serif);
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--color-text-primary);
+  }
+  .mehan-dc-subtitle {
+    margin: 0;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+  .mehan-dc-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .mehan-dc-legend-btn,
+  .mehan-dc-legend-static {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 9px;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .mehan-dc-legend-btn {
+    cursor: pointer;
+  }
+  .mehan-dc-legend-btn[data-muted="true"] {
+    opacity: 0.45;
+  }
+  .mehan-dc-swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    flex: none;
+  }
+  .mehan-dc-readout-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 12px;
+    min-height: 26px;
+    padding: 4px 10px;
+    border-radius: var(--radius-inner, 8px);
+    background-color: var(--mehan-well, var(--color-background-muted));
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .mehan-dc-readout-cat {
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+  .mehan-dc-readout-vals {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .mehan-dc-readout-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .mehan-dc-readout-name {
+    color: var(--color-text-secondary);
+  }
+  .mehan-dc-readout-num {
+    font-family: var(--font-family-code, monospace);
+    color: var(--color-text-primary);
+  }
+  .mehan-dc-readout-hint {
+    color: var(--color-text-secondary);
+    font-size: 11.5px;
+  }
+  .mehan-dc-plot-wrap {
+    width: 100%;
+    border-radius: var(--radius-inner, 8px);
+  }
+  .mehan-dc-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .mehan-dc-gridline {
+    stroke: var(--color-border);
+    stroke-dasharray: 3 3;
+    stroke-width: 1;
+  }
+  .mehan-dc-crosshair {
+    stroke: var(--color-border-emphasized);
+    stroke-dasharray: 3 3;
+    stroke-width: 1.25;
+  }
+  .mehan-dc-tick {
+    fill: var(--color-text-secondary);
+    font-family: var(--font-family-code, monospace);
+    font-size: 10.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .mehan-dc-hbar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 0;
+    border-radius: var(--radius-inner, 8px);
+  }
+  .mehan-dc-hbar-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 160px) minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 4px 6px;
+    border-radius: var(--radius-inner, 6px);
+  }
+  .mehan-dc-hbar-row[data-active="true"] {
+    background-color: var(--mehan-well, var(--color-background-muted));
+  }
+  .mehan-dc-hbar-label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mehan-dc-hbar-tracks {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .mehan-dc-hbar-line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+  }
+  .mehan-dc-hbar-well {
+    height: 9px;
+    border-radius: 9999px;
+    background-color: var(--mehan-socket, var(--color-background-muted));
+    overflow: hidden;
+  }
+  .mehan-dc-hbar-fill {
+    height: 100%;
+    border-radius: 9999px;
+  }
+  .mehan-dc-hbar-val {
+    font-family: var(--font-family-code, monospace);
+    font-size: 11.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
+    min-width: 48px;
+    text-align: end;
+  }
+
+  /* 32. ColumnSettingsMenu (Table Column Visibility & Order Popover) */
+  .mehan-col-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 248px;
+    max-width: 300px;
+    padding: 4px 2px;
+  }
+  .mehan-csm-header {
+    padding: 2px 6px 6px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mehan-csm-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 240px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 2px 4px;
+  }
+  .mehan-csm-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 3px 4px;
+    border-radius: var(--radius-inner, 6px);
+  }
+  .mehan-csm-row:hover {
+    background-color: var(--mehan-well, var(--color-background-muted));
+  }
+  .mehan-csm-check {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .mehan-csm-order {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    flex: none;
+  }
+  .mehan-csm-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 4px 2px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* 33. ColumnView (Hierarchical Miller Columns + Mobile Step-Drill) */
+  .mehan-column-view {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: var(--radius-container, 14px);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background-card);
+    box-shadow: var(--shadow-low);
+    overflow: hidden;
+  }
+  .mehan-cv-mobile-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--mehan-tray, var(--color-background-surface));
+  }
+  .mehan-cv-track {
+    display: flex;
+    align-items: stretch;
+    min-height: 210px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+  .mehan-cv-col {
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    min-width: 184px;
+    flex: 1 1 184px;
+    border-inline-end: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .mehan-cv-col:last-child {
+    border-inline-end: 0;
+  }
+  .mehan-cv-li {
+    margin: 0;
+    padding: 0;
+  }
+  .mehan-cv-item {
+    width: 100%;
+    min-height: 32px;
+    padding: 5px 8px;
+    border: 0;
+    border-radius: var(--radius-element, 8px);
+    background: transparent;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    text-align: start;
+    cursor: pointer;
+  }
+  .mehan-cv-item:hover {
+    background-color: var(--mehan-well, var(--color-background-muted));
+  }
+  .mehan-cv-item[data-selected="true"] {
+    background-color: var(--color-accent-muted);
+    color: var(--color-text-accent);
+    font-weight: 600;
+  }
+  .mehan-cv-icon {
+    display: inline-flex;
+    color: var(--color-text-secondary);
+    flex: none;
+  }
+  .mehan-cv-item[data-selected="true"] .mehan-cv-icon {
+    color: var(--color-text-accent);
+  }
+  .mehan-cv-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mehan-cv-meta {
+    font-family: var(--font-family-code, monospace);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+    flex: none;
+  }
+  .mehan-cv-chevron {
+    color: var(--color-text-secondary);
+    flex: none;
+  }
+  .mehan-cv-detail {
+    flex: 1.2 1 210px;
+    min-width: 200px;
+    padding: 14px;
+    background-color: var(--mehan-tray, var(--color-background-surface));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* 34. PropertyRow (Compact Horizontal Inspector Row + Dirty Reset Dot) */
+  .mehan-property-row {
+    display: grid;
+    grid-template-columns: var(--mehan-pr-label-w, 104px) minmax(0, 1fr) 22px;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    width: 100%;
+  }
+  .mehan-property-row[data-align="start"] {
+    align-items: flex-start;
+  }
+  .mehan-property-row[data-align="start"] .mehan-pr-label-col {
+    padding-top: 6px;
+  }
+  .mehan-pr-label-col {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+  }
+  .mehan-pr-label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mehan-property-row[data-modified="true"] .mehan-pr-label {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+  .mehan-pr-control-col {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .mehan-pr-control-col > * {
+    max-width: 100%;
+  }
+  .mehan-pr-reset-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+  }
+  .mehan-pr-reset-btn {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    display: inline-grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .mehan-pr-reset-btn:hover {
+    background-color: var(--mehan-well, var(--color-background-muted));
+    color: var(--color-text-primary);
+  }
+  .mehan-pr-dirty-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+    display: block;
+  }
+  .mehan-pr-reset-icon {
+    display: none;
+  }
+  .mehan-pr-reset-btn:hover .mehan-pr-dirty-dot,
+  .mehan-pr-reset-btn:focus-visible .mehan-pr-dirty-dot {
+    display: none;
+  }
+  .mehan-pr-reset-btn:hover .mehan-pr-reset-icon,
+  .mehan-pr-reset-btn:focus-visible .mehan-pr-reset-icon {
+    display: block;
+  }
+
+  /* 35. ShortcutSheet (Platform-Aware '?' Keyboard Reference Dialog) */
+  .mehan-shortcut-sheet {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .mehan-ss-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-height: 360px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-inline-end: 2px;
+  }
+  .mehan-ss-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .mehan-ss-group-title {
+    margin: 0;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+  }
+  .mehan-ss-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .mehan-ss-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 10px;
+    border-radius: var(--radius-inner, 8px);
+    background-color: var(--mehan-tray, var(--color-background-surface));
+  }
+  .mehan-ss-keys {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: none;
+  }
+
+  /* Universal Keyboard Focus-Visible Ring Parity (compensating for @astryxdesign/core/reset.css) */
+  .mehan-ad-input:focus-visible,
+  .mehan-ad-readout:focus-visible,
+  .mehan-czb-preset:focus-visible,
+  .mehan-ce-textarea:focus-visible,
+  .mehan-cp-hue:focus-visible,
+  .mehan-cp-alpha:focus-visible,
+  .mehan-cp-eyedropper:focus-visible,
+  .mehan-gp-pos-input:focus-visible,
+  .mehan-gp-delete-btn:focus-visible,
+  .mehan-gp-kind-btn:focus-visible,
+  .mehan-iw-btn:focus-visible,
+  .mehan-mde-tab:focus-visible,
+  .mehan-mde-tool:focus-visible,
+  .mehan-mde-textarea:focus-visible,
+  .mehan-nc-tab:focus-visible,
+  .mehan-nc-mark-all:focus-visible,
+  .mehan-nc-item:focus-visible,
+  .mehan-nc-clear:focus-visible,
+  .mehan-ps-value-input:focus-visible,
+  .mehan-ps-value-btn:focus-visible,
+  .mehan-tour-close:focus-visible,
+  .mehan-tour-skip:focus-visible,
+  .mehan-tour-prev:focus-visible,
+  .mehan-tour-next:focus-visible,
+  .mehan-dc-legend-btn:focus-visible,
+  .mehan-dc-plot-wrap:focus-visible,
+  .mehan-dc-hbar-list:focus-visible,
+  .mehan-cv-item:focus-visible,
+  .mehan-pr-reset-btn:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: 2px;
+  }
+
   /* U4 Scroll-Chaining Split Law: contain overlays, never trap vertical page scroll in inline editors */
   .mehan-nc-list,
   .mehan-split-menu,
@@ -4354,11 +5023,14 @@
     .mehan-ts-play,
     .mehan-tour-skip,
     .mehan-tour-prev,
-    .mehan-tour-next {
+    .mehan-tour-next,
+    .mehan-cv-item,
+    .mehan-dc-legend-btn {
       min-height: 44px;
     }
     .mehan-cp-eyedropper,
-    .mehan-tour-close {
+    .mehan-tour-close,
+    .mehan-pr-reset-btn {
       width: 44px;
       height: 44px;
     }

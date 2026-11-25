@@ -2,7 +2,7 @@
   "name": "@mehan/astryx",
   "version": "1.0.0",
   "displayName": "Mehan Design System for Astryx",
-  "description": "Tactile, parametric UI & UX system for Meta Astryx — 3 atmospheres, open OKLCH + Astryx token/component theming, 28 universal components, and 6 UX/copy guides.",
+  "description": "Tactile, parametric UI & UX extension layer for Meta Astryx — 3 atmospheres, open OKLCH + Astryx token/component theming, 35 universal components & workspace layouts, ergonomic runtime hooks, and 7 UX/copy guides.",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -175,6 +175,34 @@
     "./blocks/TourShowcase": {
       "types": "./dist/blocks/TourShowcase.d.ts",
       "default": "./dist/blocks/TourShowcase.js"
+    },
+    "./blocks/WorkspaceLayoutShowcase": {
+      "types": "./dist/blocks/WorkspaceLayoutShowcase.d.ts",
+      "default": "./dist/blocks/WorkspaceLayoutShowcase.js"
+    },
+    "./blocks/CanvasStageShowcase": {
+      "types": "./dist/blocks/CanvasStageShowcase.d.ts",
+      "default": "./dist/blocks/CanvasStageShowcase.js"
+    },
+    "./blocks/DataChartShowcase": {
+      "types": "./dist/blocks/DataChartShowcase.d.ts",
+      "default": "./dist/blocks/DataChartShowcase.js"
+    },
+    "./blocks/ColumnSettingsMenuShowcase": {
+      "types": "./dist/blocks/ColumnSettingsMenuShowcase.d.ts",
+      "default": "./dist/blocks/ColumnSettingsMenuShowcase.js"
+    },
+    "./blocks/ColumnViewShowcase": {
+      "types": "./dist/blocks/ColumnViewShowcase.d.ts",
+      "default": "./dist/blocks/ColumnViewShowcase.js"
+    },
+    "./blocks/PropertyRowShowcase": {
+      "types": "./dist/blocks/PropertyRowShowcase.d.ts",
+      "default": "./dist/blocks/PropertyRowShowcase.js"
+    },
+    "./blocks/ShortcutSheetShowcase": {
+      "types": "./dist/blocks/ShortcutSheetShowcase.d.ts",
+      "default": "./dist/blocks/ShortcutSheetShowcase.js"
     }
   },
   "files": [

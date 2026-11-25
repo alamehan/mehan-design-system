@@ -15,7 +15,7 @@ import {
 } from '@mehan/astryx';
 import type {SpecimenDefinition} from './SpecimenCard';
 
-export function useCatalogMehanTier3(): SpecimenDefinition[] {
+export function useCatalogMehanDataOverlays(): SpecimenDefinition[] {
   const showToast = useToast();
   const [zoom, setZoom] = useState(100);
   const [playTime, setPlayTime] = useState(4.2);

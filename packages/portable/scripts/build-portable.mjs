@@ -5,6 +5,7 @@ import path from 'node:path';
 
 const pkgRoot = path.resolve(import.meta.dirname, '..');
 const repoRoot = path.resolve(pkgRoot, '../..');
+const dnaDir = path.resolve(pkgRoot, '../dna');
 const astryxDir = path.resolve(pkgRoot, '../astryx');
 const distDir = path.join(pkgRoot, 'dist');
 const releaseDir = path.join(repoRoot, 'release');
@@ -75,6 +76,7 @@ const cdnHtml = `<!doctype html>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Mehan × Meta Astryx — Single-HTML CDN Starter</title>
+    <script>(function(){try{var m=localStorage.getItem('mehan-mode');var d=m==='dark'||((!m||m==='system')&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();</script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -174,12 +176,14 @@ for (const filename of [
   fs.copyFileSync(path.join(distDir, filename), path.join(releaseDir, filename));
 }
 
-if (fs.existsSync(path.join(astryxDir, 'dist/index.js'))) {
-  execFileSync(npmCmd, ['pack', '--pack-destination', releaseDir], {
-    cwd: astryxDir,
-    stdio: 'inherit',
-    shell: process.platform === 'win32',
-  });
+for (const packTarget of [dnaDir, astryxDir, pkgRoot]) {
+  if (fs.existsSync(path.join(packTarget, 'dist/index.js'))) {
+    execFileSync(npmCmd, ['pack', '--pack-destination', releaseDir], {
+      cwd: packTarget,
+      stdio: 'inherit',
+      shell: process.platform === 'win32',
+    });
+  }
 }
 
 console.log(

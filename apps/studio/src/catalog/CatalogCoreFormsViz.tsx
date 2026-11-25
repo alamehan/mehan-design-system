@@ -84,7 +84,7 @@ const POWER_SEARCH_DEFS = [
   {key: 'service', type: 'string', label: 'Service'},
 ] as const;
 
-export function useCatalogGroupB(): SpecimenDefinition[] {
+export function useCatalogCoreFormsViz(): SpecimenDefinition[] {
   const [swatchHex, setSwatchHex] = useState('#e0366b');
   const [pickerHex, setPickerHex] = useState('#e0366b');
 
@@ -114,6 +114,7 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
   const [radioVal, setRadioVal] = useState('standard');
   const [selRegion, setSelRegion] = useState<string>('ap-southeast-1');
   const [sliderVal, setSliderVal] = useState(64);
+  const [sliderRange, setSliderRange] = useState<[number, number]>([20, 80]);
   const [switchVal, setSwitchVal] = useState(true);
   const [notesVal, setNotesVal] = useState(
     'Perceptual OKLCH tactile surfaces with zero forked ARIA primitives.',
@@ -525,16 +526,26 @@ export function useCatalogGroupB(): SpecimenDefinition[] {
       name: 'Slider',
       category: 'Form Controls',
       pkg: 'core',
-      summaryEn: 'Core WAI-ARIA range slider with recessed track and spherical dome thumb.',
-      summaryId: 'Slider rentang standar WAI-ARIA dengan jalur cekung dan kenop 3D.',
-      code: `<Slider label="Ambient shadow opacity" value={val} onChange={setVal} valueDisplay="text" />`,
+      summaryEn:
+        'Core WAI-ARIA slider supporting both single-value and dual-thumb [min, max] range selection.',
+      summaryId:
+        'Slider standar WAI-ARIA yang mendukung nilai tunggal maupun rentang dua-kenop [min, max].',
+      code: `<Slider label="Opacity" value={val} onChange={setVal} />\n<Slider label="Price band" value={[20, 80]} onChange={setRange} />`,
       render: () => (
-        <Slider
-          label="Ambient shadow opacity"
-          value={sliderVal}
-          onChange={setSliderVal}
-          valueDisplay="text"
-        />
+        <VStack gap={2}>
+          <Slider
+            label="Ambient shadow opacity"
+            value={sliderVal}
+            onChange={setSliderVal}
+            valueDisplay="text"
+          />
+          <Slider
+            label="Target latency band (ms)"
+            value={sliderRange}
+            onChange={setSliderRange}
+            valueDisplay="text"
+          />
+        </VStack>
       ),
     },
     {

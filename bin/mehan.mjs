@@ -2,11 +2,12 @@
 /**
  * Mehan Design System Universal Helper CLI (`node bin/mehan.mjs`)
  * Works identically on Windows, macOS, and Linux:
- *   node bin/mehan.mjs init [target-dir] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex]
- *        [--depth 1] [--radius 1] [--density standard|compact] [--motion expressive|standard|calm]
+ *   node bin/mehan.mjs init [target-dir] [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex]
+ *        [--depth 1] [--radius 1] [--radius-base <px>] [--type-base 14] [--type-ratio 1.2] [--size-base 36]
+ *        [--spacing-base 8] [--duration-step 50] [--density standard|compact] [--motion expressive|standard|crisp|calm]
  *        [--tailwind] [--local|--npm] [--portable]
- *   node bin/mehan.mjs ai-kit [--atmosphere confectionery] [--accent strawberry] [--out prototype-kit.md]
- *   node bin/mehan.mjs tokens [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
+ *   node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out prototype-kit.md]
+ *   node bin/mehan.mjs tokens [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
  *   node bin/mehan.mjs set-scope <@newscope>
  */
 import fs from 'node:fs';
@@ -16,9 +17,16 @@ const repoRoot = path.resolve(import.meta.dirname, '..');
 const args = process.argv.slice(2);
 const cmd = args[0] ?? 'help';
 
-function readFlag(name, fallback) {
+function readFlag(name, fallback = undefined) {
   const idx = args.indexOf(name);
-  return idx !== -1 && args[idx + 1] ? args[idx + 1] : fallback;
+  return idx !== -1 && args[idx + 1] !== undefined ? args[idx + 1] : fallback;
+}
+
+function readNumberFlag(name, fallback = undefined) {
+  const raw = readFlag(name, undefined);
+  if (raw === undefined) return fallback;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : fallback;
 }
 
 function readJsonSafe(filePath) {
@@ -39,28 +47,92 @@ function defaultAccentForAtmosphere(atm) {
       : 'strawberry';
 }
 
-if (cmd === 'ai-kit') {
-  const atmosphere = readFlag('--atmosphere', 'confectionery');
-  const accent = readFlag('--accent', defaultAccentForAtmosphere(atmosphere));
-  const depth = Number(readFlag('--depth', '1'));
-  const radiusScale = Number(readFlag('--radius', '1'));
-  const density = readFlag('--density', 'standard');
-  const motion = readFlag('--motion', 'expressive');
-  const lipStyle = readFlag('--lip', 'candy');
-  const segmentedStyle = readFlag('--segmented', 'raised');
-  const wellStyle = readFlag('--well', 'recessed');
-  const headingFont = readFlag('--heading-font', 'Bricolage Grotesque');
-  const bodyFont = readFlag('--body-font', 'Figtree');
-  const codeFont = readFlag('--code-font', 'Geist Mono');
-  const out = readFlag('--out', null);
-  const {generateAiPrototypeKit} = await import(
-    new URL('../packages/portable/dist/index.js', import.meta.url).href
+/**
+ * Parses a theme JSON exported from Mehan Studio (`{ seed, tokenOverrides, customOverrides }`),
+ * a W3C DTCG token file (`{ $metadata }`), or a flat DNA options JSON.
+ */
+function loadFromJsonSeed() {
+  const fromPath = readFlag('--from', null);
+  if (!fromPath) return {seed: {}, tokenOverrides: undefined, customOverrides: undefined};
+  const resolved = path.resolve(process.cwd(), fromPath);
+  if (!fs.existsSync(resolved)) {
+    console.error(`❌ Theme JSON file not found: ${resolved}`);
+    process.exit(1);
+  }
+  const raw = readJsonSafe(resolved);
+  const src =
+    raw && typeof raw === 'object'
+      ? raw.seed && typeof raw.seed === 'object'
+        ? raw.seed
+        : raw.$metadata && typeof raw.$metadata === 'object'
+          ? raw.$metadata
+          : raw
+      : {};
+  return {
+    seed: src,
+    tokenOverrides:
+      raw && typeof raw.tokenOverrides === 'object' && raw.tokenOverrides !== null
+        ? raw.tokenOverrides
+        : undefined,
+    customOverrides: Array.isArray(raw?.customOverrides) ? raw.customOverrides : undefined,
+  };
+}
+
+function resolveCliSeedOptions() {
+  const {seed: fromSeed, tokenOverrides} = loadFromJsonSeed();
+  const themeFlag = readFlag('--theme', null);
+  const atmosphere =
+    themeFlag?.replace(/^mehan-/, '') ??
+    readFlag('--atmosphere', fromSeed.atmosphere ?? 'confectionery');
+  const accent = readFlag(
+    '--accent',
+    fromSeed.accent ?? defaultAccentForAtmosphere(atmosphere),
   );
-  const kit = generateAiPrototypeKit({
+  const depth = readNumberFlag('--depth', fromSeed.depth ?? 1);
+  const radiusScale = readNumberFlag('--radius', fromSeed.radiusScale ?? 1);
+  const radiusBase = readNumberFlag(
+    '--radius-base',
+    fromSeed.radiusBase !== null && fromSeed.radiusBase !== undefined
+      ? Number(fromSeed.radiusBase)
+      : undefined,
+  );
+  const typeBase = readNumberFlag('--type-base', fromSeed.typeBase);
+  const typeRatio = readNumberFlag('--type-ratio', fromSeed.typeRatio);
+  const sizeBase = readNumberFlag('--size-base', fromSeed.sizeBase);
+  const spacingBase = readNumberFlag('--spacing-base', fromSeed.spacingBase);
+  const durationStep = readNumberFlag('--duration-step', fromSeed.durationStep);
+
+  const derivedDensity =
+    sizeBase !== undefined && sizeBase <= 32 ? 'compact' : 'standard';
+  const density = readFlag('--density', fromSeed.density ?? derivedDensity);
+  const motion = readFlag('--motion', fromSeed.motion ?? 'expressive');
+  const lipStyle = readFlag('--lip', fromSeed.lipStyle ?? 'candy');
+  const segmentedStyle = readFlag('--segmented', fromSeed.segmentedStyle ?? 'raised');
+  const wellStyle = readFlag('--well', fromSeed.wellStyle ?? 'recessed');
+  const headingFont = readFlag(
+    '--heading-font',
+    fromSeed.headingFont ?? fromSeed.displayFamily ?? 'Bricolage Grotesque',
+  );
+  const bodyFont = readFlag(
+    '--body-font',
+    fromSeed.bodyFont ?? fromSeed.bodyFamily ?? 'Figtree',
+  );
+  const codeFont = readFlag(
+    '--code-font',
+    fromSeed.codeFont ?? fromSeed.monoFamily ?? 'Geist Mono',
+  );
+
+  const dnaOptions = {
     atmosphere,
     accent,
     depth,
     radiusScale,
+    ...(radiusBase !== undefined ? {radiusBase} : {}),
+    ...(typeBase !== undefined ? {typeBase} : {}),
+    ...(typeRatio !== undefined ? {typeRatio} : {}),
+    ...(sizeBase !== undefined ? {sizeBase} : {}),
+    ...(spacingBase !== undefined ? {spacingBase} : {}),
+    ...(durationStep !== undefined ? {durationStep} : {}),
     density,
     motion,
     lipStyle,
@@ -69,7 +141,18 @@ if (cmd === 'ai-kit') {
     headingFont,
     bodyFont,
     codeFont,
-  });
+  };
+
+  return {dnaOptions, tokenOverrides};
+}
+
+if (cmd === 'ai-kit') {
+  const {dnaOptions} = resolveCliSeedOptions();
+  const out = readFlag('--out', null);
+  const {generateAiPrototypeKit} = await import(
+    new URL('../packages/portable/dist/index.js', import.meta.url).href
+  );
+  const kit = generateAiPrototypeKit(dnaOptions);
   if (out) {
     const dest = path.resolve(process.cwd(), out);
     fs.writeFileSync(dest, kit, 'utf8');
@@ -81,37 +164,15 @@ if (cmd === 'ai-kit') {
 }
 
 if (cmd === 'tokens') {
-  const atmosphere = readFlag('--atmosphere', 'confectionery');
-  const accent = readFlag('--accent', defaultAccentForAtmosphere(atmosphere));
-  const depth = Number(readFlag('--depth', '1'));
-  const radiusScale = Number(readFlag('--radius', '1'));
-  const density = readFlag('--density', 'standard');
-  const motion = readFlag('--motion', 'expressive');
-  const lipStyle = readFlag('--lip', 'candy');
-  const segmentedStyle = readFlag('--segmented', 'raised');
-  const wellStyle = readFlag('--well', 'recessed');
-  const headingFont = readFlag('--heading-font', 'Bricolage Grotesque');
-  const bodyFont = readFlag('--body-font', 'Figtree');
-  const codeFont = readFlag('--code-font', 'Geist Mono');
+  const {dnaOptions} = resolveCliSeedOptions();
   const out = readFlag('--out', 'mehan-tokens.w3c.json');
   const {exportW3cDesignTokens} = await import(
     new URL('../packages/portable/dist/index.js', import.meta.url).href
   );
   const json = `${JSON.stringify(
     exportW3cDesignTokens({
-      name: `mehan-${atmosphere}`,
-      atmosphere,
-      accent,
-      depth,
-      radiusScale,
-      density,
-      motion,
-      lipStyle,
-      segmentedStyle,
-      wellStyle,
-      headingFont,
-      bodyFont,
-      codeFont,
+      name: `mehan-${dnaOptions.atmosphere}`,
+      ...dnaOptions,
     }),
     null,
     2,
@@ -135,7 +196,10 @@ if (cmd === 'set-scope') {
     process.exit(0);
   }
 
-  const textExts = new Set(['.json', '.ts', '.tsx', '.mjs', '.md']);
+  const prevBare = prevScope.slice(1);
+  const nextBare = nextScope.slice(1);
+
+  const textExts = new Set(['.json', '.ts', '.tsx', '.mjs', '.md', '.css']);
   const skipDirs = new Set([
     'node_modules',
     'dist',
@@ -163,7 +227,10 @@ if (cmd === 'set-scope') {
           .replaceAll(`${prevScope}/dna`, `${nextScope}/dna`)
           .replaceAll(`${prevScope}/astryx`, `${nextScope}/astryx`)
           .replaceAll(`${prevScope}/portable`, `${nextScope}/portable`)
-          .replaceAll(`${prevScope}/studio`, `${nextScope}/studio`);
+          .replaceAll(`${prevScope}/studio`, `${nextScope}/studio`)
+          .replaceAll(`${prevBare}-astryx-`, `${nextBare}-astryx-`)
+          .replaceAll(`${prevBare}-dna-`, `${nextBare}-dna-`)
+          .replaceAll(`${prevBare}-portable-`, `${nextBare}-portable-`);
         if (updated !== content) {
           fs.writeFileSync(full, updated, 'utf8');
           touched += 1;
@@ -181,23 +248,45 @@ if (cmd === 'set-scope') {
 }
 
 if (cmd === 'init') {
-  const positional = args.slice(1).find(a => !a.startsWith('--')) ?? '.';
-  const targetDir = path.resolve(process.cwd(), positional);
-  const themeFlag = readFlag('--theme', null);
-  const atmosphere =
-    themeFlag?.replace(/^mehan-/, '') ?? readFlag('--atmosphere', 'confectionery');
-  const defaultAccentForAtm = defaultAccentForAtmosphere(atmosphere);
-  const accent = readFlag('--accent', defaultAccentForAtm);
-  const depth = Number(readFlag('--depth', '1'));
-  const radiusScale = Number(readFlag('--radius', '1'));
-  const density = readFlag('--density', 'standard');
-  const motion = readFlag('--motion', 'expressive');
-  const lipStyle = readFlag('--lip', 'candy');
-  const segmentedStyle = readFlag('--segmented', 'raised');
-  const wellStyle = readFlag('--well', 'recessed');
-  const headingFont = readFlag('--heading-font', 'Bricolage Grotesque');
-  const bodyFont = readFlag('--body-font', 'Figtree');
-  const codeFont = readFlag('--code-font', 'Geist Mono');
+  const positional = [];
+  for (let i = 1; i < args.length; i += 1) {
+    const arg = args[i];
+    if (arg.startsWith('--')) {
+      if (
+        arg !== '--tailwind' &&
+        arg !== '--local' &&
+        arg !== '--npm' &&
+        arg !== '--portable'
+      ) {
+        i += 1; // skip value of value-taking flag (e.g. `--from theme.json`)
+      }
+    } else {
+      positional.push(arg);
+    }
+  }
+  const targetDir = path.resolve(process.cwd(), positional[0] ?? '.');
+  const {dnaOptions, tokenOverrides} = resolveCliSeedOptions();
+  const {
+    atmosphere,
+    accent,
+    depth,
+    radiusScale,
+    radiusBase,
+    typeBase,
+    typeRatio,
+    sizeBase,
+    spacingBase,
+    durationStep,
+    density,
+    motion,
+    lipStyle,
+    segmentedStyle,
+    wellStyle,
+    headingFont,
+    bodyFont,
+    codeFont,
+  } = dnaOptions;
+
   const forcePortable = args.includes('--portable');
   const preferNpm = args.includes('--npm');
   const scope = readCurrentScope();
@@ -223,18 +312,7 @@ if (cmd === 'init') {
       path.join(outDir, 'mehan-portable.css'),
       generatePortableCss({
         name: `mehan-${atmosphere}`,
-        atmosphere,
-        accent,
-        depth,
-        radiusScale,
-        density,
-        motion,
-        lipStyle,
-        segmentedStyle,
-        wellStyle,
-        headingFont,
-        bodyFont,
-        codeFont,
+        ...dnaOptions,
       }),
       'utf8',
     );
@@ -259,8 +337,18 @@ if (cmd === 'init') {
     : targetDir;
   const slug = `mehan-${atmosphere}`;
   const camel = `${slug.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())}Theme`;
+  const hasExtraScaleOverrides =
+    radiusBase !== undefined ||
+    (typeBase !== undefined && typeBase !== 14) ||
+    (typeRatio !== undefined && typeRatio !== 1.2) ||
+    (sizeBase !== undefined && sizeBase !== 36) ||
+    (spacingBase !== undefined && spacingBase !== 8) ||
+    (durationStep !== undefined && durationStep !== 50) ||
+    (tokenOverrides && Object.keys(tokenOverrides).length > 0);
+
   const isDefaultPreset =
-    accent === defaultAccentForAtm &&
+    !hasExtraScaleOverrides &&
+    accent === defaultAccentForAtmosphere(atmosphere) &&
     depth === 1 &&
     radiusScale === 1 &&
     density === 'standard' &&
@@ -298,6 +386,18 @@ if (cmd === 'init') {
         `@import "${scope}/astryx/styles.css";`,
       ];
   fs.writeFileSync(cssPath, `${cssLines.join('\n')}\n`, 'utf8');
+
+  const extraOptionLines = [
+    radiusBase !== undefined ? `  radiusBase: ${radiusBase},` : null,
+    typeBase !== undefined ? `  typeBase: ${typeBase},` : null,
+    typeRatio !== undefined ? `  typeRatio: ${typeRatio},` : null,
+    sizeBase !== undefined ? `  sizeBase: ${sizeBase},` : null,
+    spacingBase !== undefined ? `  spacingBase: ${spacingBase},` : null,
+    durationStep !== undefined ? `  durationStep: ${durationStep},` : null,
+    tokenOverrides && Object.keys(tokenOverrides).length > 0
+      ? `  tokens: ${JSON.stringify(tokenOverrides, null, 2).replaceAll('\n', '\n  ')},`
+      : null,
+  ].filter(Boolean);
 
   const providerPath = path.join(srcDir, 'MehanProvider.tsx');
   const providerSource = isDefaultPreset
@@ -340,7 +440,7 @@ export const mehanAppTheme = createMehanTheme({
   accent: '${accent}',
   depth: ${depth},
   radiusScale: ${radiusScale},
-  density: '${density}',
+${extraOptionLines.length > 0 ? `${extraOptionLines.join('\n')}\n` : ''}  density: '${density}',
   motion: '${motion}',
   lipStyle: '${lipStyle}',
   segmentedStyle: '${segmentedStyle}',
@@ -374,9 +474,11 @@ export function MehanProvider({
         .readdirSync(path.join(repoRoot, 'release'))
         .filter(f => f.endsWith('.tgz'))
     : [];
-  const localTgz = releaseFiles[0]
+  const astryxTgz =
+    releaseFiles.find(f => f.includes('-astryx-')) ?? releaseFiles[0];
+  const localTgz = astryxTgz
     ? path
-        .join(repoRoot, 'release', releaseFiles[0])
+        .join(repoRoot, 'release', astryxTgz)
         .replaceAll('\\', '/')
     : null;
   const pkgSpec =
@@ -397,8 +499,8 @@ export function MehanProvider({
 console.log(`Mehan Design System CLI (v1.0.0)
 Usage:
   • Double-click STUDIO.html (Windows / macOS / Linux) to open Interactive Studio offline!
-  • node bin/mehan.mjs init <project-folder> [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--lip candy|subtle|flat] [--segmented raised|espresso] [--well recessed|bordered] [--density standard|compact] [--motion expressive|standard|crisp|calm] [--tailwind] [--local|--npm] [--portable]
-  • node bin/mehan.mjs ai-kit [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--out kit.md]
-  • node bin/mehan.mjs tokens [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
+  • node bin/mehan.mjs init <project-folder> [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--lip candy|subtle|flat] [--segmented raised|espresso] [--well recessed|bordered] [--density standard|compact] [--motion expressive|standard|crisp|calm] [--type-base 14] [--type-ratio 1.2] [--size-base 36] [--spacing-base 8] [--radius-base 8] [--duration-step 50] [--tailwind] [--local|--npm] [--portable]
+  • node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--out kit.md]
+  • node bin/mehan.mjs tokens [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
   • node bin/mehan.mjs set-scope @yourscope
 `);

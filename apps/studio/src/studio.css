@@ -494,6 +494,44 @@ body,
   margin: 6px 4px;
 }
 
+.cat-pillar-label {
+  padding: 8px 10px 3px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.cat-pillar-label:first-child {
+  padding-top: 2px;
+}
+
+.cat-subgroup-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cat-subgroup-title {
+  margin: 4px 0 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-family-heading);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text-secondary);
+}
+
+.cat-nav-btn:focus-visible,
+.te-adv-pill:focus-visible,
+.te-unified-card:focus-visible,
+.te-color-swatch-btn:focus-visible {
+  outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+  outline-offset: 2px;
+}
+
 .cat-nav-btn {
   display: flex;
   align-items: center;
@@ -875,7 +913,8 @@ body,
     gap: 6px;
   }
 
-  .cat-sidebar-divider {
+  .cat-sidebar-divider,
+  .cat-pillar-label {
     display: none;
   }
 
@@ -914,6 +953,30 @@ body,
 
   .te-scale-controls {
     flex-wrap: wrap;
+  }
+}
+
+/* Law U2: Release sticky 100dvh viewport locks at 200% browser zoom / compact height */
+@media (max-height: 559px) {
+  .studio-workspace {
+    flex-direction: column;
+  }
+
+  .te-docked-panel {
+    width: 100%;
+    flex: none;
+    position: relative;
+    top: 0;
+    height: auto;
+    max-height: none;
+    border-left: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .cat-sidebar,
+  .ux-sidebar {
+    position: static;
+    max-height: none;
   }
 }
 

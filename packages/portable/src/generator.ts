@@ -160,7 +160,7 @@ button>svg,a>svg{flex-shrink:0}
 @media (hover:hover) and (prefers-reduced-motion:no-preference){.mh-btn-primary:hover:not(:disabled),.mh-btn-secondary:hover:not(:disabled),.mh-btn-danger:hover:not(:disabled){transform:translateY(-1px)}}
 .mh-btn:disabled{opacity:.48;cursor:default;transform:none}
 .mh-icon-btn{width:var(--mh-ctrl-md,36px);height:var(--mh-ctrl-md,36px);padding:0;padding-bottom:2px;border-radius:var(--mh-r-md);display:inline-grid;place-items:center;border:0;background:var(--mh-raised-grad);box-shadow:var(--mh-shadow-raised);cursor:pointer}
-.mh-btn:focus-visible,.mh-icon-btn:focus-visible,.mh-seg button:focus-visible,.mh-switch:focus-visible,.mh-tab:focus-visible,.mh-swatch:focus-visible{outline:2px solid var(--mh-ink);outline-offset:2px}
+.mh-btn:focus-visible,.mh-icon-btn:focus-visible,.mh-seg button:focus-visible,.mh-switch:focus-visible,.mh-tab:focus-visible,.mh-swatch:focus-visible,.mh-nav-item:focus-visible,.mh-anchor-grid button:focus-visible,.mh-cv-item:focus-visible{outline:2px solid var(--mh-ink);outline-offset:2px}
 
 /* Borderless Recessed-Well Form Controls */
 .mh-field{display:flex;flex-direction:column;gap:6px}
@@ -221,7 +221,8 @@ dialog.mh-modal::backdrop{background:rgba(15,12,10,.46);backdrop-filter:blur(3px
 .mh-anchor-grid button[aria-checked="true"]{background:var(--mh-surface);box-shadow:var(--mh-shadow-raised)}
 .mh-anchor-grid button[aria-checked="true"]::after{width:8px;height:8px;background:var(--mh-accent)}
 .mh-otp{display:inline-flex;gap:6px;align-items:center}
-.mh-otp input{width:38px;height:42px;border:1.5px solid transparent;border-radius:var(--mh-r-sm);background:var(--mh-well);box-shadow:var(--mh-shadow-well);text-align:center;font:700 16px/1 var(--mh-font-mono,"Geist Mono"),monospace;color:var(--mh-ink)}
+.mh-otp input{width:38px;height:42px;border:1.5px solid transparent;border-radius:var(--mh-r-sm);background:var(--mh-well);box-shadow:var(--mh-shadow-well);text-align:center;font:700 16px/1 var(--mh-font-mono,"Geist Mono"),monospace;color:var(--mh-ink);outline:none}
+.mh-otp input:focus,.mh-otp input:focus-visible{border-color:var(--mh-accent);box-shadow:var(--mh-shadow-well),0 0 0 2px var(--mh-accent)}
 .mh-error-summary{padding:12px 14px;border-radius:var(--mh-r-md);background:var(--mh-danger-soft);color:var(--mh-ink);display:flex;flex-direction:column;gap:6px}
 .mh-inline-msg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;color:var(--mh-info)}
 .mh-inline-msg.is-error{color:var(--mh-danger)}
@@ -230,7 +231,26 @@ dialog.mh-modal::backdrop{background:rgba(15,12,10,.46);backdrop-filter:blur(3px
 .mh-timeline li{position:relative;padding-left:20px;font-size:13px}
 .mh-timeline li::before{content:"";position:absolute;left:0;top:5px;width:9px;height:9px;border-radius:999px;background:var(--mh-accent)}
 .mh-zoom-bar{display:inline-flex;align-items:center;gap:4px;padding:4px;border-radius:999px;background:var(--mh-float);box-shadow:var(--mh-shadow-card)}
-@media (max-width:860px){.mh-shell{grid-template-columns:1fr}.mh-sidebar{display:none}.mh-grid-2,.mh-grid-3,.mh-grid-4{grid-template-columns:1fr}}
+.mh-workspace{display:grid;grid-template-columns:256px minmax(0,1fr) 292px;border-radius:var(--mh-r-lg);border:1px solid var(--mh-card-hairline);background:var(--mh-surface);box-shadow:var(--mh-shadow-card);overflow:hidden}
+.mh-workspace.is-2col{grid-template-columns:264px minmax(0,1fr)}
+.mh-ws-pane{padding:14px;background:var(--mh-tray);border-right:1px solid var(--mh-line);display:flex;flex-direction:column;gap:10px}
+.mh-ws-pane.is-end{border-right:0;border-left:1px solid var(--mh-line)}
+.mh-ws-main{padding:18px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.mh-canvas-stage{position:relative;min-height:260px;padding:20px;display:grid;place-items:center;border-radius:var(--mh-r-lg);border:1px solid var(--mh-line);background-color:var(--mh-well);background-image:radial-gradient(color-mix(in srgb,var(--mh-ink-3) 26%,transparent) 1.1px,transparent 1.1px);background-size:18px 18px;box-shadow:var(--mh-shadow-well);overflow:hidden}
+.mh-cs-hud{position:absolute;right:12px;bottom:12px;display:inline-flex;gap:6px;z-index:2}
+.mh-property-row{display:grid;grid-template-columns:108px minmax(0,1fr);align-items:center;gap:8px;min-height:32px}
+.mh-property-row>.mh-label{margin:0}
+.mh-chart{background:var(--mh-surface);border:1px solid var(--mh-card-hairline);border-radius:var(--mh-r-lg);box-shadow:var(--mh-shadow-card);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.mh-hbar{display:grid;grid-template-columns:minmax(100px,150px) minmax(0,1fr) auto;align-items:center;gap:10px;font-size:12.5px}
+.mh-hbar-track{height:9px;border-radius:999px;background:var(--mh-socket);overflow:hidden}
+.mh-hbar-fill{height:100%;border-radius:999px;background:var(--mh-accent)}
+.mh-column-view{display:flex;align-items:stretch;border-radius:var(--mh-r-lg);border:1px solid var(--mh-line);background:var(--mh-surface);overflow-x:auto}
+.mh-cv-col{list-style:none;margin:0;padding:6px;min-width:180px;flex:1 1 180px;border-right:1px solid var(--mh-line);display:flex;flex-direction:column;gap:2px}
+.mh-cv-col:last-child{border-right:0}
+.mh-cv-item{width:100%;min-height:32px;padding:5px 9px;border:0;border-radius:var(--mh-r-sm);background:transparent;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;font-weight:500;cursor:pointer;text-align:left}
+.mh-cv-item:hover{background:var(--mh-well)}
+.mh-cv-item[aria-selected="true"],.mh-cv-item.is-active{background:var(--mh-accent-soft);color:var(--mh-accent-text);font-weight:600}
+@media (max-width:860px),(max-height:559px){.mh-shell{grid-template-columns:1fr;min-height:auto}.mh-sidebar{display:none}.mh-workspace,.mh-workspace.is-2col{grid-template-columns:1fr}.mh-ws-pane,.mh-ws-pane.is-end{border:0;border-bottom:1px solid var(--mh-line)}.mh-grid-2,.mh-grid-3,.mh-grid-4{grid-template-columns:1fr}}
 @media (pointer:coarse){.mh-btn,.mh-input,.mh-select,.mh-nav-item{min-height:44px}.mh-input,.mh-select,.mh-textarea{font-size:16px}}
 @media (prefers-contrast:more){.mh-card,.mh-metric,.mh-table-wrap,.mh-input,.mh-select,.mh-textarea,.mh-btn-secondary{outline:1px solid var(--mh-line-strong)}}
 @media (forced-colors:active){.mh-btn,.mh-card,.mh-metric,.mh-table-wrap,.mh-input,.mh-select,.mh-textarea,.mh-switch{border:1px solid CanvasText}.mh-seg button[aria-selected="true"],.mh-tab[aria-selected="true"],.mh-swatch.is-selected{outline:2px solid Highlight}.mh-swatch{forced-color-adjust:none}}
@@ -466,14 +486,17 @@ Use the embedded **Mehan Portable CSS + Runtime** below to build a tactile, acce
 - **Split button:** \`<div class="mh-split"><button type="button" class="mh-btn mh-btn-primary">Publish release</button><button type="button" class="mh-btn mh-btn-primary" aria-label="More publish options">▾</button></div>\`
 - **Copy button:** \`<button type="button" class="mh-btn mh-btn-secondary mh-btn-sm mh-copy-btn" data-mh-copy="mh_key_demo_98f4">Copy key</button>\`
 - **Middle truncate:** \`<span class="mh-mid-trunc mh-mono"><span class="mh-mid-head">quarterly-audit-2026-</span><span class="mh-mid-tail">signed.pdf</span></span>\`
-- **Segmented control:** \`<div class="mh-seg"><button aria-selected="true">Day</button><button>Week</button></div>\`
+- **Workspace & Canvas Stage:** \`<section class="mh-workspace is-2col"><aside class="mh-ws-pane">...</aside><div class="mh-ws-main"><div class="mh-canvas-stage">Preview<div class="mh-cs-hud"><div class="mh-zoom-bar"><button type="button" class="mh-btn mh-btn-ghost mh-btn-sm">−</button><span class="mh-mono">100%</span><button type="button" class="mh-btn mh-btn-ghost mh-btn-sm">+</button></div></div></div></div></section>\`
+- **Property row & Horizontal bar chart:** \`<div class="mh-property-row"><span class="mh-label">Opacity</span><input class="mh-input" value="100%" /></div>\` · \`<figure class="mh-chart"><div class="mh-hbar"><span>Edge Gateway</span><div class="mh-hbar-track"><div class="mh-hbar-fill" style="width:82%"></div></div><span class="mh-mono">82%</span></div></figure>\`
+- **Miller column browser:** \`<div class="mh-column-view"><ul class="mh-cv-col"><li><button type="button" class="mh-cv-item is-active" aria-selected="true">Tokens <span>›</span></button></li></ul></div>\`
+- **Segmented control:** \`<div class="mh-seg"><button type="button" aria-selected="true">Day</button><button type="button">Week</button></div>\`
 - **Switch:** \`<button type="button" role="switch" aria-checked="true" class="mh-switch is-on" aria-label="Enable feature"></button>\`
 - **9-point anchor grid:** \`<div class="mh-anchor-grid" role="radiogroup" aria-label="Origin"><button type="button" aria-checked="true" aria-label="Top left"></button><!-- 8 more cells --></div>\`
 - **6-digit OTP entry (auto-advance & paste):** \`<div class="mh-otp"><input maxlength="1" inputmode="numeric" aria-label="Digit 1" /><!-- 5 more inputs --></div>\`
 - **Error summary & inline message:** \`<div role="alert" class="mh-error-summary"><strong>Fix 1 issue:</strong> <a href="#email">Enter a valid work email.</a></div>\` · \`<div class="mh-inline-msg is-success">Saved cleanly.</div>\`
-- **Timeline & Zoom HUD:** \`<ol class="mh-timeline"><li>Deployed v1.0</li></ol>\` · \`<div class="mh-zoom-bar"><button class="mh-btn mh-btn-ghost mh-btn-sm">−</button><span class="mh-mono">100%</span><button class="mh-btn mh-btn-ghost mh-btn-sm">+</button></div>\`
-- **Tabs:** \`<div class="mh-tabs"><button class="mh-tab is-active" data-tab="overview">Overview</button><button class="mh-tab" data-tab="activity">Activity</button></div>\` paired with \`<section data-tab-panel="overview">...</section>\`
-- **Modal:** \`<button class="mh-btn mh-btn-secondary" data-mh-modal-open="confirm-dlg">Delete item</button>\` + \`<dialog id="confirm-dlg" class="mh-modal">...<button class="mh-btn mh-btn-secondary" data-mh-modal-close>Cancel</button></dialog>\`
+- **Timeline & Zoom HUD:** \`<ol class="mh-timeline"><li>Deployed v1.0</li></ol>\` · \`<div class="mh-zoom-bar"><button type="button" class="mh-btn mh-btn-ghost mh-btn-sm">−</button><span class="mh-mono">100%</span><button type="button" class="mh-btn mh-btn-ghost mh-btn-sm">+</button></div>\`
+- **Tabs:** \`<div class="mh-tabs"><button type="button" class="mh-tab is-active" data-tab="overview">Overview</button><button type="button" class="mh-tab" data-tab="activity">Activity</button></div>\` paired with \`<section data-tab-panel="overview">...</section>\`
+- **Modal:** \`<button type="button" class="mh-btn mh-btn-secondary" data-mh-modal-open="confirm-dlg">Delete item</button>\` + \`<dialog id="confirm-dlg" class="mh-modal">...<button type="button" class="mh-btn mh-btn-secondary" data-mh-modal-close>Cancel</button></dialog>\`
 
 ## 4. Starter Single-File HTML Template (Embed Directly)
 \`\`\`html

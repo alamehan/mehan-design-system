@@ -17,6 +17,7 @@ import {
   useToast,
 } from '@astryxdesign/core';
 import {
+  auditMehanThemeContrast,
   contrastRatio,
   exportW3cDesignTokens,
   type ResolvedMehanDna,
@@ -66,6 +67,16 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
   const w3cDocument = useMemo(
     () =>
       exportW3cDesignTokens({
+        name: `mehan-${themeState.seed.atmosphere}`,
+        ...themeState.seed,
+        radiusBase: themeState.seed.radiusBase ?? undefined,
+      }),
+    [themeState.seed],
+  );
+
+  const auditReport = useMemo(
+    () =>
+      auditMehanThemeContrast({
         name: `mehan-${themeState.seed.atmosphere}`,
         ...themeState.seed,
         radiusBase: themeState.seed.radiusBase ?? undefined,
@@ -352,16 +363,27 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
                 {dna.typography.displayFamily} / {dna.typography.bodyFamily}
               </Text>
             </Stack>
-            <Badge variant="success" label="WCAG 2.1 AA Verified" />
+            <Badge
+              variant={auditReport.passesAll ? 'success' : 'warning'}
+              label={
+                auditReport.passesAll
+                  ? isId
+                    ? `WCAG 2.2 AA Terverifikasi (${auditReport.checks.length}/${auditReport.checks.length})`
+                    : `WCAG 2.2 AA Verified (${auditReport.checks.length}/${auditReport.checks.length})`
+                  : isId
+                    ? `Periksa kontras (${auditReport.failures.length} isu)`
+                    : `Check contrast (${auditReport.failures.length} issues)`
+              }
+            />
           </HStack>
 
           <Table
-            aria-label="Resolved Mehan design tokens"
+            aria-label={isId ? 'Token desain Mehan terkompilasi' : 'Resolved Mehan design tokens'}
             data={tokenRows}
             columns={[
               {
                 key: 'token',
-                header: 'CSS token',
+                header: isId ? 'Token CSS' : 'CSS token',
                 width: proportional(1.3, {minWidth: 160}),
                 renderCell: row => (
                   <span className="studio-mono-pill">{String(row.token)}</span>
@@ -374,7 +396,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
               },
               {
                 key: 'light',
-                header: 'Light',
+                header: isId ? 'Terang' : 'Light',
                 width: proportional(0.85, {minWidth: 105}),
                 renderCell: row => (
                   <span className="studio-color-chip">
@@ -385,7 +407,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
               },
               {
                 key: 'dark',
-                header: 'Dark',
+                header: isId ? 'Gelap' : 'Dark',
                 width: proportional(0.85, {minWidth: 105}),
                 renderCell: row => (
                   <span className="studio-color-chip">
