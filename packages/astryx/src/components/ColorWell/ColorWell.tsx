@@ -20,6 +20,8 @@ export interface ColorWellProps {
   presets?: readonly string[];
   /** Show tabular hex code beside the color chip */
   hasHexReadout?: boolean;
+  /** Control height scale matching Button and TextInput */
+  size?: 'sm' | 'md' | 'lg';
   /** Disable opening the color well */
   isDisabled?: boolean;
 }
@@ -43,6 +45,7 @@ export function ColorWell({
   onAlphaChange,
   presets,
   hasHexReadout = true,
+  size = 'md',
   isDisabled = false,
 }: ColorWellProps) {
   const [open, setOpen] = useState(false);
@@ -78,7 +81,7 @@ export function ColorWell({
   const fillCss = hasAlpha ? chipRgba(value, clampedAlpha) : value;
 
   return (
-    <div ref={rootRef} className="mehan-color-well">
+    <div ref={rootRef} className="mehan-color-well" data-size={size}>
       <button
         ref={triggerRef}
         type="button"

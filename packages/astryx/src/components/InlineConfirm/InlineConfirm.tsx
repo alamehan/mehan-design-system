@@ -14,7 +14,7 @@ export interface InlineConfirmProps {
   /** Invoked only after the armed confirmation button is clicked */
   onConfirm: () => void;
   /** Control height scale */
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
   /** Disable arming the confirmation */
   isDisabled?: boolean;
 }
@@ -25,7 +25,7 @@ export function InlineConfirm({
   cancelLabel = 'Cancel',
   prompt = 'Are you sure?',
   onConfirm,
-  size = 'sm',
+  size = 'md',
   isDisabled = false,
 }: InlineConfirmProps) {
   const [armed, setArmed] = useState(false);

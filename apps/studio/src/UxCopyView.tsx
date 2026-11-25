@@ -185,35 +185,35 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
   const spacingScaleRows = [
     {
       id: 's1',
-      level: isId ? 'Label ke input (Intra-field)' : 'Label to input (Intra-field)',
+      level: isId ? 'Label ke kolom inputnya' : 'Label to its own input',
       token: 'gap={1} (4px–6px)',
       why: isId
-        ? 'Mengikat label langsung ke kontrol miliknya.'
-        : 'Binds a label unmistakably to its own control.',
+        ? 'Membuat jelas label mana milik kolom yang mana.'
+        : 'Makes it obvious which label belongs to which field.',
     },
     {
       id: 's2',
-      level: isId ? 'Antar input sejenis (Intra-group)' : 'Related fields (Intra-group)',
+      level: isId ? 'Antar kolom dalam satu kelompok' : 'Fields in the same group',
       token: 'gap={2}–{3} (8px–12px)',
       why: isId
-        ? 'Membentuk 1 kelompok kognitif utuh ( <= 5 item).'
-        : 'Forms one scannable chunk of <= 5 related inputs.',
+        ? 'Menyatukan <= 5 kolom yang saling berkaitan agar mudah dipindai.'
+        : 'Groups up to 5 related inputs into one easy-to-scan block.',
     },
     {
       id: 's3',
-      level: isId ? 'Antar kelompok topik (Inter-group)' : 'Distinct topics (Inter-group)',
+      level: isId ? 'Antar topik yang berbeda' : 'Between different topics',
       token: 'gap={5}–{6} (20px–24px)',
       why: isId
-        ? 'Memberi jeda napas tanpa perlu menambah kotak Card baru.'
-        : 'Separates topics cleanly without adding extra Card borders.',
+        ? 'Memberi ruang napas tanpa harus menambah garis kotak Card baru.'
+        : 'Adds breathing room without wrapping everything in extra Card borders.',
     },
     {
       id: 's4',
       level: isId ? 'Antar bagian besar halaman' : 'Major page sections',
       token: 'gap={7}–{8} (28px–36px)',
       why: isId
-        ? 'Menandai perpindahan konteks pekerjaan utama.'
-        : 'Marks a clear shift between primary page tasks.',
+        ? 'Menandai perpindahan bagian utama dengan jelas.'
+        : 'Marks a clear visual break between major sections.',
     },
   ];
 
@@ -229,7 +229,7 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
           id: '2',
           need: 'Menyaring baris tabel secara langsung',
           right: 'TextInput pencarian + tombol hapus',
-          wrong: 'Typeahead (khusus memilih 1 entitas)',
+          wrong: 'Typeahead (khusus memilih 1 item)',
         },
         {
           id: '3',
@@ -239,9 +239,9 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
         },
         {
           id: '4',
-          need: 'Menampilkan >= 5 data sejenis (order, token, user)',
+          need: 'Menampilkan >= 5 daftar data sejenis (pesanan, anggota)',
           right: 'Table atau List dengan garis pemisah',
-          wrong: 'Tumpukan Card berulang (Card Wall)',
+          wrong: 'Tumpukan Card berulang yang memenuhi layar',
         },
         {
           id: '5',
@@ -253,27 +253,27 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
     : [
         {
           id: '1',
-          need: 'Choose and retain a value inside a form',
+          need: 'Choose and keep a value inside a form',
           right: 'Selector / MultiSelector',
-          wrong: 'DropdownMenu (fires immediate commands)',
+          wrong: 'DropdownMenu (fires immediate actions)',
         },
         {
           id: '2',
           need: 'Filter visible table or list rows live',
           right: 'Clearable search TextInput',
-          wrong: 'Typeahead (picks one entity value)',
+          wrong: 'Typeahead (picks one item)',
         },
         {
           id: '3',
           need: 'Switch local display mode (2–5 options)',
           right: 'SegmentedControl',
-          wrong: 'TabList (switches peer content views)',
+          wrong: 'TabList (switches separate content views)',
         },
         {
           id: '4',
-          need: 'Display >= 5 homogeneous records (orders, users)',
+          need: 'Show 5+ similar items (orders, team members)',
           right: 'Table or divided List',
-          wrong: 'Repeated Card-per-row wall',
+          wrong: 'Wall of repeated Cards for every row',
         },
         {
           id: '5',

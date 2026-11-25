@@ -44,9 +44,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-confectionery',
       name: 'Confectionery',
-      badge: 'Mehan Default',
-      taglineEn: 'Warm cream paper, strawberry 3D candy lip & Bricolage Grotesque.',
-      taglineId: 'Kertas krem hangat, bibir permen 3D stroberi & Bricolage Grotesque.',
+      badge: 'Signature Default',
+      taglineEn: 'Warm cream paper with friendly berry-pink 3D buttons and soft recessed inputs.',
+      taglineId: 'Krem hangat dengan tombol 3D merah beri yang empuk dan kolom input lembut.',
       state: {
         seed: {...DEFAULT_SEED_CONFIG},
         tokenOverrides: {},
@@ -55,10 +55,10 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     },
     {
       id: 'preset-shotcandy',
-      name: 'Shotcandy 1:1',
-      badge: 'Origin Spark',
-      taglineEn: 'Compact 32px rhythm, espresso segmented ink & snappy spring feel.',
-      taglineId: 'Ritme kompak 32px, pil aktif espresso pekat & pegas responsif.',
+      name: 'Espresso Berry',
+      badge: 'Tactile Compact',
+      taglineEn: 'Compact 32px sizing, bold espresso active tabs, and lively button spring.',
+      taglineId: 'Ukuran ringkas 32px dengan tab gelap tegas dan pantulan tombol yang responsif.',
       state: {
         seed: {...SHOTCANDY_AUTHENTIC_SEED},
         tokenOverrides: {},
@@ -68,9 +68,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-butter',
       name: 'Sunlit Butter',
-      badge: 'Astryx Butter · 200%',
-      taglineEn: 'Cultured buttercream canvas, electric cobalt CTA & geometric Outfit.',
-      taglineId: 'Kanvas krim mentega cerah, tombol kobalt elektrik & font Outfit.',
+      badge: 'Warm & Bright',
+      taglineEn: 'Sunny buttercream surfaces paired with crisp cobalt buttons and clean Outfit type.',
+      taglineId: 'Permukaan krim cerah berpadu tombol biru kobalt segar dan huruf Outfit yang rapi.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
@@ -87,9 +87,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-matcha',
       name: 'Kyoto Matcha',
-      badge: 'Astryx Matcha · 200%',
-      taglineEn: 'Ceremonial sage washi, cedar-moss dark mode & restorative calm motion.',
-      taglineId: 'Kertas washi teh hijau, mode gelap lumut cedar & gerak tenang.',
+      badge: 'Calm & Organic',
+      taglineEn: 'Soft sage-tea paper and deep moss dark mode built for calm focus.',
+      taglineId: 'Hijau teh yang teduh dan mode gelap lumut hutan untuk ruang kerja yang tenang.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
@@ -105,9 +105,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-cacao',
       name: 'Artisanal Cacao',
-      badge: 'Astryx Cacao · 200%',
-      taglineEn: 'Oat-latte parchment, roasted cacao, Fraunces serif & Albert Sans.',
-      taglineId: 'Perkamen oat hangat, kakao panggang, serif Fraunces & Albert Sans.',
+      badge: 'Editorial Serif',
+      taglineEn: 'Warm oat-latte canvas, roasted cacao accents, and expressive Fraunces headings.',
+      taglineId: 'Nuansa kopi susu hangat, aksen cokelat panggang, dan judul serif Fraunces.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
@@ -125,9 +125,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-periwinkle',
       name: 'Cloud Y2K Pop',
-      badge: 'Astryx Y2K · 200%',
-      taglineEn: 'Iridescent lavender-ice, holographic grape accent & circular Poppins.',
-      taglineId: 'Es lavender berkilau, aksen anggur holografik & font bulat Poppins.',
+      badge: 'Playful & Soft',
+      taglineEn: 'Airy lavender-ice surfaces, playful grape accents, and rounded Poppins type.',
+      taglineId: 'Permukaan ungu muda segar, aksen anggur ceria, dan huruf bulat Poppins.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
@@ -145,16 +145,16 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-obsidian',
       name: 'Obsidian Linear',
-      badge: 'Astryx Gothic · 200%',
-      taglineEn: 'Titanium mist & carbon noir, crisp 0.75x corners & JetBrains Mono.',
-      taglineId: 'Kabut titanium & karbon gelap, sudut tajam 0.75x & JetBrains Mono.',
+      badge: 'Sleek Engineering',
+      taglineEn: 'Titanium mist and carbon black with crisp corners and JetBrains Mono.',
+      taglineId: 'Abu titanium & hitam karbon bersudut tegas untuk aplikasi teknis modern.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
           atmosphere: 'obsidian',
           accent: '#4f46e5',
-          radiusScale: 0.75,
-          sizeBase: 32,
+          radiusScale: 0.8,
+          sizeBase: 36,
           headingFont: 'Albert Sans',
           bodyFont: 'Albert Sans',
           codeFont: 'JetBrains Mono',
@@ -169,16 +169,16 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-porcelain',
       name: 'Porcelain SaaS',
-      badge: 'Enterprise SaaS',
-      taglineEn: 'Architectural ice-white & midnight slate with compact 32px density.',
-      taglineId: 'Putih porselen bersih & biru malam dengan kepadatan kompak 32px.',
+      badge: 'Clean Enterprise',
+      taglineEn: 'Crisp white and classic blue built for clear dashboards and business apps.',
+      taglineId: 'Putih bersih dan biru tegas untuk aplikasi bisnis serta dashboard modern.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
           atmosphere: 'porcelain',
           accent: 'blueberry',
           depth: 0.95,
-          sizeBase: 32,
+          sizeBase: 36,
           headingFont: 'Albert Sans',
           bodyFont: 'Figtree',
           motion: 'standard',
@@ -190,9 +190,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-stone',
       name: 'Stone Editorial',
-      badge: 'AI & Publishing',
-      taglineEn: 'Warm sandstone alabaster, oceanic teal & literary Fraunces headings.',
-      taglineId: 'Batu pasir hangat, aksen teal tenang & tajuk sastra Fraunces.',
+      badge: 'Quiet Workspace',
+      taglineEn: 'Warm sandstone surfaces and calm teal built for reading, notes, and AI tools.',
+      taglineId: 'Batu pasir hangat dan hijau toska tenang untuk ruang baca, catatan, & aplikasi AI.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
@@ -211,9 +211,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-solar',
       name: 'Solar Citrus',
-      badge: 'Creative Consumer',
-      taglineEn: 'Golden butter warmth, burnt tangerine energy & espresso pills.',
-      taglineId: 'Kehangatan mentega emas, aksen jeruk bakar & pil aktif espresso.',
+      badge: 'Creative Studio',
+      taglineEn: 'Golden warmth paired with vibrant tangerine accents for lively consumer apps.',
+      taglineId: 'Kuning hangat berpadu oranye segar yang penuh energi untuk aplikasi kreatif.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
@@ -231,9 +231,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-nordic',
       name: 'Nordic Fjord',
-      badge: 'Fintech & Data',
-      taglineEn: 'Clinical porcelain clarity, fjord teal & wide Montserrat display.',
-      taglineId: 'Kejernihan porselen presisi, aksen teal & tajuk tegas Montserrat.',
+      badge: 'Crisp Analytics',
+      taglineEn: 'High-clarity porcelain, cool fjord teal, and confident Montserrat headings.',
+      taglineId: 'Tampilan jernih beraksen biru-hijau tegas untuk produk finansial & analitik.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
@@ -252,9 +252,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-crimson',
       name: 'Velvet Crimson',
-      badge: 'Culture & Media',
-      taglineEn: 'Alabaster stone canvas, ruby carmine 3D lip & editorial contrast.',
-      taglineId: 'Kanvas batu alabaster, bibir 3D merah rubi & kontras editorial.',
+      badge: 'Bold Culture',
+      taglineEn: 'Soft alabaster stone paired with rich ruby buttons and literary serif titles.',
+      taglineId: 'Kontras batu alabaster lembut dan tombol merah rubi yang berani namun elegan.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,

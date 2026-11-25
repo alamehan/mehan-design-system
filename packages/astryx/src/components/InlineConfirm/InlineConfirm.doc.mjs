@@ -39,9 +39,9 @@ export default {
     },
     {
       name: 'size',
-      type: "'sm' | 'md'",
-      description: 'Control height scale.',
-      default: "'sm'",
+      type: "'sm' | 'md' | 'lg'",
+      description: 'Control height scale matching Button and TextInput.',
+      default: "'md'",
     },
     {
       name: 'isDisabled',

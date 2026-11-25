@@ -77,22 +77,30 @@ function ActionSpecimens(): SpecimenDefinition[] {
       category: 'Action',
       pkg: 'core',
       span: 'wide',
-      summaryEn: 'Primary, secondary, destructive, and ghost push-buttons with OKLCH 3D lip physics.',
-      summaryId: 'Tombol Primary, Secondary, Destructive, dan Ghost dengan fisika bibir 3D OKLCH.',
+      summaryEn:
+        'Primary, secondary, destructive, and quiet ghost buttons with a soft 3D press and balanced proportions across sm, md, and lg.',
+      summaryId:
+        'Tombol aksi utama, pendukung, hapus, dan transparan dengan efek tekan 3D empuk serta proporsi seimbang di ukuran sm, md, hingga lg.',
       code: `<HStack gap={2} wrap="wrap">\n  <Button variant="primary" label="Save changes" />\n  <Button variant="secondary" label="Export CSV" />\n  <Button variant="destructive" label="Delete key" />\n  <Button variant="ghost" label="Cancel" />\n</HStack>`,
       render: () => (
-        <HStack gap={2} wrap="wrap" vAlign="center">
-          <Button
-            variant="primary"
-            size="sm"
-            label="Save changes"
-            icon={<Plus size={14} />}
-          />
-          <Button variant="secondary" size="sm" label="Export CSV" />
-          <Button variant="destructive" size="sm" label="Delete key" />
-          <Button variant="ghost" size="sm" label="Cancel" />
-          <Button variant="secondary" size="sm" isDisabled label="Locked" />
-        </HStack>
+        <VStack gap={2}>
+          <HStack gap={2} wrap="wrap" vAlign="center">
+            <Button
+              variant="primary"
+              label="Save changes"
+              icon={<Plus size={15} />}
+            />
+            <Button variant="secondary" label="Export CSV" />
+            <Button variant="destructive" label="Delete key" />
+            <Button variant="ghost" label="Cancel" />
+            <Button variant="secondary" isDisabled label="Locked" />
+          </HStack>
+          <HStack gap={2} wrap="wrap" vAlign="center">
+            <Button variant="secondary" size="sm" label="Small (32px)" />
+            <Button variant="secondary" size="md" label="Default (36px)" />
+            <Button variant="secondary" size="lg" label="Large (44px)" />
+          </HStack>
+        </VStack>
       ),
     },
     {
@@ -100,13 +108,14 @@ function ActionSpecimens(): SpecimenDefinition[] {
       name: 'SegmentedControl',
       category: 'Action',
       pkg: 'core',
-      summaryEn: 'Recessed well switcher supporting Raised Ceramic or Shotcandy Espresso active pill.',
-      summaryId: 'Pemilih mode cekung dengan gaya pil Raised Ceramic atau Espresso khas Shotcandy.',
+      summaryEn:
+        'Tactile recessed view switcher supporting either a bright raised pill or a bold dark active tab.',
+      summaryId:
+        'Pemilih tampilan cekung yang mendukung gaya pil putih timbul maupun tab gelap tegas.',
       code: `<SegmentedControl label="View mode" value={view} onChange={setView}>\n  <SegmentedControlItem value="board" label="Board" />\n  <SegmentedControlItem value="table" label="Table" />\n  <SegmentedControlItem value="timeline" label="Timeline" />\n</SegmentedControl>`,
       render: () => (
         <SegmentedControl
           label="View mode"
-          size="sm"
           value={segVal}
           onChange={setSegVal}
         >
@@ -121,14 +130,14 @@ function ActionSpecimens(): SpecimenDefinition[] {
       name: 'ButtonGroup',
       category: 'Action',
       pkg: 'core',
-      summaryEn: 'Joined cluster of related peer actions sharing unified outer corner geometry.',
-      summaryId: 'Kelompok tombol aksi berdampingan dengan sudut luar yang menyatu rapi.',
+      summaryEn: 'Joined row of related actions sharing clean outer corners.',
+      summaryId: 'Kelompok tombol aksi serumpun dengan sudut luar yang menyatu rapi.',
       code: `<ButtonGroup label="Time period">\n  <Button variant="secondary" label="Day" />\n  <Button variant="secondary" label="Week" />\n  <Button variant="secondary" label="Month" />\n</ButtonGroup>`,
       render: () => (
         <ButtonGroup label="Time period">
-          <Button variant="secondary" size="sm" label="Day" />
-          <Button variant="secondary" size="sm" label="Week" />
-          <Button variant="secondary" size="sm" label="Month" />
+          <Button variant="secondary" label="Day" />
+          <Button variant="secondary" label="Week" />
+          <Button variant="secondary" label="Month" />
         </ButtonGroup>
       ),
     },
@@ -137,12 +146,12 @@ function ActionSpecimens(): SpecimenDefinition[] {
       name: 'DropdownMenu',
       category: 'Action',
       pkg: 'core',
-      summaryEn: 'Keyboard-navigable command menu with sections, icons, and destructive actions.',
-      summaryId: 'Menu perintah aksesibel dengan pengelompokan aksi, ikon, dan opsi destruktif.',
+      summaryEn: 'Action menu with keyboard arrow navigation, icons, and clear danger items.',
+      summaryId: 'Menu aksi bernavigasi tombol panah lengkap dengan ikon dan opsi hapus yang jelas.',
       code: `<DropdownMenu\n  button={{label: 'Workspace actions', variant: 'secondary'}}\n  items={[{label: 'Duplicate workspace'}, {type: 'divider'}, {label: 'Archive', variant: 'destructive'}]}\n/>`,
       render: () => (
         <DropdownMenu
-          button={{label: 'Workspace actions', variant: 'secondary', size: 'sm'}}
+          button={{label: 'Workspace actions', variant: 'secondary'}}
           items={[
             {
               label: 'Duplicate workspace',
@@ -164,26 +173,23 @@ function ActionSpecimens(): SpecimenDefinition[] {
       name: 'IconButton',
       category: 'Action',
       pkg: 'core',
-      summaryEn: 'Square icon trigger enforcing an explicit accessible label for screen readers.',
-      summaryId: 'Tombol ikon presisi dengan label aksesibilitas wajib bagi pembaca layar.',
+      summaryEn: 'Square icon-only button with a required screen-reader label.',
+      summaryId: 'Tombol ikon persegi dengan teks label bawaan yang ramah pembaca layar.',
       code: `<HStack gap={2}>\n  <IconButton variant="primary" label="Generate" icon={<Sparkles size={15} />} />\n  <IconButton variant="secondary" label="Copy" icon={<Copy size={15} />} />\n  <IconButton variant="ghost" label="Download" icon={<Download size={15} />} />\n</HStack>`,
       render: () => (
         <HStack gap={2}>
           <IconButton
             variant="primary"
-            size="sm"
             label="Generate"
             icon={<Sparkles size={15} />}
           />
           <IconButton
             variant="secondary"
-            size="sm"
             label="Copy"
             icon={<Copy size={15} />}
           />
           <IconButton
             variant="ghost"
-            size="sm"
             label="Download"
             icon={<Download size={15} />}
           />
@@ -195,20 +201,18 @@ function ActionSpecimens(): SpecimenDefinition[] {
       name: 'ToggleButton',
       category: 'Action',
       pkg: 'core',
-      summaryEn: 'Stateful two-state press button (`aria-pressed`) with inset selected tint.',
-      summaryId: 'Tombol tekan dua kondisi (`aria-pressed`) dengan indikator aktif lembut.',
+      summaryEn: 'On/off press button that stays visibly tinted while active.',
+      summaryId: 'Tombol tekan dua kondisi (nyala/mati) dengan warna aktif yang jelas.',
       code: `<ToggleButton isPressed={pinned} onPressedChange={setPinned} label="Bookmark" icon={<Bookmark size={14} />} />`,
       render: () => (
         <HStack gap={2} wrap="wrap">
           <ToggleButton
-            size="sm"
             isPressed={pinned}
             onPressedChange={setPinned}
             label={pinned ? 'Bookmarked' : 'Bookmark'}
             icon={<Bookmark size={14} />}
           />
           <ToggleButton
-            size="sm"
             isPressed={!pinned}
             onPressedChange={next => setPinned(!next)}
             label={!pinned ? 'Pinned' : 'Pin view'}
@@ -221,8 +225,8 @@ function ActionSpecimens(): SpecimenDefinition[] {
       name: 'Link',
       category: 'Action',
       pkg: 'core',
-      summaryEn: 'Semantic anchor element styled with WCAG AA verified accent text contrast.',
-      summaryId: 'Tautan semantik dengan jaminan rasio kontras teks aksen WCAG AA.',
+      summaryEn: 'Clear text link with readable contrast in both Light and Dark modes.',
+      summaryId: 'Tautan teks yang jernih dan nyaman dibaca di mode Terang maupun Gelap.',
       code: `<Link href="#docs">Read architecture guide</Link>`,
       render: () => (
         <HStack gap={4} wrap="wrap">

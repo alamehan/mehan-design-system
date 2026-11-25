@@ -17,13 +17,11 @@ import {
   Tab,
   TabList,
   Text,
+  TextInput,
   useToast,
 } from '@astryxdesign/core';
 import {Theme} from '@astryxdesign/core/theme';
 import {
-  ColorSwatch,
-  MetricCard,
-  PrecisionSlider,
   ShortcutSheet,
   useHistoryStore,
   useMehanShortcuts,
@@ -44,6 +42,8 @@ import {
 import {
   Copy,
   Download,
+  Heart,
+  Info,
   Keyboard,
   Moon,
   SlidersHorizontal,
@@ -54,7 +54,9 @@ import {
 import {ComponentsCatalogView} from './catalog/ComponentsCatalogView';
 import {STUDIO_COPY} from './i18n';
 import {MaintainView} from './MaintainView';
+import {MehanLogoMark} from './MehanLogoMark';
 import {OverviewManifesto} from './OverviewManifesto';
+import {StudioInfoDialog, type StudioInfoTab} from './StudioInfoDialog';
 import {
   buildAgentSetupPrompt,
   buildReactInstallSnippet,
@@ -129,6 +131,8 @@ function StudioInner({
   const [cssMode, setCssMode] = useState<InstallCssMode>('plain');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [infoTab, setInfoTab] = useState<StudioInfoTab>('overview');
   const catalogSearchRef = useRef<HTMLInputElement | null>(null);
 
   useMehanShortcuts([
@@ -167,10 +171,12 @@ function StudioInner({
     },
   ]);
 
-  // Live Hero Demo Widget state (real product surface, not duplicate theme knobs)
-  const [heroChannel, setHeroChannel] = useState<string>('production');
-  const [heroRollout, setHeroRollout] = useState<number>(85);
-  const [heroAutoGuard, setHeroAutoGuard] = useState<boolean>(true);
+  // Relatable Everyday Product Card State in Hero (Zero DevOps Jargon!)
+  const [heroStage, setHeroStage] = useState<string>('design');
+  const [heroProjectName, setHeroProjectName] = useState<string>(
+    'Studio Kreatif Nusantara',
+  );
+  const [heroCalmMode, setHeroCalmMode] = useState<boolean>(true);
 
   const {seed} = themeState;
 
@@ -253,7 +259,7 @@ function StudioInner({
 </head>
 <body>
   <header class="mh-topbar">
-    <div class="mh-row"><strong class="mh-h2">mehan</strong><span class="mh-badge mh-badge-accent">${atmosphereName} · ${accentName}</span></div>
+    <div class="mh-row"><strong class="mh-h2">Mehan Design System</strong><span class="mh-badge mh-badge-accent">${atmosphereName} · ${accentName}</span></div>
     <button class="mh-btn mh-btn-sm mh-btn-secondary" type="button" data-mh-theme-toggle>Light / Dark</button>
   </header>
   <main class="mh-container">
@@ -315,17 +321,22 @@ function StudioInner({
     });
   };
 
+  const openCreatorModal = (targetTab: StudioInfoTab = 'overview') => {
+    setInfoTab(targetTab);
+    setInfoOpen(true);
+  };
+
   return (
     <div className="studio-shell">
-      {/* Calm, Uncluttered Sticky Top Bar */}
+      {/* Calm, Uncluttered Sticky Top Bar with Hand-Crafted 2.5D Animated Emblem */}
       <header className="studio-topbar">
         <div className="studio-topbar-inner">
           <div className="studio-brand">
-            <div className="studio-logo-badge" aria-hidden="true">
-              m
-            </div>
-            <span className="studio-wordmark">mehan</span>
-            <Badge variant="neutral" label="v1.0" />
+            <MehanLogoMark size={32} />
+            <span className="studio-wordmark">Mehan Design System</span>
+            <span className="studio-version-badge">
+              <Badge variant="neutral" label="v1.0" />
+            </span>
           </div>
 
           <nav className="studio-topnav" aria-label="Studio navigation">
@@ -354,6 +365,14 @@ function StudioInner({
               <SegmentedControlItem value="id" label="ID" />
               <SegmentedControlItem value="en" label="EN" />
             </SegmentedControl>
+
+            <IconButton
+              variant="ghost"
+              size="sm"
+              label={copy.nav.info}
+              icon={<Info size={15} />}
+              onClick={() => openCreatorModal('overview')}
+            />
 
             <IconButton
               variant="ghost"
@@ -398,7 +417,11 @@ function StudioInner({
                       <Badge variant="info" label={copy.overview.eyebrow} />
                       <Badge
                         variant="success"
-                        label={`WCAG 2.2 AA · ${accentTextContrast}:1`}
+                        label={
+                          isId
+                            ? `Kontras Aman · ${accentTextContrast}:1`
+                            : `WCAG AA Contrast · ${accentTextContrast}:1`
+                        }
                       />
                     </HStack>
                     <Heading level={1}>{copy.overview.heroTitle}</Heading>
@@ -422,86 +445,115 @@ function StudioInner({
                         onClick={() => void handleCopyAiKit()}
                       />
                     </HStack>
+
+                    <div>
+                      <button
+                        type="button"
+                        className="mh-author-pill"
+                        onClick={() => openCreatorModal('about')}
+                      >
+                        <Heart size={12} aria-hidden="true" />
+                        <span>
+                          {isId
+                            ? 'Dirancang penuh dedikasi oleh Raihan Allaam (@alamehan) · Lihat profil & cerita'
+                            : 'Crafted with dedication by Raihan Allaam (@alamehan) · Story & credits'}
+                        </span>
+                      </button>
+                    </div>
                   </Stack>
 
-                  {/* Focused Real-World Tactile Widget (Zero Duplicate Settings Clutter) */}
+                  {/* Calm, Proportional Live UI Preview (Default md Controls) */}
                   <div className="studio-tray-panel">
                     <Stack gap={3}>
-                      <HStack hAlign="between" vAlign="center" gap={2}>
+                      <HStack hAlign="between" vAlign="center" gap={2} wrap="wrap">
                         <div style={{minWidth: 0, flex: 1}}>
                           <Stack gap={0.5}>
                             <Text weight="semibold">
-                              {isId ? 'Kontrol rilis bertahap' : 'Progressive rollout'}
+                              {isId
+                                ? 'Coba langsung rasa komponennya'
+                                : 'Feel the live components right here'}
                             </Text>
                             <Text type="supporting" color="secondary" maxLines={1}>
                               {atmosphereName} · {accentName} · {seed.headingFont}
                             </Text>
                           </Stack>
                         </div>
-                        <div style={{flex: 'none'}}>
-                          <Badge
-                            variant="success"
-                            label={heroChannel === 'production' ? 'Live' : 'Canary'}
-                          />
-                        </div>
+                        <Badge
+                          variant="success"
+                          label={isId ? 'Interaktif' : 'Live UI'}
+                        />
                       </HStack>
 
                       <SegmentedControl
-                        label="Deployment environment"
-                        size="sm"
-                        value={heroChannel}
-                        onChange={setHeroChannel}
+                        label={isId ? 'Tahap proyek' : 'Project stage'}
+                        value={heroStage}
+                        onChange={setHeroStage}
                       >
-                        <SegmentedControlItem value="production" label="Production" />
-                        <SegmentedControlItem value="canary" label="Canary" />
-                        <SegmentedControlItem value="preview" label="Preview" />
+                        <SegmentedControlItem
+                          value="design"
+                          label={isId ? 'Desain' : 'Design'}
+                        />
+                        <SegmentedControlItem
+                          value="review"
+                          label={isId ? 'Ulasan Tim' : 'Team Review'}
+                        />
+                        <SegmentedControlItem
+                          value="ship"
+                          label={isId ? 'Siap Rilis' : 'Ready to Ship'}
+                        />
                       </SegmentedControl>
 
-                      <MetricCard
-                        label={isId ? 'Latensi tepi (p95)' : 'Edge latency (p95)'}
-                        value={heroChannel === 'production' ? '18.4 ms' : '21.2 ms'}
-                        delta={{value: '-2.8 ms', direction: 'down'}}
-                        caption={
-                          isId
-                            ? 'Angka sejajar otomatis (tabular-nums)'
-                            : 'Aligned tabular numerals across live updates'
-                        }
-                      />
-
-                      <PrecisionSlider
-                        label={isId ? 'Trafik' : 'Traffic'}
-                        value={heroRollout}
-                        min={0}
-                        max={100}
-                        step={5}
-                        stops={[25, 50, 85, 100]}
-                        unit="%"
-                        onChange={setHeroRollout}
+                      <TextInput
+                        label={isId ? 'Nama ruang kerja proyek' : 'Project workspace name'}
+                        value={heroProjectName}
+                        onChange={setHeroProjectName}
                       />
 
                       <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
                         <Switch
                           label={
-                            isId ? 'Proteksi kontras otomatis' : 'Auto contrast guard'
+                            isId ? 'Mode fokus tenang' : 'Calm focus mode'
                           }
-                          value={heroAutoGuard}
-                          onChange={setHeroAutoGuard}
+                          value={heroCalmMode}
+                          onChange={setHeroCalmMode}
                         />
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          label={isId ? 'Buka Showcase' : 'Open Showcase'}
-                          onClick={() => setActiveTab('templates')}
-                        />
+                        <HStack gap={2} wrap="wrap">
+                          <Button
+                            variant="secondary"
+                            label={isId ? 'Contoh Halaman' : 'See Templates'}
+                            onClick={() => setActiveTab('templates')}
+                          />
+                          <Button
+                            variant="primary"
+                            label={
+                              heroStage === 'ship'
+                                ? isId
+                                  ? 'Terbitkan sekarang'
+                                  : 'Publish now'
+                                : isId
+                                  ? 'Simpan draf'
+                                  : 'Save draft'
+                            }
+                            onClick={() =>
+                              showToast({
+                                type: 'info',
+                                body: isId
+                                  ? `Tersimpan di pratinjau "${heroProjectName}".`
+                                  : `Saved in "${heroProjectName}" preview.`,
+                              })
+                            }
+                          />
+                        </HStack>
                       </HStack>
                     </Stack>
                   </div>
                 </Grid>
               </section>
 
-              {/* Editorial Manifesto, Attachment-1 Distillation Illustration, 12-Preset Live Gallery & 6-Stage Iteration Chronicle */}
+              {/* Beat 2 (Compact 2x6 Theme Strip) & Beat 3 (Why Mehan Exists + 6-Stage Story) */}
               <OverviewManifesto
                 lang={lang}
+                mode={mode}
                 dna={dna}
                 themeState={themeState}
                 builtInPresets={builtInPresets}
@@ -511,7 +563,7 @@ function StudioInner({
                 onOpenEditor={() => setEditorOpen(true)}
               />
 
-              {/* Beat 4: Concise Tabbed 60-Second Quickstart (Docs-Grade Clarity) */}
+              {/* Beat 4: Concise Tabbed 60-Second Quickstart */}
               <Card elevation="low">
                 <Stack gap={3}>
                   <Stack gap={1}>
@@ -563,7 +615,10 @@ function StudioInner({
                         </HStack>
                       </HStack>
                       <CodeBlock
-                        code={aiKitMarkdown.slice(0, 760) + '\n/* ...full kit copied via button above */'}
+                        code={
+                          aiKitMarkdown.slice(0, 760) +
+                          '\n/* ...full kit copied via button above */'
+                        }
                         language="markdown"
                         title={`MEHAN-AI-PROTOTYPE-KIT.md (${atmosphereName} · ${accentName})`}
                         hasCopyButton
@@ -762,6 +817,15 @@ function StudioInner({
           setPresets={setPresets}
         />
       </div>
+
+      {/* Tools-Factory-Style Info & Creator Modal */}
+      <StudioInfoDialog
+        isOpen={infoOpen}
+        onOpenChange={setInfoOpen}
+        tab={infoTab}
+        onTabChange={setInfoTab}
+        lang={lang}
+      />
 
       {/* Named Destructive AlertDialog Demo */}
       <AlertDialog

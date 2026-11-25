@@ -30,9 +30,9 @@ export function useCatalogMehanFormsFeedback(): SpecimenDefinition[] {
       category: 'Action',
       pkg: 'mehan',
       summaryEn:
-        'Lightweight two-step inline confirmation for row-level removals, focusing Cancel first and disarming on Escape.',
+        'Quick two-step inline delete confirmation that focuses Cancel first and closes on Escape.',
       summaryId:
-        'Konfirmasi sebaris dua langkah untuk penghapusan baris yang memfokuskan Batal lebih dulu dan batal otomatis dengan Escape.',
+        'Konfirmasi hapus dua langkah langsung di baris yang otomatis memfokuskan Batal lebih dulu.',
       code: `<InlineConfirm triggerLabel="Remove webhook" confirmLabel="Remove" prompt="Remove endpoint?" onConfirm={removeWebhook} />`,
       render: () => (
         <InlineConfirm
@@ -53,9 +53,9 @@ export function useCatalogMehanFormsFeedback(): SpecimenDefinition[] {
       pkg: 'mehan',
       span: 'wide',
       summaryEn:
-        'Top-of-form WCAG 3.3.1 validation summary with clickable focus-jumping links directly to invalid fields.',
+        'Clear summary box at the top of a form with clickable links that jump straight to each field needing attention.',
       summaryId:
-        'Ringkasan validasi formulir WCAG 3.3.1 di bagian atas dengan tautan lompat-fokus langsung ke kolom yang perlu diperbaiki.',
+        'Kotak ringkasan di atas formulir berisi tautan yang langsung melompat ke kolom yang perlu diperbaiki.',
       code: `<ErrorSummary errors={[{fieldId: 'work-email', fieldLabel: 'Work email', message: 'Enter a valid email, like name@company.com.'}]} />`,
       render: () => (
         <Stack gap={2} style={{maxWidth: 460}}>
@@ -98,9 +98,9 @@ export function useCatalogMehanFormsFeedback(): SpecimenDefinition[] {
       category: 'Feedback & Status',
       pkg: 'mehan',
       summaryEn:
-        'Compact field-level feedback line pairing a semantic icon with WCAG-verified status ink.',
+        'Compact helper or status line beneath an input pairing a clear icon with readable status text.',
       summaryId:
-        'Baris umpan balik ringkas setingkat kolom yang memadukan ikon semantik dengan teks berkontras WCAG AA.',
+        'Baris pesan status ringkas di bawah kolom input dengan ikon dan warna teks yang jelas terbaca.',
       code: `<InlineMessage status="success" message="DNS records verified across all edge regions." />`,
       render: () => (
         <Stack gap={1.5}>

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 880" width="960" height="880" role="img" aria-labelledby="mhTitle mhDesc">
-  <title id="mhTitle">Why Mehan Design System Exists — Architectural Leverage on Meta Astryx</title>
-  <desc id="mhDesc">Visual comparison between reinventing fragile UI primitives from scratch versus layering Mehan's OKLCH tactile soul, universal 5-in-1 workspaces, and executable UX laws cleanly on top of Meta Astryx's WAI-ARIA foundation.</desc>
+  <title id="mhTitle">Why Mehan Design System Exists — Smart Foundation, Original Design Craft</title>
+  <desc id="mhDesc">Visual comparison between spending months reinventing fragile UI buttons from scratch versus building original tactile warmth, 35+ workspace components, and practical UX guides on top of Meta Astryx's proven open-source foundation.</desc>
   <defs>
     <linearGradient id="bgPaper" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#fdf9f3"/>
@@ -24,54 +24,54 @@
   <rect width="960" height="880" rx="26" fill="url(#bgPaper)" stroke="#e5d7c4" stroke-width="1.5"/>
 
   <!-- Top Eyebrow Pill -->
-  <rect x="316" y="26" width="328" height="26" rx="13" fill="#efe7ff" stroke="#c4b5fd" stroke-width="1"/>
-  <text x="480" y="43" text-anchor="middle" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="11.5" font-weight="700" fill="#5b21b6" letter-spacing="0.03em">WORK SMART, NOT FROM SCRATCH · ARCHITECTURAL THESIS</text>
+  <rect x="298" y="26" width="364" height="26" rx="13" fill="#efe7ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="480" y="43" text-anchor="middle" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="11.5" font-weight="700" fill="#5b21b6" letter-spacing="0.02em">WHY MEHAN EXISTS · SMART FOUNDATION, ORIGINAL DESIGN CRAFT</text>
 
-  <!-- LEFT TILTED CARD: Without Leverage (From Scratch) -->
+  <!-- LEFT TILTED CARD: Rebuilt From Scratch -->
   <g transform="translate(116, 74) rotate(-2.2, 145, 92)" filter="url(#rawShadow)">
     <rect width="290" height="178" rx="16" fill="#f3f2ef" stroke="#b8b2a8" stroke-width="1.2" stroke-dasharray="5 4"/>
     <circle cx="20" cy="20" r="4" fill="#b8b2a8"/>
     <circle cx="32" cy="20" r="4" fill="#b8b2a8"/>
     <circle cx="44" cy="20" r="4" fill="#b8b2a8"/>
     <text x="272" y="23" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="10" fill="#6b665e">from-scratch-ui.tsx</text>
-    <text x="18" y="49" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700" fill="#57534e">Rebuilt from zero</text>
+    <text x="18" y="49" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700" fill="#57534e">Rebuilt from scratch</text>
     <rect x="18" y="61" width="254" height="28" rx="5" fill="#ffffff" stroke="#d6d3cd"/>
-    <text x="28" y="79" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" fill="#78716c">Flat input · no focus trap · no ARIA</text>
-    <rect x="18" y="99" width="102" height="20" rx="5" fill="#fee2e2"/>
-    <text x="69" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#b91c1c">✗ 0 WAI-ARIA</text>
-    <rect x="126" y="99" width="124" height="20" rx="5" fill="#fee2e2"/>
-    <text x="188" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#b91c1c">✗ Months wasted</text>
+    <text x="28" y="79" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" fill="#78716c">Pretty in mockups, breaks in real use</text>
+    <rect x="18" y="99" width="124" height="20" rx="5" fill="#fee2e2"/>
+    <text x="80" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#b91c1c">✗ Months on basics</text>
+    <rect x="148" y="99" width="124" height="20" rx="5" fill="#fee2e2"/>
+    <text x="210" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#b91c1c">✗ Fragile menus</text>
     <rect x="18" y="131" width="254" height="31" rx="5" fill="#e5e2dc" stroke="#a8a29e"/>
-    <text x="145" y="151" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="600" fill="#57534e">Generic flat button</text>
+    <text x="145" y="151" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="600" fill="#57534e">Generic flat look &amp; heavy upkeep</text>
   </g>
-  <text x="261" y="280" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="13.5" fill="#6f5b4d">Without leverage — pretty mockup, fragile in prod</text>
+  <text x="261" y="280" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="13.5" fill="#6f5b4d">Hard work alone — months spent reinventing basics</text>
 
   <!-- HAND-DRAWN CURVED HORIZONTAL ARROW -->
   <path d="M438 164 C 462 144, 496 144, 522 158" fill="none" stroke="#6f5b4d" stroke-width="2.2" stroke-linecap="round"/>
   <path d="M512 149 L 524 159 L 510 165" fill="none" stroke="#6f5b4d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- RIGHT TILTED CARD: With Mehan (Meta Astryx x Mehan) -->
+  <!-- RIGHT TILTED CARD: Meta Astryx x Mehan -->
   <g transform="translate(554, 72) rotate(2.2, 145, 92)" filter="url(#cardShadow)">
     <rect width="290" height="178" rx="16" fill="#fffcf7" stroke="#e5d7c4" stroke-width="1.2"/>
     <circle cx="20" cy="20" r="4" fill="#ef4444"/>
     <circle cx="32" cy="20" r="4" fill="#f59e0b"/>
     <circle cx="44" cy="20" r="4" fill="#10b981"/>
-    <rect x="160" y="11" width="114" height="19" rx="9.5" fill="#def8eb"/>
-    <text x="217" y="24" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#11593d">Astryx × Mehan</text>
+    <rect x="150" y="11" width="124" height="19" rx="9.5" fill="#def8eb"/>
+    <text x="212" y="24" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#11593d">Meta Astryx × Mehan</text>
     <text x="18" y="49" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14.5" font-weight="800" fill="#261b16">Confectionery · Strawberry</text>
     <!-- Recessed Well -->
     <rect x="18" y="61" width="254" height="29" rx="9" fill="#f2e8d9" stroke="#dfd1be"/>
-    <text x="28" y="79" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" font-weight="600" fill="#261b16">Recessed tactile well · WAI-ARIA locked</text>
-    <rect x="18" y="99" width="106" height="20" rx="6" fill="#f2e8d9"/>
-    <text x="71" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#261b16">✓ WCAG 2.2 AA</text>
-    <rect x="130" y="99" width="118" height="20" rx="6" fill="#f2e8d9"/>
-    <text x="189" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#261b16">✓ Zero Fork</text>
+    <text x="28" y="79" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" font-weight="600" fill="#261b16">Soft recessed input · Smooth everywhere</text>
+    <rect x="18" y="99" width="122" height="20" rx="6" fill="#f2e8d9"/>
+    <text x="79" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#261b16">✓ Meta-proven core</text>
+    <rect x="146" y="99" width="126" height="20" rx="6" fill="#f2e8d9"/>
+    <text x="209" y="113" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="10" font-weight="700" fill="#261b16">✓ Auto Light &amp; Dark</text>
     <!-- 3D Candy Lip Primary Button -->
     <rect x="18" y="130" width="254" height="33" rx="10" fill="#8f163b"/>
     <rect x="18" y="128" width="254" height="32" rx="10" fill="url(#ctaBerry)"/>
-    <text x="145" y="148" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="700" fill="#ffffff">Sculpted 3D tactile CTA</text>
+    <text x="145" y="148" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="700" fill="#ffffff">Warm 3D button · Ready to ship</text>
   </g>
-  <text x="699" y="280" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="700" font-size="13.5" fill="#b51f4e">With Mehan — Meta's engine + unmistakable soul</text>
+  <text x="699" y="280" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="700" font-size="13.5" fill="#b51f4e">Smart craft — proven engine underneath, built with heart on top</text>
 
   <!-- 5 CONVERGING HAND-DRAWN ARROWS -->
   <g fill="none" stroke="#9b8674" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -82,52 +82,55 @@
     <path d="M594 302 C 586 322, 562 332, 542 350 M542 340 L 541 351 L 552 349"/>
   </g>
 
-  <!-- CENTERPIECE THESIS HEADLINE -->
-  <text x="480" y="392" text-anchor="middle" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="25" font-weight="800" fill="#261b16" letter-spacing="-0.02em">
-    Stop rebuilding solved engineering — sculpt the <tspan font-family="Georgia, serif" font-style="italic" fill="#c81e51">soul &amp; ergonomics</tspan> on top.
+  <!-- CENTERPIECE THESIS HEADLINE (2 Balanced Lines, Zero Edge Clipping) -->
+  <text x="480" y="382" text-anchor="middle" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="24" font-weight="800" fill="#261b16" letter-spacing="-0.02em">
+    Why spend months rebuilding basic buttons &amp; dropdowns —
   </text>
-  <text x="480" y="418" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13.5" fill="#5c4a3e">
-    Keep Meta Astryx's battle-tested accessibility 100% untouched; layer OKLCH materials, universal workspaces &amp; UX laws cleanly above it.
+  <text x="480" y="411" text-anchor="middle" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="24" font-weight="800" fill="#261b16" letter-spacing="-0.02em">
+    when you can pour 100% of your craft into <tspan font-family="Georgia, serif" font-style="italic" fill="#c81e51">how the product feels</tspan>?
+  </text>
+  <text x="480" y="436" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#5c4a3e">
+    Built on Meta Astryx (proven across 13,000+ Meta apps), sparked by Shotcandy's warmth, and crafted by Raihan Allaam (@alamehan).
   </text>
 
-  <!-- EVERGREEN ARCHITECTURAL DISTILLATION SPINE -->
-  <!-- Layer 1 -->
-  <text x="480" y="472" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="900" fill="#1d5bbf">Layer 1</text>
-  <text x="480" y="492" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Meta Astryx WAI-ARIA Foundation</text>
-  <path d="M626 478 C 640 476, 650 467, 665 462 M656 459 L 666 462 L 660 470" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="674" y="464" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">Focus traps, roving tabindex, RTL</text>
-  <text x="674" y="479" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">&amp; 200% zoom untouched — zero forks</text>
+  <!-- ATTACHMENT-1 STYLE CONCRETE DISTILLATION SPINE -->
+  <!-- Step 1: 100+ -->
+  <text x="480" y="484" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="35" font-weight="900" fill="#1d5bbf">100+</text>
+  <text x="480" y="503" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Proven Core Components (Meta Astryx)</text>
+  <path d="M632 489 C 646 487, 656 478, 671 473 M662 470 L 672 473 L 666 481" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="680" y="475" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">Keyboard navigation, accessibility</text>
+  <text x="680" y="490" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">&amp; AI-agent readiness solved on day one</text>
 
-  <path d="M480 503 C 476 511, 484 519, 480 527" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M480 513 C 476 520, 484 527, 480 534" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
 
-  <!-- Layer 2 -->
-  <text x="480" y="562" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="900" fill="#9a5206">Layer 2</text>
-  <text x="480" y="582" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Perceptual OKLCH Materials &amp; Presets</text>
+  <!-- Step 2: + 35 -->
+  <text x="480" y="562" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="36" font-weight="900" fill="#14704e">+ 35</text>
+  <text x="480" y="582" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Original Workspace &amp; Creative Tools</text>
   <path d="M628 568 C 642 566, 652 557, 667 552 M658 549 L 668 552 L 662 560" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="676" y="554" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">7-role surface depth, 3D candy lips,</text>
-  <text x="676" y="569" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">offline WOFF2 fonts &amp; live Theme Editor</text>
+  <text x="676" y="554" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">5-in-1 app layouts, charts, color</text>
+  <text x="676" y="569" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">pickers, code editors &amp; auto-drafts</text>
 
   <path d="M480 593 C 476 601, 484 609, 480 617" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
 
-  <!-- Layer 3 -->
-  <text x="480" y="652" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="900" fill="#14704e">5-in-1</text>
-  <text x="480" y="672" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Universal Workspaces &amp; Runtime Suites</text>
-  <path d="M628 658 C 642 656, 652 647, 667 642 M658 639 L 668 642 L 662 650" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="676" y="644" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">WorkspaceLayout, CanvasStage, Charts,</text>
-  <text x="676" y="659" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">ColorPicker &amp; universal state hooks</text>
+  <!-- Step 3: 12 -->
+  <text x="480" y="652" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="36" font-weight="900" fill="#9a5206">12</text>
+  <text x="480" y="672" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Ready-Made Tactile Themes &amp; Color Engine</text>
+  <path d="M634 658 C 648 656, 658 647, 673 642 M664 639 L 674 642 L 668 650" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="682" y="644" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">8 surface moods, offline fonts</text>
+  <text x="682" y="659" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">&amp; live docked Theme Editor</text>
 
   <path d="M480 683 C 476 691, 484 699, 480 707" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
 
-  <!-- Layer 4 -->
-  <text x="480" y="742" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="30" font-weight="900" fill="#6d28d9">UX + AI</text>
-  <text x="480" y="762" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Evergreen UX Playbook &amp; Agent Docs</text>
+  <!-- Step 4: 12 -->
+  <text x="480" y="742" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="36" font-weight="900" fill="#6d28d9">12</text>
+  <text x="480" y="762" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700" fill="#261b16">Practical UX &amp; Interface Writing Guides</text>
   <path d="M628 748 C 642 746, 652 737, 667 732 M658 729 L 668 732 L 662 740" fill="none" stroke="#6f5b4d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="676" y="734" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">Cognitive load, Fitts's Law, Intl</text>
-  <text x="676" y="749" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">&amp; bilingual ID / EN microcopy laws</text>
+  <text x="676" y="734" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">Uncluttered layouts, forgiving forms</text>
+  <text x="676" y="749" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11.5" fill="#5c4a3e">&amp; clear bilingual ID / EN copy</text>
 
   <path d="M480 773 C 476 781, 484 789, 480 797" fill="none" stroke="#a38f7e" stroke-width="1.7" stroke-linecap="round"/>
 
   <!-- Step 5: = 1 -->
   <text x="480" y="833" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="38" font-weight="900" fill="#c81e51">= 1</text>
-  <text x="480" y="853" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13.5" font-weight="800" fill="#261b16">Unified Tactile System · React · Tailwind v4 · Claude/Gemini · HTML · Figma W3C</text>
+  <text x="480" y="853" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13.5" font-weight="800" fill="#261b16">One Complete Design System · AI Chat · React · Tailwind v4 · HTML · Figma</text>
 </svg>

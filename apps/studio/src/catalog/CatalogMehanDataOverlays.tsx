@@ -79,9 +79,9 @@ export function useCatalogMehanDataOverlays(): SpecimenDefinition[] {
       category: 'Data Visualization',
       pkg: 'mehan',
       summaryEn:
-        'Inline SVG trend micro-chart (area, line, bar) with pointer scrub readout and companion WCAG 1.1.1 screen-reader table.',
+        'Compact inline trend chart (area, line, or bar) with hover value preview and screen-reader support.',
       summaryId:
-        'Grafik tren mikro SVG sebaris (area, garis, batang) dengan bacaan kursor dan tabel pendamping pembaca layar WCAG 1.1.1.',
+        'Grafik tren mini sebaris (area, garis, atau batang) lengkap dengan info nilai saat disentuh kursor.',
       code: `<Sparkline label="7-day throughput" data={[42, 48, 45, 59, 64, 61, 78]} />`,
       render: () => (
         <HStack gap={4} wrap="wrap" vAlign="center">
@@ -106,9 +106,9 @@ export function useCatalogMehanDataOverlays(): SpecimenDefinition[] {
       category: 'Data Visualization',
       pkg: 'mehan',
       summaryEn:
-        '240-degree sculpted radial arc meter with WAI-ARIA role="meter" semantics and centered tabular numerals.',
+        'Clean circular arc meter showing progress or capacity with a bold centered number.',
       summaryId:
-        'Meteran busur radial 240 derajat dengan semantik role="meter" dan angka sejajar terpusat.',
+        'Meteran melengkung untuk menampilkan persentase kuota atau capaian dengan angka tegas di tengah.',
       code: `<Gauge label="Memory quota" value={68} unit="%" tone="accent" />`,
       render: () => (
         <HStack gap={4} wrap="wrap" vAlign="center">
@@ -170,9 +170,9 @@ export function useCatalogMehanDataOverlays(): SpecimenDefinition[] {
       pkg: 'mehan',
       span: 'wide',
       summaryEn:
-        'Monospace code workbench with synchronized line gutter, line diagnostics, CopyButton, and WCAG 2.1.2 Esc-then-Tab focus exit.',
+        'Lightweight code editor with synced line numbers, inline warnings, CopyButton, and clean keyboard Tab escape.',
       summaryId:
-        'Editor kode monospace dengan penomoran baris sinkron, diagnostik baris, CopyButton, dan keluar fokus Esc-lalu-Tab (WCAG 2.1.2).',
+        'Editor kode ringan dengan nomor baris sinkron, penanda baris bermasalah, tombol salin, dan keluar fokus yang aman.',
       code: `<CodeEditor language="ts" value={code} onChange={setCode} minRows={4} />`,
       render: () => (
         <CodeEditor
@@ -198,9 +198,9 @@ export function useCatalogMehanDataOverlays(): SpecimenDefinition[] {
       pkg: 'mehan',
       span: 'wide',
       summaryEn:
-        'Markdown composer with formatting toolbar, XSS-safe Write/Preview tabs, and live tabular word & character counter.',
+        'Markdown writing box with formatting buttons, instant Write/Preview tabs, and live word & character count.',
       summaryId:
-        'Editor Markdown dengan bilah pemformatan, tab Tulis/Pratinjau aman XSS, serta penghitung kata & karakter sejajar.',
+        'Kotak tulis Markdown lengkap dengan tombol format cepat, tab Tulis/Pratinjau, serta penghitung kata & karakter.',
       code: `<MarkdownEditor value={md} onChange={setMd} minRows={4} />`,
       render: () => (
         <MarkdownEditor
@@ -217,9 +217,9 @@ export function useCatalogMehanDataOverlays(): SpecimenDefinition[] {
       category: 'Overlay',
       pkg: 'mehan',
       summaryEn:
-        'Inbox bell trigger with tabular unread badge (hidden at 0), All/Unread tabs, Mark-all-read action, and Escape focus restore.',
+        'Inbox bell popover with an unread counter, All/Unread filter tabs, and one-click Mark all read.',
       summaryId:
-        'Lonceng kotak masuk dengan lencana belum dibaca (sembunyi saat 0), tab Semua/Belum dibaca, dan Tandai semua dibaca.',
+        'Lonceng notifikasi lengkap dengan penghitung pesan baru, filter Semua/Belum dibaca, dan tombol Tandai semua dibaca.',
       code: `<NotificationCenter items={items} onMarkRead={markRead} onMarkAllRead={markAllRead} />`,
       render: () => (
         <NotificationCenter
@@ -241,9 +241,9 @@ export function useCatalogMehanDataOverlays(): SpecimenDefinition[] {
       category: 'Overlay',
       pkg: 'mehan',
       summaryEn:
-        'Non-coercive guided walkthrough coachmark exposing Skip tour on step 1, progress dots, and Escape dismissal.',
+        'Friendly step-by-step onboarding card that always includes a visible Skip button from step one.',
       summaryId:
-        'Kartu panduan bertahap tanpa paksaan dengan tombol Lewati sejak langkah 1, titik progres, dan tutup Escape.',
+        'Kartu panduan bertahap yang ramah pengguna dan selalu menyediakan tombol Lewati sejak langkah pertama.',
       code: `<Tour isOpen={open} onOpenChange={setOpen} steps={steps} />`,
       render: () => (
         <Stack gap={2}>

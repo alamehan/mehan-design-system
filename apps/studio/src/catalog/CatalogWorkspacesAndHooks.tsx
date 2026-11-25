@@ -180,9 +180,9 @@ export function useCatalogWorkspacesAndHooks(): SpecimenDefinition[] {
       span: 'wide',
       flush: true,
       summaryEn:
-        'Level-1 adaptive multi-pane workbench built on Astryx Layout + LayoutPanel + ResizeHandle + Drawer with Mod+\\ collapse, <768px auto-Drawer inspector, and 200%-zoom scroll release.',
+        'Flexible multi-panel workspace that handles sidebars, inspector drawers on mobile, and comfortable scrolling at 200% zoom.',
       summaryId:
-        'Meja kerja multi-panel adaptif Level-1 di atas Astryx Layout + Drawer dengan lipat Mod+\\, inspector otomatis jadi Drawer di <768px, dan pelepasan scroll zoom 200%.',
+        'Kerangka ruang kerja fleksibel yang mengatur panel samping, laci otomatis di layar ponsel, dan scroll aman saat layar diperbesar 200%.',
       code: `<WorkspaceLayout\n  toolbar={<Toolbar ... />}\n  startPane={{title: 'Services', content: <Nav />, isCollapsible: true}}\n  endPane={{title: 'Inspector', isOpen, onOpenChange: setIsOpen, content: <Details />}}\n>\n  {children}\n</WorkspaceLayout>`,
       render: () => (
         <WorkspaceLayout
@@ -253,9 +253,9 @@ export function useCatalogWorkspacesAndHooks(): SpecimenDefinition[] {
       pkg: 'mehan',
       span: 'wide',
       summaryEn:
-        'Level-2 recessed interactive viewport (dots, grid, checkerboard, plain) with non-blocking corner HUD slots and docked transport rail.',
+        'Interactive preview stage with dot, grid, or checkerboard backdrops plus corner slots for zoom and timeline controls.',
       summaryId:
-        'Panggung viewport interaktif Level-2 (titik, kisi, papan catur, polos) dengan slot HUD sudut tanpa memblokir kanvas serta rel transpor bawah.',
+        'Area kanvas pratinjau dengan pilihan latar titik, garis kisi, atau papan catur serta sudut khusus tombol zoom dan timeline.',
       code: `<CanvasStage backdrop="dots" topStart={<Badge ... />} bottomEnd={<CanvasZoomBar ... />} transport={<TimelineScrubber ... />}>{stageContent}</CanvasStage>`,
       render: () => (
         <CanvasStage
@@ -437,9 +437,9 @@ export function useCatalogWorkspacesAndHooks(): SpecimenDefinition[] {
       pkg: 'mehan',
       span: 'wide',
       summaryEn:
-        'Unified multi-series OKLCH analytical chart (line, area, bar, horizontal-bar) with interactive legend toggles, pointer/keyboard scrub crosshair, and companion SR table.',
+        'Multi-series chart (line, area, bar, and horizontal bar) with clickable legend filters, hover tooltips, and keyboard support.',
       summaryId:
-        'Grafik analitik multi-seri OKLCH terpadu (line, area, bar, horizontal-bar) dengan toggle legenda, crosshair kursor/panah, dan tabel pembaca layar otomatis.',
+        'Grafik multi-seri terpadu (garis, area, batang vertikal & mendatar) lengkap dengan filter legenda dan info nilai interaktif.',
       code: `<DataChart title="Edge Requests" kind="area" categories={days} series={[{id: 'hit', label: 'Cache Hit', values: [420, 580, 690]}]} />`,
       render: () => (
         <Stack gap={2} style={{width: '100%'}}>
@@ -519,20 +519,20 @@ export function useCatalogWorkspacesAndHooks(): SpecimenDefinition[] {
       category: 'Utility',
       pkg: 'mehan',
       summaryEn:
-        'Law U1 keyboard engine: IME-safe (isComposing), typing-aware plain keys, Mod+Enter primary form submission, and live ShortcutSheet registration.',
+        'Smart keyboard shortcut hook that ignores keystrokes while typing in text fields and auto-registers into ShortcutSheet.',
       summaryId:
-        'Mesin pintasan Hukum U1: aman komposisi IME, proteksi kolom ketik, aksi utama Mod+Enter, dan registrasi otomatis ke ShortcutSheet.',
+        'Hook pintasan keyboard cerdas yang tidak mengganggu saat mengetik di kolom input dan otomatis tampil di daftar ShortcutSheet.',
       code: `usePrimaryAction(() => submitForm(), {label: 'Save changes'});\nuseMehanShortcuts([{keys: '?', label: 'Shortcuts', onPress: () => setOpen(true)}]);`,
       render: () => (
         <Stack gap={1.5}>
           <HStack gap={2} wrap="wrap" vAlign="center">
-            <Badge variant="info" label="Law U1 Engine" />
+            <Badge variant="info" label="Smart Shortcuts" />
             <Kbd keys="mod+enter" />
             <Kbd keys="mod+z" />
             <Kbd keys="?" />
           </HStack>
           <Text type="supporting" color="secondary">
-            Automatically skips active IME composition (<Code>keyCode === 229</Code>) and open modal <Code>Escape</Code> collisions.
+            Automatically pauses single-key triggers while typing in inputs or closing open dialogs with <Code>Escape</Code>.
           </Text>
         </Stack>
       ),
@@ -543,9 +543,9 @@ export function useCatalogWorkspacesAndHooks(): SpecimenDefinition[] {
       category: 'Utility',
       pkg: 'mehan',
       summaryEn:
-        'Law U3 debounced local draft persistence with schema-version safety, dirty tracking, flush-on-unmount, and beforeunload protection.',
+        'Auto-saves form drafts locally as you type and warns before closing a tab with unsaved edits.',
       summaryId:
-        'Penyimpanan draf otomatis Hukum U3 dengan pengaman versi skema, pelacak perubahan, dan penjaga beforeunload.',
+        'Menyimpan draf formulir secara otomatis saat mengetik dan memberi peringatan sebelum tab ditutup jika perubahan belum disimpan.',
       code: `const draft = useAutoDraft({key: 'post-draft', initialValue: '', version: 1});\nuseUnsavedGuard(draft.isDirty);`,
       render: () => (
         <Stack gap={2} style={{width: '100%'}}>

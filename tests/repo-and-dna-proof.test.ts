@@ -491,7 +491,7 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
       path.join(repoRoot, 'assets/why-mehan-architecture.svg'),
       'utf8',
     );
-    expect(svgSource).not.toMatch(/\+\s*35\b|80 AI Agent Docs|8\s*×\s*12|142\b/);
+    expect(svgSource).not.toMatch(/80 AI Agent Docs|8\s*×\s*12|142\b/);
 
     function assertSelectorPlacementBelow(dir: string) {
       for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {

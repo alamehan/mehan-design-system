@@ -92,7 +92,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
       {
         id: 't1',
         token: '--color-background-body',
-        role: isId ? 'Kanvas halaman (Paper)' : 'Page canvas (Paper)',
+        role: isId ? 'Latar halaman utama' : 'Main page background',
         light: L.paper,
         dark: D.paper,
         contrast: `${contrastRatio(L.ink, L.paper).toFixed(1)}:1 / ${contrastRatio(D.ink, D.paper).toFixed(1)}:1`,
@@ -100,7 +100,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
       {
         id: 't2',
         token: '--color-background-card',
-        role: isId ? 'Permukaan kartu utama' : 'Elevated card surface',
+        role: isId ? 'Permukaan kartu' : 'Card surface',
         light: L.surface,
         dark: D.surface,
         contrast: `${contrastRatio(L.ink, L.surface).toFixed(1)}:1 / ${contrastRatio(D.ink, D.surface).toFixed(1)}:1`,
@@ -108,7 +108,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
       {
         id: 't3',
         token: '--mehan-well',
-        role: isId ? 'Sumur input cekung' : 'Recessed input well',
+        role: isId ? 'Kolom input lembut' : 'Soft input field',
         light: L.well,
         dark: D.well,
         contrast: `${contrastRatio(L.ink, L.well).toFixed(1)}:1 / ${contrastRatio(D.ink, D.well).toFixed(1)}:1`,
@@ -116,7 +116,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
       {
         id: 't4',
         token: '--color-accent',
-        role: isId ? 'Tombol Primary & aksen' : 'Primary CTA & brand fill',
+        role: isId ? 'Tombol utama & warna merek' : 'Primary button & brand color',
         light: A.accentLight,
         dark: A.accentDark,
         contrast: `${contrastRatio(A.onAccentLight, A.accentLight).toFixed(2)}:1`,
@@ -124,7 +124,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
       {
         id: 't5',
         token: '--mehan-primary-lip',
-        role: isId ? 'Bibir 3D tombol (Shade 800)' : '3D button lip (Shade 800)',
+        role: isId ? 'Tepi bawah tombol 3D' : '3D button bottom edge',
         light: A.buttonLip,
         dark: A.buttonLip,
         contrast: `${dna.lipStyle} (${dna.lipPx}px)`,
@@ -171,13 +171,13 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
         container="card"
         title={
           isId
-            ? 'Alur tanpa terminal: Racik di Theme Editor -> Salin Handoff -> Klik 2x skrip verifikasi'
-            : 'Zero-terminal flow: Tune in Theme Editor -> Copy handoff -> Double-click the verifier script'
+            ? 'Alur praktis: Racik di Theme Editor -> Salin prompt -> Klik 2x skrip verifikasi'
+            : 'Simple workflow: Tune in Theme Editor -> Copy prompt -> Double-click the check script'
         }
         description={
           isId
-            ? 'Klik dua kali rebuild-and-check-windows.cmd (Windows) atau rebuild-and-check-mac-linux.command (macOS/Linux) untuk membangun ulang dan menjalankan ke-6 gerbang kualitas otomatis.'
-            : 'Double-click rebuild-and-check-windows.cmd (Windows) or rebuild-and-check-mac-linux.command (macOS/Linux) to rebuild all packages and run all 6 quality gates.'
+            ? 'Klik dua kali rebuild-and-check-windows.cmd (Windows) atau rebuild-and-check-mac-linux.command (macOS/Linux) untuk membangun ulang paket dan menjalankan seluruh pemeriksaan kualitas otomatis.'
+            : 'Double-click rebuild-and-check-windows.cmd (Windows) or rebuild-and-check-mac-linux.command (macOS/Linux) to rebuild all packages and run every automated quality check.'
         }
       />
 

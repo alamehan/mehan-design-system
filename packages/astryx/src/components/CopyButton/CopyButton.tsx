@@ -14,7 +14,7 @@ export interface CopyButtonProps {
   /** Visual presentation style */
   variant?: 'secondary' | 'ghost' | 'icon';
   /** Control height scale */
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
   /** Milliseconds before resetting back to idle state */
   resetDelayMs?: number;
   /** Disable copying */
@@ -28,7 +28,7 @@ export function CopyButton({
   label = 'Copy',
   copiedLabel = 'Copied',
   variant = 'secondary',
-  size = 'sm',
+  size = 'md',
   resetDelayMs = 1800,
   isDisabled = false,
   onCopied,

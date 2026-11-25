@@ -786,15 +786,15 @@
       "$type": "dimension"
     },
     "radiusInner": {
-      "$value": "8px",
+      "$value": "7px",
       "$type": "dimension"
     },
     "radiusElement": {
-      "$value": "12px",
+      "$value": "10px",
       "$type": "dimension"
     },
     "radiusContainer": {
-      "$value": "18px",
+      "$value": "16px",
       "$type": "dimension"
     },
     "radiusPage": {
@@ -802,7 +802,7 @@
       "$type": "dimension"
     },
     "radiusChat": {
-      "$value": "24px",
+      "$value": "22px",
       "$type": "dimension"
     },
     "buttonLip": {

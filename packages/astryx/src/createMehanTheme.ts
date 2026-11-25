@@ -274,6 +274,11 @@ export function buildMehanThemeConfig(
 
   const secHalf = Number((Math.min(2, lipPx) * 0.5).toFixed(2));
   const priHalf = Number((lipPx * 0.5).toFixed(2));
+  const ctrlFontSm = px(Math.max(12, Math.round((dna.typeBase - 1.5) * 2) / 2));
+  const ctrlFontMd = px(dna.typeBase);
+  const ctrlFontLg = px(Math.round((dna.typeBase + 1) * 2) / 2);
+  const needsSupportingFloor =
+    dna.typeBase >= 13.5 && Math.round(dna.typeBase / dna.typeRatio) < 12;
 
   // Borderless tactile raised secondary surface (shared by Button & Selector triggers per AST-079 FR2)
   const SECONDARY_RAISED = {
@@ -403,11 +408,21 @@ export function buildMehanThemeConfig(
       button: {
         base: {
           fontWeight: '600',
+          letterSpacing: '-0.005em',
           borderWidth: '0px',
           borderStyle: 'none',
           '--button-focus-offset': '2px',
           transitionProperty:
             'background-image, background-color, box-shadow, color, opacity, transform',
+        },
+        'size:sm': {
+          fontSize: 'var(--mehan-ctrl-font-sm)',
+        },
+        'size:md': {
+          fontSize: 'var(--mehan-ctrl-font-md)',
+        },
+        'size:lg': {
+          fontSize: 'var(--mehan-ctrl-font-lg)',
         },
         'variant:primary': {
           backgroundColor: A.accentLight,
@@ -519,10 +534,19 @@ export function buildMehanThemeConfig(
         base: {
           backgroundColor: 'var(--mehan-well)',
           boxShadow: 'var(--mehan-shadow-well)',
-          padding: '3px',
+          padding: '2px',
         },
       },
       'segmented-control-item': {
+        'size:sm': {
+          fontSize: 'var(--mehan-ctrl-font-sm)',
+        },
+        'size:md': {
+          fontSize: 'var(--mehan-ctrl-font-md)',
+        },
+        'size:lg': {
+          fontSize: 'var(--mehan-ctrl-font-lg)',
+        },
         selected:
           dna.segmentedStyle === 'espresso'
             ? {
@@ -544,9 +568,21 @@ export function buildMehanThemeConfig(
       },
 
       // Complete Borderless Recessed-Well Input & Search Family (15 targets!)
-      'text-input': {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
+      'text-input': {
+        base: RECESSED_INPUT_BASE,
+        'size:sm': {fontSize: 'var(--mehan-ctrl-font-sm)'},
+        'size:md': {fontSize: 'var(--mehan-ctrl-font-md)'},
+        'size:lg': {fontSize: 'var(--mehan-ctrl-font-lg)'},
+        ...INPUT_STATUS_VARS,
+      },
       'text-area': {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
-      'number-input': {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
+      'number-input': {
+        base: RECESSED_INPUT_BASE,
+        'size:sm': {fontSize: 'var(--mehan-ctrl-font-sm)'},
+        'size:md': {fontSize: 'var(--mehan-ctrl-font-md)'},
+        'size:lg': {fontSize: 'var(--mehan-ctrl-font-lg)'},
+        ...INPUT_STATUS_VARS,
+      },
       'date-input': {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
       'date-range-input': {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
       'date-time-input-date-segment': {
@@ -568,7 +604,13 @@ export function buildMehanThemeConfig(
         },
         ...INPUT_STATUS_VARS,
       },
-      typeahead: {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
+      typeahead: {
+        base: RECESSED_INPUT_BASE,
+        'size:sm': {fontSize: 'var(--mehan-ctrl-font-sm)'},
+        'size:md': {fontSize: 'var(--mehan-ctrl-font-md)'},
+        'size:lg': {fontSize: 'var(--mehan-ctrl-font-lg)'},
+        ...INPUT_STATUS_VARS,
+      },
       tokenizer: {base: RECESSED_INPUT_BASE, ...INPUT_STATUS_VARS},
       'power-search': {base: RECESSED_INPUT_BASE},
       'command-palette-input': {base: RECESSED_INPUT_BASE},
@@ -577,11 +619,17 @@ export function buildMehanThemeConfig(
       selector: {
         'variant:input': RECESSED_INPUT_BASE,
         'variant:secondary': SECONDARY_SELECTOR,
+        'size:sm': {fontSize: 'var(--mehan-ctrl-font-sm)'},
+        'size:md': {fontSize: 'var(--mehan-ctrl-font-md)'},
+        'size:lg': {fontSize: 'var(--mehan-ctrl-font-lg)'},
         ...INPUT_STATUS_VARS,
       },
       'multi-selector': {
         'variant:input': RECESSED_INPUT_BASE,
         'variant:secondary': SECONDARY_SELECTOR,
+        'size:sm': {fontSize: 'var(--mehan-ctrl-font-sm)'},
+        'size:md': {fontSize: 'var(--mehan-ctrl-font-md)'},
+        'size:lg': {fontSize: 'var(--mehan-ctrl-font-lg)'},
         ...INPUT_STATUS_VARS,
       },
       'complex-selector': {
@@ -1276,6 +1324,9 @@ export function buildMehanThemeConfig(
       '--mehan-primary-grad': A.buttonGradient,
       '--mehan-primary-grad-hover': A.buttonGradientHover,
       '--mehan-primary-lip': A.buttonLip,
+      '--mehan-ctrl-font-sm': ctrlFontSm,
+      '--mehan-ctrl-font-md': ctrlFontMd,
+      '--mehan-ctrl-font-lg': ctrlFontLg,
       '--mehan-shadow-well': `inset 0 1px 2px ${lightDark(`rgba(${sRgb}, 0.11)`, 'rgba(0, 0, 0, 0.60)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.04)`, 'rgba(0, 0, 0, 0.25)')}, inset 0 -1px 0 ${lightDark('rgba(255, 255, 255, 0.90)', 'rgba(255, 255, 255, 0.08)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
       '--mehan-shadow-socket': `inset 0 1px 2px ${lightDark(`rgba(${sRgb}, 0.22)`, 'rgba(0, 0, 0, 0.72)')}, inset 0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.06)`, 'rgba(255, 255, 255, 0.05)')}, inset 0 -1px 0 ${lightDark('rgba(255, 255, 255, 0.90)', 'rgba(255, 255, 255, 0.14)')}, inset 0 0 0 1px var(--mehan-edge-control)`,
       '--mehan-shadow-raised': `inset 0 1px 0 ${lightDark('#ffffff', 'rgba(255, 255, 255, 0.10)')}, ${secLip}0 0 0 1px ${lightDark(`rgba(${sRgb}, 0.05)`, 'rgba(255, 255, 255, 0.05)')}, 0 ${px(1 * depth)} ${px(1.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.04 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.32 * depth).toFixed(3)})`)}, 0 ${px(2 * depth)} ${px(3.5 * depth)} ${lightDark(`rgba(${sRgb}, ${(0.05 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.28 * depth).toFixed(3)})`)}, 0 ${px(6 * depth)} ${px(9 * depth)} -4px ${lightDark(`rgba(${sRgb}, ${(0.10 * depth).toFixed(3)})`, `rgba(0, 0, 0, ${(0.40 * depth).toFixed(3)})`)}, inset 0 0 0 1px var(--mehan-edge-control)`,
@@ -1408,6 +1459,7 @@ export function buildMehanThemeConfig(
       '--size-element-sm': dna.sizing.controlSm,
       '--size-element-md': dna.sizing.controlMd,
       '--size-element-lg': dna.sizing.controlLg,
+      ...(needsSupportingFloor ? {'--font-size-sm': '0.75rem'} : {}),
 
       '--radius-none': '0px',
       '--radius-inner': dna.radii.inner,

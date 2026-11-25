@@ -665,13 +665,13 @@ export function DockedThemeEditor({
             {/* Group 1 (Primary): Tactile Seed & Brand */}
             <section className="te-section">
               <div className="te-section-title">
-                {isId ? '1. Atmosfer & Aksen Taktil' : '1. Atmosphere & Brand Seed'}
+                {isId ? '1. Suasana & Warna Utama' : '1. Atmosphere & Brand Color'}
               </div>
 
               <Stack gap={3}>
                 <Stack gap={1.5}>
                   <span className="te-field-label">
-                    {isId ? 'Suasana permukaan (8 atmosfer)' : 'Neutral atmosphere (8 surfaces)'}
+                    {isId ? 'Suasana permukaan (8 pilihan)' : 'Surface atmosphere (8 moods)'}
                   </span>
                   <div
                     className="te-atmosphere-grid"
@@ -715,7 +715,7 @@ export function DockedThemeEditor({
                 <Stack gap={1.5}>
                   <Stack direction="horizontal" justify="between" align="center">
                     <span className="te-field-label">
-                      {isId ? 'Benih aksen (OKLCH)' : 'Brand accent (OKLCH)'}
+                      {isId ? 'Warna aksen utama' : 'Primary brand color'}
                     </span>
                     <code className="te-token-code">{dna.accent.seed}</code>
                   </Stack>
@@ -770,7 +770,7 @@ export function DockedThemeEditor({
                 <Stack gap={2}>
                   <Stack gap={1}>
                     <span className="te-field-label">
-                      {isId ? 'Pil aktif SegmentedControl' : 'Segmented active pill'}
+                      {isId ? 'Gaya tab aktif' : 'Active tab pill'}
                     </span>
                     <SegmentedControl
                       label="Segmented control active style"
@@ -790,7 +790,7 @@ export function DockedThemeEditor({
 
                   <Stack gap={1}>
                     <span className="te-field-label">
-                      {isId ? 'Bibir tombol 3D' : '3D button lip'}
+                      {isId ? 'Efek timbul tombol' : '3D button lip'}
                     </span>
                     <SegmentedControl
                       label="Button lip style"
@@ -820,7 +820,7 @@ export function DockedThemeEditor({
                   </Stack>
 
                   <PrecisionSlider
-                    label={isId ? 'Kedalaman 3D' : 'Shadow depth'}
+                    label={isId ? 'Kedalaman bayangan' : 'Shadow depth'}
                     value={Math.round(seed.depth * 100)}
                     min={0}
                     max={150}

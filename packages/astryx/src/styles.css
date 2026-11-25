@@ -475,7 +475,8 @@
     border: 0;
     font-family: var(--font-family-body, sans-serif);
     font-weight: 600;
-    font-size: var(--text-label-size, 13.5px);
+    font-size: var(--mehan-ctrl-font-md, var(--text-label-size, 14px));
+    line-height: 1.2;
     height: var(--size-element-md, 36px);
     display: inline-flex;
     align-items: center;
@@ -485,17 +486,24 @@
   }
   .mehan-split-btn[data-size="sm"] .mehan-split-main,
   .mehan-split-btn[data-size="sm"] .mehan-split-trigger {
-    height: var(--size-element-sm, 30px);
-    font-size: var(--text-supporting-size, 12.5px);
+    height: var(--size-element-sm, 32px);
+    font-size: var(--mehan-ctrl-font-sm, 12.5px);
   }
   .mehan-split-btn[data-size="lg"] .mehan-split-main,
   .mehan-split-btn[data-size="lg"] .mehan-split-trigger {
-    height: var(--size-element-lg, 42px);
+    height: var(--size-element-lg, 44px);
+    font-size: var(--mehan-ctrl-font-lg, 15px);
   }
   .mehan-split-main {
-    padding: 0 14px 2px;
+    padding: 0 15px 2px;
     border-start-start-radius: var(--radius-element, 10px);
     border-end-start-radius: var(--radius-element, 10px);
+  }
+  .mehan-split-btn[data-size="sm"] .mehan-split-main {
+    padding: 0 12px 1.5px;
+  }
+  .mehan-split-btn[data-size="lg"] .mehan-split-main {
+    padding: 0 19px 2.5px;
   }
   .mehan-split-trigger {
     width: 34px;
@@ -505,6 +513,11 @@
   }
   .mehan-split-btn[data-size="sm"] .mehan-split-trigger {
     width: 28px;
+    padding: 0 0 1.5px;
+  }
+  .mehan-split-btn[data-size="lg"] .mehan-split-trigger {
+    width: 38px;
+    padding: 0 0 2.5px;
   }
   .mehan-split-btn[data-variant="primary"] .mehan-split-main,
   .mehan-split-btn[data-variant="primary"] .mehan-split-trigger {
@@ -600,12 +613,13 @@
     width: fit-content;
     align-self: flex-start;
     gap: 6px;
-    height: var(--size-element-sm, 30px);
-    padding: 0 11px 1px;
+    height: var(--size-element-md, 36px);
+    padding: 0 15px 1.5px;
     border: 0;
-    border-radius: var(--radius-element, 9px);
+    border-radius: var(--radius-element, 10px);
     font-family: var(--font-family-body, sans-serif);
-    font-size: 12.5px;
+    font-size: var(--mehan-ctrl-font-md, var(--text-label-size, 14px));
+    line-height: 1.2;
     font-weight: 600;
     color: var(--color-text-primary);
     background-color: var(--color-background-surface);
@@ -614,10 +628,15 @@
     cursor: pointer;
     white-space: nowrap;
   }
-  .mehan-copy-btn[data-size="md"] {
-    height: var(--size-element-md, 36px);
-    padding: 0 13px 1px;
-    font-size: 13.5px;
+  .mehan-copy-btn[data-size="sm"] {
+    height: var(--size-element-sm, 32px);
+    padding: 0 12px 1px;
+    font-size: var(--mehan-ctrl-font-sm, 12.5px);
+  }
+  .mehan-copy-btn[data-size="lg"] {
+    height: var(--size-element-lg, 44px);
+    padding: 0 19px 2px;
+    font-size: var(--mehan-ctrl-font-lg, 15px);
   }
   .mehan-copy-btn[data-variant="ghost"] {
     background: transparent;
@@ -629,12 +648,16 @@
     color: var(--color-text-primary);
   }
   .mehan-copy-btn[data-variant="icon"] {
-    width: 28px;
-    height: 28px;
+    width: var(--size-element-md, 36px);
+    height: var(--size-element-md, 36px);
     padding: 0;
     background: transparent;
     box-shadow: none;
     color: var(--color-text-secondary);
+  }
+  .mehan-copy-btn[data-variant="icon"][data-size="sm"] {
+    width: var(--size-element-sm, 32px);
+    height: var(--size-element-sm, 32px);
   }
   .mehan-copy-btn[data-variant="icon"]:hover:not(:disabled) {
     background-color: var(--mehan-well, var(--color-background-muted));
@@ -681,15 +704,27 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    height: var(--size-element-sm, 32px);
-    padding: 0 10px 0 6px;
+    height: var(--size-element-md, 36px);
+    padding: 0 12px 1.5px 8px;
     border: 0;
-    border-radius: var(--radius-element, 9px);
+    border-radius: var(--radius-element, 10px);
     background-color: var(--color-background-surface);
     background-image: var(--mehan-raised-grad);
     box-shadow: var(--mehan-shadow-raised);
     color: var(--color-text-primary);
+    font-family: var(--font-family-body, sans-serif);
+    font-size: var(--mehan-ctrl-font-md, var(--text-label-size, 14px));
     cursor: pointer;
+  }
+  .mehan-color-well[data-size="sm"] .mehan-color-well-trigger {
+    height: var(--size-element-sm, 32px);
+    padding: 0 10px 1px 6px;
+    font-size: var(--mehan-ctrl-font-sm, 12.5px);
+  }
+  .mehan-color-well[data-size="lg"] .mehan-color-well-trigger {
+    height: var(--size-element-lg, 44px);
+    padding: 0 15px 2px 10px;
+    font-size: var(--mehan-ctrl-font-lg, 15px);
   }
   .mehan-color-well-trigger:focus-visible {
     outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
@@ -715,7 +750,7 @@
   }
   .mehan-cw-readout {
     font-family: var(--font-family-code, monospace);
-    font-size: 12px;
+    font-size: 0.92em;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -744,22 +779,28 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    height: calc(var(--size-element-sm, 30px) - 4px);
-    padding: 0 9px;
+    height: calc(var(--size-element-md, 36px) - 6px);
+    padding: 0 12px;
     border: 0;
-    border-radius: calc(var(--radius-element, 10px) - 3px);
+    border-radius: var(--radius-inner, 7px);
     background: transparent;
     color: var(--color-text-secondary);
     font-family: var(--font-family-body, sans-serif);
-    font-size: 12px;
+    font-size: var(--mehan-ctrl-font-md, var(--text-label-size, 14px));
+    line-height: 1.2;
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
   }
-  .mehan-theme-switch[data-size="md"] .mehan-ts-option {
-    height: calc(var(--size-element-md, 36px) - 6px);
-    padding: 0 11px;
-    font-size: 13px;
+  .mehan-theme-switch[data-size="sm"] .mehan-ts-option {
+    height: calc(var(--size-element-sm, 32px) - 6px);
+    padding: 0 9px;
+    font-size: var(--mehan-ctrl-font-sm, 12.5px);
+  }
+  .mehan-theme-switch[data-size="lg"] .mehan-ts-option {
+    height: calc(var(--size-element-lg, 44px) - 6px);
+    padding: 0 15px;
+    font-size: var(--mehan-ctrl-font-lg, 15px);
   }
   .mehan-ts-option[data-selected="true"] {
     background-color: var(--color-background-surface);
@@ -1361,21 +1402,26 @@
   .mehan-ic-trigger,
   .mehan-ic-confirm,
   .mehan-ic-cancel {
-    height: var(--size-element-sm, 30px);
-    padding: 0 11px;
+    height: var(--size-element-md, 36px);
+    padding: 0 14px 1.5px;
     border: 0;
-    border-radius: var(--radius-element, 8px);
+    border-radius: var(--radius-element, 10px);
     font-family: var(--font-family-body, sans-serif);
-    font-size: 12.5px;
+    font-size: var(--mehan-ctrl-font-md, var(--text-label-size, 14px));
+    line-height: 1.2;
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
   }
-  .mehan-inline-confirm[data-size="md"] .mehan-ic-trigger,
-  .mehan-inline-confirm[data-size="md"] .mehan-ic-confirm,
-  .mehan-inline-confirm[data-size="md"] .mehan-ic-cancel {
-    height: var(--size-element-md, 36px);
-    font-size: 13.5px;
+  .mehan-inline-confirm[data-size="sm"] .mehan-ic-trigger {
+    height: var(--size-element-sm, 32px);
+    padding: 0 11px 1px;
+    font-size: var(--mehan-ctrl-font-sm, 12.5px);
+  }
+  .mehan-inline-confirm[data-size="lg"] .mehan-ic-trigger {
+    height: var(--size-element-lg, 44px);
+    padding: 0 18px 2px;
+    font-size: var(--mehan-ctrl-font-lg, 15px);
   }
   .mehan-ic-trigger {
     background-color: var(--color-error-muted);
@@ -1387,25 +1433,41 @@
     cursor: default;
   }
   .mehan-inline-confirm.is-armed {
-    padding: 3px 3px 3px 10px;
+    padding: 3px 3px 3px 11px;
     border-radius: var(--radius-element, 10px);
     background-color: var(--mehan-well, var(--color-background-muted));
     box-shadow: var(--mehan-shadow-well);
   }
   .mehan-ic-prompt {
-    font-size: 12px;
+    font-size: var(--mehan-ctrl-font-sm, 12.5px);
     font-weight: 600;
     color: var(--color-text-primary);
     white-space: nowrap;
   }
+  .mehan-ic-confirm,
+  .mehan-ic-cancel {
+    height: calc(var(--size-element-md, 36px) - 6px);
+    padding: 0 11px;
+    border-radius: var(--radius-inner, 7px);
+    font-size: var(--mehan-ctrl-font-sm, 12.5px);
+  }
+  .mehan-inline-confirm[data-size="sm"] .mehan-ic-confirm,
+  .mehan-inline-confirm[data-size="sm"] .mehan-ic-cancel {
+    height: calc(var(--size-element-sm, 32px) - 6px);
+    padding: 0 9px;
+  }
+  .mehan-inline-confirm[data-size="lg"] .mehan-ic-confirm,
+  .mehan-inline-confirm[data-size="lg"] .mehan-ic-cancel {
+    height: calc(var(--size-element-lg, 44px) - 6px);
+    padding: 0 13px;
+    font-size: var(--mehan-ctrl-font-md, 14px);
+  }
   .mehan-ic-confirm {
-    height: calc(var(--size-element-sm, 30px) - 4px);
     background-color: var(--color-error-muted);
     color: var(--color-text-error);
     box-shadow: var(--mehan-shadow-danger);
   }
   .mehan-ic-cancel {
-    height: calc(var(--size-element-sm, 30px) - 4px);
     background-color: var(--color-background-surface);
     background-image: var(--mehan-raised-grad);
     box-shadow: var(--mehan-shadow-raised);

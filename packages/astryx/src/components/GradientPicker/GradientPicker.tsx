@@ -214,6 +214,7 @@ export function GradientPicker({
         {activeStop && (
           <div className="mehan-gp-stop-editor">
             <ColorWell
+              size="sm"
               label="Selected stop color"
               value={activeStop.color}
               onChange={hex =>

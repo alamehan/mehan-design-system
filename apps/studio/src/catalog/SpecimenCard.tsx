@@ -355,52 +355,52 @@ export const CATEGORY_DESC: Record<
   {en: string; id: string}
 > = {
   Layout: {
-    en: '3-level spatial hierarchy (`AppShell` -> `WorkspaceLayout` -> `CanvasStage`), `PropertyRow` inspector rows, draggable split-panes, grids, and stacks.',
-    id: 'Hierarki spasial 3-tingkat (`AppShell` -> `WorkspaceLayout` -> `CanvasStage`), baris inspektur `PropertyRow`, panel geser, grid, dan stack.',
+    en: 'App frames (`AppShell`), multi-panel workspaces (`WorkspaceLayout`), interactive stages (`CanvasStage`), inspector rows, grids, and stacks.',
+    id: 'Kerangka aplikasi (`AppShell`), ruang kerja multi-panel (`WorkspaceLayout`), area kanvas (`CanvasStage`), baris properti, grid, dan susunan.',
   },
   Navigation: {
-    en: 'Top bars, collapsible side rails, mobile drawers, breadcrumbs, scroll-spy outlines, steppers, tabs, and pagination.',
-    id: 'Bilah navigasi atas, rel samping lipat, laci mobile, jejak halaman, daftar isi aktif, penunjuk tahap, tab, dan paginasi.',
+    en: 'Top bars, collapsible side menus, mobile drawers, breadcrumbs, page outlines, steppers, tabs, and pagination.',
+    id: 'Bilah atas, menu samping lipat, laci layar ponsel, jejak halaman, daftar isi, penunjuk langkah, tab, dan nomor halaman.',
   },
   Container: {
-    en: 'Elevated tactile cards, interactive selection cards, snap carousels, and progressive disclosures.',
-    id: 'Permukaan kartu bertingkat, kartu pilihan interaktif, rel geser, dan laci lipat bertahap.',
+    en: 'Warm layered cards, clickable selection cards, carousels, and expandable sections.',
+    id: 'Kartu bertingkat yang hangat, kartu pilihan interaktif, karusel geser, dan bagian lipat.',
   },
   Action: {
-    en: 'Tactile 3D push buttons, `SplitButton`, `CopyButton`, `InlineConfirm`, `CanvasZoomBar`, menus, and toolbars.',
-    id: 'Tombol tekan 3D taktil, `SplitButton`, `CopyButton`, `InlineConfirm`, `CanvasZoomBar`, menu, dan bilah alat.',
+    en: 'Balanced 3D buttons, `SplitButton`, `CopyButton`, `InlineConfirm`, `CanvasZoomBar`, menus, and toolbars — all sharing unified sizing.',
+    id: 'Tombol 3D proporsional, `SplitButton`, `CopyButton`, `InlineConfirm`, `CanvasZoomBar`, menu, dan bilah alat dengan ukuran seragam.',
   },
   'Form Controls': {
-    en: 'Sub-clustered across Text & Rich Editors, Selection & Search, Sliders & Spatial Dials, Dates & Time, and Color & Media dropzones.',
-    id: 'Dikelompokkan rapi ke dalam Teks & Editor Kaya, Pilihan & Pencarian, Slider & Kenop Spasial, Tanggal & Waktu, serta Warna & Media.',
+    en: 'Grouped into Text & Editors, Choices & Search, Numbers & Dials, Dates & Calendars, and Color & Media uploads.',
+    id: 'Dikelompokkan rapi ke dalam Teks & Editor, Pilihan & Pencarian, Angka & Kenop, Tanggal & Kalender, serta Warna & Unggah Media.',
   },
   Content: {
-    en: 'Calibrated typography, `MiddleTruncate` paths/keys, Markdown, code blocks, `Kbd`, avatars, citations, and empty states.',
-    id: 'Tipografi terkalibrasi, pemotong tengah `MiddleTruncate`, Markdown, blok kode, `Kbd`, avatar, kutipan, dan tampilan kosong.',
+    en: 'Headings, body text, smart `MiddleTruncate` paths, Markdown, code blocks, `Kbd` shortcuts, avatars, and empty states.',
+    id: 'Judul, teks isi, pemendek jalur `MiddleTruncate`, Markdown, blok kode, tombol `Kbd`, avatar, dan tampilan kosong.',
   },
   'Table & List': {
-    en: 'Data tables paired with `ColumnSettingsMenu`, hierarchical `TreeList` & Miller `ColumnView` browsers, chronological `Timeline` rails, and metadata lists.',
-    id: 'Tabel data berpasangan dengan `ColumnSettingsMenu`, pohon vertikal `TreeList` & penjelajah kolom `ColumnView`, lini masa `Timeline`, dan daftar metadata.',
+    en: 'Data tables with `ColumnSettingsMenu`, tree views, multi-column `ColumnView` browsers, `Timeline` feeds, and lists.',
+    id: 'Tabel data lengkap dengan pengatur kolom `ColumnSettingsMenu`, pohon folder, penjelajah `ColumnView`, lini masa `Timeline`, dan daftar.',
   },
   'Data Visualization': {
-    en: 'Tabular KPI `MetricCard`s, multi-series OKLCH `DataChart` (`line`, `area`, `bar`, `horizontal-bar`), `Sparkline`s, `Gauge`s, and `ActivityRing`s.',
-    id: 'Kartu KPI `MetricCard`, grafik multi-seri OKLCH `DataChart` (`line`, `area`, `bar`, `horizontal-bar`), `Sparkline`, `Gauge`, dan `ActivityRing`.',
+    en: 'KPI `MetricCard`s, interactive `DataChart`s (`line`, `area`, `bar`, `horizontal-bar`), compact `Sparkline`s, `Gauge`s, and `ActivityRing`s.',
+    id: 'Kartu metrik `MetricCard`, grafik interaktif `DataChart` (`line`, `area`, `bar`, `horizontal-bar`), `Sparkline`, `Gauge`, dan `ActivityRing`.',
   },
   'Feedback & Status': {
-    en: 'WCAG 2.2 AA badges, banners, `InlineMessage` lines, `ErrorSummary` focus jumps, progress tracks, spinners, and skeletons.',
-    id: 'Lencana WCAG 2.2 AA, kotak info, baris `InlineMessage`, lompatan fokus `ErrorSummary`, bilah progres, dan kerangka muat.',
+    en: 'Readable status badges, banners, field-level `InlineMessage` hints, clickable `ErrorSummary` boxes, progress bars, and loading states.',
+    id: 'Lencana status yang jernih, kotak pengumuman, pesan kolom `InlineMessage`, ringkasan `ErrorSummary`, bilah progres, dan indikator muat.',
   },
   Overlay: {
-    en: 'Modal dialogs, named destructive alerts, drawers, popovers, `CommandPalette`, `?` `ShortcutSheet`, `NotificationCenter`, and non-coercive `Tour`.',
-    id: 'Dialog modal, konfirmasi hapus bernama, laci samping, popover, `CommandPalette`, lembar pintasan `ShortcutSheet`, `NotificationCenter`, dan `Tour`.',
+    en: 'Dialogs, clear delete confirmations, side drawers, popovers, `CommandPalette`, `?` `ShortcutSheet`, `NotificationCenter`, and guided `Tour`.',
+    id: 'Dialog, konfirmasi hapus yang jelas, panel samping, popover, `CommandPalette`, daftar pintasan `ShortcutSheet`, `NotificationCenter`, dan `Tour`.',
   },
   Chat: {
-    en: 'Conversational AI threads, tool-execution disclosures, and multi-action message composers.',
-    id: 'Utas percakapan AI, rincian eksekusi alat, dan kolom ketik pesan terpadu.',
+    en: 'AI chat message threads, collapsible tool-step cards, and rich prompt composers.',
+    id: 'Percakapan chat AI, kartu langkah kerja yang bisa dilipat, dan kolom ketik pesan.',
   },
   Utility: {
-    en: '`ThemeSwitch`, scoped media & syntax themes, screen-reader helpers, and Mehan Runtime Hooks (`useMehanShortcuts`, `useAutoDraft`, `useMehanViewport`, File I/O).',
-    id: '`ThemeSwitch`, zona kontras media & tema sintaks, pembaca layar, serta Runtime Hooks Mehan (`useMehanShortcuts`, `useAutoDraft`, `useMehanViewport`, File I/O).',
+    en: '`ThemeSwitch`, local contrast & code themes, accessibility helpers, and ready-made hooks for shortcuts, auto-saved drafts, and file checks.',
+    id: '`ThemeSwitch`, pengatur tema lokal, alat bantu aksesibilitas, serta hook siap pakai untuk pintasan keyboard, simpan draf otomatis, dan validasi file.',
   },
 };
 

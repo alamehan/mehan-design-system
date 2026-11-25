@@ -46,35 +46,155 @@ body,
 }
 
 .studio-brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 9px;
   min-width: 0;
 }
 
-.studio-logo-badge {
-  width: 30px;
-  height: 30px;
+.studio-brand-btn {
+  appearance: none;
+  border: 0;
+  padding: 2px 4px 2px 2px;
+  margin: -2px 0;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 140ms ease;
+}
+
+.studio-brand-btn:active {
+  transform: translateY(1px);
+}
+
+.studio-brand-btn:focus-visible {
+  outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+  outline-offset: 2px;
+}
+
+.studio-version-badge {
+  display: inline-flex;
   flex: none;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  color: #ffffff;
-  font-family: var(--font-family-heading);
-  font-weight: 700;
-  font-size: 15px;
-  padding-bottom: 1px;
-  background-color: var(--color-accent);
-  background-image: var(--mehan-primary-grad);
-  box-shadow: var(--mehan-shadow-primary);
+}
+
+/* Hand-Crafted 2.5D Kinetic Brand Emblem (@alamehan Craft Standard) */
+.mh-crafted-logo {
+  flex: none;
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.14));
+}
+
+.mh-logo-p1 {
+  transform-origin: 27px 48px;
+  animation: mh-pillar-wave-1 3.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.mh-logo-arch {
+  transform-origin: 48px 40px;
+  animation: mh-pillar-wave-2 3.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.mh-logo-p2 {
+  transform-origin: 69px 42px;
+  animation: mh-pillar-wave-3 3.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.mh-logo-orb {
+  transform-origin: 68.9px 68.8px;
+  animation: mh-orb-pop 3.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.mh-logo-ring {
+  transform-origin: 68.9px 68.8px;
+  animation: mh-orb-ripple 3.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.mh-logo-spark {
+  transform-origin: 75.8px 61.9px;
+  animation: mh-spark-glint 3.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+/* Topbar emblem plays 2 welcoming kinetic loops on arrival, then replays smoothly on hover */
+.studio-topbar .mh-logo-p1,
+.studio-topbar .mh-logo-arch,
+.studio-topbar .mh-logo-p2,
+.studio-topbar .mh-logo-orb,
+.studio-topbar .mh-logo-ring,
+.studio-topbar .mh-logo-spark {
+  animation-iteration-count: 2;
+}
+
+.studio-brand:hover .mh-logo-p1,
+.studio-brand:hover .mh-logo-arch,
+.studio-brand:hover .mh-logo-p2,
+.studio-brand:hover .mh-logo-orb,
+.studio-brand:hover .mh-logo-ring,
+.studio-brand:hover .mh-logo-spark {
+  animation-iteration-count: infinite;
+}
+
+@keyframes mh-pillar-wave-1 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  16% { transform: translate3d(0, -2.4px, 0); }
+  34% { transform: translate3d(0, 0.6px, 0); }
+  58% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes mh-pillar-wave-2 {
+  0%, 7%, 100% { transform: translate3d(0, 0, 0); }
+  23% { transform: translate3d(0, -2.6px, 0); }
+  41% { transform: translate3d(0, 0.6px, 0); }
+  64% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes mh-pillar-wave-3 {
+  0%, 14%, 100% { transform: translate3d(0, 0, 0); }
+  30% { transform: translate3d(0, -2.4px, 0); }
+  48% { transform: translate3d(0, 0.6px, 0); }
+  70% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes mh-orb-pop {
+  0%, 38%, 100% { transform: scale(1); }
+  45% { transform: scale(0.82); }
+  55% { transform: scale(1.24); }
+  68% { transform: scale(0.95); }
+  80% { transform: scale(1); }
+}
+
+@keyframes mh-orb-ripple {
+  0%, 46%, 100% { transform: scale(0.65); opacity: 0; }
+  52% { transform: scale(1.05); opacity: 0.85; }
+  78% { transform: scale(2.15); opacity: 0; }
+}
+
+@keyframes mh-spark-glint {
+  0%, 46%, 82%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+  58% { transform: scale(1.12) rotate(45deg); opacity: 1; }
+  74% { transform: scale(0.35) rotate(90deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mh-logo-p1,
+  .mh-logo-arch,
+  .mh-logo-p2,
+  .mh-logo-orb,
+  .mh-logo-ring,
+  .mh-logo-spark {
+    animation: none !important;
+  }
 }
 
 .studio-wordmark {
   font-family: var(--font-family-heading);
-  font-size: 18px;
+  font-size: 16.5px;
   font-weight: 700;
   letter-spacing: -0.025em;
-  line-height: 1;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
 .studio-topnav {
@@ -577,7 +697,7 @@ body,
 .te-unified-card:focus-visible,
 .te-color-swatch-btn:focus-visible,
 .te-atmosphere-chip:focus-visible,
-.mh-preset-card:focus-visible {
+.mh-preset-tile:focus-visible {
   outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
   outline-offset: 2px;
 }
@@ -1203,173 +1323,274 @@ body,
   color: var(--color-text-secondary);
 }
 
-/* 12-Preset Interactive Gallery */
-.mh-preset-gallery {
+/* Compact 2x6 Tactile Theme Strip + Quiet Active Summary Bar */
+.mh-preset-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(236px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
 }
 
-.mh-preset-card {
+.studio-workspace.has-docked-editor .mh-preset-strip {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.mh-preset-tile {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px 13px;
-  border-radius: var(--radius-container, 14px);
-  border: 1px solid var(--color-border);
-  background-color: var(--mehan-tray);
-  color: var(--color-text-primary);
-  font-family: var(--font-family-body);
+  align-items: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 7px 10px;
+  border: 1px solid;
+  font-family: var(--font-family-heading);
   text-align: left;
   cursor: pointer;
-  transition: transform 140ms ease, border-color 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
+  min-width: 0;
+  transition: transform 130ms ease, box-shadow 130ms ease, border-color 130ms ease;
 }
 
-.mh-preset-card:hover {
+.mh-preset-tile:hover {
   transform: translateY(-1px);
-  background-color: var(--color-background-card);
-  border-color: var(--color-border-emphasized);
   box-shadow: var(--shadow-low);
 }
 
-.mh-preset-card.is-active {
-  background-color: var(--color-background-card);
-  border-color: var(--color-accent);
+.mh-preset-tile.is-active {
   box-shadow: inset 0 0 0 1.5px var(--color-accent), var(--shadow-low);
 }
 
-.mh-preset-swatches {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  width: 100%;
-}
-
-.mh-preset-swatch-paper {
-  flex: 1 1 auto;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 6px;
-  min-width: 0;
-}
-
-.mh-preset-swatch-cta {
-  padding: 2px 8px 3px;
-  border-radius: 7px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+.mh-preset-cap {
+  width: 20px;
+  height: 20px;
   flex: none;
-}
-
-.mh-preset-swatch-seg {
-  padding: 2px 6px;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 1.2;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  flex: none;
-}
-
-.mh-preset-swatch-dark {
-  width: 34px;
-  height: 32px;
-  flex: none;
-  border-radius: 8px;
-  border: 1px solid;
-  display: grid;
-  place-items: center;
-}
-
-.mh-preset-swatch-dark i {
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
   display: inline-block;
 }
 
-.mh-preset-active-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 3px 7px;
-  border-radius: 999px;
-  background-color: var(--color-accent);
-  color: var(--color-on-accent);
-  font-size: 10.5px;
-  font-weight: 700;
-  flex: none;
-}
-
-.mh-preset-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.mh-preset-tile-name {
+  flex: 1 1 auto;
   min-width: 0;
-}
-
-.mh-preset-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.mh-preset-name {
-  font-family: var(--font-family-heading);
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--color-text-primary);
-}
-
-.mh-preset-tag {
-  font-family: var(--font-family-code);
-  font-size: 10px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 999px;
-  background-color: var(--mehan-well);
-  color: var(--color-text-secondary);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.mh-preset-desc {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.42;
-  color: var(--color-text-secondary);
+.mh-preset-tile-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+  display: inline-grid;
+  place-items: center;
+  flex: none;
 }
 
-.mh-preset-fonts {
+.mh-preset-active-bar {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-family: var(--font-family-code);
-  font-size: 10.5px;
-  color: var(--color-text-secondary);
-  margin-top: 2px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-element, 10px);
+  background-color: var(--mehan-tray);
+  border: 1px solid var(--color-border);
 }
 
-/* Tabbed Quickstart Body */
+.mh-preset-active-copy {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 280px;
+  font-size: 13px;
+}
+
+.mh-preset-active-title {
+  font-family: var(--font-family-heading);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.mh-preset-active-sep {
+  color: var(--color-text-secondary);
+}
+
+.mh-preset-active-desc {
+  color: var(--color-text-secondary);
+}
+
+.mh-preset-active-font {
+  font-family: var(--font-family-code);
+  font-size: 11.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: var(--mehan-well);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+/* Tabbed Quickstart Body, Hero Author Pill, Vibe Chips & Info Modal */
 .mh-quickstart-body {
   padding-top: 4px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-width: 0;
+}
+
+.mh-author-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: var(--mehan-tray);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-body);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+}
+
+.mh-author-pill svg {
+  color: var(--color-text-accent);
+  flex: none;
+}
+
+.mh-author-pill:hover {
+  background-color: var(--color-background-card);
+  border-color: var(--color-border-emphasized);
+  color: var(--color-text-primary);
+}
+
+.mh-author-pill:focus-visible,
+.mh-vibe-chip:focus-visible,
+.mh-inline-ext-link:focus-visible {
+  outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+  outline-offset: 2px;
+}
+
+.mh-hero-vibes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mh-vibe-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-background-card);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-body);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease, box-shadow 120ms ease;
+}
+
+.mh-vibe-chip i {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  display: inline-block;
+  flex: none;
+}
+
+.mh-vibe-chip:hover {
+  border-color: var(--color-border-emphasized);
+  color: var(--color-text-primary);
+}
+
+.mh-vibe-chip.is-active {
+  border-color: var(--color-accent);
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.mh-inline-ext-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+
+.mh-info-steps {
+  margin: 0;
+  padding-inline-start: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--color-text-secondary);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.mh-info-dl {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mh-info-dl-row {
+  display: grid;
+  grid-template-columns: 156px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mh-info-dl-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.mh-info-dl-row dt {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.mh-info-dl-row dd {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.mh-about-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mh-about-hero-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.mh-creator-card {
+  padding: 16px 18px;
+  border-radius: var(--radius-container, 14px);
+  background-color: var(--mehan-tray);
+  border: 1px solid var(--color-border);
 }
 
 /* 6-Stage Iteration Chronicle Cards */
@@ -1653,11 +1874,38 @@ body,
   .mh-journey-strip {
     grid-template-columns: 1fr;
   }
+
+  .mh-preset-strip,
+  .studio-workspace.has-docked-editor .mh-preset-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
+  .mh-preset-strip,
+  .studio-workspace.has-docked-editor .mh-preset-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .studio-topbar {
     padding: 8px 12px;
+  }
+
+  .studio-version-badge {
+    display: none;
+  }
+
+  .studio-wordmark {
+    font-size: 14.5px;
+  }
+
+  .mh-info-dl-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .mh-about-hero {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .studio-main {

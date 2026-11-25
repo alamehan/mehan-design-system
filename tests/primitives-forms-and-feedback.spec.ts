@@ -98,7 +98,7 @@ test.describe('Stage 2B Interactive Proof — All 6 Tier 2 Application & Form Fe
     const dropzone = iwCard.getByRole('button', {name: 'Brand emblem'});
     await expect(dropzone).toBeVisible();
 
-    await esCard.evaluate(el => el.scrollIntoView({block: 'center'}));
+    await esCard.evaluate(el => el.scrollIntoView({block: 'start'}));
     await page.screenshot({
       path: path.join(shotDir, 'stage2b-tier2-feedback-light-1366.png'),
       fullPage: false,
@@ -112,7 +112,7 @@ test.describe('Stage 2B Interactive Proof — All 6 Tier 2 Application & Form Fe
     ).toEqual([]);
 
     await page.getByRole('button', {name: 'Dark mode'}).click();
-    await deCard.evaluate(el => el.scrollIntoView({block: 'center'}));
+    await deCard.evaluate(el => el.scrollIntoView({block: 'start'}));
     await page.waitForTimeout(150);
     await page.screenshot({
       path: path.join(shotDir, 'stage2b-tier2-controls-dark-1366.png'),

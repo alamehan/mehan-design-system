@@ -314,11 +314,11 @@ export function resolveMehanDna(options: MehanThemeOptions): ResolvedMehanDna {
           chat: px(Math.max(12, options.radiusBase * 6)),
         }
       : {
-          inner: px(8 * rScale),
-          element: px(12 * rScale),
-          container: px(18 * rScale),
+          inner: px(7 * rScale),
+          element: px(10 * rScale),
+          container: px(16 * rScale),
           page: px(24 * rScale),
-          chat: px(24 * rScale),
+          chat: px(22 * rScale),
         };
 
   const lipInset = lipPx > 0 ? `inset 0 -${lipPx}px 0 ${accent.buttonLip}, ` : '';

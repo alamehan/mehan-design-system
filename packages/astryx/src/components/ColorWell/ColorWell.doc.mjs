@@ -54,6 +54,12 @@ export default {
       default: 'true',
     },
     {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg'",
+      description: 'Control height scale matching Button and TextInput.',
+      default: "'md'",
+    },
+    {
       name: 'isDisabled',
       type: 'boolean',
       description: 'Disables opening the color well.',

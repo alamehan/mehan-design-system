@@ -11,7 +11,7 @@ export interface ThemeSwitchProps {
   /** Include the 3rd 'system' auto option */
   includeSystem?: boolean;
   /** Control height scale */
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
   /** Accessible group label */
   label?: string;
   /** Visible or accessible label for light mode */
@@ -28,7 +28,7 @@ export function ThemeSwitch({
   value,
   onChange,
   includeSystem = true,
-  size = 'sm',
+  size = 'md',
   label = 'Color theme',
   lightLabel = 'Light',
   darkLabel = 'Dark',

@@ -16,12 +16,13 @@ import {
   resolveMehanDna,
   type ResolvedMehanDna,
 } from '@mehan/astryx/dna';
-import {Check, SlidersHorizontal} from 'lucide-react';
+import {Check, ExternalLink, SlidersHorizontal} from 'lucide-react';
 import type {NamedStudioPreset, StudioLang} from './studioState';
 import type {FullThemeEditorState} from './theme-editor/themeEditorModel';
 
 interface OverviewManifestoProps {
   lang: StudioLang;
+  mode: 'light' | 'dark';
   dna: ResolvedMehanDna;
   themeState: FullThemeEditorState;
   builtInPresets: NamedStudioPreset[];
@@ -140,6 +141,7 @@ function SideCalloutArrow() {
 
 export function OverviewManifesto({
   lang,
+  mode,
   dna,
   themeState,
   builtInPresets,
@@ -153,44 +155,54 @@ export function OverviewManifesto({
 
   const funnelSteps = [
     {
-      stat: 'Layer 1',
+      stat: '100+',
       toneClass: 'mh-stat-blue',
       label: isId
-        ? 'Fondasi WAI-ARIA Meta Astryx'
-        : 'Meta Astryx WAI-ARIA Foundation',
+        ? 'Komponen Dasar Teruji dari Meta Astryx'
+        : 'Proven Core Components from Meta Astryx',
       callout: isId
-        ? 'Focus trap, roving tabindex, RTL & zoom 200% utuh tanpa fork'
-        : 'Focus traps, roving tabindex, RTL & 200% zoom untouched — zero forks',
+        ? 'Navigasi keyboard, pembaca layar & dukungan agen AI sudah beres sejak hari pertama'
+        : 'Keyboard navigation, screen-reader support & AI-agent readiness solved on day one',
     },
     {
-      stat: `${atmCount} × ${presetCount}`,
-      toneClass: 'mh-stat-amber',
-      label: isId
-        ? 'Atmosfer OKLCH & Preset Kurasi'
-        : 'OKLCH Atmospheres & Signature Presets',
-      callout: isId
-        ? 'Bibir 3D taktil, sumur input cekung, font WOFF2 offline & Theme Editor live'
-        : 'Sculpted 3D lips, recessed wells, offline WOFF2 fonts & live Theme Editor',
-    },
-    {
-      stat: '5-in-1',
+      stat: '+ 35',
       toneClass: 'mh-stat-green',
       label: isId
-        ? 'Topologi Workspace & Standar UX'
-        : 'Universal Workspaces & UX Laws',
+        ? 'Komponen Ruang Kerja & Kreatif Orisinal'
+        : 'Original Workspace & Creative Building Blocks',
       callout: isId
-        ? 'WorkspaceLayout, CanvasStage, Runtime Hooks & Playbook dwibahasa ID/EN'
-        : 'WorkspaceLayout, CanvasStage, Runtime Hooks & bilingual ID/EN Playbook',
+        ? 'Kerangka halaman 5-in-1, grafik data, pemilih warna, editor kode & simpan draf otomatis'
+        : '5-in-1 app layouts, data charts, color pickers, code editors & auto-saved drafts',
+    },
+    {
+      stat: `${presetCount}`,
+      toneClass: 'mh-stat-amber',
+      label: isId
+        ? `Tema Taktil Siap Pakai (${atmCount} Suasana Warna)`
+        : `Ready-Made Tactile Themes (${atmCount} Atmospheres)`,
+      callout: isId
+        ? 'Tombol 3D empuk, huruf bawaan siap offline & kontras Terang/Gelap otomatis aman'
+        : 'Warm 3D buttons, bundled offline fonts & automatic Light/Dark contrast safety',
+    },
+    {
+      stat: '12',
+      toneClass: 'mh-stat-purple',
+      label: isId
+        ? 'Bab Panduan Praktis UX & Penulisan Teks'
+        : 'Practical UX & Interface Writing Guides',
+      callout: isId
+        ? 'Aturan tata letak anti-sumpek & bahasa manusiawi dalam Bahasa Indonesia maupun Inggris'
+        : 'Calm layout habits and clear human microcopy in both Indonesian and English',
     },
     {
       stat: '= 1',
       toneClass: 'mh-stat-accent',
       label: isId
-        ? 'Sistem Desain Universal · Siap Kirim'
-        : 'Unified Tactile System · Ship Anywhere',
+        ? 'Sistem Desain Utuh · Siap di Semua Platform'
+        : 'One Complete System · Ready Everywhere',
       callout: isId
-        ? 'React & Next.js · Tailwind v4 · Claude/Gemini · HTML/Vue/Svelte · Figma W3C'
-        : 'React & Next.js · Tailwind v4 · Claude/Gemini · HTML/Vue/Svelte · Figma W3C',
+        ? 'Chat AI (Claude/Gemini) · React & Next.js · Tailwind v4 · HTML/Vue/Svelte · Figma'
+        : 'AI Chat (Claude/Gemini) · React & Next.js · Tailwind v4 · HTML/Vue/Svelte · Figma',
     },
   ];
 
@@ -198,103 +210,101 @@ export function OverviewManifesto({
     {
       step: '01',
       title: isId
-        ? 'Bedah Forensik: Mesin Meta × Jiwa Shotcandy'
-        : 'Forensic Spark: Meta’s Engine × Shotcandy’s Soul',
+        ? 'Menentukan Strategi: Fondasi Meta × Karakter Hangat'
+        : 'Choosing Smart Leverage: Meta’s Foundation × Tactile Warmth',
       desc: isId
-        ? 'Mengagumi kehangatan taktil Shotcandy sambil menolak primitif rapuh buatan nol — menumpukan seluruh perilaku WAI-ARIA murni di atas Meta Astryx.'
-        : 'Paired Shotcandy’s joyful physicality with Meta Astryx’s battle-tested WAI-ARIA core — zero forked primitives.',
+        ? 'Berangkat dari kekaguman pada antarmuka produk kreatif yang hangat seperti Shotcandy, namun menolak membuang waktu berbulan-bulan menggambar ulang tombol dasar yang rapuh — sehingga memilih Meta Astryx sebagai fondasi utamanya.'
+        : 'Sparked by the joy of warm creative tools like Shotcandy while refusing to waste months redrawing fragile basic inputs — choosing Meta Astryx as the rock-solid foundation.',
     },
     {
       step: '02',
       title: isId
-        ? 'Fisika Optik OKLCH & Audit Bebas Bias'
-        : 'OKLCH Optical Physics & Zero-Bias Audit',
+        ? 'Meracik Mesin Warna & Kontras Sendiri (@mehan/dna)'
+        : 'Engineering an Original Color & Material Engine (@mehan/dna)',
       desc: isId
-        ? 'Mengunci urutan kedalaman 7-lapis mode gelap (socket < well < paper < surface < raised < float) dan audit kontras WCAG 2.2 AA otomatis.'
-        : 'Enforced monotonic 7-layer dark-mode depth, silky 3-stop primary gradients, and automated WCAG 2.2 AA contrast locks.',
+        ? 'Bukan sekadar menyalin kode warna manual: membangun sistem perhitungan warna OKLCH 7-lapis dari nol agar warna merek apa pun otomatis menghasilkan tombol 3D dan mode gelap yang tajam serta nyaman dibaca.'
+        : 'Zero hardcoded palette guesswork: built a 7-layer OKLCH color & contrast engine from scratch so any brand color automatically yields crisp 3D buttons and readable dark modes.',
     },
     {
       step: '03',
       title: isId
-        ? 'Theme Editor 3-Tingkat Terbuka'
-        : 'Unrestricted 3-Tier Live Theme Studio',
+        ? 'Membangun Theme Editor Langsung di Layar'
+        : 'Crafting a Live 3-Tier Theme Editor',
       desc: isId
-        ? 'Membuka kustomisasi Seed Taktil -> Slot Komponen -> Grup Token Mentah beserta bundel font WOFF2 offline dan riwayat Undo/Redo.'
-        : 'Opened Base Seeds -> Component Slots -> Raw Token Groups with bundled offline WOFF2 fonts and coalesced Undo/Redo.',
+        ? 'Menghadirkan panel kustomisasi langsung (suasana warna, pasangan huruf WOFF2 offline, sudut, hingga detail komponen) lengkap dengan fitur Undo/Redo agar eksplorasi gaya terasa menyenangkan.'
+        : 'Built an instant docked Theme Editor (surfaces, bundled offline WOFF2 fonts, corners, and component slots) with full Undo/Redo so styling feels effortless.',
     },
     {
       step: '04',
       title: isId
-        ? 'Distilasi Ruang Universal (5-in-1)'
-        : 'Universal Spatial Distillation (5-in-1)',
+        ? 'Merancang Ruang Kerja 5-in-1 dari Pengalaman Produk Nyata'
+        : 'Designing 5-in-1 Workspaces from Real Product Experience',
       desc: isId
-        ? 'Memeras puluhan layout berulang menjadi AppShell -> WorkspaceLayout (5 topologi dalam 1 komponen) -> CanvasStage.'
-        : 'Distilled repetitive layouts into AppShell -> WorkspaceLayout (5 topologies in 1) -> CanvasStage with 200%-zoom release.',
+        ? 'Memeras pengalaman merancang berbagai dashboard SaaS dan aplikasi enterprise menjadi satu kerangka WorkspaceLayout fleksibel yang responsif di ponsel maupun perbesaran layar 200%.'
+        : 'Distilled years of designing enterprise SaaS dashboards and studios into one flexible WorkspaceLayout that adapts cleanly to mobile screens and 200% browser zoom.',
     },
     {
       step: '05',
       title: isId
-        ? 'Taksonomi 4 Pilar & Evergreen UX Playbook'
-        : '4-Pillar Taxonomy & Evergreen UX Playbook',
+        ? 'Menyusun Katalog Rapi & 12 Bab Panduan UX Manusiawi'
+        : 'Curating the Catalog & 12 Human-Centered UX Chapters',
       desc: isId
-        ? 'Menata katalog komponen ke 4 pilar arsitektur jernih serta membakukan standar kognitif, ergonomi, Evergreen Copy, dan tangga ekstensi.'
-        : 'Organized the catalog into 4 architectural pillars alongside interactive UX, Evergreen Copy, and Extension Ladder laws.',
+        ? 'Menata seluruh komponen agar mudah dicari serta menuangkan kebiasaan desain yang baik (tata letak tenang, validasi form ramah, dan bahasa jelas) menjadi panduan interaktif.'
+        : 'Organized every component for quick scanning and turned practical Product Design habits (calm layouts, forgiving forms, clear writing) into interactive lessons.',
     },
     {
       step: '06',
       title: isId
-        ? 'Sapuan Taktil Penuh & Portabilitas Instan'
-        : 'Full-Sweep Tactile Polish & Portability',
+        ? 'Menghaluskan Tiap Sudut & Membuka Jembatan Lintas Platform'
+        : 'Polishing Every Detail & Bridging Every Stack',
       desc: isId
-        ? 'Memoles seluruh sub-target Core agar nol komponen terasa mentah, lalu menjembatani satu DNA ke React, AI Chat, HTML murni, dan Figma.'
-        : 'Polished Core sub-targets so zero primitives feel raw, bridging one DNA source to React, AI Artifacts, HTML, and Figma.',
+        ? 'Memoles puluhan detail kecil pada dropdown, akordeon, dan tabel agar serasi, lalu memastikan tema yang sama bisa dipakai langsung di Chat AI, React, HTML biasa, maupun Figma.'
+        : 'Refined subtle dropdown, accordion, and inline code details, then bridged the exact same theme to AI Chat, React, plain HTML/CSS, and Figma tokens.',
     },
   ];
+
+  const activePreset = builtInPresets.find(preset => {
+    const pSeed = preset.state.seed;
+    return (
+      seed.atmosphere === pSeed.atmosphere &&
+      seed.accent === pSeed.accent &&
+      seed.headingFont === pSeed.headingFont &&
+      seed.bodyFont === pSeed.bodyFont &&
+      seed.sizeBase === pSeed.sizeBase &&
+      seed.segmentedStyle === pSeed.segmentedStyle
+    );
+  });
+
+  const activeFontSummary =
+    seed.headingFont === seed.bodyFont
+      ? `${seed.headingFont} · ${seed.codeFont}`
+      : `${seed.headingFont} + ${seed.bodyFont}`;
 
   return (
     <Stack gap={5}>
       {/* =====================================================================
-          BEAT 2: LIVE SIGNATURE PRESETS GALLERY (WITH REAL PER-CARD FONTS & STYLES!)
+          BEAT 2: COMPACT 2x6 TACTILE THEME STRIP + 1-LINE ACTIVE SUMMARY BAR
          ===================================================================== */}
       <Card elevation="low">
         <Stack gap={3}>
-          <HStack hAlign="between" vAlign="end" wrap="wrap" gap={3}>
-            <Stack gap={1}>
-              <HStack gap={2} vAlign="center" wrap="wrap">
-                <Badge
-                  variant="pink"
-                  label={
-                    isId
-                      ? `${atmCount} Atmosfer × ${presetCount} Preset Kurasi`
-                      : `${atmCount} Atmospheres × ${presetCount} Signature Presets`
-                  }
-                />
-                <Badge
-                  variant="success"
-                  label={
-                    isId
-                      ? 'Font & Fisika Asli per Kartu · Klik Langsung Berubah'
-                      : 'Live Per-Card Typography & Physics · Click to Morph'
-                  }
-                />
-              </HStack>
-              <Heading level={2}>
-                {isId
-                  ? 'Rasakan langsung bedanya — klik preset mana saja untuk mengubah seluruh Studio'
-                  : 'Feel the range instantly — click any preset to transform the entire Studio'}
-              </Heading>
-            </Stack>
-            <Button
-              variant="secondary"
-              size="sm"
-              label={isId ? 'Racik sendiri di Theme Editor' : 'Customize in Theme Editor'}
-              icon={<SlidersHorizontal size={14} />}
-              onClick={onOpenEditor}
+          <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
+            <Heading level={2}>
+              {isId
+                ? 'Pilih suasana tampilan dalam 1 klik'
+                : 'Pick a visual personality in one click'}
+            </Heading>
+            <Badge
+              variant="pink"
+              label={
+                isId
+                  ? `${presetCount} Tema · ${atmCount} Suasana Warna`
+                  : `${presetCount} Themes · ${atmCount} Atmospheres`
+              }
             />
           </HStack>
 
           <div
-            className="mh-preset-gallery"
+            className="mh-preset-strip"
             role="radiogroup"
             aria-label={isId ? 'Galeri preset tema Mehan' : 'Mehan signature theme presets'}
           >
@@ -307,28 +317,24 @@ export function OverviewManifesto({
                 ...pSeed,
                 radiusBase: pSeed.radiusBase ?? undefined,
               });
-              const isCurrent =
-                seed.atmosphere === pSeed.atmosphere &&
-                seed.accent === pSeed.accent &&
-                seed.headingFont === pSeed.headingFont &&
-                seed.bodyFont === pSeed.bodyFont &&
-                seed.sizeBase === pSeed.sizeBase &&
-                seed.segmentedStyle === pSeed.segmentedStyle;
-
-              const cardRadius = `${Math.round(14 * pSeed.radiusScale)}px`;
-              const pillRadius = `${Math.round(8 * pSeed.radiusScale)}px`;
+              const isCurrent = activePreset?.id === preset.id;
+              const tileRadius = `${Math.max(8, Math.round(10 * pSeed.radiusScale))}px`;
+              const chipRadius = `${Math.max(5, Math.round(6 * pSeed.radiusScale))}px`;
               const lipShadow =
                 pDna.lipPx > 0
-                  ? `inset 0 -${pDna.lipPx}px 0 ${pDna.accent.buttonLip}, 0 1px 2px rgba(0,0,0,0.12)`
-                  : '0 1px 2px rgba(0,0,0,0.10)';
-              const segBg =
-                pSeed.segmentedStyle === 'espresso'
-                  ? pAtm.light.inverted
-                  : pAtm.light.surface;
-              const segInk =
-                pSeed.segmentedStyle === 'espresso'
-                  ? pAtm.light.onInverted
-                  : pAtm.light.ink;
+                  ? `inset 0 -${Math.min(2, pDna.lipPx)}px 0 ${pDna.accent.buttonLip}, 0 1px 2px rgba(0,0,0,0.14)`
+                  : '0 1px 2px rgba(0,0,0,0.12)';
+              const tileBg =
+                mode === 'dark' ? pAtm.dark.surface : pAtm.light.paper;
+              const tileInk =
+                mode === 'dark' ? pAtm.dark.ink : pAtm.light.ink;
+              const tileBorder = isCurrent
+                ? mode === 'dark'
+                  ? pDna.accent.accentDark
+                  : pDna.accent.accentLight
+                : mode === 'dark'
+                  ? pAtm.dark.line
+                  : pAtm.light.line;
 
               return (
                 <button
@@ -336,115 +342,79 @@ export function OverviewManifesto({
                   type="button"
                   role="radio"
                   aria-checked={isCurrent}
-                  className={`mh-preset-card ${isCurrent ? 'is-active' : ''}`}
-                  style={{borderRadius: cardRadius}}
+                  className={`mh-preset-tile ${isCurrent ? 'is-active' : ''}`}
+                  style={{
+                    borderRadius: tileRadius,
+                    backgroundColor: tileBg,
+                    color: tileInk,
+                    borderColor: tileBorder,
+                  }}
                   onClick={() => onApplyPreset(preset)}
                 >
-                  <div className="mh-preset-swatches" aria-hidden="true">
-                    <span
-                      className="mh-preset-swatch-paper"
-                      style={{
-                        backgroundColor: pAtm.light.paper,
-                        borderColor: pAtm.light.line,
-                        borderRadius: pillRadius,
-                      }}
-                    >
-                      <span
-                        className="mh-preset-swatch-cta"
-                        style={{
-                          backgroundColor: pDna.accent.accentLight,
-                          backgroundImage: pDna.accent.buttonGradient,
-                          color: pDna.accent.onAccentLight,
-                          boxShadow: lipShadow,
-                          borderRadius: `${Math.max(4, Math.round(7 * pSeed.radiusScale))}px`,
-                          fontFamily: `"${pSeed.bodyFont}", sans-serif`,
-                        }}
-                      >
-                        Aa
-                      </span>
-                      <span
-                        className="mh-preset-swatch-seg"
-                        style={{
-                          backgroundColor: segBg,
-                          color: segInk,
-                          borderRadius: `${Math.max(4, Math.round(6 * pSeed.radiusScale))}px`,
-                          fontFamily: `"${pSeed.codeFont}", monospace`,
-                        }}
-                      >
-                        {pSeed.sizeBase}px
-                      </span>
+                  <span
+                    className="mh-preset-cap"
+                    aria-hidden="true"
+                    style={{
+                      borderRadius: chipRadius,
+                      backgroundColor: pDna.accent.accentLight,
+                      backgroundImage: pDna.accent.buttonGradient,
+                      boxShadow: lipShadow,
+                    }}
+                  />
+                  <span
+                    className="mh-preset-tile-name"
+                    style={{
+                      fontFamily: `"${pSeed.headingFont}", var(--font-family-heading), sans-serif`,
+                    }}
+                  >
+                    {preset.name}
+                  </span>
+                  {isCurrent && (
+                    <span className="mh-preset-tile-check" aria-hidden="true">
+                      <Check size={12} />
                     </span>
-                    <span
-                      className="mh-preset-swatch-dark"
-                      style={{
-                        backgroundColor: pAtm.dark.surface,
-                        borderColor: pAtm.dark.line,
-                        borderRadius: pillRadius,
-                      }}
-                    >
-                      <i style={{backgroundColor: pDna.accent.accentDark}} />
-                    </span>
-                    {isCurrent && (
-                      <span className="mh-preset-active-pill">
-                        <Check size={11} />
-                        <span>{isId ? 'Aktif' : 'Active'}</span>
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mh-preset-meta">
-                    <div className="mh-preset-title-row">
-                      <span
-                        className="mh-preset-name"
-                        style={{
-                          fontFamily: `"${pSeed.headingFont}", var(--font-family-heading), sans-serif`,
-                        }}
-                      >
-                        {preset.name}
-                      </span>
-                      {preset.badge && (
-                        <span className="mh-preset-tag">{preset.badge}</span>
-                      )}
-                    </div>
-                    <p
-                      className="mh-preset-desc"
-                      style={{
-                        fontFamily: `"${pSeed.bodyFont}", var(--font-family-body), sans-serif`,
-                      }}
-                    >
-                      {isId ? preset.taglineId ?? preset.taglineEn : preset.taglineEn}
-                    </p>
-                    <div
-                      className="mh-preset-fonts"
-                      style={{
-                        fontFamily: `"${pSeed.codeFont}", var(--font-family-code), monospace`,
-                      }}
-                    >
-                      {pSeed.headingFont === pSeed.bodyFont ? (
-                        <>
-                          <span>{pSeed.headingFont}</span>
-                          <span>·</span>
-                          <span>{pSeed.codeFont}</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>{pSeed.headingFont}</span>
-                          <span>+</span>
-                          <span>{pSeed.bodyFont}</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                  )}
                 </button>
               );
             })}
+          </div>
+
+          <div className="mh-preset-active-bar">
+            <div className="mh-preset-active-copy">
+              <strong className="mh-preset-active-title">
+                {activePreset
+                  ? activePreset.name
+                  : isId
+                    ? 'Tema Kustom'
+                    : 'Custom Theme'}
+              </strong>
+              <span className="mh-preset-active-sep" aria-hidden="true">
+                ·
+              </span>
+              <span className="mh-preset-active-desc">
+                {activePreset
+                  ? isId
+                    ? activePreset.taglineId ?? activePreset.taglineEn
+                    : activePreset.taglineEn
+                  : isId
+                    ? `${dna.atmosphere.name} berpadu aksen ${dna.accent.name}`
+                    : `${dna.atmosphere.name} paired with ${dna.accent.name} accent`}
+              </span>
+              <span className="mh-preset-active-font">{activeFontSummary}</span>
+            </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              label={isId ? 'Racik di Theme Editor' : 'Open Theme Editor'}
+              icon={<SlidersHorizontal size={14} />}
+              onClick={onOpenEditor}
+            />
           </div>
         </Stack>
       </Card>
 
       {/* =====================================================================
-          BEAT 3: UNIFIED VISUAL THESIS ("WORK SMART, NOT FROM SCRATCH")
-                  + PROGRESSIVELY DISCLOSED 6-STAGE ENGINEERING STORY
+          BEAT 3: GROUNDED VISUAL STORY ("SMART STRATEGY + DEDICATED CRAFT")
          ===================================================================== */}
       <Card elevation="low">
         <Stack gap={4}>
@@ -454,8 +424,8 @@ export function OverviewManifesto({
                 variant="purple"
                 label={
                   isId
-                    ? 'Mengapa Mehan Dibuat · Kerja Cerdas vs. Mulai dari Nol'
-                    : 'Why Mehan Exists · Architectural Leverage vs. Reinventing Wheels'
+                    ? 'Kenapa Mehan Dibuat · Kerja Cerdas & Dirancang Penuh Dedikasi'
+                    : 'Why Mehan Exists · Smart Foundation, Original Design Craft'
                 }
               />
             </div>
@@ -469,26 +439,34 @@ export function OverviewManifesto({
                       <i />
                       <i />
                     </span>
-                    <span className="mh-mock-file">from-scratch-ui.tsx</span>
+                    <span className="mh-mock-file">
+                      {isId ? 'bikin-dari-nol.tsx' : 'from-scratch-ui.tsx'}
+                    </span>
                   </div>
                   <div className="mh-mock-title-raw">
-                    {isId ? 'Bikin sendiri dari nol' : 'Rebuilt from scratch'}
+                    {isId ? 'Bikin semuanya dari nol' : 'Rebuilt from scratch'}
                   </div>
                   <div className="mh-mock-input-raw">
-                    {isId ? 'Input datar · tanpa focus trap' : 'Flat input · broken focus trap'}
+                    {isId
+                      ? 'Cantik di mockup, macet di keyboard & HP'
+                      : 'Pretty in mockups, breaks on keyboard & mobile'}
                   </div>
                   <div className="mh-mock-pills-raw">
-                    <span>✗ 0 WAI-ARIA</span>
-                    <span>✗ {isId ? 'Bulanan terbuang' : 'Months wasted'}</span>
+                    <span>
+                      ✗ {isId ? 'Bulanan habis di hal dasar' : 'Months lost on basics'}
+                    </span>
+                    <span>
+                      ✗ {isId ? 'Dropdown & modal rawan bug' : 'Fragile dropdowns'}
+                    </span>
                   </div>
                   <div className="mh-mock-btn-raw">
-                    {isId ? 'Tombol generik datar' : 'Generic flat button'}
+                    {isId ? 'Tampilan kaku & lelah dirawat' : 'Flat look & heavy upkeep'}
                   </div>
                 </div>
                 <p className="mh-hand-caption">
                   {isId
-                    ? 'Tanpa fondasi — kerja keras, rapuh di produksi'
-                    : 'Without leverage — hard work, fragile in production'}
+                    ? 'Kerja keras sendirian — habis energi mengulang roda dari nol'
+                    : 'Hard work alone — exhausting months reinventing basic plumbing'}
                 </p>
               </div>
 
@@ -509,21 +487,21 @@ export function OverviewManifesto({
                   </div>
                   <div className="mh-mock-input-mehan">
                     {isId
-                      ? 'Sumur input cekung · WAI-ARIA terkunci'
-                      : 'Recessed tactile well · WAI-ARIA locked'}
+                      ? 'Kolom input cekung · Nyaman di semua layar'
+                      : 'Soft recessed input · Smooth on every device'}
                   </div>
                   <div className="mh-mock-pills-mehan">
-                    <span>✓ WCAG 2.2 AA</span>
-                    <span>✓ Zero Fork</span>
+                    <span>✓ {isId ? 'Fondasi teruji Meta' : 'Meta-proven core'}</span>
+                    <span>✓ {isId ? 'Terang/Gelap otomatis' : 'Auto Light & Dark'}</span>
                   </div>
                   <div className="mh-mock-btn-mehan">
-                    {isId ? 'Bibir 3D taktil siap pakai' : 'Sculpted 3D tactile CTA'}
+                    {isId ? 'Tombol 3D hangat & siap rilis' : 'Warm 3D button · Ready to ship'}
                   </div>
                 </div>
                 <p className="mh-hand-caption is-accent">
                   {isId
-                    ? 'Dengan Mehan — mesin Meta + jiwa taktil berkarakter'
-                    : 'With Mehan — Meta’s engine + unmistakable tactile soul'}
+                    ? 'Langkah cerdas — mesin kokoh di bawah, karya penuh hati di atas'
+                    : 'Smart craft — proven engine underneath, built with heart on top'}
                 </p>
               </div>
             </div>
@@ -534,26 +512,52 @@ export function OverviewManifesto({
               <h2 className="mh-thesis-heading">
                 {isId ? (
                   <>
-                    Jangan rakit ulang mesin yang sudah matang — pahat{' '}
-                    <em className="mh-serif-accent">jiwa & ergonominya</em> di atasnya.
+                    Untuk apa buang waktu berbulan-bulan membuat ulang tombol dasar — kalau seluruh energi bisa dicurahkan pada{' '}
+                    <em className="mh-serif-accent">karakter & kenyamanan produknya</em>?
                   </>
                 ) : (
                   <>
-                    Stop rebuilding solved engineering — sculpt the{' '}
-                    <em className="mh-serif-accent">soul & ergonomics</em> on top.
+                    Why spend months rebuilding basic buttons & dropdowns — when you can pour 100% of your craft into{' '}
+                    <em className="mh-serif-accent">how the product feels</em>?
                   </>
                 )}
               </h2>
               <p className="mh-thesis-copy">
-                {isId
-                  ? 'Menggambar ulang dropdown, modal, dan tabel dari nol hanya membuang waktu berbulan-bulan sambil meninggalkan celah aksesibilitas dan kontras. Mehan berdiri murni di atas fondasi perilaku Meta Astryx yang sudah teruji, lalu menyuntikkan DNA material OKLCH, topologi ruang kerja universal, dan standar UX di atasnya.'
-                  : 'Redrawing selects, modals, and tables from zero wastes months while shipping broken focus traps and poor dark-mode contrast. Mehan keeps Meta Astryx’s battle-tested behavioral engine completely intact and layers perceptual OKLCH materials, universal workspaces, and UX laws cleanly above it.'}
+                {isId ? (
+                  <>
+                    Mehan berdiri di atas{' '}
+                    <a
+                      href="https://astryx.atmeta.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mh-inline-ext-link"
+                    >
+                      <strong>Meta Astryx</strong>
+                      <ExternalLink size={12} />
+                    </a>{' '}
+                    — fondasi komponen <em>open-source</em> resmi Meta yang telah teruji 8 tahun di 13.000+ aplikasi internal. Terinspirasi dari antarmuka hangat ala <em>Shotcandy</em>, Mehan merancang sendiri mesin warna, ruang kerja, dan panduan UX di atasnya:
+                  </>
+                ) : (
+                  <>
+                    Mehan stands on{' '}
+                    <a
+                      href="https://astryx.atmeta.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mh-inline-ext-link"
+                    >
+                      <strong>Meta Astryx</strong>
+                      <ExternalLink size={12} />
+                    </a>{' '}
+                    — Meta’s official open-source component foundation proven over 8 years across 13,000+ internal apps. Sparked by warm creative tools like <em>Shotcandy</em>, Mehan crafts the color engine, workspaces, and UX guides on top:
+                  </>
+                )}
               </p>
             </div>
 
             <div className="mh-funnel-spine" role="list" aria-label="Mehan architectural layers">
               {funnelSteps.map((item, idx) => (
-                <React.Fragment key={item.stat}>
+                <React.Fragment key={`${item.stat}-${idx}`}>
                   {idx > 0 && <HandDrawnSquiggle />}
                   <div className="mh-funnel-node" role="listitem">
                     <div className="mh-funnel-center">
@@ -576,8 +580,8 @@ export function OverviewManifesto({
             defaultIsOpen={false}
             trigger={
               isId
-                ? 'Baca kisah dapur rekayasa: 6 putaran iterasi & distilasi di balik Mehan'
-                : 'Read the engineering story: 6 iterations of critique, de-biasing & distillation'
+                ? 'Lihat cerita dapur pembuatannya: 6 tahap riset, perancangan & penyempurnaan'
+                : 'Read how it was built: 6 stages of research, design craft & engineering polish'
             }
           >
             <Grid columns={{minWidth: 260, max: 3, repeat: 'fit'}} gap={3}>

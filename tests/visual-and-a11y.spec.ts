@@ -23,7 +23,7 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     await page.goto(studioFileUrl, {waitUntil: 'load'});
 
     // 1. Overview (ID, Light) + Verify real bundled WOFF2 fonts actually loaded!
-    await expect(page.getByText('mehan', {exact: true})).toBeVisible();
+    await expect(page.getByText('Mehan Design System', {exact: true})).toBeVisible();
     const initialFontsLoaded = await page.evaluate(async () => {
       await document.fonts.ready;
       return {
@@ -50,9 +50,76 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     await page.getByText('EN', {exact: true}).click();
     await page.waitForTimeout(120);
 
-    // 2. Components Catalog: Action (default focused category) -> Layout (verify AppShell height <= 320px!) -> Table & List
+    // Open Info & Creator Modal -> About & Creator tab -> verify Raihan Allaam & 0 WCAG AA contrast violations!
+    await page.getByRole('button', {name: 'About & Guide'}).click();
+    await page.getByRole('tab', {name: 'About & Creator'}).click();
+    await expect(
+      page.getByText('M. Raihan Rafiiful Allaam (@alamehan)'),
+    ).toBeVisible();
+    expect(
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
+    ).toEqual([]);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(100);
+
+    // Verify compact 2x6 tactile theme strip renders all 12 themes with distinct real WOFF2 fonts
+    const stripAudit = await page.locator('.mh-preset-tile').evaluateAll(els => {
+      const fonts = new Set(
+        els.map(el => {
+          const nameEl = el.querySelector('.mh-preset-tile-name');
+          return nameEl ? getComputedStyle(nameEl).fontFamily.split(',')[0].replace(/"/g, '').trim() : '';
+        }),
+      );
+      return {count: els.length, fontCount: fonts.size};
+    });
+    expect(stripAudit.count).toBe(12);
+    expect(stripAudit.fontCount).toBeGreaterThanOrEqual(5);
+
+    // 2. Components Catalog: Action -> verify cross-component height & font-size parity across Core + Mehan!
     await page.getByRole('tab', {name: 'Components'}).click();
     await expect(page.getByText(/^\d+ live specimens$/)).toBeVisible();
+    await page.locator('.cat-nav-btn', {hasText: 'Action'}).click();
+    await page.waitForTimeout(150);
+
+    const actionParity = await page.evaluate(() => {
+      const measure = (sel: string) => {
+        const el = document.querySelector<HTMLElement>(sel);
+        if (!el) return null;
+        const cs = getComputedStyle(el);
+        return {
+          h: Math.round(el.getBoundingClientRect().height),
+          fs: parseFloat(cs.fontSize),
+          r: parseFloat(cs.borderTopLeftRadius),
+        };
+      };
+      return {
+        coreBtnMd: measure('[data-component="button"] .cat-specimen-stage .astryx-button:not([data-size="sm"]):not([data-size="lg"])'),
+        coreBtnSm: measure('[data-component="button"] .cat-specimen-stage .astryx-button[data-size="sm"]'),
+        splitMain: measure('[data-component="split-button"] .cat-specimen-stage .mehan-split-main'),
+        iconBtn: measure('[data-component="icon-button"] .cat-specimen-stage .astryx-button'),
+        segControl: measure('[data-component="segmented-control"] .cat-specimen-stage .astryx-segmented-control'),
+        copyBtn: measure('[data-component="copy-button"] .cat-specimen-stage .mehan-copy-btn'),
+        inlineConfirm: measure('[data-component="inline-confirm"] .cat-specimen-stage .mehan-ic-trigger'),
+      };
+    });
+    expect(actionParity.coreBtnMd?.h).toBe(36);
+    expect(actionParity.splitMain?.h).toBe(36);
+    expect(actionParity.iconBtn?.h).toBe(36);
+    expect(actionParity.segControl?.h).toBe(36);
+    expect(actionParity.copyBtn?.h).toBe(36);
+    expect(actionParity.inlineConfirm?.h).toBe(36);
+    expect(actionParity.coreBtnMd?.fs).toBe(14);
+    expect(actionParity.splitMain?.fs).toBe(14);
+    expect(actionParity.copyBtn?.fs).toBe(14);
+    expect(actionParity.inlineConfirm?.fs).toBe(14);
+    expect(actionParity.coreBtnSm?.h).toBe(32);
+    expect(actionParity.coreBtnSm?.fs).toBe(12.5);
+    expect(actionParity.coreBtnMd?.r).toBe(10);
+    expect(actionParity.splitMain?.r).toBe(10);
     await page.screenshot({
       path: path.join(shotDir, 'studio-v3-catalog-action-light-1366.png'),
       fullPage: false,
@@ -163,11 +230,11 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       ).violations,
     ).toEqual([]);
 
-    // Reset back to default Bricolage Grotesque + Figtree, then switch Preset to Shotcandy 1:1 in Dark Mode!
+    // Reset back to default Bricolage Grotesque + Figtree, then switch Preset to Espresso Berry in Dark Mode!
     await editor.getByRole('button', {name: 'Reset all to default'}).click();
     await page.waitForTimeout(120);
     await editor.getByRole('combobox', {name: 'Theme preset'}).click();
-    await page.getByRole('option', {name: /Shotcandy 1:1/}).click();
+    await page.getByRole('option', {name: /Espresso Berry/}).click();
     await page.getByRole('button', {name: 'Dark mode'}).click();
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(200);
@@ -296,7 +363,7 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
   }) => {
     await page.setViewportSize({width: 375, height: 812});
     await page.goto(studioFileUrl, {waitUntil: 'load'});
-    await expect(page.getByText('mehan', {exact: true})).toBeVisible();
+    await expect(page.getByText('Mehan Design System', {exact: true})).toBeVisible();
 
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - window.innerWidth,

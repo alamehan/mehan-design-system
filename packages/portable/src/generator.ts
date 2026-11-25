@@ -16,6 +16,9 @@ function varsBlock(dna: ResolvedMehanDna, mode: 'light' | 'dark'): string {
   const ctrlMd = dna.density === 'compact' ? '32px' : '36px';
   const ctrlSm = dna.density === 'compact' ? '28px' : '32px';
   const ctrlLg = dna.density === 'compact' ? '40px' : '44px';
+  const ctrlFontSm = `${Math.max(12, Math.round((dna.typeBase - 1.5) * 2) / 2)}px`;
+  const ctrlFontMd = `${dna.typeBase}px`;
+  const ctrlFontLg = `${Math.round((dna.typeBase + 1) * 2) / 2}px`;
   const easeOut =
     dna.motion === 'calm' || dna.motion === 'crisp'
       ? 'cubic-bezier(0.22,1,0.36,1)'
@@ -99,6 +102,9 @@ function varsBlock(dna: ResolvedMehanDna, mode: 'light' | 'dark'): string {
     `--mh-ctrl-sm:${ctrlSm}`,
     `--mh-ctrl-md:${ctrlMd}`,
     `--mh-ctrl-lg:${ctrlLg}`,
+    `--mh-ctrl-font-sm:${ctrlFontSm}`,
+    `--mh-ctrl-font-md:${ctrlFontMd}`,
+    `--mh-ctrl-font-lg:${ctrlFontLg}`,
     `--mh-ease:${easeOut}`,
   ].join(';');
 }
@@ -148,9 +154,9 @@ details.mh-disclosure>summary{cursor:pointer;font-family:var(--mh-font-display,"
 .mh-swatch-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:6px 6px 8px}
 
 /* Silky-Smooth Tactile Push Buttons (Perceptual Lip + Optical Face Centering) */
-.mh-btn{height:var(--mh-ctrl-md,36px);padding:0 14px;border:0;border-radius:var(--mh-r-md);display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none;transition:transform 150ms var(--mh-ease),box-shadow 150ms ease,background-image 150ms ease,background-color 150ms ease}
-.mh-btn-sm{height:var(--mh-ctrl-sm,32px);padding:0 11px;font-size:12.5px}
-.mh-btn-lg{height:var(--mh-ctrl-lg,44px);padding:0 18px;font-size:14.5px;border-radius:calc(var(--mh-r-md) + 2px)}
+.mh-btn{height:var(--mh-ctrl-md,36px);padding:0 15px;border:0;border-radius:var(--mh-r-md);display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:var(--mh-ctrl-font-md,14px);line-height:1.2;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none;transition:transform 150ms var(--mh-ease),box-shadow 150ms ease,background-image 150ms ease,background-color 150ms ease}
+.mh-btn-sm{height:var(--mh-ctrl-sm,32px);padding:0 12px;font-size:var(--mh-ctrl-font-sm,12.5px)}
+.mh-btn-lg{height:var(--mh-ctrl-lg,44px);padding:0 19px;font-size:var(--mh-ctrl-font-lg,15px);border-radius:calc(var(--mh-r-md) + 2px)}
 .mh-btn-primary{color:#fff;background-color:var(--mh-accent);background-image:var(--mh-primary-grad);box-shadow:var(--mh-shadow-primary);padding-bottom:var(--mh-lip-pad,3px)}
 .mh-btn-primary:hover:not(:disabled){background-image:var(--mh-primary-grad-hover);box-shadow:var(--mh-shadow-primary-hover)}
 .mh-btn-primary:active:not(:disabled){transform:translateY(1.5px);padding-bottom:min(var(--mh-lip-pad,1px),1px);box-shadow:var(--mh-shadow-primary-pressed);transition-duration:80ms}
@@ -168,8 +174,8 @@ details.mh-disclosure>summary{cursor:pointer;font-family:var(--mh-font-display,"
 
 /* Borderless Recessed-Well Form Controls */
 .mh-field{display:flex;flex-direction:column;gap:6px}
-.mh-label{font-size:12.5px;font-weight:600;color:var(--mh-ink-2);display:flex;justify-content:space-between}
-.mh-input,.mh-select,.mh-textarea{width:100%;border:0;outline:none;border-radius:var(--mh-r-md);background:var(--mh-well);box-shadow:var(--mh-shadow-well);color:var(--mh-ink);font-size:13.5px;transition:box-shadow 140ms ease}
+.mh-label{font-size:var(--mh-ctrl-font-sm,12.5px);font-weight:600;color:var(--mh-ink-2);display:flex;justify-content:space-between}
+.mh-input,.mh-select,.mh-textarea{width:100%;border:0;outline:none;border-radius:var(--mh-r-md);background:var(--mh-well);box-shadow:var(--mh-shadow-well);color:var(--mh-ink);font-size:var(--mh-ctrl-font-md,14px);transition:box-shadow 140ms ease}
 .mh-input,.mh-select{height:var(--mh-ctrl-md,36px);padding:0 12px}
 .mh-textarea{min-height:84px;padding:9px 12px;resize:vertical;overscroll-behavior-y:auto}
 .mh-input::placeholder,.mh-textarea::placeholder{color:var(--mh-ink-3)}
@@ -177,7 +183,7 @@ details.mh-disclosure>summary{cursor:pointer;font-family:var(--mh-font-display,"
 
 /* Segmented Control, Switch & Boiled-Sweet Swatch */
 .mh-seg{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:var(--mh-r-md);background:var(--mh-well);box-shadow:var(--mh-shadow-well)}
-.mh-seg button{height:calc(var(--mh-ctrl-md,36px) - 6px);padding:0 12px;border:0;border-radius:var(--mh-r-sm);background:transparent;color:var(--mh-ink-2);font-size:12.5px;font-weight:600;cursor:pointer}
+.mh-seg button{height:calc(var(--mh-ctrl-md,36px) - 6px);padding:0 12px;border:0;border-radius:var(--mh-r-sm);background:transparent;color:var(--mh-ink-2);font-size:var(--mh-ctrl-font-md,14px);font-weight:600;cursor:pointer}
 .mh-seg button[aria-selected="true"],.mh-seg button.is-active{background:var(--mh-seg-active-bg,var(--mh-raised-grad));color:var(--mh-seg-active-ink,var(--mh-ink));box-shadow:var(--mh-shadow-raised)}
 .mh-switch{width:38px;height:22px;padding:0;border:0;border-radius:999px;background:var(--mh-socket);box-shadow:var(--mh-shadow-socket);position:relative;cursor:pointer;transition:background 180ms ease}
 .mh-switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--mh-knob-grad);box-shadow:var(--mh-shadow-knob);transition:transform 180ms var(--mh-ease)}
@@ -484,26 +490,26 @@ export function generateAiPrototypeKit(options?: Partial<MehanThemeOptions>): st
 
   return `# Mehan Design System — Single-HTML Prototype Kit (${dna.atmosphere.name} · ${dna.accent.name})
 
-Use the embedded **Mehan Portable CSS + Runtime** below to build a tactile, accessible, responsive single-file HTML prototype (zero external npm build required; works offline & in sandboxed AI previews).
+Use the embedded **Mehan Portable CSS + Runtime** below to build a warm, clear, accessible single-file HTML app (works offline and in AI chat previews with zero build step).
 
-## 1. Tactile Surface & Visual Rules
-1. **Surface Hierarchy:** Page canvas uses \`--mh-paper\`; primary panels use \`.mh-card\`; nested inner groupings inside a card MUST step down to \`.mh-tray\` or \`.mh-well\` (never stack white bordered cards inside white bordered cards).
-2. **Silky-Smooth Tactile Buttons:** One \`.mh-btn.mh-btn-primary\` per screen/dialog for the primary CTA; secondary actions use \`.mh-btn.mh-btn-secondary\`; quiet actions use \`.mh-btn.mh-btn-ghost\`; destructive actions use soft-tactile \`.mh-btn.mh-btn-danger\`.
-3. **Typography & Tabular Numbers:** Headings use \`.mh-display\`, \`.mh-h1\`, \`.mh-h2\`, \`.mh-h3\`; numbers/KPIs/timestamps use \`.mh-mono\` or \`.mh-metric-value\` (\`tabular-nums\`).
+## 1. Visual Surfaces & Buttons
+1. **Calm Layered Surfaces:** Page background uses \`--mh-paper\`; main panels use \`.mh-card\`; inner boxes inside a card step down to \`.mh-tray\` or \`.mh-well\` (avoid stacking white bordered cards inside white bordered cards).
+2. **Balanced Tactile Buttons:** Use one \`.mh-btn.mh-btn-primary\` per screen or dialog for the main action; \`.mh-btn.mh-btn-secondary\` for supporting actions; \`.mh-btn.mh-btn-ghost\` for quiet actions; and \`.mh-btn.mh-btn-danger\` for destructive actions. All controls share unified height and font sizing across default (\`36px\`) and \`.mh-btn-sm\` (\`32px\`).
+3. **Typography & Aligned Numbers:** Use \`.mh-display\`, \`.mh-h1\`, \`.mh-h2\`, \`.mh-h3\` for headings, and \`.mh-mono\` or \`.mh-metric-value\` (\`tabular-nums\`) so numbers, prices, and timestamps line up cleanly.
 
-## 2. Universal UX, Semantic & Copywriting Standards (Foundations + U1–U6)
-1. **Grouping & Chunking (Anti-Card-Wall):** Keep intra-group spacing tighter than inter-group spacing (\`8–12px\` inside a group, \`20–24px\` between sections). Use at most \`4\` \`.mh-metric\` KPI cards at the top; render homogeneous lists of \`5+\` records in \`.mh-table-wrap > .mh-table\` rather than walls of repeated cards.
-2. **Simple First, Power on Demand:** Keep top-level forms/toolbars to \`<= 5\` primary controls; place expert flags or raw code inside a collapsible \`<details><summary>Advanced settings</summary>...</details>\` (capped at 2 disclosure levels).
-3. **9-Tier Line Budget, Middle-Truncation & Scroll Split (U4):** Right-align numeric table columns (\`text-align:right\`) with \`tabular-nums\`. Never truncate button labels, error messages, or financial values. Use \`.mh-mid-trunc\` (\`.mh-mid-head\` + \`.mh-mid-tail\`) for filenames, paths, SHAs, and API keys so file extensions/tails stay visible. Never trap vertical page scrolling inside inline tables/textareas (\`overscroll-behavior-y:auto\`).
-4. **Semantic Control Boundaries:** Use \`.mh-seg\` ONLY for \`2–5\` immediate view/mode switches; use \`.mh-tabs\` ONLY when switching distinct content panels; use \`.mh-select\` ONLY for form value selection.
-5. **Keyboard, Touch & High-Contrast Ergonomics (U1 & U2):** Guard single-key shortcuts against \`input\`/\`textarea\` typing & IME composition; layer \`Escape\` dismissal cleanly (topmost popover/dialog first). Coarse pointers automatically expand targets to \`>= 44px\` and inputs to \`16px\`, while \`prefers-contrast\` / \`forced-colors\` / \`print\` adapt automatically.
-6. **Validation Timing, Proportional Confirmation & Bilingual Copy (U3, U5 & U6):**
-   - **Reward early, punish late:** Never show red errors while typing the first entry into an untouched field; validate \`onBlur\`/\`onSubmit\`, then clear immediately \`onInput\` once valid.
-   - **Proportional confirmation:** Immediate execution + Undo toast for reversible actions; inline row confirmation for local deletes; \`<dialog class="mh-modal">\` strictly for irreversible destruction naming the exact noun (\`Cancel\` + \`Delete API key\`).
-   - **Sentence case & +30–40% expansion resilience:** Never shout in ALL CAPS or hardcode narrow pixel widths on buttons/tabs so Indonesian/localized strings (\`Save\` -> \`Simpan perubahan\`) grow naturally.
-7. **Evergreen Copy, Pure Domain Identity & Extension Discipline:**
-   - Describe concrete user inputs and domain outcomes in titles/taglines — never leak internal plumbing ("zero API keys", "via localStorage") or hardcode brittle item tallies in static prose (compute \`{items.length}\` dynamically from data).
-   - Enforce card boundary containment (\`min-width:0; max-width:100%\` on flex/grid children and wrapping action bars) and reuse canonical \`.mh-*\` primitives before inventing custom classes.
+## 2. Universal UX, Semantic & Copywriting Standards
+1. **Grouping & Chunking (No Card Walls):** Keep related fields close (\`8–12px\`) and separate distinct sections with breathing room (\`20–24px\`). Cap top KPI rows at \`4\` \`.mh-metric\` cards, and render lists of \`5+\` similar records in \`.mh-table-wrap > .mh-table\` rather than repeating cards.
+2. **Simple First, Details on Demand:** Keep visible form or toolbar controls to \`<= 5\` primary items; tuck advanced options inside \`<details class="mh-disclosure"><summary>Advanced options</summary>...</details>\`.
+3. **Readable Text, Smart Truncation & Smooth Scroll:** Right-align numeric table columns (\`text-align:right\`). Never cut off button labels, error messages, or money amounts. Use \`.mh-mid-trunc\` (\`.mh-mid-head\` + \`.mh-mid-tail\`) for long filenames, paths, or API keys so extensions stay visible. Keep \`overscroll-behavior-y:auto\` on inline tables and textareas so page scrolling never gets stuck.
+4. **Right Control for the Job:** Use \`.mh-seg\` for \`2–5\` instant view/mode switches; \`.mh-tabs\` for switching content panels; and \`.mh-select\` for choosing a form value.
+5. **Keyboard, Touch & Contrast Ready:** Guard single-key shortcuts when typing inside inputs; let \`Escape\` close the topmost dialog or menu first. Touch screens automatically expand controls to \`44px\`, and High Contrast / Print modes adapt cleanly.
+6. **Friendly Forms & Clear Human Writing:**
+   - **Validate gently:** Wait until \`onBlur\` or \`onSubmit\` before showing an error on a new field, then clear the error immediately as soon as the input becomes valid.
+   - **Right-sized confirmation:** Execute reversible actions immediately with Undo; use inline row confirmation for minor deletes; reserve \`<dialog class="mh-modal">\` for permanent deletion and name what is being deleted (\`Cancel\` + \`Delete API key\`).
+   - **Natural sentence case:** Avoid ALL CAPS labels and fixed narrow button widths so both English and longer Indonesian labels (\`Save\` -> \`Simpan perubahan\`) fit comfortably.
+7. **Timeless Product Copy & Clean Boundaries:**
+   - Focus titles and descriptions on what the user accomplishes rather than internal storage details, and compute item counts dynamically instead of hardcoding brittle numbers.
+   - Keep \`min-width:0; max-width:100%\` on flex/grid children and reuse \`.mh-*\` classes before writing custom styles.
 
 ## 3. Auto-Wired Interactive Markup
 - **Theme toggle:** \`<button type="button" class="mh-btn mh-btn-secondary mh-btn-sm" data-mh-theme-toggle>Light / Dark</button>\`
