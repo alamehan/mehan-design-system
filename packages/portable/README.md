@@ -15,11 +15,11 @@ Use `@mehan/portable` when building prototypes in **Claude Artifacts, Gemini Can
 Or generate customized outputs programmatically / via CLI:
 
 ```bash
-# Emit standalone CSS + JS into ./my-site/mehan/
-node "D:/mehan-design-system/bin/mehan.mjs" init ./my-site --portable --atmosphere porcelain --accent blueberry
+# Emit standalone CSS + JS into ./my-site/mehan/ (run from cloned repo root)
+node ./bin/mehan.mjs init ./my-site --portable --atmosphere porcelain --accent blueberry
 
 # Generate a single-file AI Prototype Kit markdown prompt
-node "D:/mehan-design-system/bin/mehan.mjs" ai-kit --from mehan-theme.json --out kit.md
+node ./bin/mehan.mjs ai-kit --from mehan-theme.json --out kit.md
 ```
 
 ## Included `.mh-*` Primitives & Layouts

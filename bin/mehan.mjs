@@ -5,7 +5,7 @@
  *   node bin/mehan.mjs init [target-dir] [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex]
  *        [--depth 1] [--radius 1] [--radius-base <px>] [--type-base 14] [--type-ratio 1.22] [--size-base 36]
  *        [--spacing-base 4] [--duration-step 1] [--density standard|compact] [--motion expressive|standard|crisp|calm]
- *        [--tailwind] [--local|--npm] [--portable]
+ *        [--tailwind] [--github|--local|--npm] [--portable]
  *   node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out prototype-kit.md]
  *   node bin/mehan.mjs tokens [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
  *   node bin/mehan.mjs set-scope <@newscope>
@@ -315,6 +315,7 @@ if (cmd === 'set-scope') {
     'dist-single',
     'release',
     '.git',
+    '.github',
     'test-results',
     'playwright-report',
   ]);
@@ -363,6 +364,7 @@ if (cmd === 'init') {
     if (arg.startsWith('--')) {
       if (
         arg !== '--tailwind' &&
+        arg !== '--github' &&
         arg !== '--local' &&
         arg !== '--npm' &&
         arg !== '--portable'
@@ -397,8 +399,10 @@ if (cmd === 'init') {
   } = dnaOptions;
 
   const forcePortable = args.includes('--portable');
+  const preferGithub = args.includes('--github');
   const preferNpm = args.includes('--npm');
   const scope = readCurrentScope();
+  const githubRepoUrl = 'https://github.com/alamehan/mehan-design-system';
 
   fs.mkdirSync(targetDir, {recursive: true});
   const pkgPath = path.join(targetDir, 'package.json');
@@ -594,8 +598,12 @@ export function MehanProvider({
         .join(repoRoot, 'release', astryxTgz)
         .replaceAll('\\', '/')
     : null;
-  const pkgSpec =
-    !preferNpm && localTgz ? `"${localTgz}"` : `${scope}/astryx`;
+  const githubTgz = `${githubRepoUrl}/raw/main/release/${astryxTgz ?? 'mehan-astryx-1.0.0.tgz'}`;
+  const pkgSpec = preferNpm
+    ? `${scope}/astryx`
+    : preferGithub || !localTgz
+      ? `"${githubTgz}"`
+      : `"${localTgz}"`;
 
   console.log(`✅ Created ${cssPath} and ${providerPath}!`);
   console.log('\nRun in your project:');
@@ -612,7 +620,7 @@ export function MehanProvider({
 console.log(`Mehan Design System CLI (v1.0.0)
 Usage:
   • Double-click STUDIO.html (Windows / macOS / Linux) to open Interactive Studio offline!
-  • node bin/mehan.mjs init <project-folder> [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--lip candy|subtle|flat] [--segmented raised|espresso] [--well recessed|bordered] [--density standard|compact] [--motion expressive|standard|crisp|calm] [--type-base 14] [--type-ratio 1.22] [--size-base 36] [--spacing-base 4] [--radius-base 8] [--duration-step 1] [--tailwind] [--local|--npm] [--portable]
+  • node bin/mehan.mjs init <project-folder> [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--lip candy|subtle|flat] [--segmented raised|espresso] [--well recessed|bordered] [--density standard|compact] [--motion expressive|standard|crisp|calm] [--type-base 14] [--type-ratio 1.22] [--size-base 36] [--spacing-base 4] [--radius-base 8] [--duration-step 1] [--tailwind] [--github|--local|--npm] [--portable]
   • node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere confectionery|porcelain|stone] [--accent strawberry|#hex] [--out kit.md]
   • node bin/mehan.mjs tokens [--from theme.json] [--atmosphere confectionery] [--accent strawberry] [--out mehan-tokens.w3c.json]
   • node bin/mehan.mjs set-scope @yourscope

@@ -290,10 +290,13 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
         JSON.stringify({name: 'demo-react', dependencies: {react: '^19.0.0'}}),
         'utf8',
       );
-      execFileSync(
+      const initStdout = execFileSync(
         process.execPath,
-        [cliPath, 'init', reactAppDir, '--from', themeJsonPath, '--tailwind'],
-        {stdio: 'pipe'},
+        [cliPath, 'init', reactAppDir, '--from', themeJsonPath, '--tailwind', '--github'],
+        {stdio: 'pipe', encoding: 'utf8'},
+      );
+      expect(initStdout).toContain(
+        'https://github.com/alamehan/mehan-design-system/raw/main/release/',
       );
       const cssOut = fs.readFileSync(path.join(reactAppDir, 'src/mehan.css'), 'utf8');
       const providerOut = fs.readFileSync(
@@ -424,5 +427,33 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
       const fontFile = path.join(repoRoot, 'packages/astryx/fonts', m[1]);
       expect(fs.existsSync(fontFile), `Missing bundled font ${fontFile}`).toBe(true);
     }
+
+    // Verify zero hardcoded local machine paths ("D:/mehan-design-system" or "D:\mehan-design-system") across source & docs
+    const skipScan = new Set([
+      'node_modules',
+      '.git',
+      'dist',
+      'dist-single',
+      'release',
+      'test-results',
+      'playwright-report',
+    ]);
+    const scanExts = new Set(['.md', '.ts', '.tsx', '.mjs', '.json', '.cmd', '.command']);
+    function assertNoLocalDrivePaths(dir: string) {
+      for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
+        if (skipScan.has(entry.name)) continue;
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          assertNoLocalDrivePaths(full);
+        } else if (
+          scanExts.has(path.extname(entry.name)) &&
+          entry.name !== 'repo-and-dna-proof.test.ts'
+        ) {
+          const text = fs.readFileSync(full, 'utf8');
+          expect(text, `Hardcoded D:/ path in ${full}`).not.toMatch(/D:[/\\]mehan-design-system/i);
+        }
+      }
+    }
+    assertNoLocalDrivePaths(repoRoot);
   });
 });

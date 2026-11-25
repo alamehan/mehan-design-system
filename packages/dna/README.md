@@ -7,8 +7,8 @@ Runs identically in Node.js, Edge Workers, Deno, Bun, and modern browsers with *
 ## Installation
 
 ```bash
-# Local release tarball
-pnpm add "D:/mehan-design-system/release/mehan-dna-1.0.0.tgz"
+# Install directly from GitHub release tarball
+pnpm add "https://github.com/alamehan/mehan-design-system/raw/main/release/mehan-dna-1.0.0.tgz"
 
 # Or via @mehan/astryx/dna in React + Meta Astryx apps
 import {resolveMehanDna, auditMehanThemeContrast} from '@mehan/astryx/dna';

@@ -8,8 +8,11 @@ import {
 } from './theme-editor/themeEditorModel';
 
 export type StudioLang = 'id' | 'en';
-export type InstallSourceMode = 'local' | 'npm';
+export type InstallSourceMode = 'github' | 'local' | 'npm';
 export type InstallCssMode = 'plain' | 'tailwind';
+
+export const GITHUB_REPO_URL = 'https://github.com/alamehan/mehan-design-system';
+export const GITHUB_ASTRYX_TGZ = `${GITHUB_REPO_URL}/raw/main/release/mehan-astryx-1.0.0.tgz`;
 
 export interface NamedStudioPreset {
   id: string;
@@ -269,11 +272,18 @@ export function buildReactInstallSnippet(
   const {seed} = state;
   const density = seed.sizeBase <= 32 ? 'compact' : 'standard';
   const pkgTarget =
-    sourceMode === 'local'
-      ? '"D:/mehan-design-system/release/mehan-astryx-1.0.0.tgz"'
-      : '@mehan/astryx';
+    sourceMode === 'github'
+      ? `"${GITHUB_ASTRYX_TGZ}"`
+      : sourceMode === 'local'
+        ? '"../mehan-design-system/release/mehan-astryx-1.0.0.tgz"'
+        : '@mehan/astryx';
   const twFlag = cssMode === 'tailwind' ? ' --tailwind' : '';
-  const srcFlag = sourceMode === 'local' ? ' --local' : ' --npm';
+  const srcFlag =
+    sourceMode === 'github'
+      ? ' --github'
+      : sourceMode === 'local'
+        ? ' --local'
+        : ' --npm';
   const fontFlags = [
     seed.headingFont !== 'Bricolage Grotesque'
       ? ` --heading-font "${seed.headingFont}"`
@@ -295,14 +305,26 @@ export function buildReactInstallSnippet(
     seed.durationStep !== 1 ? ` --duration-step ${seed.durationStep}` : '',
   ].join('');
   const tactileFlags = ` --lip ${seed.lipStyle} --segmented ${seed.segmentedStyle} --well ${seed.wellStyle}`;
-  const installCmd = [
-    `# Option 1 — One-command auto-setup (or pass --from mehan-${seed.atmosphere}-theme.json):`,
-    `node "D:/mehan-design-system/bin/mehan.mjs" init . --atmosphere ${seed.atmosphere} --accent "${seed.accent}" --density ${density} --motion ${seed.motion}${tactileFlags}${scaleFlags}${fontFlags}${twFlag}${srcFlag}`,
-    ``,
-    `# Option 2 — Install packages directly:`,
-    `pnpm add @astryxdesign/core@~0.7.17 @stylexjs/stylex@^0.19.0 lucide-react ${pkgTarget}`,
-    `pnpm add -D @astryxdesign/cli@~0.7.17 && pnpm exec astryx init --features agents`,
-  ].join('\n');
+  const cliInitArgs = `init . --atmosphere ${seed.atmosphere} --accent "${seed.accent}" --density ${density} --motion ${seed.motion}${tactileFlags}${scaleFlags}${fontFlags}${twFlag}${srcFlag}`;
+  const installCmd =
+    sourceMode === 'github'
+      ? [
+          `# Option 1 — Install directly from GitHub release tarball (no local clone needed):`,
+          `pnpm add @astryxdesign/core@~0.7.17 @stylexjs/stylex@^0.19.0 lucide-react ${pkgTarget}`,
+          `pnpm add -D @astryxdesign/cli@~0.7.17 && pnpm exec astryx init --features agents`,
+          ``,
+          `# Option 2 — Clone repo & auto-scaffold MehanProvider.tsx + mehan.css (or pass --from mehan-${seed.atmosphere}-theme.json):`,
+          `git clone --depth 1 ${GITHUB_REPO_URL}.git ../mehan-design-system`,
+          `node "../mehan-design-system/bin/mehan.mjs" ${cliInitArgs}`,
+        ].join('\n')
+      : [
+          `# Option 1 — Auto-scaffold from a local clone (or pass --from mehan-${seed.atmosphere}-theme.json):`,
+          `node "../mehan-design-system/bin/mehan.mjs" ${cliInitArgs}`,
+          ``,
+          `# Option 2 — Install packages directly:`,
+          `pnpm add @astryxdesign/core@~0.7.17 @stylexjs/stylex@^0.19.0 lucide-react ${pkgTarget}`,
+          `pnpm add -D @astryxdesign/cli@~0.7.17 && pnpm exec astryx init --features agents`,
+        ].join('\n');
 
   const isPreset = isDefaultPresetState(state);
   const slug = `mehan-${seed.atmosphere}`;
@@ -387,9 +409,17 @@ export function buildAgentSetupPrompt(
   const {seed} = state;
   const density = seed.sizeBase <= 32 ? 'compact' : 'standard';
   const pkgTarget =
-    sourceMode === 'local'
-      ? `"D:/mehan-design-system/release/mehan-astryx-1.0.0.tgz"`
-      : `@mehan/astryx`;
+    sourceMode === 'github'
+      ? `"${GITHUB_ASTRYX_TGZ}"`
+      : sourceMode === 'local'
+        ? `"../mehan-design-system/release/mehan-astryx-1.0.0.tgz"`
+        : `@mehan/astryx`;
+  const srcFlag =
+    sourceMode === 'github'
+      ? ' --github'
+      : sourceMode === 'local'
+        ? ' --local'
+        : ' --npm';
   const accentNote = isPresetAccent(seed.accent)
     ? seed.accent
     : `${seed.accent} (custom OKLCH hex)`;
@@ -397,6 +427,7 @@ export function buildAgentSetupPrompt(
     Object.keys(state.tokenOverrides).length + state.customOverrides.length;
 
   return `Set up Mehan Design System (powered by Meta Astryx ~0.7.17) in this repository with these exact settings:
+- Repository source: ${GITHUB_REPO_URL}
 - Atmosphere: ${seed.atmosphere}
 - Accent: ${accentNote}
 - Tactile surface: lip=${seed.lipStyle}, segmented=${seed.segmentedStyle}, input=${seed.wellStyle}, depth=${seed.depth}
@@ -406,7 +437,7 @@ export function buildAgentSetupPrompt(
 - CSS stack: ${cssMode === 'tailwind' ? 'Tailwind CSS v4 (@layer bridge + @astryxdesign/core/tailwind-theme.css)' : 'Plain CSS'}
 
 Steps to execute:
-1. Run \`node "D:/mehan-design-system/bin/mehan.mjs" init . --atmosphere ${seed.atmosphere} --accent "${seed.accent}" --depth ${seed.depth} --density ${density} --motion ${seed.motion} --lip ${seed.lipStyle} --segmented ${seed.segmentedStyle} --well ${seed.wellStyle} --heading-font "${seed.headingFont}" --body-font "${seed.bodyFont}"${cssMode === 'tailwind' ? ' --tailwind' : ''}${sourceMode === 'local' ? ' --local' : ' --npm'}\` (or install \`@astryxdesign/core@~0.7.17 @stylexjs/stylex@^0.19.0 lucide-react ${pkgTarget}\` and dev dependency \`@astryxdesign/cli@~0.7.17\`).
+1. Install packages directly from GitHub: \`pnpm add @astryxdesign/core@~0.7.17 @stylexjs/stylex@^0.19.0 lucide-react ${pkgTarget}\` and dev dependency \`pnpm add -D @astryxdesign/cli@~0.7.17\` (or if \`mehan-design-system\` is cloned alongside this repo, run \`node "../mehan-design-system/bin/mehan.mjs" init . --atmosphere ${seed.atmosphere} --accent "${seed.accent}" --depth ${seed.depth} --density ${density} --motion ${seed.motion} --lip ${seed.lipStyle} --segmented ${seed.segmentedStyle} --well ${seed.wellStyle} --heading-font "${seed.headingFont}" --body-font "${seed.bodyFont}"${cssMode === 'tailwind' ? ' --tailwind' : ''}${srcFlag}\`).
 2. Run \`pnpm exec astryx init --features agents\` so Astryx + Mehan UX & Copywriting docs are indexed for AI agents.
 3. Wrap the root application in \`<MehanProvider>\` (generated by \`mehan.mjs init\`) or \`<Theme theme={customMehanTheme}><LayerProvider>{children}</LayerProvider></Theme>\`, and include \`MEHAN_THEME_INIT_SCRIPT\` (exported from \`@mehan/astryx\`) in \`<head>\` if using Next.js / SSR to prevent dark-mode FOUC.
 4. Read all 7 Mehan UX, Copywriting, Spatial Hierarchy & Runtime Hook guides before building screens: \`pnpm exec astryx docs mehan-design-rules\`, \`mehan-ux-complexity\`, \`mehan-copy-and-states\`, \`mehan-ergonomics-and-motion\`, \`mehan-forms-and-i18n\`, \`mehan-page-archetypes\`, and \`mehan-runtime-hooks\`.
@@ -414,7 +445,7 @@ Steps to execute:
 }
 
 export function buildThemeCommitPrompt(exportedThemeTs: string): string {
-  return `Inside D:\\mehan-design-system, update the default studio/preset theme configuration to match my customized Theme Editor setup:
+  return `Inside the mehan-design-system repository, update the default studio/preset theme configuration to match my customized Theme Editor setup:
 
 \`\`\`ts
 ${exportedThemeTs}
@@ -424,7 +455,7 @@ Then run \`pnpm verify\` so all packages, \`release/mehan-astryx-1.0.0.tgz\`, \`
 }
 
 export function buildAstryxUpgradePrompt(): string {
-  return `Inside D:\\mehan-design-system, check if a newer version of @astryxdesign/core and @astryxdesign/cli is available on npm:
+  return `Inside the mehan-design-system repository, check if a newer version of @astryxdesign/core and @astryxdesign/cli is available on npm:
 1. Inspect the changelog and new \`astryx theme targets\` in a clean branch.
 2. Bump \`@astryxdesign/core\`, \`@astryxdesign/cli\`, \`@astryxdesign/build\`, and \`@astryxdesign/theme-neutral\` in root \`package.json\`, \`packages/astryx/package.json\`, and \`apps/studio/package.json\`.
 3. Run \`pnpm install && pnpm verify\` (including \`astryx integration check --strict --next\`, \`astryx integration verify\`, Vitest optical depth, and Playwright + axe contrast gates).
@@ -433,7 +464,7 @@ export function buildAstryxUpgradePrompt(): string {
 
 export function buildScopeSwitchPrompt(targetScope: string): string {
   const clean = targetScope.startsWith('@') ? targetScope : `@${targetScope}`;
-  return `Inside D:\\mehan-design-system, switch the npm package scope to \`${clean}\`:
+  return `Inside the mehan-design-system repository, switch the npm package scope to \`${clean}\`:
 1. Run \`node bin/mehan.mjs set-scope ${clean}\`.
 2. Run \`pnpm install && pnpm verify\` so all manifests, imports, \`release/\` tarballs, and \`STUDIO.html\` are rebuilt and verified cleanly.`;
 }

@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "Zero-dependency portable CSS, vanilla interactive runtime, and 1-click Claude/Gemini single-HTML AI Prototype Kit for Mehan Design System.",
   "license": "MIT",
+  "homepage": "https://github.com/alamehan/mehan-design-system/tree/main/packages/portable",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alamehan/mehan-design-system.git",
+    "directory": "packages/portable"
+  },
   "type": "module",
   "sideEffects": [
     "**/*.css"

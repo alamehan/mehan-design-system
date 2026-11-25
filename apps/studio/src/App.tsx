@@ -123,7 +123,7 @@ function StudioInner({
   const isId = lang === 'id';
 
   const [activeTab, setActiveTab] = useState<string>('overview');
-  const [sourceMode, setSourceMode] = useState<InstallSourceMode>('local');
+  const [sourceMode, setSourceMode] = useState<InstallSourceMode>('github');
   const [cssMode, setCssMode] = useState<InstallCssMode>('plain');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -630,12 +630,17 @@ function StudioInner({
                             onChange={v => setSourceMode(v as InstallSourceMode)}
                           >
                             <SegmentedControlItem
+                              value="github"
+                              label={copy.overview.sourceGithub}
+                            />
+                            <SegmentedControlItem
                               value="local"
                               label={copy.overview.sourceLocal}
                             />
                             <SegmentedControlItem
                               value="npm"
                               label={copy.overview.sourceNpm}
+                              isDisabled
                             />
                           </SegmentedControl>
 

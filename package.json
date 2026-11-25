@@ -4,6 +4,11 @@
   "private": true,
   "description": "Mehan Design System — Universal tactile UI system powered by Meta Astryx and Mehan Portable.",
   "license": "MIT",
+  "homepage": "https://alamehan.github.io/mehan-design-system/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alamehan/mehan-design-system.git"
+  },
   "type": "module",
   "engines": {
     "node": ">=22.13.0"

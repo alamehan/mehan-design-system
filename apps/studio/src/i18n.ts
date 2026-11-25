@@ -39,8 +39,9 @@ export const STUDIO_COPY = {
       installTitle: 'Pasang sesuai kebutuhan proyek',
       installSub:
         'Pilih jalur mulai paling ringkas di bawah. Kode konfigurasi lengkap tersedia saat dibutuhkan.',
-      sourceLocal: 'Paket lokal D:\\',
-      sourceNpm: 'Publik npm',
+      sourceGithub: 'GitHub',
+      sourceLocal: 'Clone lokal',
+      sourceNpm: 'Publik npm (Segera)',
       cssPlain: 'CSS standar',
       cssTailwind: 'Tailwind v4',
       cardAiBadge: 'Prototipe instan',
@@ -129,8 +130,9 @@ export const STUDIO_COPY = {
       installTitle: 'Start in any project stack',
       installSub:
         'Pick your workflow below. Full configuration snippets stay tucked until you need them.',
-      sourceLocal: 'Local D:\\ package',
-      sourceNpm: 'Public npm',
+      sourceGithub: 'GitHub',
+      sourceLocal: 'Local clone',
+      sourceNpm: 'Public npm (Soon)',
       cssPlain: 'Plain CSS',
       cssTailwind: 'Tailwind v4',
       cardAiBadge: 'Fastest ideation',

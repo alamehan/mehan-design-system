@@ -4,6 +4,12 @@
   "displayName": "Mehan Design System for Astryx",
   "description": "Tactile, parametric UI & UX extension layer for Meta Astryx — 3 atmospheres, open OKLCH + Astryx token/component theming, 35 universal components & workspace layouts, ergonomic runtime hooks, and 7 UX/copy guides.",
   "license": "MIT",
+  "homepage": "https://github.com/alamehan/mehan-design-system/tree/main/packages/astryx",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alamehan/mehan-design-system.git",
+    "directory": "packages/astryx"
+  },
   "type": "module",
   "sideEffects": [
     "**/*.css"
