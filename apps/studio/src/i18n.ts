@@ -31,14 +31,14 @@ export const STUDIO_COPY = {
       layer2Tag: 'Lapis 2 · Ekstensi taktil & ergonomi',
       layer2Title: 'Mehan DNA + @mehan/astryx',
       layer2Desc:
-        'Menambahkan bibir tombol 3D OKLCH, sumur input cekung, WorkspaceLayout & CanvasStage, 35 ekstensi universal, 4 suite runtime hooks, 10 font WOFF2, dan 80 dokumen AI Astryx.',
+        'Menambahkan 8 atmosfer taktil, 12 preset kurasi, bibir tombol 3D OKLCH, WorkspaceLayout & CanvasStage, 35 ekstensi universal, 4 suite runtime hooks, 10 font WOFF2, dan 80 dokumen AI.',
       layer3Tag: 'Lapis 3 · Portabilitas instan',
       layer3Title: 'Mehan Portable + Token W3C',
       layer3Desc:
         'Menghasilkan CSS/JS mandiri untuk Claude Artifacts, Gemini Canvas, HTML murni, Vue, Svelte, serta JSON token W3C simetris untuk Figma.',
-      installTitle: 'Pasang sesuai kebutuhan proyek',
+      installTitle: 'Cara memakai Mehan dalam 60 detik (untuk siapa saja)',
       installSub:
-        'Pilih jalur mulai paling ringkas di bawah. Kode konfigurasi lengkap tersedia saat dibutuhkan.',
+        'Tidak perlu bingung mulai dari mana: buka Studio via web atau STUDIO.html, pilih preset di atas, lalu salin ke stack proyekmu dengan 1 klik.',
       sourceGithub: 'GitHub',
       sourceLocal: 'Clone lokal',
       sourceNpm: 'Publik npm (Segera)',
@@ -122,14 +122,14 @@ export const STUDIO_COPY = {
       layer2Tag: 'Layer 2 · Tactile extensions & UX',
       layer2Title: 'Mehan DNA + @mehan/astryx',
       layer2Desc:
-        'Adds OKLCH 3D button lips, recessed wells, WorkspaceLayout & CanvasStage, 35 universal extensions, 4 runtime hook suites, 10 WOFF2 fonts, and 80 agent docs.',
+        'Adds 8 tactile atmospheres, 12 signature presets, OKLCH 3D button lips, WorkspaceLayout & CanvasStage, 35 universal extensions, 4 runtime hook suites, 10 WOFF2 fonts, and 80 agent docs.',
       layer3Tag: 'Layer 3 · Zero-setup bridge',
       layer3Title: 'Mehan Portable + W3C tokens',
       layer3Desc:
         'Emits standalone CSS/JS for Claude Artifacts, Gemini Canvas, Vanilla HTML, Vue, Svelte, plus symmetric W3C DTCG JSON tokens for Figma.',
-      installTitle: 'Start in any project stack',
+      installTitle: 'How anyone uses Mehan in 60 seconds',
       installSub:
-        'Pick your workflow below. Full configuration snippets stay tucked until you need them.',
+        'Zero guesswork: open the live web Studio or offline STUDIO.html, pick or tune a theme preset above, and copy straight into your stack.',
       sourceGithub: 'GitHub',
       sourceLocal: 'Local clone',
       sourceNpm: 'Public npm (Soon)',

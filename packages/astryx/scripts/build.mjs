@@ -39,11 +39,16 @@ fs.copyFileSync(
   path.join(distDir, 'styles.css'),
 );
 
-// Step 4: Compile all 3 source themes via `astryx theme build`
+// Step 4: Compile all 8 source themes via `astryx theme build`
 const THEMES = [
   ['mehan-confectionery', 'mehanConfectioneryTheme.ts'],
   ['mehan-porcelain', 'mehanPorcelainTheme.ts'],
   ['mehan-stone', 'mehanStoneTheme.ts'],
+  ['mehan-butter', 'mehanButterTheme.ts'],
+  ['mehan-matcha', 'mehanMatchaTheme.ts'],
+  ['mehan-cacao', 'mehanCacaoTheme.ts'],
+  ['mehan-periwinkle', 'mehanPeriwinkleTheme.ts'],
+  ['mehan-obsidian', 'mehanObsidianTheme.ts'],
 ];
 
 for (const [slug, entry] of THEMES) {

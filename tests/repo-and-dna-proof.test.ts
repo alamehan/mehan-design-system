@@ -37,6 +37,7 @@ import {
   parseImportedThemeText,
   type FullThemeEditorState,
 } from '../apps/studio/src/theme-editor/themeEditorModel';
+import {getBuiltInPresets} from '../apps/studio/src/studioState';
 
 const repoRoot = path.resolve(import.meta.dirname, '..');
 
@@ -45,7 +46,9 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
   const presetAccents = Object.keys(MEHAN_ACCENT_PRESETS) as MehanPresetAccentId[];
   const customHexSeeds = ['#ffd84d', '#67e8f9', '#111827', '#7c3aed'];
 
-  it('passes WCAG 2.2 AA + 3-stop primary gradient-band contrast across all 30 [Atmosphere x Accent] combinations', () => {
+  it('passes WCAG 2.2 AA + 3-stop primary gradient-band contrast across all 112 [8 Atmospheres x 14 Accents] combinations and all 12 built-in Studio presets', () => {
+    expect(atmospheres).toHaveLength(8);
+    expect(presetAccents).toHaveLength(10);
     for (const atmosphere of atmospheres) {
       for (const accent of [...presetAccents, ...customHexSeeds]) {
         const report = auditMehanThemeContrast({
@@ -57,6 +60,17 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
         expect(report.failures).toEqual([]);
         expect(report.passesAll).toBe(true);
       }
+    }
+
+    const builtIns = getBuiltInPresets();
+    expect(builtIns).toHaveLength(12);
+    for (const preset of builtIns) {
+      const report = auditMehanThemeContrast({
+        name: preset.id,
+        ...preset.state.seed,
+        radiusBase: preset.state.seed.radiusBase ?? undefined,
+      });
+      expect(report.passesAll, `Preset ${preset.id} failed contrast`).toBe(true);
     }
   });
 

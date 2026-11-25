@@ -262,9 +262,26 @@ dialog.mh-modal::backdrop{background:rgba(15,12,10,.46);backdrop-filter:blur(3px
 @media print{.mh-topbar,.mh-sidebar,[data-mh-theme-toggle],dialog.mh-modal{display:none!important}.mh-shell{display:block!important;min-height:auto!important}body{background:#fff!important;color:#000!important}.mh-card,.mh-metric,.mh-table-wrap,tr,pre{break-inside:avoid;box-shadow:none!important}}
 `.trim();
 
+function accentDeltaBlock(dna: ResolvedMehanDna, mode: 'light' | 'dark'): string {
+  const M = mode === 'light' ? dna.materials.light : dna.materials.dark;
+  const A = dna.accent;
+  return [
+    `--mh-accent:${mode === 'light' ? A.accentLight : A.accentDark}`,
+    `--mh-accent-text:${mode === 'light' ? A.textLight : A.textDark}`,
+    `--mh-accent-muted:${mode === 'light' ? A.mutedLight : A.mutedDark}`,
+    `--mh-accent-soft:${mode === 'light' ? A.softSolidLight : A.softSolidDark}`,
+    `--mh-primary-grad:${A.buttonGradient}`,
+    `--mh-primary-grad-hover:${A.buttonGradientHover}`,
+    `--mh-primary-lip:${A.buttonLip}`,
+    `--mh-shadow-primary:${M.shadowPrimary}`,
+    `--mh-shadow-primary-hover:${M.shadowPrimaryHover}`,
+    `--mh-shadow-primary-pressed:${M.shadowPrimaryPressed}`,
+  ].join(';');
+}
+
 /**
- * Generates a complete standalone `mehan-portable.css` bundling all 3 atmospheres
- * and 6 brand accents (or a specific custom theme configuration).
+ * Generates a complete standalone `mehan-portable.css` bundling all 8 atmospheres
+ * and 10 brand accents (or a specific custom theme configuration).
  */
 export function generatePortableCss(customOptions?: MehanThemeOptions): string {
   if (customOptions) {
@@ -279,7 +296,7 @@ export function generatePortableCss(customOptions?: MehanThemeOptions): string {
   }
 
   const lines: string[] = [
-    '/* Mehan Portable CSS v1.0.0 — Universal Tactile Design System (All Atmospheres & Accents) */',
+    '/* Mehan Portable CSS v1.0.0 — Universal Tactile Design System (8 Atmospheres × 10 Accents) */',
   ];
 
   const def = resolveMehanDna({
@@ -307,9 +324,9 @@ export function generatePortableCss(customOptions?: MehanThemeOptions): string {
         accent: accId,
       });
       lines.push(
-        `:root[data-atmosphere="${atmId}"][data-accent="${accId}"]{${varsBlock(combo, 'light')}}`,
-        `:root[data-atmosphere="${atmId}"][data-accent="${accId}"][data-theme="dark"]{${varsBlock(combo, 'dark')}}`,
-        `@media (prefers-color-scheme:dark){:root[data-atmosphere="${atmId}"][data-accent="${accId}"]:not([data-theme="light"]){${varsBlock(combo, 'dark')}}}`,
+        `:root[data-atmosphere="${atmId}"][data-accent="${accId}"]{${accentDeltaBlock(combo, 'light')}}`,
+        `:root[data-atmosphere="${atmId}"][data-accent="${accId}"][data-theme="dark"]{${accentDeltaBlock(combo, 'dark')}}`,
+        `@media (prefers-color-scheme:dark){:root[data-atmosphere="${atmId}"][data-accent="${accId}"]:not([data-theme="light"]){${accentDeltaBlock(combo, 'dark')}}}`,
       );
     }
   }

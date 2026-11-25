@@ -48,7 +48,7 @@ export default {
       content: [
         {
           type: 'prose',
-          text: 'Load a prebuilt stylesheet (`mehan-confectionery`, `mehan-porcelain`, `mehan-stone`) or configure `createMehanTheme()` from `@mehan/astryx/dna`. `createMehanTheme()` provides fast tactile seed options (`atmosphere`, `accent`, `depth`, `lipStyle`, `segmentedStyle`, `wellStyle`, `typeBase`, `typeRatio`, `spacingBase`, `radiusBase`, `sizeBase`, `motion`, `durationStep`) and accepts any raw Astryx `tokens` and `components` overrides on top without restriction. Pair these visual rules with {@link generic:mehan-ux-complexity}, {@link generic:mehan-copy-and-states}, and {@link generic:mehan-page-archetypes}.',
+          text: 'Load one of the 8 prebuilt stylesheets (`mehan-confectionery`, `mehan-porcelain`, `mehan-stone`, `mehan-butter`, `mehan-matcha`, `mehan-cacao`, `mehan-periwinkle`, `mehan-obsidian`) or configure `createMehanTheme()` from `@mehan/astryx/dna`. `createMehanTheme()` provides fast tactile seed options (`atmosphere`, `accent`, `depth`, `lipStyle`, `segmentedStyle`, `wellStyle`, `typeBase`, `typeRatio`, `spacingBase`, `radiusBase`, `sizeBase`, `motion`, `durationStep`) and accepts any raw Astryx `tokens` and `components` overrides on top without restriction. Pair these visual rules with {@link generic:mehan-ux-complexity}, {@link generic:mehan-copy-and-states}, and {@link generic:mehan-page-archetypes}.',
         },
         {
           type: 'code',

@@ -76,6 +76,18 @@ test.describe('Stage 1 Exhaustive Proof — Every Theme Editor Knob, Slot, Font,
     expect(bgStone).not.toBe(bgPorcelain);
     expect(bgStone).not.toBe(bgConfectionery);
 
+    for (const extraAtm of ['Butter', 'Matcha', 'Cacao', 'Periwinkle', 'Obsidian']) {
+      await editor
+        .getByRole('radiogroup', {name: 'Neutral atmosphere'})
+        .getByRole('radio', {name: extraAtm})
+        .click();
+      expect(await readShellBg()).not.toBe(bgStone);
+    }
+    await editor
+      .getByRole('radiogroup', {name: 'Neutral atmosphere'})
+      .getByRole('radio', {name: 'Stone'})
+      .click();
+
     // =========================================================================
     // 2. BASE STYLES — ALL 6 PRESET ACCENTS + CUSTOM HEX + UNDO / REDO!
     // =========================================================================

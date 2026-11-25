@@ -200,15 +200,34 @@ function px(val: number): string {
   return `${Number(val.toFixed(2))}px`;
 }
 
+export function defaultAccentForAtmosphere(
+  atmosphereId: MehanAtmosphereId,
+): MehanPresetAccentId {
+  switch (atmosphereId) {
+    case 'porcelain':
+      return 'blueberry';
+    case 'stone':
+      return 'teal';
+    case 'butter':
+      return 'cobalt';
+    case 'matcha':
+      return 'matcha';
+    case 'cacao':
+      return 'cacao';
+    case 'periwinkle':
+      return 'grape';
+    case 'obsidian':
+      return 'cobalt';
+    case 'confectionery':
+    default:
+      return 'strawberry';
+  }
+}
+
 export function resolveMehanDna(options: MehanThemeOptions): ResolvedMehanDna {
   const atmosphereId = options.atmosphere ?? 'confectionery';
-  const atmosphere = MEHAN_ATMOSPHERES[atmosphereId];
-  const defaultAccent: MehanPresetAccentId =
-    atmosphereId === 'confectionery'
-      ? 'strawberry'
-      : atmosphereId === 'porcelain'
-        ? 'blueberry'
-        : 'teal';
+  const atmosphere = MEHAN_ATMOSPHERES[atmosphereId] ?? MEHAN_ATMOSPHERES.confectionery;
+  const defaultAccent = defaultAccentForAtmosphere(atmosphere.id);
   const accent = resolveMehanAccent(options.accent ?? defaultAccent, atmosphere);
   const depth = Math.min(2, Math.max(0, options.depth ?? 1));
   const rScale = Math.min(2, Math.max(0, options.radiusScale ?? 1));

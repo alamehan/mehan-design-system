@@ -1,6 +1,6 @@
 # `@mehan/astryx` (`v1.0.0`)
 
-Official provider and tactile extension layer on top of **Meta Astryx (`@astryxdesign/core ~0.7.17`)** — keeping all 103 Meta Astryx WAI-ARIA primitives as the untouched foundation while adding 3 prebuilt OKLCH tactile atmospheres, unrestricted parametric + raw Astryx theming (`createMehanTheme`), **10 self-hosted OFL WOFF2 font families**, **35 universal extension components & workspace layouts**, **4 ergonomic runtime hook suites**, and **80 AI-indexed Astryx docs**.
+Official provider and tactile extension layer on top of **Meta Astryx (`@astryxdesign/core ~0.7.17`)** — keeping all 103 Meta Astryx WAI-ARIA primitives as the untouched foundation while adding **8 prebuilt OKLCH tactile atmospheres**, **10 curated brand accents**, unrestricted parametric + raw Astryx theming (`createMehanTheme`), **10 self-hosted OFL WOFF2 font families**, **35 universal extension components & workspace layouts**, **4 ergonomic runtime hook suites**, and **80 AI-indexed Astryx docs**.
 
 ## Quick Setup
 

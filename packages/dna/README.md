@@ -17,8 +17,8 @@ import {resolveMehanDna, auditMehanThemeContrast} from '@mehan/astryx/dna';
 ## Core Modules
 
 1. **Atmospheres, Accents & Tactile Materials (`resolveMehanDna`)**
-   - 3 canonical neutral atmospheres (`confectionery`, `porcelain`, `stone`) strictly obeying monotonic dark-mode optical depth (`socket < well < paper < tray < surface < raised < float`).
-   - 6 curated brand accents (`strawberry`, `blueberry`, `mint`, `tangerine`, `grape`, `teal`) plus arbitrary `#rrggbb` custom OKLCH seeds.
+   - 8 canonical neutral atmospheres (`confectionery`, `porcelain`, `stone`, `butter`, `matcha`, `cacao`, `periwinkle`, `obsidian`) strictly obeying monotonic dark-mode optical depth (`socket < well < paper < tray < surface < raised < float`).
+   - 10 curated brand accents (`strawberry`, `blueberry`, `mint`, `tangerine`, `grape`, `teal`, `cobalt`, `matcha`, `cacao`, `crimson`) plus arbitrary `#rrggbb` custom OKLCH seeds.
    - Sculptural 3-stop primary gradients, harmonious 1-shade-darker 3D lips (`candy | subtle | flat`), recessed wells, and multi-layer colored shadows.
 2. **Perceptual OKLCH Math & WCAG 2.2 AA Auditor**
    - `hexToOklch`, `oklchToHex`, `mixOklab`, `generateOklchScale`, `suggestOklchHarmonies`, `contrastRatio`, `ensureContrast`, `gradientBandContrast`, `auditMehanThemeContrast`.

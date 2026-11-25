@@ -21,6 +21,7 @@ import {
 } from '@astryxdesign/core/theme';
 import {
   createMehanTheme,
+  isMehanAtmosphereId,
   mergeMehanComponentStyles,
   type MehanAtmosphereId,
   type MehanLipStyle,
@@ -1089,12 +1090,9 @@ export function parseImportedThemeText(
     };
     const rawSeed = parsed.seed ?? parsed.config ?? {};
     const nextSeed: StudioSeedConfig = {
-      atmosphere:
-        rawSeed.atmosphere === 'porcelain' || rawSeed.atmosphere === 'stone'
-          ? rawSeed.atmosphere
-          : rawSeed.atmosphere === 'confectionery'
-            ? 'confectionery'
-            : fallback.seed.atmosphere,
+      atmosphere: isMehanAtmosphereId(rawSeed.atmosphere)
+        ? rawSeed.atmosphere
+        : fallback.seed.atmosphere,
       accent:
         typeof rawSeed.accent === 'string' && rawSeed.accent
           ? rawSeed.accent
@@ -1188,7 +1186,7 @@ export function parseImportedThemeText(
 
   if (isCreateMehan) {
     const atm = readTsStringProp(trimmed, 'atmosphere');
-    if (atm === 'confectionery' || atm === 'porcelain' || atm === 'stone') {
+    if (isMehanAtmosphereId(atm)) {
       nextSeed.atmosphere = atm;
       foundSeedProp = true;
     }

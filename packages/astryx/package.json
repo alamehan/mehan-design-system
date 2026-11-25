@@ -70,6 +70,66 @@
       "types": "./fonts.css.d.ts",
       "default": "./fonts.css"
     },
+    "./themes/mehan-butter": {
+      "types": "./dist/themes/mehan-butter.d.ts",
+      "default": "./dist/themes/mehan-butter.js"
+    },
+    "./themes/mehan-butter.css": {
+      "types": "./theme.css.d.ts",
+      "default": "./dist/themes/mehan-butter.css"
+    },
+    "./themes/mehan-butter.fonts.css": {
+      "types": "./fonts.css.d.ts",
+      "default": "./fonts.css"
+    },
+    "./themes/mehan-matcha": {
+      "types": "./dist/themes/mehan-matcha.d.ts",
+      "default": "./dist/themes/mehan-matcha.js"
+    },
+    "./themes/mehan-matcha.css": {
+      "types": "./theme.css.d.ts",
+      "default": "./dist/themes/mehan-matcha.css"
+    },
+    "./themes/mehan-matcha.fonts.css": {
+      "types": "./fonts.css.d.ts",
+      "default": "./fonts.css"
+    },
+    "./themes/mehan-cacao": {
+      "types": "./dist/themes/mehan-cacao.d.ts",
+      "default": "./dist/themes/mehan-cacao.js"
+    },
+    "./themes/mehan-cacao.css": {
+      "types": "./theme.css.d.ts",
+      "default": "./dist/themes/mehan-cacao.css"
+    },
+    "./themes/mehan-cacao.fonts.css": {
+      "types": "./fonts.css.d.ts",
+      "default": "./fonts.css"
+    },
+    "./themes/mehan-periwinkle": {
+      "types": "./dist/themes/mehan-periwinkle.d.ts",
+      "default": "./dist/themes/mehan-periwinkle.js"
+    },
+    "./themes/mehan-periwinkle.css": {
+      "types": "./theme.css.d.ts",
+      "default": "./dist/themes/mehan-periwinkle.css"
+    },
+    "./themes/mehan-periwinkle.fonts.css": {
+      "types": "./fonts.css.d.ts",
+      "default": "./fonts.css"
+    },
+    "./themes/mehan-obsidian": {
+      "types": "./dist/themes/mehan-obsidian.d.ts",
+      "default": "./dist/themes/mehan-obsidian.js"
+    },
+    "./themes/mehan-obsidian.css": {
+      "types": "./theme.css.d.ts",
+      "default": "./dist/themes/mehan-obsidian.css"
+    },
+    "./themes/mehan-obsidian.fonts.css": {
+      "types": "./fonts.css.d.ts",
+      "default": "./fonts.css"
+    },
     "./blocks/ColorSwatchShowcase": {
       "types": "./dist/blocks/ColorSwatchShowcase.d.ts",
       "default": "./dist/blocks/ColorSwatchShowcase.js"

@@ -1,5 +1,5 @@
 import {copyTextSafe} from '@mehan/astryx';
-import {isPresetAccent} from '@mehan/astryx/dna';
+import {isMehanAtmosphereId, isPresetAccent} from '@mehan/astryx/dna';
 import {
   DEFAULT_SEED_CONFIG,
   SHOTCANDY_AUTHENTIC_SEED,
@@ -17,6 +17,9 @@ export const GITHUB_ASTRYX_TGZ = `${GITHUB_REPO_URL}/raw/main/release/mehan-astr
 export interface NamedStudioPreset {
   id: string;
   name: string;
+  badge?: string;
+  taglineEn?: string;
+  taglineId?: string;
   state: FullThemeEditorState;
 }
 
@@ -41,6 +44,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-confectionery',
       name: 'Confectionery',
+      badge: 'Mehan Default',
+      taglineEn: 'Warm cream paper, strawberry 3D candy lip & Bricolage Grotesque.',
+      taglineId: 'Kertas krem hangat, bibir permen 3D stroberi & Bricolage Grotesque.',
       state: {
         seed: {...DEFAULT_SEED_CONFIG},
         tokenOverrides: {},
@@ -50,6 +56,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-shotcandy',
       name: 'Shotcandy 1:1',
+      badge: 'Origin Spark',
+      taglineEn: 'Compact 32px rhythm, espresso segmented ink & snappy spring feel.',
+      taglineId: 'Ritme kompak 32px, pil aktif espresso pekat & pegas responsif.',
       state: {
         seed: {...SHOTCANDY_AUTHENTIC_SEED},
         tokenOverrides: {},
@@ -57,8 +66,112 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
       },
     },
     {
+      id: 'preset-butter',
+      name: 'Sunlit Butter',
+      badge: 'Astryx Butter · 200%',
+      taglineEn: 'Cultured buttercream canvas, electric cobalt CTA & geometric Outfit.',
+      taglineId: 'Kanvas krim mentega cerah, tombol kobalt elektrik & font Outfit.',
+      state: {
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'butter',
+          accent: 'cobalt',
+          radiusScale: 1.15,
+          headingFont: 'Outfit',
+          bodyFont: 'Outfit',
+        },
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
+      id: 'preset-matcha',
+      name: 'Kyoto Matcha',
+      badge: 'Astryx Matcha · 200%',
+      taglineEn: 'Ceremonial sage washi, cedar-moss dark mode & restorative calm motion.',
+      taglineId: 'Kertas washi teh hijau, mode gelap lumut cedar & gerak tenang.',
+      state: {
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'matcha',
+          accent: 'matcha',
+          lipStyle: 'subtle',
+          motion: 'calm',
+        },
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
+      id: 'preset-cacao',
+      name: 'Artisanal Cacao',
+      badge: 'Astryx Cacao · 200%',
+      taglineEn: 'Oat-latte parchment, roasted cacao, Fraunces serif & Albert Sans.',
+      taglineId: 'Perkamen oat hangat, kakao panggang, serif Fraunces & Albert Sans.',
+      state: {
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'cacao',
+          accent: 'cacao',
+          headingFont: 'Fraunces',
+          bodyFont: 'Albert Sans',
+          segmentedStyle: 'espresso',
+          lipStyle: 'subtle',
+        },
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
+      id: 'preset-periwinkle',
+      name: 'Cloud Y2K Pop',
+      badge: 'Astryx Y2K · 200%',
+      taglineEn: 'Iridescent lavender-ice, holographic grape accent & circular Poppins.',
+      taglineId: 'Es lavender berkilau, aksen anggur holografik & font bulat Poppins.',
+      state: {
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'periwinkle',
+          accent: 'grape',
+          radiusScale: 1.35,
+          headingFont: 'Poppins',
+          bodyFont: 'Poppins',
+          motion: 'expressive',
+        },
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
+      id: 'preset-obsidian',
+      name: 'Obsidian Linear',
+      badge: 'Astryx Gothic · 200%',
+      taglineEn: 'Titanium mist & carbon noir, crisp 0.75x corners & JetBrains Mono.',
+      taglineId: 'Kabut titanium & karbon gelap, sudut tajam 0.75x & JetBrains Mono.',
+      state: {
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'obsidian',
+          accent: '#4f46e5',
+          radiusScale: 0.75,
+          sizeBase: 32,
+          headingFont: 'Albert Sans',
+          bodyFont: 'Albert Sans',
+          codeFont: 'JetBrains Mono',
+          lipStyle: 'subtle',
+          wellStyle: 'bordered',
+          motion: 'crisp',
+        },
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
       id: 'preset-porcelain',
       name: 'Porcelain SaaS',
+      badge: 'Enterprise SaaS',
+      taglineEn: 'Architectural ice-white & midnight slate with compact 32px density.',
+      taglineId: 'Putih porselen bersih & biru malam dengan kepadatan kompak 32px.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
@@ -66,6 +179,8 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
           accent: 'blueberry',
           depth: 0.95,
           sizeBase: 32,
+          headingFont: 'Albert Sans',
+          bodyFont: 'Figtree',
           motion: 'standard',
         },
         tokenOverrides: {},
@@ -75,13 +190,80 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
     {
       id: 'preset-stone',
       name: 'Stone Editorial',
+      badge: 'AI & Publishing',
+      taglineEn: 'Warm sandstone alabaster, oceanic teal & literary Fraunces headings.',
+      taglineId: 'Batu pasir hangat, aksen teal tenang & tajuk sastra Fraunces.',
       state: {
         seed: {
           ...DEFAULT_SEED_CONFIG,
           atmosphere: 'stone',
           accent: 'teal',
           depth: 0.9,
+          headingFont: 'Fraunces',
+          bodyFont: 'Figtree',
+          lipStyle: 'subtle',
           motion: 'calm',
+        },
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
+      id: 'preset-solar',
+      name: 'Solar Citrus',
+      badge: 'Creative Consumer',
+      taglineEn: 'Golden butter warmth, burnt tangerine energy & espresso pills.',
+      taglineId: 'Kehangatan mentega emas, aksen jeruk bakar & pil aktif espresso.',
+      state: {
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'butter',
+          accent: 'tangerine',
+          radiusScale: 1.1,
+          headingFont: 'Bricolage Grotesque',
+          bodyFont: 'Outfit',
+          segmentedStyle: 'espresso',
+        },
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
+      id: 'preset-nordic',
+      name: 'Nordic Fjord',
+      badge: 'Fintech & Data',
+      taglineEn: 'Clinical porcelain clarity, fjord teal & wide Montserrat display.',
+      taglineId: 'Kejernihan porselen presisi, aksen teal & tajuk tegas Montserrat.',
+      state: {
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'porcelain',
+          accent: 'teal',
+          radiusScale: 0.9,
+          headingFont: 'Montserrat',
+          bodyFont: 'Figtree',
+          lipStyle: 'subtle',
+          motion: 'standard',
+        },
+        tokenOverrides: {},
+        customOverrides: [],
+      },
+    },
+    {
+      id: 'preset-crimson',
+      name: 'Velvet Crimson',
+      badge: 'Culture & Media',
+      taglineEn: 'Alabaster stone canvas, ruby carmine 3D lip & editorial contrast.',
+      taglineId: 'Kanvas batu alabaster, bibir 3D merah rubi & kontras editorial.',
+      state: {
+        seed: {
+          ...DEFAULT_SEED_CONFIG,
+          atmosphere: 'stone',
+          accent: 'crimson',
+          typeBase: 14.5,
+          headingFont: 'Fraunces',
+          bodyFont: 'Figtree',
+          segmentedStyle: 'espresso',
         },
         tokenOverrides: {},
         customOverrides: [],
@@ -93,10 +275,9 @@ export function getBuiltInPresets(): NamedStudioPreset[] {
 function sanitizeSeed(raw?: Partial<StudioSeedConfig>): StudioSeedConfig {
   if (!raw) return {...DEFAULT_SEED_CONFIG};
   return {
-    atmosphere:
-      raw.atmosphere === 'porcelain' || raw.atmosphere === 'stone'
-        ? raw.atmosphere
-        : 'confectionery',
+    atmosphere: isMehanAtmosphereId(raw.atmosphere)
+      ? raw.atmosphere
+      : 'confectionery',
     accent: typeof raw.accent === 'string' && raw.accent ? raw.accent : 'strawberry',
     depth: typeof raw.depth === 'number' ? raw.depth : DEFAULT_SEED_CONFIG.depth,
     radiusScale:
@@ -181,10 +362,14 @@ export function loadPersistedStudioState(): {
           ? ts.customOverrides
           : [],
       },
-      presets:
-        Array.isArray(parsed.presets) && parsed.presets.length > 0
-          ? parsed.presets
-          : defaultPresets,
+      presets: [
+        ...defaultPresets,
+        ...(Array.isArray(parsed.presets)
+          ? parsed.presets.filter(
+              p => p && !defaultPresets.some(b => b.id === p.id),
+            )
+          : []),
+      ],
     };
   } catch {
     return {
@@ -234,6 +419,13 @@ export function downloadTextFile(
 export function isDefaultPresetState(state: FullThemeEditorState): boolean {
   const {seed, tokenOverrides, customOverrides} = state;
   if (Object.keys(tokenOverrides).length > 0 || customOverrides.length > 0) {
+    return false;
+  }
+  if (
+    seed.atmosphere !== 'confectionery' &&
+    seed.atmosphere !== 'porcelain' &&
+    seed.atmosphere !== 'stone'
+  ) {
     return false;
   }
   const expectedAccent =

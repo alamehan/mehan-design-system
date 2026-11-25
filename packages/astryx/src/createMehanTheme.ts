@@ -1512,6 +1512,54 @@ export const mehanStoneBaseTheme: DefinedTheme = createMehanBaseTheme({
   accent: 'teal',
 });
 
+export const mehanButterBaseTheme: DefinedTheme = createMehanBaseTheme({
+  name: 'mehan-butter-base',
+  atmosphere: 'butter',
+  accent: 'cobalt',
+  headingFont: 'Outfit',
+  bodyFont: 'Outfit',
+});
+
+export const mehanMatchaBaseTheme: DefinedTheme = createMehanBaseTheme({
+  name: 'mehan-matcha-base',
+  atmosphere: 'matcha',
+  accent: 'matcha',
+  lipStyle: 'subtle',
+  motion: 'calm',
+});
+
+export const mehanCacaoBaseTheme: DefinedTheme = createMehanBaseTheme({
+  name: 'mehan-cacao-base',
+  atmosphere: 'cacao',
+  accent: 'cacao',
+  headingFont: 'Fraunces',
+  bodyFont: 'Albert Sans',
+  segmentedStyle: 'espresso',
+  lipStyle: 'subtle',
+});
+
+export const mehanPeriwinkleBaseTheme: DefinedTheme = createMehanBaseTheme({
+  name: 'mehan-periwinkle-base',
+  atmosphere: 'periwinkle',
+  accent: 'grape',
+  headingFont: 'Poppins',
+  bodyFont: 'Poppins',
+  radiusScale: 1.25,
+});
+
+export const mehanObsidianBaseTheme: DefinedTheme = createMehanBaseTheme({
+  name: 'mehan-obsidian-base',
+  atmosphere: 'obsidian',
+  accent: 'cobalt',
+  headingFont: 'Albert Sans',
+  bodyFont: 'Albert Sans',
+  codeFont: 'JetBrains Mono',
+  lipStyle: 'subtle',
+  wellStyle: 'bordered',
+  radiusScale: 0.75,
+  motion: 'crisp',
+});
+
 /**
  * Runtime theme factory combining Mehan's parametric DNA seed with full,
  * unrestricted Astryx `tokens` and `components` overrides.

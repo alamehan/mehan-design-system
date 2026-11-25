@@ -22,11 +22,12 @@ import {
 import {ColorPicker, ColorSwatch, PrecisionSlider} from '@mehan/astryx';
 import {
   MEHAN_ACCENT_PRESETS,
+  MEHAN_ATMOSPHERE_IDS,
+  MEHAN_ATMOSPHERES,
   contrastRatio,
   exportW3cDesignTokens,
   isPresetAccent,
   type HistoryUpdateOptions,
-  type MehanAtmosphereId,
   type MehanLipStyle,
   type MehanMotion,
   type MehanSegmentedStyle,
@@ -268,6 +269,7 @@ export function DockedThemeEditor({
         p.state.seed.segmentedStyle === seed.segmentedStyle &&
         p.state.seed.wellStyle === seed.wellStyle &&
         p.state.seed.radiusScale === seed.radiusScale &&
+        p.state.seed.sizeBase === seed.sizeBase &&
         p.state.seed.typeBase === seed.typeBase &&
         p.state.seed.headingFont === seed.headingFont &&
         p.state.seed.bodyFont === seed.bodyFont &&
@@ -666,31 +668,47 @@ export function DockedThemeEditor({
               </div>
 
               <Stack gap={3}>
-                <Stack gap={1}>
+                <Stack gap={1.5}>
                   <span className="te-field-label">
-                    {isId ? 'Suasana permukaan' : 'Neutral atmosphere'}
+                    {isId ? 'Suasana permukaan (8 atmosfer)' : 'Neutral atmosphere (8 surfaces)'}
                   </span>
-                  <SegmentedControl
-                    label="Neutral atmosphere"
-                    size="sm"
-                    value={seed.atmosphere}
-                    onChange={v =>
-                      updateSeed(
-                        {atmosphere: v as MehanAtmosphereId},
-                        [
-                          '--color-background-body',
-                          '--color-background-surface',
-                          '--color-background-card',
-                          '--color-background-muted',
-                          '--color-text-primary',
-                        ],
-                      )
-                    }
+                  <div
+                    className="te-atmosphere-grid"
+                    role="radiogroup"
+                    aria-label="Neutral atmosphere"
                   >
-                    <SegmentedControlItem value="confectionery" label="Confectionery" />
-                    <SegmentedControlItem value="porcelain" label="Porcelain" />
-                    <SegmentedControlItem value="stone" label="Stone" />
-                  </SegmentedControl>
+                    {MEHAN_ATMOSPHERE_IDS.map(atmId => {
+                      const atm = MEHAN_ATMOSPHERES[atmId];
+                      const selected = seed.atmosphere === atmId;
+                      return (
+                        <button
+                          key={atmId}
+                          type="button"
+                          role="radio"
+                          aria-checked={selected}
+                          className={`te-atmosphere-chip ${selected ? 'is-selected' : ''}`}
+                          onClick={() =>
+                            updateSeed(
+                              {atmosphere: atmId},
+                              [
+                                '--color-background-body',
+                                '--color-background-surface',
+                                '--color-background-card',
+                                '--color-background-muted',
+                                '--color-text-primary',
+                              ],
+                            )
+                          }
+                        >
+                          <span className="te-atm-dots" aria-hidden="true">
+                            <i style={{backgroundColor: atm.light.paper}} />
+                            <i style={{backgroundColor: atm.dark.surface}} />
+                          </span>
+                          <span className="te-atm-label">{atm.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </Stack>
 
                 <Stack gap={1.5}>

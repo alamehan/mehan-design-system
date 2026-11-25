@@ -1,6 +1,8 @@
 // 1 · Atmospheres, Accents & Parametric Tactile Materials
 export {
+  MEHAN_ATMOSPHERE_IDS,
   MEHAN_ATMOSPHERES,
+  isMehanAtmosphereId,
   type AtmosphereModeScale,
   type MehanAtmosphere,
   type MehanAtmosphereId,
@@ -16,6 +18,7 @@ export {
 } from './accents';
 
 export {
+  defaultAccentForAtmosphere,
   resolveMehanDna,
   type CategoricalFamilyStops,
   type MehanDensity,

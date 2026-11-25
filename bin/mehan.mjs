@@ -40,11 +40,24 @@ function readCurrentScope() {
 }
 
 function defaultAccentForAtmosphere(atm) {
-  return atm === 'porcelain'
-    ? 'blueberry'
-    : atm === 'stone'
-      ? 'teal'
-      : 'strawberry';
+  switch (atm) {
+    case 'porcelain':
+      return 'blueberry';
+    case 'stone':
+      return 'teal';
+    case 'butter':
+      return 'cobalt';
+    case 'matcha':
+      return 'matcha';
+    case 'cacao':
+      return 'cacao';
+    case 'periwinkle':
+      return 'grape';
+    case 'obsidian':
+      return 'cobalt';
+    default:
+      return 'strawberry';
+  }
 }
 
 /**
@@ -461,6 +474,9 @@ if (cmd === 'init') {
     (components && Object.keys(components).length > 0);
 
   const isDefaultPreset =
+    (atmosphere === 'confectionery' ||
+      atmosphere === 'porcelain' ||
+      atmosphere === 'stone') &&
     !hasExtraScaleOverrides &&
     accent === defaultAccentForAtmosphere(atmosphere) &&
     depth === 1 &&

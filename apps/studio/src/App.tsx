@@ -55,11 +55,13 @@ import {
 import {ComponentsCatalogView} from './catalog/ComponentsCatalogView';
 import {STUDIO_COPY} from './i18n';
 import {MaintainView} from './MaintainView';
+import {OverviewManifesto} from './OverviewManifesto';
 import {
   buildAgentSetupPrompt,
   buildReactInstallSnippet,
   copyText,
   downloadTextFile,
+  getBuiltInPresets,
   loadPersistedStudioState,
   savePersistedStudioState,
   type InstallCssMode,
@@ -184,6 +186,8 @@ function StudioInner({
 
   const atmosphereName = MEHAN_ATMOSPHERES[seed.atmosphere].name;
   const accentName = dna.accent.name;
+
+  const builtInPresets = useMemo(() => getBuiltInPresets(), []);
 
   const accentTextContrast = useMemo(() => {
     const S = mode === 'light' ? dna.atmosphere.light : dna.atmosphere.dark;
@@ -476,6 +480,18 @@ function StudioInner({
                 </Grid>
               </section>
 
+              {/* Editorial Manifesto, Attachment-1 Distillation Illustration, 12-Preset Live Gallery & 6-Stage Iteration Chronicle */}
+              <OverviewManifesto
+                lang={lang}
+                dna={dna}
+                themeState={themeState}
+                builtInPresets={builtInPresets}
+                onApplyPreset={preset => {
+                  setThemeState(preset.state);
+                }}
+                onOpenEditor={() => setEditorOpen(true)}
+              />
+
               {/* 30-Second Visual Architecture Map */}
               <Card elevation="low">
                 <Stack gap={4}>
@@ -514,13 +530,62 @@ function StudioInner({
                 </Stack>
               </Card>
 
-              {/* 3 Practical Start Paths + Progressive Disclosure for Raw Setup Code */}
+              {/* 3 Practical Start Paths + Clear 60-Second User Journey */}
               <Card elevation="low">
                 <Stack gap={4}>
                   <Stack gap={1}>
                     <Heading level={2}>{copy.overview.installTitle}</Heading>
                     <Text color="secondary">{copy.overview.installSub}</Text>
                   </Stack>
+
+                  {/* Explicit 3-Step User Flow Answering "How Do People Use This?" */}
+                  <div className="mh-journey-strip" role="list" aria-label="60-second workflow">
+                    <div className="mh-journey-step" role="listitem">
+                      <span className="mh-journey-num">1</span>
+                      <div>
+                        <strong>
+                          {isId
+                            ? 'Buka Studio Web atau STUDIO.html'
+                            : 'Open Web Studio or STUDIO.html'}
+                        </strong>
+                        <p>
+                          {isId
+                            ? 'Akses langsung via link GitHub Pages tanpa instalasi (atau klik 2x STUDIO.html secara offline).'
+                            : 'Visit the live GitHub Pages URL with zero setup (or double-click STUDIO.html offline).'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mh-journey-step" role="listitem">
+                      <span className="mh-journey-num">2</span>
+                      <div>
+                        <strong>
+                          {isId
+                            ? 'Pilih 1 dari 12 Preset atau Racik Tema'
+                            : 'Pick a Preset or Tune in Theme Editor'}
+                        </strong>
+                        <p>
+                          {isId
+                            ? 'Klik kartu preset di atas atau sesuaikan atmosfer, aksen OKLCH, font, dan radius secara live.'
+                            : 'Click any preset card above or customize atmosphere, OKLCH accent, fonts, and radii live.'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mh-journey-step" role="listitem">
+                      <span className="mh-journey-num">3</span>
+                      <div>
+                        <strong>
+                          {isId
+                            ? 'Salin 1-Klik Sesuai Target Proyekmu'
+                            : 'Copy 1-Click Output for Your Stack'}
+                        </strong>
+                        <p>
+                          {isId
+                            ? 'Semua tombol salin/unduh di bawah otomatis membawa tema aktif pilihanmu — siap tempel!'
+                            : 'Every copy/download button below automatically embeds your active theme — paste and ship!'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
                   <Grid columns={{minWidth: 280, max: 3, repeat: 'fit'}} gap={3}>
                     <div className="studio-tray-panel">

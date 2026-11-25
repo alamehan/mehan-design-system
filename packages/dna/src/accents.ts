@@ -23,7 +23,11 @@ export type MehanPresetAccentId =
   | 'mint'
   | 'tangerine'
   | 'grape'
-  | 'teal';
+  | 'teal'
+  | 'cobalt'
+  | 'matcha'
+  | 'cacao'
+  | 'crimson';
 
 export interface MehanAccentPreset {
   id: MehanPresetAccentId;
@@ -41,6 +45,10 @@ export const MEHAN_ACCENT_PRESETS: Record<
   tangerine: {id: 'tangerine', name: 'Tangerine', seed: '#d95b16'},
   grape: {id: 'grape', name: 'Grape', seed: '#7c3aed'},
   teal: {id: 'teal', name: 'Teal', seed: '#0d9488'},
+  cobalt: {id: 'cobalt', name: 'Cobalt', seed: '#1e4ed8'},
+  matcha: {id: 'matcha', name: 'Matcha', seed: '#3d7c3a'},
+  cacao: {id: 'cacao', name: 'Cacao', seed: '#8a4626'},
+  crimson: {id: 'crimson', name: 'Crimson', seed: '#c81e45'},
 };
 
 export interface ResolvedMehanAccent {
