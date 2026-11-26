@@ -215,23 +215,76 @@ body,
   display: none;
 }
 
-/* Horizontally scrollable wrapper for multi-item SegmentedControls on narrow screens */
+/* Top-right anchored overflow menu for mobile topbar (100% deterministic across all iOS/WebKit versions without CSS Anchor Positioning dependency) */
+.studio-mobile-menu-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.studio-mobile-menu-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: -44px;
+  z-index: 90;
+  min-width: 224px;
+  max-width: calc(100vw - 24px);
+  padding: 5px;
+  border-radius: var(--radius-container, 14px);
+  background-color: var(--color-background-card);
+  border: 1px solid var(--color-border-emphasized);
+  box-shadow:
+    0 12px 28px -6px rgba(9, 13, 22, 0.22),
+    0 2px 6px rgba(9, 13, 22, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.studio-mobile-menu-item {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: left;
+  padding: 9px 11px;
+  border-radius: var(--radius-element, 9px);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 120ms ease;
+}
+
+.studio-mobile-menu-item:hover,
+.studio-mobile-menu-item:active {
+  background-color: var(--mehan-tray);
+}
+
+.studio-mobile-menu-item:focus-visible {
+  outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+  outline-offset: -2px;
+  background-color: var(--mehan-tray);
+}
+
+.studio-mobile-menu-divider {
+  height: 1px;
+  margin: 3px 6px;
+  background-color: var(--color-border);
+}
+
+/* Responsive wrapper for multi-item SegmentedControls (single row on desktop/tablet, bounded multi-row wrap on phones) */
 .mh-seg-scroll {
   max-width: 100%;
   min-width: 0;
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 
 .mh-seg-scroll::-webkit-scrollbar {
   display: none;
-}
-
-.mh-seg-scroll > * {
-  width: max-content !important;
-  max-width: none !important;
 }
 
 /* Bounded inline scroll wrapper for multi-column data tables (Law U4: never trap vertical scroll) */
@@ -2236,6 +2289,12 @@ body,
   }
 }
 
+@media (max-width: 767px) {
+  .mh-ws-desktop-inspector-btn {
+    display: none !important;
+  }
+}
+
 @media (max-width: 640px) {
   /* Phone Live Interactive Bottom-Sheet Theme Editor (Top 32% of live app stays crisp & visible!) */
   .te-mobile-scrim {
@@ -2298,6 +2357,58 @@ body,
     letter-spacing: -0.03em;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  /* Bounded multi-row tactile pill tray on phones — zero chopped right edges ("SaaS|", "Co|") & zero hidden options */
+  .mh-seg-scroll {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .mh-seg-scroll > [role='radiogroup'] {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    padding: 4px !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+  }
+
+  .mh-seg-scroll > [role='radiogroup'] > [role='radio'] {
+    flex: 1 1 auto !important;
+    min-width: max-content !important;
+    height: 30px !important;
+  }
+
+  .mh-preset-tile {
+    padding: 7px 7px;
+    gap: 5px;
+  }
+
+  .mh-preset-cap {
+    width: 15px;
+    height: 15px;
+  }
+
+  .mh-preset-tile-name {
+    font-size: 12px;
+  }
+
+  .mh-preset-tile-check {
+    width: 15px;
+    height: 15px;
+  }
+
+  .cat-specimen-title-wrap {
+    flex-wrap: wrap;
+  }
+
+  .cat-main [data-component='badge'],
+  .cat-specimen-card [data-component='badge'],
+  .mehan-ws-toolbar [data-component='badge'] {
+    flex-shrink: 0;
   }
 
   .cat-specimen-card {

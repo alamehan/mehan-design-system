@@ -41,7 +41,7 @@ Saat membangun aplikasi digital modern, banyak tim terjebak di antara dua piliha
 
 ## Keunggulan Utama
 
-- **12 Suasana Visual Siap Pakai & Nyaman Dibaca:** Dimulai dari *Porcelain SaaS* yang jernih dan sejalan dengan Portfolio V5 (`Bricolage Grotesque` + `Figtree` + `Geist Mono`), serta bisa berpindah satu klik ke *Confectionery* yang hangat, *Kyoto Matcha* yang teduh, hingga *Obsidian Linear* — otomatis terjaga kontrasnya di mode Terang maupun Gelap.
+- **12 Suasana Visual Siap Pakai & Nyaman Dibaca:** Dimulai dari *Porcelain SaaS* yang jernih (`Bricolage Grotesque` + `Figtree` + `Geist Mono`), serta bisa berpindah satu klik ke *Confectionery* yang hangat, *Kyoto Matcha* yang teduh, hingga *Obsidian Linear* — otomatis terjaga kontrasnya di mode Terang maupun Gelap.
 - **Proporsi Rapi & Seragam di Semua Kontrol:** Tombol, kolom input, pilihan dropdown, tab segmen, hingga kontrol kustom memiliki tinggi, lengkung sudut, dan ukuran huruf yang selaras sehingga antarmuka selalu terlihat tenang dan presisi.
 - **Komponen Ruang Kerja & Alat Kreatif Siap Pakai:** Selain komponen dasar, tersedia tata letak aplikasi multi-panel, kanvas kerja interaktif, grafik data, pemilih warna & gradasi, editor kode/markdown, serta penyimpan draf formulir otomatis.
 - **Racik Langsung, Pakai di Mana Saja:** Sesuaikan warna merek, koleksi font open-source bawaan, dan kelengkungan sudut langsung di **`Theme Editor`**, lalu ekspor dalam satu klik ke **React / Tailwind**, **HTML Murni**, **Chat AI**, maupun **Figma**.

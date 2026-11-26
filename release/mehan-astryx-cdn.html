@@ -4959,6 +4959,24 @@
   .mehan-ws-main-content {
     min-width: 0;
   }
+  @media (max-width: 640px) {
+    .mehan-ws-toolbar {
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 12px;
+    }
+    .mehan-ws-toolbar > button {
+      flex: none;
+    }
+    .mehan-ws-toolbar-main {
+      flex: 1 1 170px;
+      min-width: 0;
+    }
+    .mehan-ws-main-wrap {
+      padding: 12px;
+      gap: 10px;
+    }
+  }
   .mehan-ws-nav-list {
     display: flex;
     flex-direction: column;

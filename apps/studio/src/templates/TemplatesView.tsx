@@ -1367,7 +1367,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                 toolbar={
                   topologyMode === 'form-result' ? undefined : (
                     <HStack hAlign="between" vAlign="center" wrap="wrap" gap={2}>
-                      <HStack gap={2} vAlign="center">
+                      <HStack gap={2} vAlign="center" wrap="wrap">
                         <Text weight="semibold">
                           {topologyMode === 'collection'
                             ? isId
@@ -1402,6 +1402,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                         topologyMode === 'collection' ||
                         topologyMode === 'studio') && (
                         <Button
+                          className="mh-ws-desktop-inspector-btn"
                           variant="secondary"
                           size="sm"
                           label={

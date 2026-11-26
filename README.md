@@ -41,7 +41,7 @@ Teams building modern digital products often get stuck between two painful choic
 
 ## Highlights
 
-- **12 Ready-Made Visual Moods with Automatic Readability:** Starts with crisp *Porcelain SaaS* (`Bricolage Grotesque` + `Figtree` + `Geist Mono`, aligned with Portfolio V5) and switches in one click to warm *Confectionery*, calm *Kyoto Matcha*, or sleek *Obsidian Linear* — balanced automatically in both Light and Dark modes.
+- **12 Ready-Made Visual Moods with Automatic Readability:** Starts with crisp *Porcelain SaaS* (`Bricolage Grotesque` + `Figtree` + `Geist Mono`) and switches in one click to warm *Confectionery*, calm *Kyoto Matcha*, or sleek *Obsidian Linear* — balanced automatically in both Light and Dark modes.
 - **Consistent Proportions Across Every Control:** Buttons, inputs, dropdowns, segmented tabs, and custom creative controls share unified heights, corner curves, and text sizes so screens always look calm and aligned.
 - **Real Workspace & Creative Building Blocks:** Beyond everyday forms and tables, Mehan includes multi-panel app layouts, interactive stages, charts, color & gradient pickers, code/markdown editors, and auto-saved form drafts.
 - **Tune Live, Use Anywhere:** Customize colors, bundled open-source fonts, and corner roundness right inside the live **`Theme Editor`**, then export in one click to **React / Tailwind**, **Vanilla HTML**, **AI Chats**, or **Figma**.

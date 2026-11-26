@@ -10,7 +10,6 @@ import {
   Heading,
   IconButton,
   LayerProvider,
-  MoreMenu,
   SegmentedControl,
   SegmentedControlItem,
   Stack,
@@ -49,6 +48,7 @@ import {
   Info,
   Keyboard,
   Moon,
+  MoreHorizontal,
   SlidersHorizontal,
   Sparkles,
   Sun,
@@ -136,8 +136,36 @@ function StudioInner({
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoTab, setInfoTab] = useState<StudioInfoTab>('overview');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuWrapRef = useRef<HTMLDivElement | null>(null);
+  const mobileMenuTriggerRef = useRef<HTMLButtonElement | null>(null);
   const catalogSearchRef = useRef<HTMLInputElement | null>(null);
   const didMountTabRef = useRef(false);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (
+        mobileMenuWrapRef.current &&
+        !mobileMenuWrapRef.current.contains(e.target as Node)
+      ) {
+        setMobileMenuOpen(false);
+      }
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        setMobileMenuOpen(false);
+        mobileMenuTriggerRef.current?.focus();
+      }
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown, true);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown, true);
+    };
+  }, [mobileMenuOpen]);
 
   useLayoutEffect(() => {
     if (!didMountTabRef.current) {
@@ -459,27 +487,88 @@ function StudioInner({
               onClick={() => setMode(prev => (prev === 'light' ? 'dark' : 'light'))}
             />
 
-            <MoreMenu
-              label={isId ? 'Opsi Studio lainnya' : 'More Studio options'}
-              size="sm"
-              items={[
-                {
-                  label: isId ? 'Switch to English (EN)' : 'Ganti ke Bahasa Indonesia (ID)',
-                  onClick: () => setLang(isId ? 'en' : 'id'),
-                },
-                {
-                  label: copy.nav.info,
-                  onClick: () => openCreatorModal('overview'),
-                },
-                {type: 'divider'},
-                {
-                  label: isId
-                    ? 'Tentang Pembuat (@alamehan)'
-                    : 'About Creator (@alamehan)',
-                  onClick: () => openCreatorModal('about'),
-                },
-              ]}
-            />
+            <div className="studio-mobile-menu-wrap" ref={mobileMenuWrapRef}>
+              <IconButton
+                ref={mobileMenuTriggerRef}
+                variant={mobileMenuOpen ? 'secondary' : 'ghost'}
+                size="sm"
+                label={isId ? 'Opsi Studio lainnya' : 'More Studio options'}
+                icon={<MoreHorizontal size={16} />}
+                aria-haspopup="menu"
+                aria-expanded={mobileMenuOpen}
+                onClick={() => setMobileMenuOpen(prev => !prev)}
+              />
+
+              {mobileMenuOpen && (
+                <div
+                  className="studio-mobile-menu-popover"
+                  role="menu"
+                  aria-label={isId ? 'Opsi Studio lainnya' : 'More Studio options'}
+                  onKeyDown={e => {
+                    const items = Array.from(
+                      e.currentTarget.querySelectorAll<HTMLButtonElement>(
+                        '[role="menuitem"]',
+                      ),
+                    );
+                    const idx = items.indexOf(
+                      document.activeElement as HTMLButtonElement,
+                    );
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      items[(idx + 1) % items.length]?.focus();
+                    } else if (e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      items[(idx - 1 + items.length) % items.length]?.focus();
+                    } else if (e.key === 'Home') {
+                      e.preventDefault();
+                      items[0]?.focus();
+                    } else if (e.key === 'End') {
+                      e.preventDefault();
+                      items[items.length - 1]?.focus();
+                    }
+                  }}
+                >
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="studio-mobile-menu-item"
+                    onClick={() => {
+                      setLang(isId ? 'en' : 'id');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    {isId
+                      ? 'Switch to English (EN)'
+                      : 'Ganti ke Bahasa Indonesia (ID)'}
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="studio-mobile-menu-item"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openCreatorModal('overview');
+                    }}
+                  >
+                    {copy.nav.info}
+                  </button>
+                  <div className="studio-mobile-menu-divider" role="separator" />
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="studio-mobile-menu-item"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openCreatorModal('about');
+                    }}
+                  >
+                    {isId
+                      ? 'Tentang Pembuat (@alamehan)'
+                      : 'About Creator (@alamehan)'}
+                  </button>
+                </div>
+              )}
+            </div>
 
             <Button
               variant={editorOpen ? 'secondary' : 'primary'}

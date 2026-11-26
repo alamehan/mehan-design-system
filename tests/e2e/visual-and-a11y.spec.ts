@@ -450,15 +450,25 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     await page.locator('.te-mobile-scrim').click({position: {x: 180, y: 80}});
     await expect(editorSheet).toBeHidden();
 
-    // Switch to English via native Astryx MoreMenu on Mobile Topbar!
+    // Open top-right 3-dot overflow menu and verify it anchors directly below the trigger (never at the bottom of the screen on iOS/WebKit!)
     await page
       .locator('.studio-actions-mobile')
       .getByRole('button', {name: /Opsi Studio lainnya|More Studio options/})
       .click();
+    const mobileMenu = page.locator('.studio-mobile-menu-popover[role="menu"]');
+    await expect(mobileMenu).toBeVisible();
+    const menuRect = await mobileMenu.evaluate(el => {
+      const r = el.getBoundingClientRect();
+      return {top: Math.round(r.top), right: Math.round(r.right)};
+    });
+    expect(menuRect.top).toBeGreaterThanOrEqual(36);
+    expect(menuRect.top).toBeLessThanOrEqual(115);
+    expect(menuRect.right).toBeGreaterThanOrEqual(310);
+
     await page.getByRole('menuitem', {name: /Switch to English/}).click();
     await page.waitForTimeout(120);
 
-    // Helper that asserts ZERO clipped cards/headings (catching overflow-x: clip bugs!) and ZERO truncated SegmentedControls
+    // Helper that asserts ZERO clipped cards/headings, ZERO overflowing SegmentedControl boxes, and ZERO truncated radios
     const assertMobileTabClean = async (tabLabel: string) => {
       const metrics = await page.evaluate(() => {
         const vw = window.innerWidth;
@@ -488,8 +498,16 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
         }
 
         const truncatedRadios: string[] = [];
-        for (const seg of document.querySelectorAll('[role="radiogroup"]')) {
+        const overflowingSegBoxes: string[] = [];
+        for (const seg of document.querySelectorAll<HTMLElement>('[role="radiogroup"]')) {
           if (seg.classList.contains('mh-preset-strip')) continue;
+          const sr = seg.getBoundingClientRect();
+          const pr = seg.parentElement?.getBoundingClientRect();
+          if (sr.width > 0 && pr && (sr.width > pr.width + 2 || sr.right > vw + 1.5)) {
+            overflowingSegBoxes.push(
+              `${seg.getAttribute('aria-label') ?? 'seg'} (${Math.round(sr.width)} > ${Math.round(pr.width)})`,
+            );
+          }
           for (const item of seg.querySelectorAll<HTMLElement>('[role="radio"]')) {
             const span = item.querySelector<HTMLElement>('span') ?? item;
             if (span.scrollWidth > span.clientWidth + 2) {
@@ -497,11 +515,12 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
             }
           }
         }
-        return {docOverflow, clippedCards, truncatedRadios};
+        return {docOverflow, clippedCards, truncatedRadios, overflowingSegBoxes};
       });
 
       expect(metrics.docOverflow, `${tabLabel}: docOverflow`).toBeLessThanOrEqual(1);
       expect(metrics.clippedCards, `${tabLabel}: clippedCards`).toEqual([]);
+      expect(metrics.overflowingSegBoxes, `${tabLabel}: overflowingSegBoxes`).toEqual([]);
       expect(metrics.truncatedRadios, `${tabLabel}: truncatedRadios`).toEqual([]);
     };
 
@@ -528,7 +547,10 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       .getByRole('tab', {name: 'Patterns & Templates'})
       .click();
     await page.waitForTimeout(120);
-    await assertMobileTabClean('Patterns & Templates');
+    await assertMobileTabClean('Patterns & Templates (Showcase)');
+    await page.getByRole('radio', {name: 'Workspace Topologies (5-in-1)'}).click();
+    await page.waitForTimeout(120);
+    await assertMobileTabClean('Patterns & Templates (Workspace Topologies)');
 
     await page.locator('.studio-topbar').getByRole('tab', {name: 'UX & Copy'}).click();
     await page.waitForTimeout(120);
