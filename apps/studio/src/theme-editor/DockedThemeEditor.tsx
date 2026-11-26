@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {
   Badge,
   Banner,
@@ -162,6 +162,17 @@ export function DockedThemeEditor({
       bodyScrollRef.current.scrollTop = 0;
     }
   }, [editorTab, advGroup]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && window.innerWidth <= 1120) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, onClose]);
   const [tokenQuery, setTokenQuery] = useState('');
   const [compQuery, setCompQuery] = useState('');
   const [customPickerOpen, setCustomPickerOpen] = useState(false);
@@ -387,13 +398,22 @@ export function DockedThemeEditor({
   const qLower = tokenQuery.trim().toLowerCase();
   const compQLower = compQuery.trim().toLowerCase();
 
+  if (!isOpen) return null;
+
   return (
-    <aside
-      className="te-docked-panel"
-      aria-label={isId ? 'Editor Tema Langsung' : 'Live Theme Editor'}
-    >
-      {/* Clean, Uncluttered Sticky Header */}
-      <div className="te-header">
+    <>
+      <div
+        className="te-mobile-scrim"
+        aria-hidden="true"
+        onClick={onClose}
+      />
+      <aside
+        className="te-docked-panel"
+        aria-label={isId ? 'Editor Tema Langsung' : 'Live Theme Editor'}
+      >
+        {/* Clean, Uncluttered Sticky Header (with Mobile Bottom-Sheet Pill Handle) */}
+        <div className="te-header">
+          <div className="te-sheet-handle" aria-hidden="true" />
         <div className="te-header-top">
           <div className="te-header-title-row">
             <Palette size={15} />
@@ -1208,43 +1228,47 @@ export function DockedThemeEditor({
               trigger={isId ? '5. Karakter Gerak & Durasi' : '5. Motion & Tempo'}
             >
               <Stack gap={2}>
-                <SegmentedControl
-                  label="Motion character"
-                  size="sm"
-                  value={seed.motion}
-                  onChange={v =>
-                    updateSeed(
-                      {motion: v as MehanMotion},
-                      [],
-                      ['--duration-', '--ease-'],
-                    )
-                  }
-                >
-                  <SegmentedControlItem value="expressive" label="Expressive" />
-                  <SegmentedControlItem value="standard" label="Standard" />
-                  <SegmentedControlItem value="crisp" label="Crisp" />
-                  <SegmentedControlItem value="calm" label="Calm" />
-                </SegmentedControl>
+                <div className="mh-seg-scroll">
+                  <SegmentedControl
+                    label="Motion character"
+                    size="sm"
+                    value={seed.motion}
+                    onChange={v =>
+                      updateSeed(
+                        {motion: v as MehanMotion},
+                        [],
+                        ['--duration-', '--ease-'],
+                      )
+                    }
+                  >
+                    <SegmentedControlItem value="expressive" label="Expressive" />
+                    <SegmentedControlItem value="standard" label="Standard" />
+                    <SegmentedControlItem value="crisp" label="Crisp" />
+                    <SegmentedControlItem value="calm" label="Calm" />
+                  </SegmentedControl>
+                </div>
 
-                <SegmentedControl
-                  label="Duration speed multiplier"
-                  size="sm"
-                  value={String(seed.durationStep)}
-                  onChange={v =>
-                    updateSeed(
-                      {durationStep: Number(v)},
-                      [],
-                      ['--duration-'],
-                    )
-                  }
-                >
-                  <SegmentedControlItem value="0.5" label="0.5×" />
-                  <SegmentedControlItem value="0.75" label="0.75×" />
-                  <SegmentedControlItem value="1" label="1×" />
-                  <SegmentedControlItem value="1.25" label="1.25×" />
-                  <SegmentedControlItem value="1.5" label="1.5×" />
-                  <SegmentedControlItem value="2" label="2×" />
-                </SegmentedControl>
+                <div className="mh-seg-scroll">
+                  <SegmentedControl
+                    label="Duration speed multiplier"
+                    size="sm"
+                    value={String(seed.durationStep)}
+                    onChange={v =>
+                      updateSeed(
+                        {durationStep: Number(v)},
+                        [],
+                        ['--duration-'],
+                      )
+                    }
+                  >
+                    <SegmentedControlItem value="0.5" label="0.5×" />
+                    <SegmentedControlItem value="0.75" label="0.75×" />
+                    <SegmentedControlItem value="1" label="1×" />
+                    <SegmentedControlItem value="1.25" label="1.25×" />
+                    <SegmentedControlItem value="1.5" label="1.5×" />
+                    <SegmentedControlItem value="2" label="2×" />
+                  </SegmentedControl>
+                </div>
               </Stack>
             </Collapsible>
           </Stack>
@@ -1699,6 +1723,7 @@ export function DockedThemeEditor({
           </Stack>
         )}
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

@@ -1279,30 +1279,32 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
           <Text color="secondary">{copy.templates.subtitle}</Text>
         </Stack>
 
-        <SegmentedControl
-          label="Template archetype"
-          size="sm"
-          value={templateTab}
-          onChange={setTemplateTab}
-        >
-          <SegmentedControlItem
-            value="showcase"
-            label={copy.templates.tabShowcase}
-          />
-          <SegmentedControlItem
-            value="topologies"
-            label={copy.templates.tabTopologies}
-          />
-          <SegmentedControlItem
-            value="dashboard"
-            label={copy.templates.tabDashboard}
-          />
-          <SegmentedControlItem
-            value="settings"
-            label={copy.templates.tabSettings}
-          />
-          <SegmentedControlItem value="canvas" label={copy.templates.tabCanvas} />
-        </SegmentedControl>
+        <div className="mh-seg-scroll">
+          <SegmentedControl
+            label="Template archetype"
+            size="sm"
+            value={templateTab}
+            onChange={setTemplateTab}
+          >
+            <SegmentedControlItem
+              value="showcase"
+              label={copy.templates.tabShowcase}
+            />
+            <SegmentedControlItem
+              value="topologies"
+              label={copy.templates.tabTopologies}
+            />
+            <SegmentedControlItem
+              value="dashboard"
+              label={copy.templates.tabDashboard}
+            />
+            <SegmentedControlItem
+              value="settings"
+              label={copy.templates.tabSettings}
+            />
+            <SegmentedControlItem value="canvas" label={copy.templates.tabCanvas} />
+          </SegmentedControl>
+        </div>
       </Stack>
 
       {templateTab === 'showcase' && <OfficialThemeShowcase />}
@@ -1334,27 +1336,29 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
                 />
               </HStack>
 
-              <SegmentedControl
-                label="Workspace topology mode"
-                size="sm"
-                value={topologyMode}
-                onChange={v =>
-                  setTopologyMode(
-                    v as
-                      | 'form-result'
-                      | 'workbench'
-                      | 'explorer'
-                      | 'collection'
-                      | 'studio',
-                  )
-                }
-              >
-                <SegmentedControlItem value="explorer" label="3-Pane Explorer" />
-                <SegmentedControlItem value="form-result" label="Form + Result" />
-                <SegmentedControlItem value="workbench" label="2-Pane Workbench" />
-                <SegmentedControlItem value="collection" label="Collection + Inspector" />
-                <SegmentedControlItem value="studio" label="Canvas Studio" />
-              </SegmentedControl>
+              <div className="mh-seg-scroll">
+                <SegmentedControl
+                  label="Workspace topology mode"
+                  size="sm"
+                  value={topologyMode}
+                  onChange={v =>
+                    setTopologyMode(
+                      v as
+                        | 'form-result'
+                        | 'workbench'
+                        | 'explorer'
+                        | 'collection'
+                        | 'studio',
+                    )
+                  }
+                >
+                  <SegmentedControlItem value="explorer" label="3-Pane Explorer" />
+                  <SegmentedControlItem value="form-result" label="Form + Result" />
+                  <SegmentedControlItem value="workbench" label="2-Pane Workbench" />
+                  <SegmentedControlItem value="collection" label="Collection + Inspector" />
+                  <SegmentedControlItem value="studio" label="Canvas Studio" />
+                </SegmentedControl>
+              </div>
 
               <WorkspaceLayout
                 enableShortcuts={false}

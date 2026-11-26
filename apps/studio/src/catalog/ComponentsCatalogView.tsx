@@ -183,29 +183,31 @@ export function ComponentsCatalogView({
           />
         </div>
 
-        <SegmentedControl
-          label="Filter by package"
-          size="sm"
-          value={pkgFilter}
-          onChange={v => setPkgFilter(v as 'all' | 'core' | 'mehan')}
-        >
-          <SegmentedControlItem
-            value="all"
-            label={isId ? `Semua (${allSpecimens.length})` : `All (${allSpecimens.length})`}
-          />
-          <SegmentedControlItem
-            value="core"
-            label={`Core (${coreCount})`}
-          />
-          <SegmentedControlItem
-            value="mehan"
-            label={
-              isId
-                ? `Ekstensi Mehan (${mehanCount})`
-                : `Mehan extensions (${mehanCount})`
-            }
-          />
-        </SegmentedControl>
+        <div className="mh-seg-scroll">
+          <SegmentedControl
+            label="Filter by package"
+            size="sm"
+            value={pkgFilter}
+            onChange={v => setPkgFilter(v as 'all' | 'core' | 'mehan')}
+          >
+            <SegmentedControlItem
+              value="all"
+              label={isId ? `Semua (${allSpecimens.length})` : `All (${allSpecimens.length})`}
+            />
+            <SegmentedControlItem
+              value="core"
+              label={`Core (${coreCount})`}
+            />
+            <SegmentedControlItem
+              value="mehan"
+              label={
+                isId
+                  ? `Ekstensi Mehan (${mehanCount})`
+                  : `Mehan extensions (${mehanCount})`
+              }
+            />
+          </SegmentedControl>
+        </div>
       </HStack>
 
       {/* Sticky 4-Pillar, 12-Category Sidebar + Adaptive Specimen Grid */}

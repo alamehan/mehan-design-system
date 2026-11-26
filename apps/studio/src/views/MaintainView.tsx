@@ -415,8 +415,9 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
             />
           </HStack>
 
-          <Table
-            aria-label={isId ? 'Token desain Mehan terkompilasi' : 'Resolved Mehan design tokens'}
+          <div className="studio-table-scroll">
+            <Table
+              aria-label={isId ? 'Token desain Mehan terkompilasi' : 'Resolved Mehan design tokens'}
             data={tokenRows}
             columns={[
               {
@@ -466,10 +467,11 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
                 ),
               },
             ]}
-            density="balanced"
-            dividers="rows"
-            hasHover
-          />
+              density="balanced"
+              dividers="rows"
+              hasHover
+            />
+          </div>
         </Stack>
       </Card>
     </Stack>

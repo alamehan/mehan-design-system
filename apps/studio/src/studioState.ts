@@ -343,10 +343,12 @@ export function loadPersistedStudioState(): {
     }
     const parsed = JSON.parse(raw) as PersistedStudioState;
     const ts = parsed.themeState ?? {};
+    const isCompactViewport =
+      typeof window !== 'undefined' && window.innerWidth <= 1120;
     return {
       lang: parsed.lang === 'en' ? 'en' : 'id',
       mode: parsed.mode === 'dark' ? 'dark' : 'light',
-      editorOpen: Boolean(parsed.editorOpen),
+      editorOpen: isCompactViewport ? false : Boolean(parsed.editorOpen),
       themeState: {
         seed: sanitizeSeed(ts.seed),
         tokenOverrides:

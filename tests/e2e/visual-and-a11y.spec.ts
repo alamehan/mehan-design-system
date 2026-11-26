@@ -415,26 +415,129 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     expect(errors).toEqual([]);
   });
 
-  test('renders cleanly on Mobile 375x812 over file:// without horizontal overflow and 0 contrast violations', async ({
+  test('renders cleanly on Mobile 375x812 across ALL 5 tabs & Live Bottom-Sheet Theme Editor without card clipping, truncated switchers, or contrast violations', async ({
     page,
   }) => {
+    test.setTimeout(120_000);
     await page.setViewportSize({width: 375, height: 812});
     await page.goto(studioFileUrl, {waitUntil: 'load'});
     await expect(page.getByText('Mehan Design System', {exact: true})).toBeVisible();
 
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - window.innerWidth,
-    );
-    expect(overflow).toBeLessThanOrEqual(1);
+    // 1. Verify compact 2-row Mobile Topbar (<= 104px instead of 3-row 161px!)
+    const topbarHeight = await page
+      .locator('.studio-topbar')
+      .evaluate(el => Math.round(el.getBoundingClientRect().height));
+    expect(topbarHeight).toBeLessThanOrEqual(104);
 
+    // 2. Tap mobile "Tema" / "Theme" button and verify Live Bottom-Sheet opens IMMEDIATELY inside viewport!
+    await page
+      .locator('.studio-actions-mobile')
+      .getByRole('button', {name: /^(Tema|Theme)$/})
+      .click();
+    const editorSheet = page.getByRole('complementary', {
+      name: /Editor Tema Langsung|Live Theme Editor/,
+    });
+    await expect(editorSheet).toBeVisible();
+    const sheetRect = await editorSheet.evaluate(el => {
+      const r = el.getBoundingClientRect();
+      return {top: Math.round(r.top), bottom: Math.round(r.bottom), vh: window.innerHeight};
+    });
+    expect(sheetRect.top).toBeGreaterThanOrEqual(150);
+    expect(sheetRect.top).toBeLessThan(600);
+    expect(sheetRect.bottom).toBeLessThanOrEqual(sheetRect.vh + 2);
+
+    // Dismiss via backdrop scrim!
+    await page.locator('.te-mobile-scrim').click({position: {x: 180, y: 80}});
+    await expect(editorSheet).toBeHidden();
+
+    // Switch to English via native Astryx MoreMenu on Mobile Topbar!
+    await page
+      .locator('.studio-actions-mobile')
+      .getByRole('button', {name: /Opsi Studio lainnya|More Studio options/})
+      .click();
+    await page.getByRole('menuitem', {name: /Switch to English/}).click();
+    await page.waitForTimeout(120);
+
+    // Helper that asserts ZERO clipped cards/headings (catching overflow-x: clip bugs!) and ZERO truncated SegmentedControls
+    const assertMobileTabClean = async (tabLabel: string) => {
+      const metrics = await page.evaluate(() => {
+        const vw = window.innerWidth;
+        const docOverflow = document.documentElement.scrollWidth - vw;
+        const clippedCards: string[] = [];
+        const targets = document.querySelectorAll<HTMLElement>(
+          '.studio-main > *, .cat-specimen-card, .astryx-card, h1, h2, h3',
+        );
+        for (const el of targets) {
+          const r = el.getBoundingClientRect();
+          if (r.width === 0 || r.height === 0) continue;
+          let p = el.parentElement;
+          let insideScroll = false;
+          while (p && p !== document.body) {
+            const ox = getComputedStyle(p).overflowX;
+            if ((ox === 'auto' || ox === 'scroll') && p.scrollWidth > p.clientWidth + 1) {
+              insideScroll = true;
+              break;
+            }
+            p = p.parentElement;
+          }
+          if (!insideScroll && (r.right > vw + 1.5 || r.left < -1.5)) {
+            clippedCards.push(
+              `${el.tagName.toLowerCase()} (${Math.round(r.left)}..${Math.round(r.right)}): ${(el.textContent ?? '').trim().slice(0, 32)}`,
+            );
+          }
+        }
+
+        const truncatedRadios: string[] = [];
+        for (const seg of document.querySelectorAll('[role="radiogroup"]')) {
+          if (seg.classList.contains('mh-preset-strip')) continue;
+          for (const item of seg.querySelectorAll<HTMLElement>('[role="radio"]')) {
+            const span = item.querySelector<HTMLElement>('span') ?? item;
+            if (span.scrollWidth > span.clientWidth + 2) {
+              truncatedRadios.push((item.textContent ?? '').trim());
+            }
+          }
+        }
+        return {docOverflow, clippedCards, truncatedRadios};
+      });
+
+      expect(metrics.docOverflow, `${tabLabel}: docOverflow`).toBeLessThanOrEqual(1);
+      expect(metrics.clippedCards, `${tabLabel}: clippedCards`).toEqual([]);
+      expect(metrics.truncatedRadios, `${tabLabel}: truncatedRadios`).toEqual([]);
+    };
+
+    // 3. Audit all 5 main Studio tabs on 375x812 Mobile!
+    await assertMobileTabClean('Overview');
     await page.screenshot({
-      path: path.join(shotDir, 'studio-v3-mobile-id-light-375.png'),
+      path: path.join(shotDir, 'studio-v3-mobile-en-light-375.png'),
       fullPage: false,
     });
+    expect(
+      (
+        await new AxeBuilder({page})
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+          .analyze()
+      ).violations,
+    ).toEqual([]);
 
-    const mobileAxe = await new AxeBuilder({page})
-      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
-      .analyze();
-    expect(mobileAxe.violations).toEqual([]);
+    await page.locator('.studio-topbar').getByRole('tab', {name: 'Components'}).click();
+    await page.waitForTimeout(120);
+    await assertMobileTabClean('Components');
+
+    await page
+      .locator('.studio-topbar')
+      .getByRole('tab', {name: 'Patterns & Templates'})
+      .click();
+    await page.waitForTimeout(120);
+    await assertMobileTabClean('Patterns & Templates');
+
+    await page.locator('.studio-topbar').getByRole('tab', {name: 'UX & Copy'}).click();
+    await page.waitForTimeout(120);
+    await page.locator('.ux-sidebar .cat-nav-btn', {hasText: 'All Chapters'}).click();
+    await page.waitForTimeout(150);
+    await assertMobileTabClean('UX & Copy (All 12 Chapters)');
+
+    await page.locator('.studio-topbar').getByRole('tab', {name: 'Maintain'}).click();
+    await page.waitForTimeout(120);
+    await assertMobileTabClean('Maintain');
   });
 });

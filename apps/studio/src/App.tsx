@@ -10,6 +10,7 @@ import {
   Heading,
   IconButton,
   LayerProvider,
+  MoreMenu,
   SegmentedControl,
   SegmentedControlItem,
   Stack,
@@ -405,7 +406,7 @@ function StudioInner({
             </TabList>
           </nav>
 
-          <div className="studio-actions-cluster">
+          <div className="studio-actions-cluster studio-actions-desktop">
             <SegmentedControl
               label="Language"
               size="sm"
@@ -444,6 +445,46 @@ function StudioInner({
               variant={editorOpen ? 'secondary' : 'primary'}
               size="sm"
               label={copy.nav.customize}
+              icon={<SlidersHorizontal size={14} />}
+              onClick={() => setEditorOpen(prev => !prev)}
+            />
+          </div>
+
+          <div className="studio-actions-cluster studio-actions-mobile">
+            <IconButton
+              variant="secondary"
+              size="sm"
+              label={mode === 'light' ? copy.nav.dark : copy.nav.light}
+              icon={mode === 'light' ? <Moon size={15} /> : <Sun size={15} />}
+              onClick={() => setMode(prev => (prev === 'light' ? 'dark' : 'light'))}
+            />
+
+            <MoreMenu
+              label={isId ? 'Opsi Studio lainnya' : 'More Studio options'}
+              size="sm"
+              items={[
+                {
+                  label: isId ? 'Switch to English (EN)' : 'Ganti ke Bahasa Indonesia (ID)',
+                  onClick: () => setLang(isId ? 'en' : 'id'),
+                },
+                {
+                  label: copy.nav.info,
+                  onClick: () => openCreatorModal('overview'),
+                },
+                {type: 'divider'},
+                {
+                  label: isId
+                    ? 'Tentang Pembuat (@alamehan)'
+                    : 'About Creator (@alamehan)',
+                  onClick: () => openCreatorModal('about'),
+                },
+              ]}
+            />
+
+            <Button
+              variant={editorOpen ? 'secondary' : 'primary'}
+              size="sm"
+              label={isId ? 'Tema' : 'Theme'}
               icon={<SlidersHorizontal size={14} />}
               onClick={() => setEditorOpen(prev => !prev)}
             />

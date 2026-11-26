@@ -211,6 +211,50 @@ body,
   flex: none;
 }
 
+.studio-actions-mobile {
+  display: none;
+}
+
+/* Horizontally scrollable wrapper for multi-item SegmentedControls on narrow screens */
+.mh-seg-scroll {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.mh-seg-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.mh-seg-scroll > * {
+  width: max-content !important;
+  max-width: none !important;
+}
+
+/* Bounded inline scroll wrapper for multi-column data tables (Law U4: never trap vertical scroll) */
+.studio-table-scroll,
+.studio-main .astryx-table-scroll-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto !important;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide desktop keyboard-only "← → to navigate" roving-focus hints on touch/mobile screens */
+@media (hover: none), (pointer: coarse), (max-width: 900px) {
+  .studio-topbar div:has(> [data-component='kbd'] + span),
+  [role='tablist'] ~ div:has(> [data-component='kbd'] + span),
+  [role='radiogroup'] ~ div:has(> [data-component='kbd'] + span) {
+    display: none !important;
+  }
+}
+
 /* ============================================================
    SPLIT-PANE WORKSPACE (Live Content + Docked Theme Editor)
    ============================================================ */
@@ -241,6 +285,14 @@ body,
 /* ============================================================
    DOCKED 3-TIER THEME EDITOR (Chunked & Uncluttered)
    ============================================================ */
+.te-mobile-scrim {
+  display: none;
+}
+
+.te-sheet-handle {
+  display: none;
+}
+
 .te-docked-panel {
   width: 384px;
   flex: 0 0 384px;
@@ -2049,22 +2101,89 @@ body,
     flex-direction: column;
   }
 
+  .te-mobile-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(9, 13, 22, 0.34);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 55;
+  }
+
   .te-docked-panel {
-    width: 100%;
-    flex: none;
-    position: relative;
+    position: fixed;
     top: 0;
-    height: auto;
-    max-height: 75dvh;
-    border-left: 0;
-    border-top: 1px solid var(--color-border);
+    right: 0;
+    bottom: 0;
+    width: min(384px, 92vw);
+    flex: none;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-left: 1px solid var(--color-border-emphasized);
+    border-top: 0;
+    box-shadow: -12px 0 32px rgba(9, 13, 22, 0.22);
+    z-index: 60;
   }
 }
 
 @media (max-width: 900px) {
+  .studio-topbar {
+    padding: 8px 14px 4px;
+  }
+
+  .studio-topbar-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'brand actions'
+      'nav nav';
+    row-gap: 4px;
+    column-gap: 8px;
+    align-items: center;
+  }
+
+  .studio-brand {
+    grid-area: brand;
+  }
+
+  .studio-version-badge {
+    display: none;
+  }
+
+  .studio-actions-desktop {
+    display: none !important;
+  }
+
+  .studio-actions-mobile {
+    display: flex;
+    grid-area: actions;
+    gap: 6px;
+  }
+
+  .studio-topnav {
+    grid-area: nav;
+    justify-content: flex-start;
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .studio-topnav::-webkit-scrollbar {
+    display: none;
+  }
+
   .cat-layout,
   .ux-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cat-layout > *,
+  .ux-layout > *,
+  .studio-main > * {
+    min-width: 0;
+    max-width: 100%;
   }
 
   .cat-sidebar,
@@ -2095,11 +2214,11 @@ body,
   }
 
   .cat-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .studio-arch-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .studio-arch-arrow {
@@ -2108,7 +2227,7 @@ body,
   }
 
   .mh-journey-strip {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .mh-preset-strip,
@@ -2118,24 +2237,109 @@ body,
 }
 
 @media (max-width: 640px) {
+  /* Phone Live Interactive Bottom-Sheet Theme Editor (Top 32% of live app stays crisp & visible!) */
+  .te-mobile-scrim {
+    background: rgba(9, 13, 22, 0.16);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .te-docked-panel {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 68dvh;
+    max-height: 68dvh;
+    border-left: 0;
+    border-top: 1px solid var(--color-border-emphasized);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -14px 34px rgba(9, 13, 22, 0.26);
+  }
+
+  .te-sheet-handle {
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 999px;
+    background-color: var(--color-border-emphasized);
+    margin: -2px auto 2px;
+  }
+
   .mh-preset-strip,
   .studio-workspace.has-docked-editor .mh-preset-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
   .studio-topbar {
-    padding: 8px 12px;
+    padding: 7px 12px 3px;
   }
 
-  .studio-version-badge {
-    display: none;
+  .studio-topbar-inner {
+    column-gap: 6px;
+  }
+
+  .studio-brand {
+    gap: 7px;
+  }
+
+  .studio-brand .mh-crafted-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .studio-actions-mobile {
+    gap: 4px;
   }
 
   .studio-wordmark {
-    font-size: 14.5px;
+    font-size: 13.75px;
+    letter-spacing: -0.03em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cat-specimen-card {
+    padding: 14px;
+  }
+
+  .cat-specimen-stage {
+    padding: 12px;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Keep Storefront TopNav links single-line & clean on narrow phones */
+  .showcase-frame a,
+  .showcase-frame button {
+    white-space: nowrap;
+  }
+
+  .showcase-frame header nav,
+  .showcase-frame [role='navigation'] {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .studio-canvas-stage {
+    min-height: 260px;
+    padding: 16px;
+  }
+
+  .studio-shot-frame {
+    padding: 16px !important;
+    transform: none !important;
+  }
+
+  .studio-shot-window {
+    min-width: 0;
+    width: 100%;
+    padding: 14px;
   }
 
   .mh-info-dl-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 4px;
   }
 
@@ -2176,6 +2380,14 @@ body,
 
 /* Law U2: Release sticky 100dvh viewport locks at 200% browser zoom / compact height */
 @media (max-height: 559px) {
+  .cat-sidebar,
+  .ux-sidebar {
+    position: static;
+    max-height: none;
+  }
+}
+
+@media (min-width: 1121px) and (max-height: 559px) {
   .studio-workspace {
     flex-direction: column;
   }
@@ -2190,17 +2402,12 @@ body,
     border-left: 0;
     border-top: 1px solid var(--color-border);
   }
-
-  .cat-sidebar,
-  .ux-sidebar {
-    position: static;
-    max-height: none;
-  }
 }
 
 /* Print hygiene: hide sticky navigation & docked Theme Editor when printing */
 @media print {
   .studio-topbar,
+  .te-mobile-scrim,
   .te-docked-panel {
     display: none !important;
   }

@@ -531,32 +531,34 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
                   </div>
                 </Grid>
 
-                <Table
-                  aria-label="Spacing proximity scale"
-                  density="compact"
-                  dividers="rows"
-                  data={spacingScaleRows}
-                  columns={[
-                    {
-                      key: 'level',
-                      header: isId ? 'Tingkat kedekatan' : 'Proximity tier',
-                      width: proportional(1.2),
-                    },
-                    {
-                      key: 'token',
-                      header: 'Astryx Stack / Gap',
-                      width: pixel(185),
-                      renderCell: r => (
-                        <span className="studio-mono-pill">{String(r.token)}</span>
-                      ),
-                    },
-                    {
-                      key: 'why',
-                      header: isId ? 'Fungsi perseptual' : 'Perceptual job',
-                      width: proportional(1.6),
-                    },
-                  ]}
-                />
+                <div className="studio-table-scroll">
+                  <Table
+                    aria-label="Spacing proximity scale"
+                    density="compact"
+                    dividers="rows"
+                    data={spacingScaleRows}
+                    columns={[
+                      {
+                        key: 'level',
+                        header: isId ? 'Tingkat kedekatan' : 'Proximity tier',
+                        width: proportional(1.2, {minWidth: 140}),
+                      },
+                      {
+                        key: 'token',
+                        header: 'Astryx Stack / Gap',
+                        width: pixel(185),
+                        renderCell: r => (
+                          <span className="studio-mono-pill">{String(r.token)}</span>
+                        ),
+                      },
+                      {
+                        key: 'why',
+                        header: isId ? 'Fungsi perseptual' : 'Perceptual job',
+                        width: proportional(1.6, {minWidth: 190}),
+                      },
+                    ]}
+                  />
+                </div>
               </Stack>
             </Card>
           )}
@@ -1262,38 +1264,40 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
                   </SegmentedControl>
                 </HStack>
 
-                <Table
-                  aria-label="Semantic control boundaries"
-                  data={semanticRows}
-                  columns={[
-                    {
-                      key: 'need',
-                      header: isId ? 'Kebutuhan interaksi' : 'Interaction job',
-                      width: proportional(1.4, {minWidth: 180}),
-                    },
-                    {
-                      key: 'right',
-                      header: isId ? 'Komponen tepat' : 'Canonical control',
-                      width: proportional(1.1, {minWidth: 150}),
-                      renderCell: row => (
-                        <span className="studio-mono-pill">{String(row.right)}</span>
-                      ),
-                    },
-                    {
-                      key: 'wrong',
-                      header: isId ? 'Jangan diganti dengan' : 'Never substitute',
-                      width: proportional(1.2, {minWidth: 160}),
-                      renderCell: row => (
-                        <Text type="supporting" color="secondary">
-                          {String(row.wrong)}
-                        </Text>
-                      ),
-                    },
-                  ]}
-                  density="balanced"
-                  dividers="rows"
-                  hasHover
-                />
+                <div className="studio-table-scroll">
+                  <Table
+                    aria-label="Semantic control boundaries"
+                    data={semanticRows}
+                    columns={[
+                      {
+                        key: 'need',
+                        header: isId ? 'Kebutuhan interaksi' : 'Interaction job',
+                        width: proportional(1.4, {minWidth: 180}),
+                      },
+                      {
+                        key: 'right',
+                        header: isId ? 'Komponen tepat' : 'Canonical control',
+                        width: proportional(1.1, {minWidth: 150}),
+                        renderCell: row => (
+                          <span className="studio-mono-pill">{String(row.right)}</span>
+                        ),
+                      },
+                      {
+                        key: 'wrong',
+                        header: isId ? 'Jangan diganti dengan' : 'Never substitute',
+                        width: proportional(1.2, {minWidth: 160}),
+                        renderCell: row => (
+                          <Text type="supporting" color="secondary">
+                            {String(row.wrong)}
+                          </Text>
+                        ),
+                      },
+                    ]}
+                    density="balanced"
+                    dividers="rows"
+                    hasHover
+                  />
+                </div>
               </Stack>
             </Card>
           )}
@@ -1686,18 +1690,20 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
                   </Heading>
                 </Stack>
 
-                <SegmentedControl
-                  label="Simulate system state"
-                  size="sm"
-                  value={simState}
-                  onChange={setSimState}
-                >
-                  <SegmentedControlItem value="invalid" label="1. Validation" />
-                  <SegmentedControlItem value="loading" label="2. Loading" />
-                  <SegmentedControlItem value="empty" label="3. Empty" />
-                  <SegmentedControlItem value="error" label="4. Error" />
-                  <SegmentedControlItem value="destructive" label="5. Destructive" />
-                </SegmentedControl>
+                <div className="mh-seg-scroll">
+                  <SegmentedControl
+                    label="Simulate system state"
+                    size="sm"
+                    value={simState}
+                    onChange={setSimState}
+                  >
+                    <SegmentedControlItem value="invalid" label="1. Validation" />
+                    <SegmentedControlItem value="loading" label="2. Loading" />
+                    <SegmentedControlItem value="empty" label="3. Empty" />
+                    <SegmentedControlItem value="error" label="4. Error" />
+                    <SegmentedControlItem value="destructive" label="5. Destructive" />
+                  </SegmentedControl>
+                </div>
 
                 <div className="studio-ux-box">
                   {simState === 'invalid' && (
@@ -1844,42 +1850,44 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
                   </Heading>
                 </Stack>
 
-                <Table
-                  aria-label="Microcopy grammar and bilingual glossary"
-                  data={copyRows}
-                  columns={[
-                    {
-                      key: 'context',
-                      header: isId ? 'Konteks UI' : 'UI pattern',
-                      width: proportional(1, {minWidth: 140}),
-                    },
-                    {
-                      key: 'enGood',
-                      header: 'English (Do)',
-                      width: proportional(1.25, {minWidth: 160}),
-                      renderCell: r => <Text weight="semibold">{String(r.enGood)}</Text>,
-                    },
-                    {
-                      key: 'idGood',
-                      header: 'Indonesia (Lakukan)',
-                      width: proportional(1.25, {minWidth: 160}),
-                      renderCell: r => <Text weight="semibold">{String(r.idGood)}</Text>,
-                    },
-                    {
-                      key: 'avoid',
-                      header: isId ? 'Hindari' : 'Avoid',
-                      width: pixel(170),
-                      renderCell: r => (
-                        <Text type="supporting" color="secondary">
-                          {String(r.avoid)}
-                        </Text>
-                      ),
-                    },
-                  ]}
-                  density="balanced"
-                  dividers="rows"
-                  hasHover
-                />
+                <div className="studio-table-scroll">
+                  <Table
+                    aria-label="Microcopy grammar and bilingual glossary"
+                    data={copyRows}
+                    columns={[
+                      {
+                        key: 'context',
+                        header: isId ? 'Konteks UI' : 'UI pattern',
+                        width: proportional(1, {minWidth: 140}),
+                      },
+                      {
+                        key: 'enGood',
+                        header: 'English (Do)',
+                        width: proportional(1.25, {minWidth: 160}),
+                        renderCell: r => <Text weight="semibold">{String(r.enGood)}</Text>,
+                      },
+                      {
+                        key: 'idGood',
+                        header: 'Indonesia (Lakukan)',
+                        width: proportional(1.25, {minWidth: 160}),
+                        renderCell: r => <Text weight="semibold">{String(r.idGood)}</Text>,
+                      },
+                      {
+                        key: 'avoid',
+                        header: isId ? 'Hindari' : 'Avoid',
+                        width: pixel(170),
+                        renderCell: r => (
+                          <Text type="supporting" color="secondary">
+                            {String(r.avoid)}
+                          </Text>
+                        ),
+                      },
+                    ]}
+                    density="balanced"
+                    dividers="rows"
+                    hasHover
+                  />
+                </div>
 
                 <Grid columns={{minWidth: 280, max: 2, repeat: 'fit'}} gap={3}>
                   <div className="studio-ux-box studio-ux-do">
