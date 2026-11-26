@@ -429,7 +429,7 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       .evaluate(el => Math.round(el.getBoundingClientRect().height));
     expect(topbarHeight).toBeLessThanOrEqual(104);
 
-    // 2. Tap mobile "Tema" / "Theme" button and verify Live Bottom-Sheet opens IMMEDIATELY inside viewport!
+    // 2. Tap mobile "Tema" / "Theme" button and verify 3-Detent Draggable Live Bottom-Sheet (default 66% -> drag up 92% -> drag down 38% -> swipe close)!
     await page
       .locator('.studio-actions-mobile')
       .getByRole('button', {name: /^(Tema|Theme)$/})
@@ -438,16 +438,45 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       name: /Editor Tema Langsung|Live Theme Editor/,
     });
     await expect(editorSheet).toBeVisible();
+    await expect(editorSheet).toHaveAttribute('data-detent', 'default');
     const sheetRect = await editorSheet.evaluate(el => {
       const r = el.getBoundingClientRect();
       return {top: Math.round(r.top), bottom: Math.round(r.bottom), vh: window.innerHeight};
     });
-    expect(sheetRect.top).toBeGreaterThanOrEqual(150);
-    expect(sheetRect.top).toBeLessThan(600);
+    expect(sheetRect.top).toBeGreaterThanOrEqual(220);
+    expect(sheetRect.top).toBeLessThan(340);
     expect(sheetRect.bottom).toBeLessThanOrEqual(sheetRect.vh + 2);
 
-    // Dismiss via backdrop scrim!
-    await page.locator('.te-mobile-scrim').click({position: {x: 180, y: 80}});
+    // Drag grab handle UP -> snaps to expanded (~92dvh)!
+    const grabZone = page.locator('.te-sheet-grab-zone');
+    const grabBox1 = await grabZone.boundingBox();
+    expect(grabBox1).not.toBeNull();
+    await page.mouse.move(grabBox1!.x + grabBox1!.width / 2, grabBox1!.y + grabBox1!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(grabBox1!.x + grabBox1!.width / 2, 70, {steps: 6});
+    await page.mouse.up();
+    await expect(editorSheet).toHaveAttribute('data-detent', 'expanded');
+    await page.waitForTimeout(260);
+    const expandedTop = await editorSheet.evaluate(el => Math.round(el.getBoundingClientRect().top));
+    expect(expandedTop).toBeLessThanOrEqual(95);
+
+    // Drag grab handle DOWN -> snaps to compact (~38dvh, leaving live page interactive above)!
+    const grabBox2 = await grabZone.boundingBox();
+    await page.mouse.move(grabBox2!.x + grabBox2!.width / 2, grabBox2!.y + grabBox2!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(grabBox2!.x + grabBox2!.width / 2, 520, {steps: 6});
+    await page.mouse.up();
+    await expect(editorSheet).toHaveAttribute('data-detent', 'compact');
+    await page.waitForTimeout(260);
+    const compactTop = await editorSheet.evaluate(el => Math.round(el.getBoundingClientRect().top));
+    expect(compactTop).toBeGreaterThanOrEqual(460);
+
+    // Pull grab handle all the way down (< 22dvh) -> dismisses sheet cleanly!
+    const grabBox3 = await grabZone.boundingBox();
+    await page.mouse.move(grabBox3!.x + grabBox3!.width / 2, grabBox3!.y + grabBox3!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(grabBox3!.x + grabBox3!.width / 2, 740, {steps: 6});
+    await page.mouse.up();
     await expect(editorSheet).toBeHidden();
 
     // Open top-right 3-dot overflow menu and verify it anchors directly below the trigger (never at the bottom of the screen on iOS/WebKit!)

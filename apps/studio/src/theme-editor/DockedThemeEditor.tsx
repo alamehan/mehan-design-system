@@ -109,6 +109,20 @@ const ADV_GROUP_LABELS_ID: Record<AdvancedTokenGroupKey, string> = {
   easing: 'Kurva Gerak',
 };
 
+type MobileSheetDetent = 'compact' | 'default' | 'expanded';
+
+const MOBILE_SHEET_DETENTS: Record<MobileSheetDetent, number> = {
+  compact: 0.38,
+  default: 0.66,
+  expanded: 0.92,
+};
+
+const NEXT_MOBILE_DETENT: Record<MobileSheetDetent, MobileSheetDetent> = {
+  default: 'expanded',
+  expanded: 'compact',
+  compact: 'default',
+};
+
 interface DockedThemeEditorProps {
   isOpen: boolean;
   onClose: () => void;
@@ -155,13 +169,34 @@ export function DockedThemeEditor({
 
   const [editorTab, setEditorTab] = useState<string>('base');
   const [advGroup, setAdvGroup] = useState<AdvancedTokenGroupKey>('colors');
+  const [sheetDetent, setSheetDetent] = useState<MobileSheetDetent>('default');
   const bodyScrollRef = useRef<HTMLDivElement | null>(null);
+  const panelRef = useRef<HTMLElement | null>(null);
+  const scrimRef = useRef<HTMLDivElement | null>(null);
+  const sheetGestureRef = useRef<{
+    pointerId: number;
+    startY: number;
+    startHeight: number;
+    prevY: number;
+    prevTime: number;
+    velocityY: number;
+    moved: boolean;
+  } | null>(null);
 
   useLayoutEffect(() => {
     if (bodyScrollRef.current) {
       bodyScrollRef.current.scrollTop = 0;
     }
   }, [editorTab, advGroup]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSheetDetent('default');
+      panelRef.current?.style.removeProperty('--te-sheet-live-h');
+      panelRef.current?.removeAttribute('data-dragging');
+      scrimRef.current?.style.removeProperty('--te-scrim-live-alpha');
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -173,6 +208,127 @@ export function DockedThemeEditor({
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isOpen, onClose]);
+
+  const beginSheetGesture = (e: React.PointerEvent<HTMLElement>) => {
+    if (typeof window === 'undefined' || window.innerWidth > 640) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const target = e.target as HTMLElement | null;
+    if (
+      target &&
+      !target.closest('.te-sheet-grab-zone') &&
+      target.closest('button, a, input, select, textarea, [role="tab"], [role="combobox"]')
+    ) {
+      return;
+    }
+    const panel = panelRef.current;
+    if (!panel) return;
+    const startHeight = panel.getBoundingClientRect().height;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // Headless synthetic pointer events may omit active pointer capture.
+    }
+    sheetGestureRef.current = {
+      pointerId: e.pointerId,
+      startY: e.clientY,
+      startHeight,
+      prevY: e.clientY,
+      prevTime: performance.now(),
+      velocityY: 0,
+      moved: false,
+    };
+  };
+
+  const moveSheetGesture = (e: React.PointerEvent<HTMLElement>) => {
+    const g = sheetGestureRef.current;
+    const panel = panelRef.current;
+    if (!g || !panel || e.pointerId !== g.pointerId) return;
+    const deltaY = e.clientY - g.startY;
+    if (!g.moved && Math.abs(deltaY) < 4) return;
+    if (!g.moved) {
+      g.moved = true;
+      panel.setAttribute('data-dragging', 'true');
+    }
+
+    const now = performance.now();
+    const dt = Math.max(1, now - g.prevTime);
+    const instantVy = (e.clientY - g.prevY) / dt;
+    g.velocityY = g.velocityY * 0.35 + instantVy * 0.65;
+    g.prevY = e.clientY;
+    g.prevTime = now;
+
+    const vh = window.innerHeight || 812;
+    const maxH = vh * 0.94;
+    const minH = vh * 0.14;
+    const rawH = g.startHeight - deltaY;
+    const clampedH =
+      rawH > maxH
+        ? maxH + (rawH - maxH) * 0.22
+        : Math.max(minH, rawH);
+
+    panel.style.setProperty('--te-sheet-live-h', `${Math.round(clampedH)}px`);
+    if (scrimRef.current) {
+      const progress = Math.max(0, Math.min(1, (clampedH / vh - 0.36) / 0.52));
+      scrimRef.current.style.setProperty(
+        '--te-scrim-live-alpha',
+        (progress * 0.22).toFixed(3),
+      );
+    }
+  };
+
+  const finishSheetGesture = (
+    e: React.PointerEvent<HTMLElement>,
+    allowTapCycle: boolean,
+  ) => {
+    const g = sheetGestureRef.current;
+    if (!g || e.pointerId !== g.pointerId) return;
+    sheetGestureRef.current = null;
+    try {
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+    } catch {
+      // Ignore synthetic pointer release errors.
+    }
+
+    const panel = panelRef.current;
+    panel?.removeAttribute('data-dragging');
+    panel?.style.removeProperty('--te-sheet-live-h');
+    scrimRef.current?.style.removeProperty('--te-scrim-live-alpha');
+
+    if (!g.moved) {
+      if (allowTapCycle) {
+        setSheetDetent(prev => NEXT_MOBILE_DETENT[prev]);
+      }
+      return;
+    }
+
+    const vh = window.innerHeight || 812;
+    const currentH = g.startHeight - (e.clientY - g.startY);
+    const cappedVy = Math.max(-2.5, Math.min(2.5, g.velocityY));
+    const projectedH = currentH - cappedVy * 75;
+    const ratio = projectedH / vh;
+
+    // Dismiss only when pulled below 22% of screen, or flicked downward from the lowest ('compact') detent
+    if (
+      currentH / vh < 0.22 ||
+      (sheetDetent === 'compact' && cappedVy > 0.65 && currentH / vh < 0.33)
+    ) {
+      onClose();
+      return;
+    }
+
+    let best: MobileSheetDetent = 'default';
+    let bestDist = Infinity;
+    for (const stop of ['compact', 'default', 'expanded'] as const) {
+      const dist = Math.abs(ratio - MOBILE_SHEET_DETENTS[stop]);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = stop;
+      }
+    }
+    setSheetDetent(best);
+  };
   const [tokenQuery, setTokenQuery] = useState('');
   const [compQuery, setCompQuery] = useState('');
   const [customPickerOpen, setCustomPickerOpen] = useState(false);
@@ -403,17 +559,69 @@ export function DockedThemeEditor({
   return (
     <>
       <div
+        ref={scrimRef}
         className="te-mobile-scrim"
+        data-detent={sheetDetent}
         aria-hidden="true"
         onClick={onClose}
       />
       <aside
+        ref={panelRef}
         className="te-docked-panel"
+        data-detent={sheetDetent}
         aria-label={isId ? 'Editor Tema Langsung' : 'Live Theme Editor'}
       >
-        {/* Clean, Uncluttered Sticky Header (with Mobile Bottom-Sheet Pill Handle) */}
-        <div className="te-header">
-          <div className="te-sheet-handle" aria-hidden="true" />
+        {/* Clean, Uncluttered Sticky Header (with Interactive 3-Detent Mobile Grab Bar) */}
+        <div
+          className="te-header"
+          onPointerDown={beginSheetGesture}
+          onPointerMove={moveSheetGesture}
+          onPointerUp={e => finishSheetGesture(e, false)}
+          onPointerCancel={e => finishSheetGesture(e, false)}
+        >
+          <button
+            type="button"
+            className="te-sheet-grab-zone"
+            aria-label={
+              isId
+                ? `Atur tinggi panel Theme Editor (${sheetDetent === 'expanded' ? 'penuh' : sheetDetent === 'compact' ? 'ringkas' : 'standar'})`
+                : `Resize Theme Editor sheet (${sheetDetent})`
+            }
+            onPointerDown={e => {
+              e.stopPropagation();
+              beginSheetGesture(e);
+            }}
+            onPointerMove={e => {
+              e.stopPropagation();
+              moveSheetGesture(e);
+            }}
+            onPointerUp={e => {
+              e.stopPropagation();
+              finishSheetGesture(e, true);
+            }}
+            onPointerCancel={e => {
+              e.stopPropagation();
+              finishSheetGesture(e, false);
+            }}
+            onKeyDown={e => {
+              if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setSheetDetent(prev =>
+                  prev === 'compact' ? 'default' : 'expanded',
+                );
+              } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (sheetDetent === 'expanded') setSheetDetent('default');
+                else if (sheetDetent === 'default') setSheetDetent('compact');
+                else onClose();
+              } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setSheetDetent(prev => NEXT_MOBILE_DETENT[prev]);
+              }
+            }}
+          >
+            <span className="te-sheet-handle" aria-hidden="true" />
+          </button>
         <div className="te-header-top">
           <div className="te-header-title-row">
             <Palette size={15} />

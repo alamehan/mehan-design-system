@@ -342,6 +342,10 @@ body,
   display: none;
 }
 
+.te-sheet-grab-zone {
+  display: none;
+}
+
 .te-sheet-handle {
   display: none;
 }
@@ -435,7 +439,9 @@ body,
 
 .te-body {
   flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 14px;
   box-sizing: border-box;
 }
@@ -562,7 +568,7 @@ body,
 }
 
 .te-hex-input {
-  width: 92px;
+  width: 98px;
 }
 
 .te-alpha-input {
@@ -2296,34 +2302,99 @@ body,
 }
 
 @media (max-width: 640px) {
-  /* Phone Live Interactive Bottom-Sheet Theme Editor (Top 32% of live app stays crisp & visible!) */
+  /* Phone 3-Detent Draggable Live Bottom-Sheet Theme Editor (38dvh compact / 66dvh default / 92dvh expanded + swipe-to-dismiss) */
   .te-mobile-scrim {
-    background: rgba(9, 13, 22, 0.16);
+    background: rgba(9, 13, 22, var(--te-scrim-live-alpha, 0.16));
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    transition: background-color 220ms ease;
+  }
+
+  .te-mobile-scrim[data-detent='compact'] {
+    background: rgba(9, 13, 22, var(--te-scrim-live-alpha, 0));
+    pointer-events: none;
+  }
+
+  .te-mobile-scrim[data-detent='expanded'] {
+    background: rgba(9, 13, 22, var(--te-scrim-live-alpha, 0.28));
   }
 
   .te-docked-panel {
+    --te-detent-h: 66dvh;
     top: auto;
     left: 0;
     right: 0;
     bottom: 0;
     width: 100%;
-    height: 68dvh;
-    max-height: 68dvh;
+    height: var(--te-sheet-live-h, var(--te-detent-h));
+    max-height: 95dvh;
     border-left: 0;
     border-top: 1px solid var(--color-border-emphasized);
     border-radius: 20px 20px 0 0;
     box-shadow: 0 -14px 34px rgba(9, 13, 22, 0.26);
+    transition: height 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: height;
+  }
+
+  .te-docked-panel[data-detent='compact'] {
+    --te-detent-h: 38dvh;
+  }
+
+  .te-docked-panel[data-detent='default'] {
+    --te-detent-h: 66dvh;
+  }
+
+  .te-docked-panel[data-detent='expanded'] {
+    --te-detent-h: 92dvh;
+  }
+
+  .te-docked-panel[data-dragging='true'] {
+    transition: none !important;
+  }
+
+  .te-header {
+    padding-top: 0;
+  }
+
+  .te-sheet-grab-zone {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% + 28px);
+    margin: 0 -14px -4px;
+    height: 26px;
+    padding: 0;
+    cursor: ns-resize;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .te-sheet-grab-zone:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--color-text-primary));
+    outline-offset: -4px;
+    border-radius: 12px;
   }
 
   .te-sheet-handle {
     display: block;
-    width: 36px;
-    height: 4px;
+    width: 40px;
+    height: 4.5px;
     border-radius: 999px;
     background-color: var(--color-border-emphasized);
-    margin: -2px auto 2px;
+    transition:
+      width 150ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 150ms ease;
+  }
+
+  .te-sheet-grab-zone:hover .te-sheet-handle,
+  .te-sheet-grab-zone:active .te-sheet-handle,
+  .te-docked-panel[data-dragging='true'] .te-sheet-handle {
+    width: 50px;
+    background-color: var(--color-text-secondary);
   }
 
   .mh-preset-strip,
