@@ -123,8 +123,9 @@ Execute all 10 touchpoints in order when scaffolding a new design system from th
    - Domain UX & layout guides in [`packages/astryx/docs/`](../packages/astryx/docs) indexed via [`packages/astryx/astryx.integration.mjs`](../packages/astryx/astryx.integration.mjs).
 
 ### Step 6 · Sync Real-Engine Browser Bundle, Portable CSS & AI Prototype Kit (`apps/studio/scripts/` & `packages/portable/`)
-1. Keep [`apps/studio/scripts/build-cdn-runtime.mjs`](../apps/studio/scripts/build-cdn-runtime.mjs) and [`apps/studio/scripts/cdn-runtime-entry.tsx`](../apps/studio/scripts/cdn-runtime-entry.tsx) wired to `@<scope>/astryx` so `pnpm build` automatically bundles `apps/studio/dist/cdn/<scope>-runtime.{css,js}` + self-hosted `.woff2` fonts (without bloating root offline [`STUDIO.html`](../STUDIO.html)).
-2. Update [`packages/portable/src/generator.ts`](../packages/portable/src/generator.ts) so:
+1. Keep [`apps/studio/scripts/build-cdn-runtime.mjs`](../apps/studio/scripts/build-cdn-runtime.mjs), [`apps/studio/scripts/cdn-runtime-entry.tsx`](../apps/studio/scripts/cdn-runtime-entry.tsx), and [`apps/studio/scripts/cdn-runtime-styles.css`](../apps/studio/scripts/cdn-runtime-styles.css) wired to `@<scope>/astryx` (and your Preset `#1` theme CSS) so `pnpm build` automatically bundles `apps/studio/dist/cdn/<scope>-runtime.{css,js}` + self-hosted `.woff2` fonts (without bloating root offline [`STUDIO.html`](../STUDIO.html)).
+2. Keep [`packages/portable/scripts/sync-astryx-catalog.mjs`](../packages/portable/scripts/sync-astryx-catalog.mjs) enabled in [`build-portable.mjs`](../packages/portable/scripts/build-portable.mjs) so every domain component documented in `packages/astryx/src/components/*/*.doc.mjs` (such as `ShiftRosterMatrix` or `KanbanBoard`) is **automatically** synced with its exact prop signatures into `MEHAN-AI-PROTOTYPE-KIT.md` (renamed to `<BRAND>-AI-PROTOTYPE-KIT.md`) and Studio's `Copy AI kit` action.
+3. Update [`packages/portable/src/generator.ts`](../packages/portable/src/generator.ts) so:
    - `generateAiPrototypeKit` and `generateStarterCdnHtml` resolve `cdnBaseUrl` dynamically from root `package.json` `homepage` (`https://<user>.github.io/<repo>/cdn`) and emit domain-authentic `<script type="text/tsx">` executive starter templates running 100% real `@astryxdesign/core` + `@<scope>/astryx` components.
    - `generatePortableCss` and `generateOfflineAiPrototypeKit` (`--offline`) reflect the target system's exact visual physics and domain classes, with every raw `<button>` carrying `type="button"`.
 
@@ -157,7 +158,7 @@ Run `pnpm verify` and resolve every error before committing:
 2. **`pnpm typecheck`** — Zero TypeScript errors across packages, Studio, and [`tests/tsconfig.json`](../tests/tsconfig.json).
 3. **`pnpm test:unit`** — Passes all Vitest contrast matrices, W3C token symmetry, CLI E2E, font existence, relative link checks, and zero-hardcoded-path locks ([`tests/unit/repo-and-dna-proof.test.ts`](../tests/unit/repo-and-dna-proof.test.ts)).
 4. **`pnpm verify:astryx`** — Passes `astryx integration check --strict --next` + `astryx integration verify` with `0` errors and `0` warnings.
-5. **`pnpm test:e2e`** — Passes all Playwright specs + `axe-core` WCAG 2.2 AA audits across Desktop (`1366×900` Light/Dark), `200%` zoom, and full 5-tab Mobile (`375×812` asserting `topbarHeight <= 104px`, on-screen Live Bottom-Sheet `Theme Editor`, per-card `getBoundingClientRect().right <= innerWidth`, and `0` truncated `SegmentedControl` radios) ([`tests/e2e/`](../tests/e2e)).
+5. **`pnpm test:e2e`** — Passes all Playwright specs + `axe-core` WCAG 2.2 AA audits across Desktop (`1366×900` Light/Dark), `200%` zoom, full 5-tab Mobile (`375×812` asserting `topbarHeight <= 104px`, on-screen Live Bottom-Sheet `Theme Editor`, per-card `getBoundingClientRect().right <= innerWidth`, and `0` truncated `SegmentedControl` radios), and the single-HTML `<script type="text/tsx">` Real-Engine prototype workflow ([`tests/e2e/`](../tests/e2e)).
 6. **Visual QA Inspection** — Render and visually inspect Light, Dark, and Mobile (`375px`–`390px`) screenshots across all Studio tabs and both READMEs before pushing.
 
 ---

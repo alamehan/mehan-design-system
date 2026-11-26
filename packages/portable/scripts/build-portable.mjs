@@ -2,11 +2,14 @@
 import {execFileSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import {syncAstryxCatalog} from './sync-astryx-catalog.mjs';
 
 const pkgRoot = path.resolve(import.meta.dirname, '..');
 const repoRoot = path.resolve(pkgRoot, '../..');
 const astryxDir = path.resolve(pkgRoot, '../astryx');
 const distDir = path.join(pkgRoot, 'dist');
+
+await syncAstryxCatalog();
 
 fs.rmSync(distDir, {recursive: true, force: true});
 fs.mkdirSync(distDir, {recursive: true});

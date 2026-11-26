@@ -51,9 +51,9 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
   const presetAccents = Object.keys(MEHAN_ACCENT_PRESETS) as MehanPresetAccentId[];
   const customHexSeeds = ['#ffd84d', '#67e8f9', '#111827', '#7c3aed'];
 
-  it('passes WCAG 2.2 AA + 3-stop primary gradient-band contrast across all 112 [8 Atmospheres x 14 Accents] combinations and all 12 built-in Studio presets', () => {
-    expect(atmospheres).toHaveLength(8);
-    expect(presetAccents).toHaveLength(10);
+  it('passes WCAG 2.2 AA + 3-stop primary gradient-band contrast across all [Atmospheres x Accents] combinations and all built-in Studio presets', () => {
+    expect(atmospheres.length).toBeGreaterThanOrEqual(8);
+    expect(presetAccents.length).toBeGreaterThanOrEqual(10);
     for (const atmosphere of atmospheres) {
       for (const accent of [...presetAccents, ...customHexSeeds]) {
         const report = auditMehanThemeContrast({
@@ -68,7 +68,7 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
     }
 
     const builtIns = getBuiltInPresets();
-    expect(builtIns).toHaveLength(12);
+    expect(builtIns.length).toBeGreaterThanOrEqual(12);
     for (const preset of builtIns) {
       const report = auditMehanThemeContrast({
         name: preset.id,
@@ -242,6 +242,39 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
     expect(aiKit).toContain('DataChart');
     expect(aiKit).toContain('Drawer');
     expect(aiKit).toContain('letterSpacing');
+    // Auto-sync lock: every component folder in packages/astryx/src/components/* must be exported in src/index.ts AND present in generateAiPrototypeKit()
+    const astryxIndexSrc = fs.readFileSync(
+      path.join(repoRoot, 'packages/astryx/src/index.ts'),
+      'utf8',
+    );
+    const componentDirs = fs
+      .readdirSync(path.join(repoRoot, 'packages/astryx/src/components'), {
+        withFileTypes: true,
+      })
+      .filter(d => d.isDirectory())
+      .map(d => d.name);
+    expect(componentDirs.length).toBeGreaterThanOrEqual(35);
+    for (const compName of componentDirs) {
+      expect(
+        fs.existsSync(
+          path.join(
+            repoRoot,
+            'packages/astryx/src/components',
+            compName,
+            `${compName}.doc.mjs`,
+          ),
+        ),
+        `Missing .doc.mjs for component ${compName}`,
+      ).toBe(true);
+      expect(
+        astryxIndexSrc,
+        `Component ${compName} missing from packages/astryx/src/index.ts`,
+      ).toContain(compName);
+      expect(
+        aiKit,
+        `Component ${compName} missing from auto-synced AI Prototype Kit`,
+      ).toContain(`\`${compName}\``);
+    }
     for (const tag of [...aiKit.matchAll(/<button\b[^>]*>/g)].map(m => m[0])) {
       expect(tag, `Button tag missing type="button" in aiKit: ${tag}`).toContain(
         'type="button"',

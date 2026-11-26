@@ -7,6 +7,7 @@ import {
   type MehanThemeOptions,
   type ResolvedMehanDna,
 } from '@mehan/dna';
+import {MEHAN_ASTRYX_CATALOG} from './astryx-catalog.generated';
 
 export interface MehanAiKitOptions extends Partial<MehanThemeOptions> {
   /** Base URL serving `<runtimePrefix>-runtime.css`, `<runtimePrefix>-runtime.js`, and `fonts/*.woff2`. */
@@ -599,6 +600,16 @@ export function generateAiPrototypeKit(options?: MehanAiKitOptions): string {
   const prefix = (options?.runtimePrefix ?? 'mehan').replace(/[^a-z0-9-]/gi, '') || 'mehan';
   const defaultMode = options?.defaultMode ?? 'light';
   const themeExpr = buildSerializedThemeExpression(options, dna);
+  const atmosphereIds = Object.keys(MEHAN_ATMOSPHERES).join(' | ');
+  const accentIds = Object.keys(MEHAN_ACCENT_PRESETS).join(' | ');
+  const autoSyncedExtensionLines = MEHAN_ASTRYX_CATALOG.map(entry => {
+    const sig = entry.props
+      .slice(0, 7)
+      .map(p => `${p.name}${p.required ? '' : '?'}: ${p.type}`)
+      .join(', ');
+    const more = entry.props.length > 7 ? ', ...' : '';
+    return `- **\`${entry.name}\`** ({ ${sig}${more} }): ${entry.summary}`;
+  }).join('\n');
 
   return `# Mehan Design System — Real-Engine Single-HTML Prototype Kit (${dna.atmosphere.name} · ${dna.accent.name})
 
@@ -629,8 +640,8 @@ Every prototype is presented live to product & executive stakeholders — **neve
 ### B. Buttons, Navigation & Menus (\`label\` Prop Required!)
 - **\`Button\`**: \`<Button variant="primary" | "secondary" | "ghost" | "destructive" size="sm" | "md" | "lg" label="Save changes" icon={<Check size={15} />} onClick={...} isDisabled={...} />\` *(passes visible text via \`label\`, NOT children!)*
 - **\`IconButton\`**: \`<IconButton variant="ghost" | "secondary" size="sm" | "md" label="Toggle dark mode" icon={<Moon size={15} />} onClick={...} />\`
-- **\`SplitButton\`** (\`@mehan/astryx\`): \`<SplitButton label="Publish" variant="primary" onPrimaryClick={...} items={[{ id: 'draft', label: 'Save as draft', onSelect: ... }]} />\`
-- **\`CopyButton\` & \`InlineConfirm\`** (\`@mehan/astryx\`): \`<CopyButton value="INV-2026-084" label="Copy ID" size="sm" />\` · \`<InlineConfirm label="Remove" confirmLabel="Confirm remove" onConfirm={...} />\`
+- **\`SplitButton\`** (\`@mehan/astryx\`): \`<SplitButton label="Publish" variant="primary" onAction={...} items={[{ id: 'draft', label: 'Save as draft' }]} onSelectItem={id => ...} />\`
+- **\`CopyButton\` & \`InlineConfirm\`** (\`@mehan/astryx\`): \`<CopyButton value="INV-2026-084" label="Copy ID" size="sm" />\` · \`<InlineConfirm triggerLabel="Remove" confirmLabel="Confirm remove" onConfirm={...} />\`
 - **\`TabList\` + \`Tab\`**: \`<TabList role="tablist" aria-label="Views" value={tab} onChange={setTab} overflow="auto"><Tab value="overview" label="Overview" /><Tab value="approvals" label="Approvals" /></TabList>\`
 - **\`SegmentedControl\`**: Wrap 4+ items in \`<div className="mehan-seg-wrap">\`: \`<SegmentedControl label="Window" size="sm" value={period} onChange={setPeriod}><SegmentedControlItem value="7d" label="7 days" /><SegmentedControlItem value="30d" label="30 days" /></SegmentedControl>\`
 - **\`DropdownMenu\`**: \`<DropdownMenu button={{ label: 'Actions', variant: 'secondary', size: 'sm' }} items={[{ label: 'Export CSV', onClick: ... }, { type: 'divider' }, { label: 'Archive', onClick: ... }]} />\`
@@ -645,7 +656,7 @@ Every prototype is presented live to product & executive stakeholders — **neve
 ### D. KPIs, Charts, Tables & Workflow Status
 - **\`MetricCard\`** (\`@mehan/astryx\`): \`<MetricCard label="Net Revenue" value="Rp 1,48 M" delta={{ value: '+14.8%', direction: 'up' }} caption="vs. last 30 days" icon={<TrendingUp size={16} />} />\`
 - **\`DataChart\`** (\`@mehan/astryx\`): \`<DataChart kind="area" | "bar" | "line" | "horizontal-bar" title="Monthly Throughput" subtitle="Completed vs. target" categories={['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']} series={[{ id: 'actual', label: 'Completed', values: [42, 51, 58, 63, 71, 84] }, { id: 'target', label: 'Target', values: [40, 48, 55, 60, 68, 75] }]} height={210} />\`
-- **\`Sparkline\` / \`Gauge\` / \`ActivityRing\`** (\`@mehan/astryx\`): \`<Sparkline values={[12, 18, 15, 24, 29]} />\` · \`<Gauge value={86} label="SLA compliance" />\`
+- **\`Sparkline\` / \`Gauge\` / \`ActivityRing\`** (\`@mehan/astryx\`): \`<Sparkline data={[12, 18, 15, 24, 29]} label="7-day trend" />\` · \`<Gauge value={86} label="SLA compliance" />\`
 - **\`Table\`**: Wrap in \`<div className="mehan-table-scroll">\`:
   \`\`\`tsx
   <div className="mehan-table-scroll">
@@ -685,6 +696,10 @@ Every prototype is presented live to product & executive stakeholders — **neve
 - **\`AlertDialog\`**: \`<AlertDialog isOpen={confirmOpen} onOpenChange={setConfirmOpen} title='Cancel request "REQ-204"?' description="This removes the request from the approval queue." cancelLabel="Keep request" actionLabel="Cancel request" onAction={() => { setConfirmOpen(false); ... }} />\`
 - **\`Banner\`**: \`<Banner status="info" | "success" | "warning" | "error" container="card" collapsible={false} title="Policy check passed" description="All items meet Q4 budget thresholds." />\`
 - **Raw HTML Fallback Buttons (Only inside custom SVGs/canvas):** Always include \`type="button"\` (e.g. \`<button type="button">\`).
+
+### F. Complete \`@${prefix}/astryx\` Extension Roster & Live DNA Seeds (Auto-Synced)
+- **\`createMehanTheme\` Seeds:** \`atmosphere\`: \`${atmosphereIds}\` · \`accent\`: \`${accentIds}\` (or any \`#rrggbb\` hex) · \`density\`: \`"standard" | "compact"\` · \`lipStyle\`: \`"candy" | "subtle" | "flat"\` · \`wellStyle\`: \`"recessed" | "bordered"\`.
+${autoSyncedExtensionLines}
 
 ## 4. Mehan Spatial, UX & Copywriting Standards
 1. **One Primary CTA Per View:** Use one \`variant="primary"\` \`<Button>\` for the main screen or drawer goal; use \`"secondary"\` or \`"ghost"\` for supporting controls.

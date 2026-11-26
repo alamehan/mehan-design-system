@@ -5,7 +5,7 @@
 ## 1. Session Read Order
 
 1. **[`README.md`](./README.md)** *(and **[`README.id.md`](./README.id.md)**)* — Architectural thesis (*Meta Astryx's engine × Mehan's tactile soul*), workspace map, and 60-second onboarding paths.
-2. **[`CLAUDE.md`](./CLAUDE.md)** — Monorepo responsibilities, component UX discipline, command reference, and 6-gate `pnpm verify` pipeline.
+2. **[`CLAUDE.md`](./CLAUDE.md)** — Monorepo responsibilities, component UX discipline, command reference, 6-gate `pnpm verify` pipeline, and **§4 Future Evolution & Auto-Sync Matrix** (what updates automatically vs. minimal touchpoints when adding components, presets, or themes).
 3. **[`packages/astryx/src/createMehanTheme.ts`](./packages/astryx/src/createMehanTheme.ts)** — Official Meta Astryx theme provider mapping perceptual OKLCH DNA (`@mehan/dna`) onto Core component slots.
 4. **[`docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md`](./docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md)** — Complete step-by-step blueprint and kickoff prompt when cloning this architecture to create sibling `@alamehan` design systems (HRIS, Project Management, Enterprise SaaS).
 

@@ -40,6 +40,7 @@ export function AppProviders({children}: {children: React.ReactNode}) {
 - **Theme, History & File I/O:** `MEHAN_THEME_INIT_SCRIPT`, `useMehanThemeMode`, `useHistoryStore`, `copyTextSafe`, `readFileText`, `pickFiles`, `downloadBlob`, `downloadJson`
 - **DNA (`@mehan/astryx/dna`):** `createMehanTheme`, `resolveMehanDna`, `auditMehanThemeContrast`, `createHistoryStore`, `validateFile`, `exportW3cDesignTokens`, `formatNumber`, `formatCurrency`, `formatBytes`, `formatRelativeTime`
 
-## AI Agent Guides (`astryx docs`)
+## AI Agent Guides (`astryx docs`) & Single-HTML Browser Runtime
 
 - `mehan-design-rules` · `mehan-ux-complexity` · `mehan-copy-and-states` · `mehan-ergonomics-and-motion` · `mehan-forms-and-i18n` · `mehan-page-archetypes` · `mehan-runtime-hooks`
+- Every component exported from [`src/index.ts`](./src/index.ts) and documented via `src/components/*/*.doc.mjs` is automatically bundled into `/cdn/mehan-runtime.{css,js}` and synced into `@mehan/portable`'s `MEHAN-AI-PROTOTYPE-KIT.md` during `pnpm build`.

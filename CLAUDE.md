@@ -35,5 +35,18 @@
 | `pnpm typecheck` | Runs strict `tsc --noEmit` across all packages, Studio, and [`tests/tsconfig.json`](./tests/tsconfig.json). |
 | `pnpm test:unit` | Runs Vitest mathematical OKLCH contrast proofs, W3C symmetry, CLI E2E, and Evergreen/governance drift locks ([`tests/unit/repo-and-dna-proof.test.ts`](./tests/unit/repo-and-dna-proof.test.ts)). |
 | `pnpm verify:astryx` | Runs official `astryx integration check --strict --next` and `astryx integration verify` against `@mehan/astryx`. |
-| `pnpm test:e2e` | Runs Playwright Chromium specs + `axe-core` WCAG 2.2 AA audits ([`tests/e2e/`](./tests/e2e)) against offline [`STUDIO.html`](./STUDIO.html). |
+| `pnpm test:e2e` | Runs Playwright Chromium specs + `axe-core` WCAG 2.2 AA audits ([`tests/e2e/`](./tests/e2e)) against offline [`STUDIO.html`](./STUDIO.html) and single-HTML `<script type="text/tsx">` prototypes. |
 | `pnpm verify` | Executes **all 6 gates sequentially** — mandatory before every commit or release. |
+
+---
+
+## 4. Future Evolution & Auto-Sync Matrix (Zero-Drift Maintenance)
+
+The monorepo is wired so routine improvements propagate **automatically** on `pnpm verify` + `git push origin main` without manual copy-pasting across Portable, AI Kit, or CDN bundles:
+
+| Change Scenario | Where You Edit | What Auto-Syncs Automatically on `pnpm verify` + Push |
+|---|---|---|
+| **Adjust tokens, button physics, radii, shadows, or fix an existing component** | [`packages/dna/src/`](./packages/dna/src) or [`packages/astryx/src/`](./packages/astryx/src) | **100% Automatic:** updates Live Studio, offline [`STUDIO.html`](./STUDIO.html), `/cdn/mehan-runtime.{css,js}` (upgrading existing `.html` prototypes too), [`release/*.tgz`](./release), [`mehan-portable.css`](./release/mehan-portable.css), [`MEHAN-AI-PROTOTYPE-KIT.md`](./release/MEHAN-AI-PROTOTYPE-KIT.md), and W3C JSON. |
+| **Add a curated Studio Theme Preset** | Add preset entry to `getBuiltInPresets()` in [`apps/studio/src/studioState.ts`](./apps/studio/src/studioState.ts) | **100% Automatic:** appears in Studio Overview grid & Theme Editor selector, updates dynamic `{builtInPresets.length}` badges, runs WCAG 2.2 AA contrast audit in [`repo-and-dna-proof.test.ts`](./tests/unit/repo-and-dna-proof.test.ts), and exports cleanly to AI Kit / Starter HTML / React / W3C. |
+| **Add a new Component to `@mehan/astryx`** | Create `packages/astryx/src/components/<Name>/` (`<Name>.tsx` + `<Name>.doc.mjs` + styles in [`styles.css`](./packages/astryx/src/styles.css)), export in [`packages/astryx/src/index.ts`](./packages/astryx/src/index.ts), and add showcase in `blocks/` + Studio `catalog/` | **Automatic Portable & AI Kit Sync:** `/cdn/mehan-runtime.{css,js}` bundles `<Name>` automatically, [`sync-astryx-catalog.mjs`](./packages/portable/scripts/sync-astryx-catalog.mjs) auto-injects `<Name>` and its verified props into [`MEHAN-AI-PROTOTYPE-KIT.md`](./release/MEHAN-AI-PROTOTYPE-KIT.md) & Studio's `Copy AI kit`, and `repo-and-dna-proof.test.ts` enforces 1:1 export + AI Kit parity. *(Touch `.mh-*` rules in `generator.ts` only if you also want a pure CSS class in the optional `--offline` non-React track.)* |
+| **Add a new Atmosphere, Brand Accent, or `.woff2` Font** | [`atmospheres.ts`](./packages/dna/src/atmospheres.ts) / [`accents.ts`](./packages/dna/src/accents.ts) or [`packages/astryx/fonts/`](./packages/astryx/fonts) + [`fonts.css`](./packages/astryx/fonts.css) (+ [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md)) | **100% Automatic:** `createMehanTheme`, `/cdn/fonts/*.woff2`, `mehan-portable.css`, `MEHAN-AI-PROTOTYPE-KIT.md` seed lists, W3C tokens, and contrast matrix tests all pick up the new seed/font automatically. |
