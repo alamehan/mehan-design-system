@@ -406,7 +406,9 @@ function StudioInner({
     downloadTextFile(`mehan-${seed.atmosphere}-starter.html`, html, 'text/html');
     showToast({
       type: 'info',
-      body: `Downloaded mehan-${seed.atmosphere}-starter.html`,
+      body: isId
+        ? `mehan-${seed.atmosphere}-starter.html diunduh.`
+        : `Downloaded mehan-${seed.atmosphere}-starter.html`,
     });
   };
 

@@ -370,7 +370,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
               icon={<Copy size={14} />}
               onClick={() =>
                 void handleCopy(
-                  `Read AGENTS.md, CLAUDE.md, and docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md inside mehan-design-system, then help me scaffold a new standalone Meta Astryx-powered Design System repository following all 9 touchpoints in the playbook.`,
+                  `Read AGENTS.md, CLAUDE.md, and docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md inside mehan-design-system, then help me scaffold a new standalone Meta Astryx-powered Design System repository following every touchpoint in the playbook.`,
                   isId
                     ? 'Prompt pembuatan Design System baru disalin.'
                     : 'Copied new Design System kickoff prompt.',
@@ -381,7 +381,7 @@ export function MaintainView({lang, copy, themeState, dna}: MaintainViewProps) {
           <Text color="secondary">
             {isId
               ? 'Ingin membangun Design System mandiri dengan karakter visual dan komponen domain berbeda (misalnya HRIS, Project Management, atau ERP) di atas standar mesin Meta Astryx yang sama? Buka panduan lengkap langkah demi langkah di docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md di dalam repositori ini.'
-              : 'Building a separate domain Design System (such as HRIS, Project Management, or FinOps) on the same Meta Astryx chassis with its own visual DNA and custom components? Follow the complete 9-step blueprint in docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md.'}
+              : 'Building a separate domain Design System (such as HRIS, Project Management, or FinOps) on the same Meta Astryx chassis with its own visual DNA and custom components? Follow the complete step-by-step blueprint in docs/DESIGN-SYSTEM-REPLICATION-PLAYBOOK.md.'}
           </Text>
         </Stack>
       </Card>

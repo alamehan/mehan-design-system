@@ -29,7 +29,7 @@ export async function syncAstryxCatalog() {
       : [];
     const rawDesc = String(doc.usage?.description ?? '').replace(/\s+/g, ' ').trim();
     const summary =
-      rawDesc.split(/(?<!\bvs|\be\.g|\bi\.e|\betc)(?<=\.)\s+/i)[0] || rawDesc;
+      rawDesc.split(/(?<!\bvs\.|\be\.g\.|\bi\.e\.|\betc\.)(?<=\.)\s+/i)[0] || rawDesc;
     entries.push({
       name: String(doc.name ?? dirName),
       category: String(doc.category ?? 'General'),

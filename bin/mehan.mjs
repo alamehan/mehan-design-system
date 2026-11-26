@@ -513,6 +513,9 @@ if (cmd === 'init') {
     (components && Object.keys(components).length > 0);
 
   const isDefaultPreset =
+    (atmosphere === 'confectionery' ||
+      atmosphere === 'porcelain' ||
+      atmosphere === 'stone') &&
     fs.existsSync(path.join(repoRoot, 'packages/astryx/themes', slug)) &&
     !hasExtraScaleOverrides &&
     accent === defaultAccentForAtmosphere(atmosphere) &&

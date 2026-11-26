@@ -320,7 +320,7 @@ export const MEHAN_ASTRYX_CATALOG: readonly MehanAstryxCatalogEntry[] = [
   {
     "name": "ColorSwatch",
     "category": "Form Controls",
-    "summary": "A 3D boiled-sweet color swatch button with a rotated specular highlight, inner dark-mode containment ring, and distinct neutral keyboard focus vs.",
+    "summary": "A 3D boiled-sweet color swatch button with a rotated specular highlight, inner dark-mode containment ring, and distinct neutral keyboard focus vs. accent selection rings.",
     "props": [
       {
         "name": "color",
@@ -1314,7 +1314,7 @@ export const MEHAN_ASTRYX_CATALOG: readonly MehanAstryxCatalogEntry[] = [
   {
     "name": "SplitButton",
     "category": "Action",
-    "summary": "Compound tactile button pairing a high-frequency primary action (e.g.",
+    "summary": "Compound tactile button pairing a high-frequency primary action (e.g. \"Export PDF\") with an attached roving-focus menu of related variants (\"Export Markdown\", \"Export JSON\").",
     "props": [
       {
         "name": "label",
