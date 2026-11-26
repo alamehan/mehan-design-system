@@ -12,7 +12,11 @@ import {
 } from '@mehan/dna';
 import {createMehanTheme} from '@mehan/astryx/dna';
 import {MEHAN_THEME_INIT_SCRIPT} from '@mehan/astryx';
-import {generateAiPrototypeKit, generatePortableCss} from '@mehan/portable';
+import {
+  generateAiPrototypeKit,
+  generateOfflineAiPrototypeKit,
+  generatePortableCss,
+} from '@mehan/portable';
 import {
   DEFAULT_SEED_CONFIG,
   exportCreateMehanThemeTs,
@@ -143,8 +147,18 @@ describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws
       density: 'compact',
       motion: 'calm',
     });
-    expect(kit).toContain('Universal UX, Semantic & Copywriting Standards');
-    expect(kit).toContain('data-density="compact"');
+    expect(kit).toContain('Mehan Spatial, UX & Copywriting Standards');
+    expect(kit).toContain('"density": "compact"');
+    expect(kit).toContain('"motion": "calm"');
+
+    const offlineKit = generateOfflineAiPrototypeKit({
+      atmosphere: 'confectionery',
+      accent: 'blueberry',
+      density: 'compact',
+      motion: 'calm',
+    });
+    expect(offlineKit).toContain('Visual Surfaces, Buttons & UX Standards');
+    expect(offlineKit).toContain('data-density="compact"');
   });
 
   it('supports Shotcandy 1:1 Espresso segmented pills, lip/well modes, data viz tokens, and unrestricted Astryx overrides', () => {
@@ -225,9 +239,19 @@ describe('@mehan/dna optical depth, silky button physics & WCAG AA contrast laws
       typeBase: 13.5,
       lipStyle: 'flat',
     });
-    expect(aiKitEspresso).toContain('--mh-font-base:13.5px');
-    expect(aiKitEspresso).toContain('--mh-lip-pad:0px');
-    expect(aiKitEspresso).toContain('--mh-seg-active-bg:#261b16');
+    expect(aiKitEspresso).toContain('"typeBase": 13.5');
+    expect(aiKitEspresso).toContain('"lipStyle": "flat"');
+    expect(aiKitEspresso).toContain('"segmentedStyle": "espresso"');
+
+    const offlineAiKitEspresso = generateOfflineAiPrototypeKit({
+      atmosphere: 'confectionery',
+      segmentedStyle: 'espresso',
+      typeBase: 13.5,
+      lipStyle: 'flat',
+    });
+    expect(offlineAiKitEspresso).toContain('--mh-font-base:13.5px');
+    expect(offlineAiKitEspresso).toContain('--mh-lip-pad:0px');
+    expect(offlineAiKitEspresso).toContain('--mh-seg-active-bg:#261b16');
     expect(MEHAN_THEME_INIT_SCRIPT).toContain('data-theme');
   });
 

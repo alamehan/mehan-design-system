@@ -36,7 +36,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build Mehan packages and Studio web app
-        run: pnpm --filter @mehan/dna build && pnpm --filter @mehan/astryx build && pnpm --filter @mehan/portable build && pnpm --filter @mehan/studio exec vite build
+        run: pnpm --filter @mehan/dna build && pnpm --filter @mehan/astryx build && pnpm --filter @mehan/portable build && pnpm --filter @mehan/studio build:web
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

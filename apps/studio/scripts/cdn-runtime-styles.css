@@ -1,0 +1,48 @@
+@import '@astryxdesign/core/reset.css';
+@import '@astryxdesign/core/astryx.css';
+@import '@mehan/astryx/fonts.css';
+@import '@mehan/astryx/themes/mehan-porcelain.css';
+@import '@mehan/astryx/styles.css';
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+[data-astryx-theme],
+body {
+  background-color: var(--color-background-body);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  min-height: 100dvh;
+}
+
+.mehan-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mehan-seg-wrap {
+  max-width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .mehan-seg-wrap > [role='radiogroup'] {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    row-gap: 4px;
+  }
+
+  .mehan-seg-wrap > [role='radiogroup'] > [role='radio'] {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}

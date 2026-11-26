@@ -34,9 +34,10 @@ export const STUDIO_COPY = {
       cardAiBadge: 'Prototipe cepat',
       cardAiTitle: '1. Chat AI (Claude / Gemini)',
       cardAiDesc:
-        'Paling praktis untuk membuat prototipe aplikasi utuh lewat prompt — sudah berisi warna, komponen .mh-*, dan aturan tata letak.',
+        'Tempel satu prompt ke Claude / Gemini untuk membuat aplikasi 1 file .html dengan 100% komponen asli Mehan × Meta Astryx (WorkspaceLayout, DataChart, Table, Drawer, Toast) tanpa setup npm.',
       cardAiBtn: 'Salin kit AI',
       cardAiDownload: 'Unduh starter HTML',
+      cardAiOfflineBtn: 'Kit CSS offline',
       cardReactBadge: 'Aplikasi produksi',
       cardReactTitle: '2. React, Next.js, atau Vite',
       cardReactDesc:
@@ -46,9 +47,9 @@ export const STUDIO_COPY = {
       cardHtmlBadge: 'Tanpa React',
       cardHtmlTitle: '3. HTML, Vue, Svelte & Figma',
       cardHtmlDesc:
-        'Gunakan satu file mehan-portable.css ringan untuk web apa pun, atau unduh file token warna untuk Figma.',
+        'Gunakan satu file mehan-portable.css ringan untuk web apa pun tanpa React, atau unduh file token warna untuk Figma.',
       cardHtmlCssBtn: 'Salin Portable CSS',
-      cardHtmlCdnBtn: 'Unduh starter HTML',
+      cardHtmlCdnBtn: 'Unduh HTML offline',
     },
     components: {
       title: 'Katalog komponen & utilitas interaktif',
@@ -113,9 +114,10 @@ export const STUDIO_COPY = {
       cardAiBadge: 'Fastest ideation',
       cardAiTitle: '1. AI chat prototype (Claude / Gemini)',
       cardAiDesc:
-        'Copy one self-contained prompt bundling your theme colors, .mh-* UI classes, and layout rules for instant single-HTML apps.',
+        'Paste one prompt into Claude / Gemini to generate single-file .html apps running 100% real Mehan × Meta Astryx components (WorkspaceLayout, DataChart, Table, Drawer, Toast) with zero npm setup.',
       cardAiBtn: 'Copy AI kit',
       cardAiDownload: 'Download starter HTML',
+      cardAiOfflineBtn: 'Offline CSS kit',
       cardReactBadge: 'Production apps',
       cardReactTitle: '2. React, Next.js, or Vite',
       cardReactDesc:
@@ -127,7 +129,7 @@ export const STUDIO_COPY = {
       cardHtmlDesc:
         'Drop in one standalone mehan-portable.css stylesheet without React, or export design tokens for Figma.',
       cardHtmlCssBtn: 'Copy Portable CSS',
-      cardHtmlCdnBtn: 'Download starter HTML',
+      cardHtmlCdnBtn: 'Download offline HTML',
     },
     components: {
       title: 'Interactive component & utility catalog',

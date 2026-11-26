@@ -34,7 +34,12 @@ import {
   type MehanWellStyle,
   type ResolvedMehanDna,
 } from '@mehan/astryx/dna';
-import {generateAiPrototypeKit, generatePortableCss} from '@mehan/portable';
+import {
+  generateAiPrototypeKit,
+  generateOfflineAiPrototypeKit,
+  generatePortableCss,
+  generateStarterCdnHtml,
+} from '@mehan/portable';
 import {
   AlertTriangle,
   Bookmark,
@@ -51,6 +56,8 @@ import {
   X,
 } from 'lucide-react';
 import {
+  STUDIO_CDN_BASE_URL,
+  STUDIO_RUNTIME_PREFIX,
   copyText,
   downloadTextFile,
   getBuiltInPresets,
@@ -71,6 +78,7 @@ import {
   UNIFIED_PRESETS,
   exportCreateMehanThemeTs,
   exportPureAstryxDefineThemeTs,
+  extractThemeExportOverrides,
   getConcentricityWarning,
   getTokenLabel,
   parseColorWithAlpha,
@@ -839,7 +847,53 @@ export function DockedThemeEditor({
               {
                 label: isId ? 'Salin Kit Prototipe AI' : 'Copy AI Prototype Kit',
                 onClick: async () => {
+                  const {tokens, components} = extractThemeExportOverrides(themeState);
                   const md = generateAiPrototypeKit({
+                    ...seed,
+                    radiusBase: seed.radiusBase ?? undefined,
+                    tokens,
+                    components,
+                    defaultMode: mode,
+                    cdnBaseUrl: STUDIO_CDN_BASE_URL,
+                    runtimePrefix: STUDIO_RUNTIME_PREFIX,
+                  });
+                  await copyText(md);
+                  showToast({
+                    type: 'info',
+                    body: isId
+                      ? 'Kit Prototipe AI (Real-Engine) disalin.'
+                      : 'Copied Real-Engine AI Prototype Kit',
+                  });
+                },
+              },
+              {
+                label: isId
+                  ? 'Unduh Starter HTML Prototipe'
+                  : 'Download Prototype Starter HTML',
+                onClick: () => {
+                  const {tokens, components} = extractThemeExportOverrides(themeState);
+                  const html = generateStarterCdnHtml({
+                    ...seed,
+                    radiusBase: seed.radiusBase ?? undefined,
+                    tokens,
+                    components,
+                    defaultMode: mode,
+                    cdnBaseUrl: STUDIO_CDN_BASE_URL,
+                    runtimePrefix: STUDIO_RUNTIME_PREFIX,
+                  });
+                  downloadTextFile(`mehan-${seed.atmosphere}-prototype.html`, html, 'text/html');
+                  showToast({
+                    type: 'info',
+                    body: isId
+                      ? `mehan-${seed.atmosphere}-prototype.html diunduh.`
+                      : `Downloaded mehan-${seed.atmosphere}-prototype.html`,
+                  });
+                },
+              },
+              {
+                label: isId ? 'Salin Kit AI CSS Offline' : 'Copy Offline CSS AI Kit',
+                onClick: async () => {
+                  const md = generateOfflineAiPrototypeKit({
                     ...seed,
                     radiusBase: seed.radiusBase ?? undefined,
                   });
@@ -847,8 +901,8 @@ export function DockedThemeEditor({
                   showToast({
                     type: 'info',
                     body: isId
-                      ? 'Kit Prototipe AI disalin.'
-                      : 'Copied AI Prototype Kit',
+                      ? 'Kit AI CSS offline disalin.'
+                      : 'Copied Offline CSS AI Kit',
                   });
                 },
               },

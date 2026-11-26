@@ -30,7 +30,12 @@ import {
   formatGradientCss,
   formatShortcutKeys,
 } from '@mehan/astryx';
-import {generateAiPrototypeKit, generatePortableCss} from '@mehan/portable';
+import {
+  generateAiPrototypeKit,
+  generateOfflineAiPrototypeKit,
+  generatePortableCss,
+  generateStarterCdnHtml,
+} from '@mehan/portable';
 import {
   DEFAULT_SEED_CONFIG,
   exportCreateMehanThemeTs,
@@ -220,11 +225,48 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
       expect(portableCss).toContain(cls);
     }
 
-    // Every <button in AI Prototype Kit examples must declare explicit type="button"
-    const aiKit = generateAiPrototypeKit({atmosphere: 'porcelain', accent: 'blueberry'});
+    // Real-Engine AI Prototype Kit + Starter HTML + Offline CSS AI Kit locks
+    const aiKit = generateAiPrototypeKit({
+      atmosphere: 'porcelain',
+      accent: 'blueberry',
+      tokens: {'--color-accent': '#2563eb'},
+      components: {badge: {base: {letterSpacing: '0.02em'}}},
+    });
     expect(aiKit).not.toContain('build a warm,');
     expect(aiKit).toContain('build a tactile, clear, accessible');
-    const rawButtonTags = [...aiKit.matchAll(/<button\b[^>]*>/g)].map(m => m[0]);
+    expect(aiKit).toContain('mehan-runtime.css');
+    expect(aiKit).toContain('mehan-runtime.js');
+    expect(aiKit).toContain('<script type="text/tsx">');
+    expect(aiKit).toContain('createMehanTheme(');
+    expect(aiKit).toContain('WorkspaceLayout');
+    expect(aiKit).toContain('DataChart');
+    expect(aiKit).toContain('Drawer');
+    expect(aiKit).toContain('letterSpacing');
+    for (const tag of [...aiKit.matchAll(/<button\b[^>]*>/g)].map(m => m[0])) {
+      expect(tag, `Button tag missing type="button" in aiKit: ${tag}`).toContain(
+        'type="button"',
+      );
+    }
+
+    const starterCdn = generateStarterCdnHtml({
+      atmosphere: 'confectionery',
+      accent: '#d42a5f',
+    });
+    expect(starterCdn).toContain('mehan-runtime.css');
+    expect(starterCdn).toContain('mehan-runtime.js');
+    expect(starterCdn).toContain('<script type="text/tsx">');
+    expect(starterCdn).toContain('"atmosphere": "confectionery"');
+    expect(starterCdn).toContain('"accent": "#d42a5f"');
+
+    // Every <button in Offline CSS AI Prototype Kit examples must declare explicit type="button"
+    const offlineAiKit = generateOfflineAiPrototypeKit({
+      atmosphere: 'porcelain',
+      accent: 'blueberry',
+    });
+    expect(offlineAiKit).toContain('build a tactile, clear, accessible');
+    expect(offlineAiKit).toContain('.mh-drawer');
+    expect(offlineAiKit).toContain('mhToast');
+    const rawButtonTags = [...offlineAiKit.matchAll(/<button\b[^>]*>/g)].map(m => m[0]);
     expect(rawButtonTags.length).toBeGreaterThan(5);
     for (const tag of rawButtonTags) {
       expect(tag, `Button tag missing type="button": ${tag}`).toContain('type="button"');
@@ -357,9 +399,10 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
       expect(fs.existsSync(path.join(htmlDir, 'mehan/mehan-portable.css'))).toBe(true);
       expect(fs.existsSync(path.join(htmlDir, 'mehan/mehan-portable.js'))).toBe(true);
 
-      // 3. tokens & ai-kit --from
+      // 3. tokens, ai-kit --from, and ai-kit --offline
       const tokensOutPath = path.join(tmpBase, 'out.w3c.json');
       const kitOutPath = path.join(tmpBase, 'out-kit.md');
+      const offlineKitOutPath = path.join(tmpBase, 'out-kit-offline.md');
       execFileSync(
         process.execPath,
         [cliPath, 'tokens', '--from', themeJsonPath, '--out', tokensOutPath],
@@ -370,9 +413,28 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
         [cliPath, 'ai-kit', '--from', themeJsonPath, '--out', kitOutPath],
         {stdio: 'pipe'},
       );
+      execFileSync(
+        process.execPath,
+        [
+          cliPath,
+          'ai-kit',
+          '--from',
+          themeJsonPath,
+          '--offline',
+          '--out',
+          offlineKitOutPath,
+        ],
+        {stdio: 'pipe'},
+      );
       const w3cParsed = JSON.parse(fs.readFileSync(tokensOutPath, 'utf8'));
       expect(w3cParsed.$metadata.atmosphere).toBe('stone');
-      expect(fs.readFileSync(kitOutPath, 'utf8')).toContain('Stone');
+      const realKitOut = fs.readFileSync(kitOutPath, 'utf8');
+      expect(realKitOut).toContain('Stone');
+      expect(realKitOut).toContain('mehan-runtime.js');
+      expect(realKitOut).toContain('"borderRadius": "9999px"');
+      const offlineKitOut = fs.readFileSync(offlineKitOutPath, 'utf8');
+      expect(offlineKitOut).toContain('Stone');
+      expect(offlineKitOut).toContain('.mh-drawer');
     } finally {
       fs.rmSync(tmpBase, {recursive: true, force: true});
     }
@@ -402,11 +464,19 @@ describe('Mehan Design System v1.0 — Mathematical DNA, CLI E2E, Roundtrip & Ze
       }
     }
 
-    // All 3 publishable tarballs present in release/
+    // All 3 publishable tarballs + portable release assets + studio CDN runtime present
     const releaseFiles = fs.readdirSync(path.join(repoRoot, 'release'));
     expect(releaseFiles.some(f => f.includes('-dna-') && f.endsWith('.tgz'))).toBe(true);
     expect(releaseFiles.some(f => f.includes('-astryx-') && f.endsWith('.tgz'))).toBe(true);
     expect(releaseFiles.some(f => f.includes('-portable-') && f.endsWith('.tgz'))).toBe(true);
+    expect(releaseFiles).toContain('MEHAN-AI-PROTOTYPE-KIT.md');
+    expect(releaseFiles).toContain('mehan-astryx-cdn.html');
+    expect(
+      fs.existsSync(path.join(repoRoot, 'apps/studio/dist/cdn/mehan-runtime.js')),
+    ).toBe(true);
+    expect(
+      fs.existsSync(path.join(repoRoot, 'apps/studio/dist/cdn/mehan-runtime.css')),
+    ).toBe(true);
 
     // Verify CLI MEHAN_THEME_INIT_SCRIPT parity & unescaped external strings in tsup.secondary.config.mjs
     const cliSource = fs.readFileSync(path.join(repoRoot, 'bin/mehan.mjs'), 'utf8');

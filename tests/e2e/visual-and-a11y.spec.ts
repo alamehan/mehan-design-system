@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import http from 'node:http';
+import type {AddressInfo} from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -590,5 +593,155 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     await page.locator('.studio-topbar').getByRole('tab', {name: 'Maintain'}).click();
     await page.waitForTimeout(120);
     await assertMobileTabClean('Maintain');
+  });
+
+  test('executes single-HTML Real-Engine prototype (<script type="text/tsx"> + /cdn/mehan-runtime.{css,js}) across live filtering, Drawer approval, Dialog creation, Dark mode, Mobile & WCAG 2.2 AA', async ({
+    page,
+  }) => {
+    test.setTimeout(90_000);
+    const errors: string[] = [];
+    page.on('pageerror', err => errors.push(err.message));
+    page.on('console', msg => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
+
+    const distRoot = path.join(repoRoot, 'apps/studio/dist');
+    const rawPrototypeHtml = fs.readFileSync(
+      path.join(repoRoot, 'release/mehan-astryx-cdn.html'),
+      'utf8',
+    );
+
+    const mimeTypes: Record<string, string> = {
+      '.html': 'text/html; charset=utf-8',
+      '.css': 'text/css; charset=utf-8',
+      '.js': 'application/javascript; charset=utf-8',
+      '.woff2': 'font/woff2',
+      '.svg': 'image/svg+xml',
+    };
+
+    let baseUrl = '';
+    const server = http.createServer((req, res) => {
+      const reqPath = (req.url ?? '/').split('?')[0];
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      if (reqPath === '/favicon.ico') {
+        res.writeHead(204);
+        res.end();
+        return;
+      }
+      if (reqPath === '/prototype.html') {
+        const localHtml = rawPrototypeHtml.replace(
+          /https:\/\/[^"'\s]+\/cdn/g,
+          `${baseUrl}/cdn`,
+        );
+        res.writeHead(200, {'Content-Type': mimeTypes['.html']});
+        res.end(localHtml);
+        return;
+      }
+      const safeRel = path.normalize(reqPath).replace(/^(\.\.[/\\])+/, '');
+      const filePath = path.join(distRoot, safeRel);
+      if (!filePath.startsWith(distRoot) || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+        res.writeHead(404);
+        res.end('Not found');
+        return;
+      }
+      const ext = path.extname(filePath).toLowerCase();
+      res.writeHead(200, {
+        'Content-Type': mimeTypes[ext] ?? 'application/octet-stream',
+      });
+      res.end(fs.readFileSync(filePath));
+    });
+
+    await new Promise<void>(resolve => server.listen(0, '127.0.0.1', () => resolve()));
+    const {port} = server.address() as AddressInfo;
+    baseUrl = `http://127.0.0.1:${port}`;
+
+    try {
+      await page.setViewportSize({width: 1366, height: 900});
+      await page.goto(`${baseUrl}/prototype.html`, {waitUntil: 'networkidle'});
+
+      await expect(page.getByRole('heading', {name: 'Portfolio Governance'})).toBeVisible();
+      await expect(page.getByRole('heading', {name: 'Cumulative velocity index'})).toBeVisible();
+
+      const fontsCheck = await page.evaluate(async () => {
+        await document.fonts.ready;
+        return {
+          bricolage: document.fonts.check('600 18px "Bricolage Grotesque"'),
+          figtree: document.fonts.check('400 14px "Figtree"'),
+          chartSvgs: document.querySelectorAll('svg').length,
+        };
+      });
+      expect(fontsCheck.bricolage).toBe(true);
+      expect(fontsCheck.figtree).toBe(true);
+      expect(fontsCheck.chartSvgs).toBeGreaterThan(2);
+
+      await page.screenshot({
+        path: path.join(shotDir, 'prototype-real-engine-light-1366.png'),
+        fullPage: false,
+      });
+      expect(
+        (
+          await new AxeBuilder({page})
+            .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+            .analyze()
+        ).violations,
+      ).toEqual([]);
+
+      // Live status filter via real Astryx SegmentedControl
+      await page.getByRole('radio', {name: 'In review'}).click();
+      await expect(page.getByRole('table', {name: 'Strategic initiatives'}).locator('tbody tr')).toHaveCount(2);
+      await page.getByRole('radio', {name: 'All'}).click();
+      await expect(page.getByRole('table', {name: 'Strategic initiatives'}).locator('tbody tr')).toHaveCount(5);
+
+      // Open real Astryx Drawer on first row & approve initiative -> updates metrics + fires Toast
+      await page.getByRole('button', {name: 'Review'}).first().click();
+      await expect(page.getByRole('button', {name: 'Approve initiative'})).toBeVisible();
+      await page.screenshot({
+        path: path.join(shotDir, 'prototype-real-engine-drawer-1366.png'),
+        fullPage: false,
+      });
+      await page.getByRole('button', {name: 'Approve initiative'}).click();
+      await expect(page.getByText(/Approved INIT-/).first()).toBeVisible();
+      await page.getByRole('button', {name: 'Close', exact: true}).first().click();
+      await expect(page.getByRole('button', {name: 'Approve initiative'})).toBeHidden();
+
+      // Create a new initiative via real Astryx Dialog
+      await page.getByRole('button', {name: 'New initiative'}).click();
+      await page.getByRole('textbox', {name: 'Initiative title'}).fill('Regional Edge Cache Rollout');
+      await page.getByRole('textbox', {name: 'Executive sponsor'}).fill('Nadia Kusuma');
+      await page.getByRole('button', {name: 'Add initiative'}).click();
+      await expect(page.getByText('Regional Edge Cache Rollout')).toBeVisible();
+
+      // Switch to Dark mode & verify WCAG 2.2 AA contrast
+      await page.getByRole('button', {name: 'Switch to dark mode'}).click();
+      await page.waitForTimeout(150);
+      await page.screenshot({
+        path: path.join(shotDir, 'prototype-real-engine-dark-1366.png'),
+        fullPage: false,
+      });
+      expect(
+        (
+          await new AxeBuilder({page})
+            .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+            .analyze()
+        ).violations,
+      ).toEqual([]);
+
+      // Verify clean Mobile 375x812 responsiveness
+      await page.setViewportSize({width: 375, height: 812});
+      await page.waitForTimeout(120);
+      const mobileOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - window.innerWidth,
+      );
+      expect(mobileOverflow).toBeLessThanOrEqual(1);
+      await page.screenshot({
+        path: path.join(shotDir, 'prototype-real-engine-mobile-375.png'),
+        fullPage: false,
+      });
+
+      expect(errors).toEqual([]);
+    } finally {
+      server.closeAllConnections?.();
+      await new Promise<void>(resolve => server.close(() => resolve()));
+    }
   });
 });

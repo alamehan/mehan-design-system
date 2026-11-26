@@ -16,9 +16,14 @@ Mehan Design System (`@mehan/dna`, `@mehan/astryx`, `@mehan/portable`) is releas
 - **Copyright:** Copyright (c) Cole Bemis and Lucide Contributors
 - **License:** ISC License (`https://lucide.dev/license`)
 
-## 4. Bundled Open-Source Typefaces (`packages/astryx/fonts/`)
+## 4. Sucrase (`sucrase` — Browser TypeScript/JSX Compiler in Single-HTML Runtime)
+- **Copyright:** Copyright (c) 2012-2018 Alan Pierce and various contributors
+- **License:** MIT License (`https://github.com/alangpierce/sucrase`)
+
+## 5. Bundled Open-Source Typefaces (`packages/astryx/fonts/`)
 - **Bricolage Grotesque** — Copyright (c) Mathieu Triay. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
 - **Figtree** — Copyright (c) Erik Kennedy. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
+- **Plus Jakarta Sans** — Copyright (c) Gumpita Rahayu / Tokotype. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
 - **Albert Sans** — Copyright (c) Andreas Rasmussen. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
 - **Outfit** — Copyright (c) Outfit.io / Rodrigo Fuenzalida. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).
 - **Poppins** — Copyright (c) Indian Type Foundry. Licensed under SIL Open Font License 1.1 (`OFL-1.1`).

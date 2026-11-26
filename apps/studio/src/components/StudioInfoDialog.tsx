@@ -272,8 +272,8 @@ export function StudioInfoDialog({
                             : '3. Cross-Platform Portability (@mehan/portable): '}
                         </strong>
                         {isId
-                          ? 'Menerjemahkan tema aktifmu ke proyek HTML murni / Vue / Svelte, paket prompt tunggal untuk Chat AI, serta file token standar W3C Figma.'
-                          : 'Translates your active theme into standalone HTML/CSS (for Vue, Svelte, Astro), single-prompt AI kits, and standard W3C Figma token files.'}
+                          ? 'Menerjemahkan tema aktifmu ke paket prompt tunggal Chat AI (menghasilkan aplikasi 1 file .html dengan komponen asli Mehan × Meta Astryx), proyek HTML/CSS mandiri (untuk Vue, Svelte, Astro), serta file token standar W3C Figma.'
+                          : 'Translates your active theme into single-prompt AI kits (generating single-file .html apps running real Mehan × Meta Astryx components), standalone HTML/CSS (for Vue, Svelte, Astro), and standard W3C Figma token files.'}
                       </li>
                     </ol>
 

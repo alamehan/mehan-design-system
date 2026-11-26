@@ -934,15 +934,11 @@ export function composeStudioTheme(state: FullThemeEditorState): {
   };
 }
 
-/**
- * Exports a clean TypeScript theme module using `createMehanTheme()` (preserves
- * 100% of Mehan tactile physics + every custom token and component override).
- */
-export function exportCreateMehanThemeTs(
-  state: FullThemeEditorState,
-  themeName = 'customMehan',
-): string {
-  const {seed, tokenOverrides, customOverrides} = state;
+export function extractThemeExportOverrides(state: FullThemeEditorState): {
+  tokens?: Record<string, string>;
+  components?: Record<string, unknown>;
+} {
+  const {tokenOverrides, customOverrides} = state;
   const coreTokens: Record<string, string> = {};
   const compVars: Record<string, string> = {};
   for (const [k, v] of Object.entries(tokenOverrides)) {
@@ -959,6 +955,22 @@ export function exportCreateMehanThemeTs(
     buildComponentTokenOverrides(compVars),
     customCompMap,
   );
+  return {
+    tokens: Object.keys(coreTokens).length > 0 ? coreTokens : undefined,
+    components: Object.keys(mergedComp).length > 0 ? mergedComp : undefined,
+  };
+}
+
+/**
+ * Exports a clean TypeScript theme module using `createMehanTheme()` (preserves
+ * 100% of Mehan tactile physics + every custom token and component override).
+ */
+export function exportCreateMehanThemeTs(
+  state: FullThemeEditorState,
+  themeName = 'customMehan',
+): string {
+  const {seed} = state;
+  const {tokens: coreTokens, components: mergedComp} = extractThemeExportOverrides(state);
 
   const lines: string[] = [
     "import {createMehanTheme} from '@mehan/astryx/dna';",
@@ -985,10 +997,10 @@ export function exportCreateMehanThemeTs(
     `  durationStep: ${seed.durationStep},`,
   ];
 
-  if (Object.keys(coreTokens).length > 0) {
+  if (coreTokens && Object.keys(coreTokens).length > 0) {
     lines.push(`  tokens: ${JSON.stringify(coreTokens, null, 4).replace(/\n/g, '\n  ')},`);
   }
-  if (Object.keys(mergedComp).length > 0) {
+  if (mergedComp && Object.keys(mergedComp).length > 0) {
     lines.push(
       `  components: ${JSON.stringify(mergedComp, null, 4).replace(/\n/g, '\n  ')},`,
     );

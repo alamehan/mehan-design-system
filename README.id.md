@@ -68,10 +68,10 @@ Atau buat otomatis file `src/mehan.css` dan `src/MehanProvider.tsx` dari JSON te
 node ./bin/mehan.mjs init ./my-app --from mehan-porcelain-theme.json --github
 ```
 
-### 2. Vanilla HTML, Vue, Svelte, Astro, atau Figma (Tanpa React)
-Ambil langsung file mandiri siap pakai dari folder [`release/`](./release) (atau ekspor versi kustommu lewat Studio):
-- **CSS & JS Mandiri:** [`mehan-portable.css`](./release/mehan-portable.css) + [`mehan-portable.js`](./release/mehan-portable.js)
-- **AI Prototype Kit Satu Prompt:** [`MEHAN-AI-PROTOTYPE-KIT.md`](./release/MEHAN-AI-PROTOTYPE-KIT.md)
+### 2. Prototipe Chat AI, Vanilla HTML, Vue, Svelte, atau Figma (Tanpa Bundler)
+Ambil langsung file mandiri siap pakai dari folder [`release/`](./release) (atau ekspor versi bertema kustommu lewat Studio):
+- **AI Prototype Kit Satu Prompt (Mesin Asli):** [`MEHAN-AI-PROTOTYPE-KIT.md`](./release/MEHAN-AI-PROTOTYPE-KIT.md) + [`mehan-astryx-cdn.html`](./release/mehan-astryx-cdn.html) — menghasilkan aplikasi satu file `.html` dengan komponen asli `@astryxdesign/core` + `@mehan/astryx` lewat runtime `/cdn/` (gunakan opsi `--offline` pada `bin/mehan.mjs ai-kit` untuk versi CSS `.mh-*` tanpa internet)
+- **CSS & JS Mandiri Tanpa React:** [`mehan-portable.css`](./release/mehan-portable.css) + [`mehan-portable.js`](./release/mehan-portable.js)
 - **Token Desain W3C Figma:** [`mehan-tokens.w3c.json`](./release/mehan-tokens.w3c.json)
 
 </details>

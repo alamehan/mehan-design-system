@@ -6,7 +6,7 @@
  *        [--depth 1] [--radius 1] [--radius-base <px>] [--type-base 14] [--type-ratio 1.22] [--size-base 36]
  *        [--spacing-base 4] [--duration-step 1] [--density standard|compact] [--motion expressive|standard|crisp|calm]
  *        [--tailwind] [--github|--local|--npm] [--portable]
- *   node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere porcelain] [--accent blueberry] [--out prototype-kit.md]
+ *   node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere porcelain] [--accent blueberry] [--offline] [--out prototype-kit.md]
  *   node bin/mehan.mjs tokens [--from theme.json] [--atmosphere porcelain] [--accent blueberry] [--out mehan-tokens.w3c.json]
  *   node bin/mehan.mjs set-scope <@newscope>
  */
@@ -52,6 +52,18 @@ function readGithubRepoUrl() {
     // Fallback below
   }
   return 'https://github.com/alamehan/mehan-design-system';
+}
+
+function readHomepageCdnUrl() {
+  try {
+    const rootPkg = readJsonSafe(path.join(repoRoot, 'package.json'));
+    if (typeof rootPkg?.homepage === 'string' && rootPkg.homepage.trim().length > 0) {
+      return `${rootPkg.homepage.trim().replace(/\/+$/, '')}/cdn`;
+    }
+  } catch {
+    // Fallback below
+  }
+  return 'https://alamehan.github.io/mehan-design-system/cdn';
 }
 
 function defaultAccentForAtmosphere(atm) {
@@ -285,16 +297,27 @@ function resolveCliSeedOptions() {
 }
 
 if (cmd === 'ai-kit') {
-  const {dnaOptions} = resolveCliSeedOptions();
+  const {dnaOptions, tokenOverrides, components} = resolveCliSeedOptions();
   const out = readFlag('--out', null);
-  const {generateAiPrototypeKit} = await import(
+  const isOffline = args.includes('--offline');
+  const {generateAiPrototypeKit, generateOfflineAiPrototypeKit} = await import(
     new URL('../packages/portable/dist/index.js', import.meta.url).href
   );
-  const kit = generateAiPrototypeKit(dnaOptions);
+  const kit = isOffline
+    ? generateOfflineAiPrototypeKit(dnaOptions)
+    : generateAiPrototypeKit({
+        ...dnaOptions,
+        tokens: tokenOverrides,
+        components,
+        cdnBaseUrl: readHomepageCdnUrl(),
+        runtimePrefix: readCurrentScope().slice(1),
+      });
   if (out) {
     const dest = path.resolve(process.cwd(), out);
     fs.writeFileSync(dest, kit, 'utf8');
-    console.log(`✅ Wrote Mehan AI Prototype Kit to ${dest}`);
+    console.log(
+      `✅ Wrote Mehan ${isOffline ? 'Offline CSS ' : ''}AI Prototype Kit to ${dest}`,
+    );
   } else {
     process.stdout.write(kit);
   }
@@ -653,7 +676,7 @@ console.log(`Mehan Design System CLI (v1.0.0)
 Usage:
   • Double-click STUDIO.html (Windows / macOS / Linux) to open Interactive Studio offline!
   • node bin/mehan.mjs init <project-folder> [--from theme.json] [--atmosphere porcelain|confectionery|stone] [--accent blueberry|#hex] [--lip candy|subtle|flat] [--segmented raised|espresso] [--well recessed|bordered] [--density standard|compact] [--motion expressive|standard|crisp|calm] [--type-base 14] [--type-ratio 1.22] [--size-base 36] [--spacing-base 4] [--radius-base 8] [--duration-step 1] [--tailwind] [--github|--local|--npm] [--portable]
-  • node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere porcelain|confectionery|stone] [--accent blueberry|#hex] [--out kit.md]
+  • node bin/mehan.mjs ai-kit [--from theme.json] [--atmosphere porcelain|confectionery|stone] [--accent blueberry|#hex] [--offline] [--out kit.md]
   • node bin/mehan.mjs tokens [--from theme.json] [--atmosphere porcelain] [--accent blueberry] [--out mehan-tokens.w3c.json]
   • node bin/mehan.mjs set-scope @yourscope
 `);

@@ -38,7 +38,9 @@ import {
 import {
   MEHAN_PORTABLE_RUNTIME_JS,
   generateAiPrototypeKit,
+  generateOfflineAiPrototypeKit,
   generatePortableCss,
+  generateStarterCdnHtml,
 } from '@mehan/portable';
 import {
   Check,
@@ -61,6 +63,8 @@ import {MehanLogoMark, buildMehanFaviconDataUri} from './components/MehanLogoMar
 import {OverviewManifesto} from './views/OverviewManifesto';
 import {StudioInfoDialog, type StudioInfoTab} from './components/StudioInfoDialog';
 import {
+  STUDIO_CDN_BASE_URL,
+  STUDIO_RUNTIME_PREFIX,
   buildAgentSetupPrompt,
   buildReactInstallSnippet,
   copyText,
@@ -78,6 +82,7 @@ import {DockedThemeEditor} from './theme-editor/DockedThemeEditor';
 import {
   composeStudioTheme,
   exportCreateMehanThemeTs,
+  extractThemeExportOverrides,
   type FullThemeEditorState,
 } from './theme-editor/themeEditorModel';
 import {UX_CHAPTER_COUNT, UxCopyView} from './views/UxCopyView';
@@ -285,9 +290,27 @@ function StudioInner({
     [themeState],
   );
 
+  const aiKitOptions = useMemo(() => {
+    const {tokens, components} = extractThemeExportOverrides(themeState);
+    return {
+      ...seed,
+      radiusBase: seed.radiusBase ?? undefined,
+      tokens,
+      components,
+      defaultMode: mode,
+      cdnBaseUrl: STUDIO_CDN_BASE_URL,
+      runtimePrefix: STUDIO_RUNTIME_PREFIX,
+    };
+  }, [themeState, seed, mode]);
+
   const aiKitMarkdown = useMemo(
+    () => generateAiPrototypeKit(aiKitOptions),
+    [aiKitOptions],
+  );
+
+  const offlineAiKitMarkdown = useMemo(
     () =>
-      generateAiPrototypeKit({
+      generateOfflineAiPrototypeKit({
         ...seed,
         radiusBase: seed.radiusBase ?? undefined,
       }),
@@ -316,8 +339,29 @@ function StudioInner({
     showToast({
       type: 'info',
       body: isId
-        ? `Kit AI (${atmosphereName} · ${accentName}) disalin ke clipboard.`
-        : `Copied AI Prototype Kit (${atmosphereName} · ${accentName}).`,
+        ? `Kit AI Real-Engine (${atmosphereName} · ${accentName}) disalin ke clipboard.`
+        : `Copied Real-Engine AI Prototype Kit (${atmosphereName} · ${accentName}).`,
+    });
+  };
+
+  const handleCopyOfflineAiKit = async () => {
+    await copyText(offlineAiKitMarkdown);
+    showToast({
+      type: 'info',
+      body: isId
+        ? `Kit AI CSS offline (${atmosphereName} · ${accentName}) disalin.`
+        : `Copied Offline CSS AI Kit (${atmosphereName} · ${accentName}).`,
+    });
+  };
+
+  const handleDownloadRealStarterHtml = () => {
+    const html = generateStarterCdnHtml(aiKitOptions);
+    downloadTextFile(`mehan-${seed.atmosphere}-prototype.html`, html, 'text/html');
+    showToast({
+      type: 'info',
+      body: isId
+        ? `mehan-${seed.atmosphere}-prototype.html diunduh.`
+        : `Downloaded mehan-${seed.atmosphere}-prototype.html`,
     });
   };
 
@@ -935,24 +979,31 @@ function StudioInner({
                               size="sm"
                               label={copy.overview.cardAiDownload}
                               icon={<Download size={14} />}
-                              onClick={handleDownloadStarterHtml}
+                              onClick={handleDownloadRealStarterHtml}
+                            />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              label={copy.overview.cardAiOfflineBtn}
+                              icon={<Copy size={14} />}
+                              onClick={() => void handleCopyOfflineAiKit()}
                             />
                           </HStack>
                         </HStack>
                         <CodeBlock
                           code={[
-                            `# Mehan Design System — AI Prototype Kit (${atmosphereName} · ${accentName})`,
-                            `Use the embedded Mehan Portable CSS + Runtime to build a tactile,`,
-                            `accessible single-file HTML app (offline-ready, zero build step).`,
-                            ``,
-                            `1. Surfaces: --mh-paper canvas -> .mh-card -> .mh-tray / .mh-well`,
-                            `2. Buttons:  1x .mh-btn-primary per view · .mh-btn-secondary · 36px`,
-                            `3. UX Laws:  <= 5 controls per group · tabular-nums · WCAG 2.2 AA`,
-                            `<!-- Click "${copy.overview.cardAiBtn}" above to copy full CSS + JS -->`,
+                            `<!-- Single-file .html running 100% real Mehan × Meta Astryx -->`,
+                            `<link rel="stylesheet" href=".../${STUDIO_RUNTIME_PREFIX}-runtime.css" />`,
+                            `<script src=".../${STUDIO_RUNTIME_PREFIX}-runtime.js"></script>`,
+                            `<script type="text/tsx">`,
+                            `  import { Button, Drawer, Table } from '@astryxdesign/core';`,
+                            `  import { WorkspaceLayout, DataChart, createMehanTheme } from '@${STUDIO_RUNTIME_PREFIX}/astryx';`,
+                            `  // Active mood (${atmosphereName} · ${accentName}) + overrides embedded!`,
+                            `</script>`,
                           ].join('\n')}
-                          language="markdown"
+                          language="html"
                           title={`MEHAN-AI-PROTOTYPE-KIT.md (${atmosphereName} · ${accentName})`}
-                          maxHeight={184}
+                          maxHeight={192}
                         />
                       </div>
                     )}

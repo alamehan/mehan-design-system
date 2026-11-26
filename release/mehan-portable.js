@@ -8,11 +8,27 @@
     }
   } catch (e) {}
 
+  window.mhToast = function (message) {
+    var stack = document.querySelector('.mh-toast-stack');
+    if (!stack) {
+      stack = document.createElement('div');
+      stack.className = 'mh-toast-stack';
+      stack.setAttribute('role', 'status');
+      stack.setAttribute('aria-live', 'polite');
+      document.body.appendChild(stack);
+    }
+    var item = document.createElement('div');
+    item.className = 'mh-toast';
+    item.textContent = String(message || '');
+    stack.appendChild(item);
+    setTimeout(function () { item.remove(); }, 2800);
+  };
+
   document.addEventListener('click', function (e) {
     var target = e.target;
     if (!(target instanceof Element)) return;
 
-    if (target instanceof HTMLDialogElement && target.classList.contains('mh-modal')) {
+    if (target instanceof HTMLDialogElement && (target.classList.contains('mh-modal') || target.classList.contains('mh-drawer'))) {
       var r = target.getBoundingClientRect();
       if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) {
         target.close();
@@ -50,13 +66,14 @@
       });
     }
 
-    var openBtn = target.closest('[data-mh-modal-open]');
+    var openBtn = target.closest('[data-mh-modal-open],[data-mh-drawer-open]');
     if (openBtn) {
-      var dlg = document.getElementById(openBtn.getAttribute('data-mh-modal-open') || '');
+      var dlgId = openBtn.getAttribute('data-mh-modal-open') || openBtn.getAttribute('data-mh-drawer-open') || '';
+      var dlg = document.getElementById(dlgId);
       if (dlg && typeof dlg.showModal === 'function') dlg.showModal();
     }
 
-    var closeBtn = target.closest('[data-mh-modal-close]');
+    var closeBtn = target.closest('[data-mh-modal-close],[data-mh-drawer-close]');
     if (closeBtn) {
       var parentDlg = closeBtn.closest('dialog');
       if (parentDlg) parentDlg.close();
@@ -112,7 +129,7 @@
   document.addEventListener('paste', function (e) {
     var input = e.target;
     if (!(input instanceof HTMLInputElement) || !input.closest('.mh-otp')) return;
-    var text = (e.clipboardData ? e.clipboardData.getData('text') : '').replace(/[s-]+/g, '');
+    var text = (e.clipboardData ? e.clipboardData.getData('text') : '').replace(/[\s-]+/g, '');
     if (!text) return;
     e.preventDefault();
     var cells = Array.from(input.closest('.mh-otp').querySelectorAll('input'));

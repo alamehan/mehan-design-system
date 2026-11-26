@@ -122,8 +122,11 @@ Execute all 10 touchpoints in order when scaffolding a new design system from th
    - 1:1 `.doc.mjs` prop documentation + showcase blocks in [`packages/astryx/blocks/`](../packages/astryx/blocks).
    - Domain UX & layout guides in [`packages/astryx/docs/`](../packages/astryx/docs) indexed via [`packages/astryx/astryx.integration.mjs`](../packages/astryx/astryx.integration.mjs).
 
-### Step 6 · Sync Portable CSS, Runtime & AI Prototype Kit (`packages/portable/`)
-1. Update [`packages/portable/src/generator.ts`](../packages/portable/src/generator.ts) so standalone CSS classes, progressive JS enhancements, and the single-prompt `AI-PROTOTYPE-KIT.md` reflect the target system's exact visual physics and domain templates (with every `<button>` explicitly carrying `type="button"`).
+### Step 6 · Sync Real-Engine Browser Bundle, Portable CSS & AI Prototype Kit (`apps/studio/scripts/` & `packages/portable/`)
+1. Keep [`apps/studio/scripts/build-cdn-runtime.mjs`](../apps/studio/scripts/build-cdn-runtime.mjs) and [`apps/studio/scripts/cdn-runtime-entry.tsx`](../apps/studio/scripts/cdn-runtime-entry.tsx) wired to `@<scope>/astryx` so `pnpm build` automatically bundles `apps/studio/dist/cdn/<scope>-runtime.{css,js}` + self-hosted `.woff2` fonts (without bloating root offline [`STUDIO.html`](../STUDIO.html)).
+2. Update [`packages/portable/src/generator.ts`](../packages/portable/src/generator.ts) so:
+   - `generateAiPrototypeKit` and `generateStarterCdnHtml` resolve `cdnBaseUrl` dynamically from root `package.json` `homepage` (`https://<user>.github.io/<repo>/cdn`) and emit domain-authentic `<script type="text/tsx">` executive starter templates running 100% real `@astryxdesign/core` + `@<scope>/astryx` components.
+   - `generatePortableCss` and `generateOfflineAiPrototypeKit` (`--offline`) reflect the target system's exact visual physics and domain classes, with every raw `<button>` carrying `type="button"`.
 
 ### Step 7 · Craft the 3-Beat *Playground-First* Studio, Responsive Ergonomics & `ⓘ` Info Modal (`apps/studio/`)
 Structure [`apps/studio/src/App.tsx`](../apps/studio/src/App.tsx), [`apps/studio/src/views/OverviewManifesto.tsx`](../apps/studio/src/views/OverviewManifesto.tsx), and [`apps/studio/src/components/StudioInfoDialog.tsx`](../apps/studio/src/components/StudioInfoDialog.tsx) so `STUDIO.html` is **effortless to scan in 5 seconds, 100% responsive on phones/tablets, and completely self-contained**:
@@ -140,7 +143,7 @@ Structure [`apps/studio/src/App.tsx`](../apps/studio/src/App.tsx), [`apps/studio
 8. Populate [`apps/studio/src/catalog/`](../apps/studio/src/catalog), [`apps/studio/src/templates/TemplatesView.tsx`](../apps/studio/src/templates/TemplatesView.tsx), [`apps/studio/src/views/UxCopyView.tsx`](../apps/studio/src/views/UxCopyView.tsx), and [`apps/studio/src/views/MaintainView.tsx`](../apps/studio/src/views/MaintainView.tsx) with domain-authentic specimens and workflows.
 
 ### Step 8 · Configure GitHub Pages Deployment (`.github/workflows/deploy-studio.yml`)
-1. Update [`.github/workflows/deploy-studio.yml`](../.github/workflows/deploy-studio.yml) so pushes to `main` (and manual `workflow_dispatch`) build `apps/studio` with `--base=/<repo-slug>/` and publish the live interactive Studio to GitHub Pages alongside the offline [`STUDIO.html`](../STUDIO.html) artifact in the repo root.
+1. Update [`.github/workflows/deploy-studio.yml`](../.github/workflows/deploy-studio.yml) so pushes to `main` (and manual `workflow_dispatch`) build `apps/studio` (`vite build` + `build-cdn-runtime.mjs`) and publish both the interactive Studio and its `/cdn/<scope>-runtime.{css,js}` prototype engine to GitHub Pages alongside the offline [`STUDIO.html`](../STUDIO.html) artifact in the repo root.
 
 ### Step 9 · Author V3 Bilingual `@alamehan` Front-Door Documentation
 1. Following [`README.md`](../README.md) and [`README.id.md`](../README.id.md) (or the `alamehan-readme` skill):

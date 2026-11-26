@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && pnpm build:singlefile",
+    "build": "pnpm build:web && pnpm build:singlefile",
+    "build:web": "vite build && node scripts/build-cdn-runtime.mjs",
+    "build:cdn": "node scripts/build-cdn-runtime.mjs",
     "build:singlefile": "vite build --config vite.singlefile.config.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"

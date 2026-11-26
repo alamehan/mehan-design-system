@@ -1,3 +1,5 @@
+import rootPkg from '../../../package.json';
+import astryxPkg from '../../../packages/astryx/package.json';
 import {copyTextSafe} from '@mehan/astryx';
 import {isMehanAtmosphereId, isPresetAccent} from '@mehan/astryx/dna';
 import {
@@ -13,6 +15,12 @@ export type InstallCssMode = 'plain' | 'tailwind';
 
 export const GITHUB_REPO_URL = 'https://github.com/alamehan/mehan-design-system';
 export const GITHUB_ASTRYX_TGZ = `${GITHUB_REPO_URL}/raw/main/release/mehan-astryx-1.0.0.tgz`;
+export const STUDIO_CDN_BASE_URL =
+  typeof rootPkg.homepage === 'string' && rootPkg.homepage.trim().length > 0
+    ? `${rootPkg.homepage.trim().replace(/\/+$/, '')}/cdn`
+    : 'https://alamehan.github.io/mehan-design-system/cdn';
+export const STUDIO_RUNTIME_PREFIX =
+  /^@([a-z0-9-]+)\//i.exec(astryxPkg.name ?? '')?.[1]?.toLowerCase() ?? 'mehan';
 
 export interface NamedStudioPreset {
   id: string;

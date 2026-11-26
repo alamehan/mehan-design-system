@@ -3,5 +3,10 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["src", "vite.config.ts", "vite.singlefile.config.ts"]
+  "include": [
+    "src",
+    "scripts/cdn-runtime-entry.tsx",
+    "vite.config.ts",
+    "vite.singlefile.config.ts"
+  ]
 }

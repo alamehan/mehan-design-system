@@ -68,10 +68,10 @@ Or scaffold `src/mehan.css` and `src/MehanProvider.tsx` automatically from any S
 node ./bin/mehan.mjs init ./my-app --from mehan-porcelain-theme.json --github
 ```
 
-### 2. Vanilla HTML, Vue, Svelte, Astro, or Figma (No React Required)
-Grab prebuilt standalone files directly from [`release/`](./release) (or export customized versions from Studio):
-- **Standalone CSS & JS:** [`mehan-portable.css`](./release/mehan-portable.css) + [`mehan-portable.js`](./release/mehan-portable.js)
-- **Single-Prompt AI Prototype Kit:** [`MEHAN-AI-PROTOTYPE-KIT.md`](./release/MEHAN-AI-PROTOTYPE-KIT.md)
+### 2. AI Chat Prototypes, Vanilla HTML, Vue, Svelte, or Figma (Zero Build Step)
+Grab prebuilt standalone files directly from [`release/`](./release) (or export customized versions with your active theme from Studio):
+- **Single-Prompt AI Prototype Kit (Real Engine):** [`MEHAN-AI-PROTOTYPE-KIT.md`](./release/MEHAN-AI-PROTOTYPE-KIT.md) + [`mehan-astryx-cdn.html`](./release/mehan-astryx-cdn.html) — generates single-file `.html` apps powered by authentic `@astryxdesign/core` + `@mehan/astryx` components via the hosted `/cdn/` runtime (pass `--offline` to `bin/mehan.mjs ai-kit` for air-gapped `.mh-*` CSS prototypes)
+- **Framework-Free CSS & JS:** [`mehan-portable.css`](./release/mehan-portable.css) + [`mehan-portable.js`](./release/mehan-portable.js)
 - **Figma W3C Design Tokens:** [`mehan-tokens.w3c.json`](./release/mehan-tokens.w3c.json)
 
 </details>
