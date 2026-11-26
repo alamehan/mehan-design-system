@@ -200,8 +200,8 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
       ).violations,
     ).toEqual([]);
 
-    // Open "All categories" (renders all 107 specimens across all 12 official categories simultaneously!)
-    // and verify bounded card heights + 0 WCAG AA contrast violations across every single component!
+    // Open "All categories" (renders all specimens across all 12 official categories simultaneously!)
+    // and verify bounded card heights + 0 WCAG AA contrast violations + smart scroll-reset when switching category!
     await page.locator('.cat-nav-btn', {hasText: 'All categories'}).click();
     await page.waitForTimeout(150);
     const catalogAudit = await page.locator('.cat-specimen-card').evaluateAll(els => ({
@@ -217,6 +217,21 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
           .analyze()
       ).violations,
     ).toEqual([]);
+
+    // Verify smart scroll-reset in Components sidebar AND topbar tab switch!
+    await page.evaluate(() => window.scrollTo(0, 1800));
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(1000);
+    await page.locator('.cat-nav-btn', {hasText: 'Overlay'}).click();
+    const afterCategoryScroll = await page.evaluate(() => ({
+      scrollY: window.scrollY,
+      headingTop:
+        document
+          .querySelector('.cat-category-section h3')
+          ?.getBoundingClientRect().top ?? 999,
+    }));
+    expect(afterCategoryScroll.scrollY).toBeLessThan(320);
+    expect(afterCategoryScroll.headingTop).toBeGreaterThanOrEqual(50);
+    expect(afterCategoryScroll.headingTop).toBeLessThanOrEqual(160);
 
     // 3. Official Theme Showcase + Docked Chunked Theme Editor + Live Font Switching Proof!
     await page.getByRole('tab', {name: 'Patterns & Templates'}).click();
@@ -321,7 +336,15 @@ test.describe('STUDIO.html v1.0 — Offline WOFF2 Fonts, Adaptive Catalog, UX Pl
     await editor.getByRole('button', {name: 'Reset all to default'}).click();
     await page.waitForTimeout(120);
 
-    // Sweep remaining UX & Copy chapters + Templates tabs for 0 contrast issues & 0 runtime errors
+    // Sweep remaining UX & Copy chapters + verify UX sidebar smart scroll-reset + Templates tabs!
+    await page.locator('.ux-sidebar .cat-nav-btn', {hasText: 'All Chapters'}).click();
+    await page.evaluate(() => window.scrollTo(0, 1600));
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(900);
+    await page
+      .locator('.ux-sidebar .cat-nav-btn', {hasText: 'Truncation & Numerals'})
+      .click();
+    expect(await page.evaluate(() => window.scrollY)).toBeLessThan(320);
+
     for (const chLabel of [
       'Progressive Disclosure',
       'Truncation & Numerals',

@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {
   AspectRatio,
   Badge,
@@ -89,7 +89,7 @@ import {
   X,
 } from 'lucide-react';
 import type {StudioCopy} from '../i18n';
-import type {StudioLang} from '../studioState';
+import {scrollPaneToTopIfBelow, type StudioLang} from '../studioState';
 
 const BACKDROP_PRESETS = [
   {
@@ -1183,6 +1183,16 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
   const [shotZoom, setShotZoom] = useState(100);
   const [shotPlayhead, setShotPlayhead] = useState(1.2);
   const [backdropId, setBackdropId] = useState<string>('cobalt-sky');
+  const templateTopRef = useRef<HTMLDivElement | null>(null);
+  const didMountTplRef = useRef(false);
+
+  useLayoutEffect(() => {
+    if (!didMountTplRef.current) {
+      didMountTplRef.current = true;
+      return;
+    }
+    scrollPaneToTopIfBelow(templateTopRef.current, 72);
+  }, [templateTab]);
   const activeBackdrop =
     BACKDROP_PRESETS.find(b => b.id === backdropId) ?? BACKDROP_PRESETS[0];
 
@@ -1255,6 +1265,7 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
   }, [topologyMode]);
 
   return (
+    <div ref={templateTopRef}>
     <Stack gap={4}>
       <Stack
         direction="horizontal"
@@ -2093,5 +2104,6 @@ export function TemplatesView({lang, copy}: TemplatesViewProps) {
         </WorkspaceLayout>
       )}
     </Stack>
+    </div>
   );
 }

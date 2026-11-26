@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useLayoutEffect, useRef} from 'react';
 import {
   Badge,
   Collapsible,
@@ -41,6 +41,18 @@ export function StudioInfoDialog({
   uxChapterCount,
 }: StudioInfoDialogProps) {
   const isId = lang === 'id';
+  const bodyAnchorRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    if (!isOpen || !bodyAnchorRef.current) return;
+    let node: HTMLElement | null = bodyAnchorRef.current.parentElement;
+    while (node) {
+      if (node.scrollTop > 0) {
+        node.scrollTop = 0;
+      }
+      node = node.parentElement;
+    }
+  }, [isOpen, tab]);
 
   const shortcuts = isId
     ? [
@@ -135,6 +147,7 @@ export function StudioInfoDialog({
         content={
           <LayoutContent>
             {isOpen ? (
+              <div ref={bodyAnchorRef}>
               <Stack gap={4}>
                 <TabList
                   role="tablist"
@@ -439,6 +452,7 @@ export function StudioInfoDialog({
                   </Stack>
                 )}
               </Stack>
+              </div>
             ) : null}
           </LayoutContent>
         }

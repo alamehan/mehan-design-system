@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {
   AlertDialog,
   Badge,
@@ -136,6 +136,15 @@ function StudioInner({
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoTab, setInfoTab] = useState<StudioInfoTab>('overview');
   const catalogSearchRef = useRef<HTMLInputElement | null>(null);
+  const didMountTabRef = useRef(false);
+
+  useLayoutEffect(() => {
+    if (!didMountTabRef.current) {
+      didMountTabRef.current = true;
+      return;
+    }
+    window.scrollTo({top: 0, left: 0, behavior: 'instant'});
+  }, [activeTab]);
 
   useMehanShortcuts([
     {

@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {
   Badge,
   Button,
@@ -13,7 +13,7 @@ import {
 } from '@astryxdesign/core';
 import {Search} from 'lucide-react';
 import type {StudioCopy} from '../i18n';
-import type {StudioLang} from '../studioState';
+import {scrollPaneToTopIfBelow, type StudioLang} from '../studioState';
 import {useCatalogCoreActionsContent} from './CatalogCoreActionsContent';
 import {useCatalogCoreFormsViz} from './CatalogCoreFormsViz';
 import {useCatalogCoreLayoutOverlays} from './CatalogCoreLayoutOverlays';
@@ -51,6 +51,16 @@ export function ComponentsCatalogView({
   >('Layout');
   const [pkgFilter, setPkgFilter] = useState<'all' | 'core' | 'mehan'>('all');
   const [query, setQuery] = useState('');
+  const layoutRef = useRef<HTMLDivElement | null>(null);
+  const didMountRef = useRef(false);
+
+  useLayoutEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    scrollPaneToTopIfBelow(layoutRef.current, 72);
+  }, [selectedCategory, pkgFilter]);
 
   const groupA = useCatalogCoreActionsContent();
   const groupB = useCatalogCoreFormsViz();
@@ -199,7 +209,7 @@ export function ComponentsCatalogView({
       </HStack>
 
       {/* Sticky 4-Pillar, 12-Category Sidebar + Adaptive Specimen Grid */}
-      <div className="cat-layout">
+      <div ref={layoutRef} className="cat-layout">
         <nav
           className="cat-sidebar"
           aria-label="Official Astryx component categories"
@@ -225,6 +235,7 @@ export function ComponentsCatalogView({
                         setSelectedCategory(cat);
                         if (pkgFilter === 'mehan') setPkgFilter('all');
                         if (query) setQuery('');
+                        scrollPaneToTopIfBelow(layoutRef.current, 72);
                       }}
                     >
                       <span>{cat}</span>
@@ -246,6 +257,7 @@ export function ComponentsCatalogView({
             onClick={() => {
               setSelectedCategory('all');
               if (query) setQuery('');
+              scrollPaneToTopIfBelow(layoutRef.current, 72);
             }}
           >
             <span>{isId ? 'Semua kategori' : 'All categories'}</span>

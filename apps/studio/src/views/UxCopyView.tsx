@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useLayoutEffect, useRef, useState} from 'react';
 import {
   Badge,
   Banner,
@@ -53,7 +53,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import type {StudioCopy} from '../i18n';
-import type {StudioLang} from '../studioState';
+import {scrollPaneToTopIfBelow, type StudioLang} from '../studioState';
 
 interface UxCopyViewProps {
   lang: StudioLang;
@@ -143,6 +143,16 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
   const isId = lang === 'id';
   const showToast = useToast();
   const [chapter, setChapter] = useState<UxChapterId>('chunking');
+  const layoutRef = useRef<HTMLDivElement | null>(null);
+  const didMountRef = useRef(false);
+
+  useLayoutEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    scrollPaneToTopIfBelow(layoutRef.current, 72);
+  }, [chapter]);
 
   // Chapter 1 state
   const [orgName, setOrgName] = useState('Mehan Studio');
@@ -357,7 +367,7 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
         <Text color="secondary">{copy.ux.subtitle}</Text>
       </Stack>
 
-      <div className="ux-layout">
+      <div ref={layoutRef} className="ux-layout">
         {/* Sticky Left Chapter Rail (Practicing Chunking!) */}
         <nav className="ux-sidebar" aria-label="UX Playbook chapters">
           {UX_DOMAINS.map(domain => (
@@ -374,7 +384,10 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
                     key={ch.id}
                     type="button"
                     className={`cat-nav-btn ${chapter === ch.id ? 'is-active' : ''}`}
-                    onClick={() => setChapter(ch.id)}
+                    onClick={() => {
+                      setChapter(ch.id);
+                      scrollPaneToTopIfBelow(layoutRef.current, 72);
+                    }}
                   >
                     <span>{isId ? ch.idLabel : ch.en}</span>
                     <span className="cat-nav-count">{ch.num}</span>
@@ -389,7 +402,10 @@ export function UxCopyView({lang, copy, onOpenConfirmDemo}: UxCopyViewProps) {
           <button
             type="button"
             className={`cat-nav-btn ${chapter === 'all' ? 'is-active' : ''}`}
-            onClick={() => setChapter('all')}
+            onClick={() => {
+              setChapter('all');
+              scrollPaneToTopIfBelow(layoutRef.current, 72);
+            }}
           >
             <span>{isId ? 'Semua Bab' : 'All Chapters'}</span>
             <span className="cat-nav-count">12</span>

@@ -395,6 +395,24 @@ export async function copyText(text: string): Promise<boolean> {
   return copyTextSafe(text);
 }
 
+/**
+ * Resets window scroll cleanly to the top of a split-pane layout (`stickyTopOffset = 72px`,
+ * matching `.cat-sidebar` / `.ux-sidebar` sticky offset beneath `.studio-topbar`) whenever
+ * the user switches sections after scrolling down — keeping the sticky left rail stationary
+ * under the pointer while bringing the new right-pane content straight to the top.
+ */
+export function scrollPaneToTopIfBelow(
+  el: HTMLElement | null,
+  stickyTopOffset = 72,
+): void {
+  if (!el || typeof window === 'undefined') return;
+  const docTop = el.getBoundingClientRect().top + window.scrollY;
+  const targetY = Math.max(0, Math.round(docTop - stickyTopOffset));
+  if (window.scrollY > targetY) {
+    window.scrollTo({top: targetY, left: 0, behavior: 'instant'});
+  }
+}
+
 export function downloadTextFile(
   filename: string,
   content: string,

@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {
   Badge,
   Banner,
@@ -155,6 +155,13 @@ export function DockedThemeEditor({
 
   const [editorTab, setEditorTab] = useState<string>('base');
   const [advGroup, setAdvGroup] = useState<AdvancedTokenGroupKey>('colors');
+  const bodyScrollRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    if (bodyScrollRef.current) {
+      bodyScrollRef.current.scrollTop = 0;
+    }
+  }, [editorTab, advGroup]);
   const [tokenQuery, setTokenQuery] = useState('');
   const [compQuery, setCompQuery] = useState('');
   const [customPickerOpen, setCustomPickerOpen] = useState(false);
@@ -656,7 +663,7 @@ export function DockedThemeEditor({
       </div>
 
       {/* Scrollable Chunked Body */}
-      <div className="te-body">
+      <div ref={bodyScrollRef} className="te-body">
         {/* ================================================================
             TAB 1: BASE STYLES (Chunked with Progressive Disclosure)
            ================================================================ */}
